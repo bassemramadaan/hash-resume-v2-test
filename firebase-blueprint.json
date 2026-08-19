@@ -1,0 +1,72 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile in the application",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "format": "email", "maxLength": 254 },
+        "displayName": { "type": "string", "maxLength": 120 },
+        "photoURL": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["userId", "email", "createdAt", "updatedAt"]
+    },
+    "UserResume": {
+      "title": "UserResume",
+      "description": "Saved resume draft and finalized ATS resumes created by the user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "title": { "type": "string", "maxLength": 150 },
+        "templateId": { "type": "string", "maxLength": 64 },
+        "language": { "type": "string", "maxLength": 10 },
+        "resumeData": { "type": "object" },
+        "createdAt": { "type": "string", "maxLength": 64 },
+        "updatedAt": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["id", "userId", "title", "createdAt", "updatedAt"]
+    },
+    "HuntCandidateSubmission": {
+      "title": "HuntCandidateSubmission",
+      "description": "Candidate application and CV submission synced with Hash Hunt job portal",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "fullName": { "type": "string", "maxLength": 120 },
+        "phoneNumber": { "type": "string", "maxLength": 50 },
+        "email": { "type": "string", "format": "email", "maxLength": 254 },
+        "jobTitle": { "type": "string", "maxLength": 150 },
+        "yearsOfExperience": { "type": "string", "maxLength": 80 },
+        "currentLocation": { "type": "string", "maxLength": 150 },
+        "openTo": { "type": "string", "maxLength": 150 },
+        "cvFileName": { "type": "string", "maxLength": 255 },
+        "cvFileSize": { "type": "string", "maxLength": 50 },
+        "cvDriveLink": { "type": "string", "maxLength": 1000 },
+        "appliedJobId": { "type": "string", "maxLength": 128 },
+        "appliedJobTitle": { "type": "string", "maxLength": 150 },
+        "timestamp": { "type": "string", "maxLength": 64 },
+        "status": { "type": "string", "enum": ["pending", "reviewed", "shortlisted", "contacted", "rejected"] }
+      },
+      "required": ["id", "fullName", "phoneNumber", "email", "jobTitle", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Stores user profiles keyed by auth UID"
+    },
+    "/users/{userId}/resumes/{resumeId}": {
+      "schema": { "$ref": "#/entities/UserResume" },
+      "description": "Subcollection of saved resumes created by the owner"
+    },
+    "/hunt_submissions/{submissionId}": {
+      "schema": { "$ref": "#/entities/HuntCandidateSubmission" },
+      "description": "Candidate submissions submitted via Hash Hunt"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Hash Resume",
+  "description": "منصة بناء سير ذاتية ذكية متوافقة مع أنظمة ATS باللغتين العربية والإنجليزية، وبوابة وظائف Hash Hunt مع خريطة تفاعلية عبر Google Maps Platform وحفظ سحابي بـ Firebase ومزامنة مع Google Drive و Google Sheets",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

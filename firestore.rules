@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'bassemramadaan@gmail.com' ||
+        request.auth.token.email == 'BassemRamadaan@gmail.com'
+      );
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128;
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow get: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId) || isAdmin();
+
+      // Resumes Subcollection
+      match /resumes/{resumeId} {
+        allow read, write: if isOwner(userId) || isAdmin();
+      }
+    }
+
+    // Hunt Submissions Collection
+    match /hunt_submissions/{submissionId} {
+      allow create: if isValidId(submissionId);
+      allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow update, delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+  }
+}
+

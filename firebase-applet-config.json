@@ -1,0 +1,12 @@
+{
+  "projectId": "hash-resume",
+  "appId": "1:46485781088:web:567a8e3d46d9416cf7a105",
+  "apiKey": "AIzaSyC_e-4iwWvJPggDqLrlCHU4ncuZSVNMqX8",
+  "authDomain": "hash-resume.firebaseapp.com",
+  "firestoreDatabaseId": "ai-studio-hashresumeproduc-b712b523-30da-472e-8945-71dcfdac6916",
+  "storageBucket": "hash-resume.firebasestorage.app",
+  "messagingSenderId": "46485781088",
+  "measurementId": "",
+  "oAuthClientId": "46485781088-c57tsai9tmtqr45ipciqk0damm7b52nm.apps.googleusercontent.com",
+  "recaptchaSiteKey": ""
+}

@@ -1,0 +1,149 @@
+@import "tailwindcss";
+
+:root {
+  --brand-coral: #FF4D2D;
+  --brand-coral-hover: #E5431F;
+  --brand-coral-active: #CC3A1A;
+  --brand-coral-soft: #FFF1EC;
+
+  --brand-navy: #001639;
+  --brand-navy-dark: #000F27;
+  --brand-navy-light: #00214F;
+  --brand-navy-soft: #E8EEF7;
+
+  --color-primary: #001639;
+  --color-primary-hover: #00214F;
+  --color-primary-active: #000F27;
+  --color-primary-soft: #E8EEF7;
+  --color-primary-border: #C8D5E8;
+  --color-primary-text: #FFFFFF;
+
+  --color-navy: #001639;
+  --color-navy-dark: #000F27;
+  --color-navy-light: #00214F;
+  --color-navy-soft: #E8EEF7;
+
+  --color-background: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-surface-muted: #F1F5F9;
+  --color-text-primary: #0B1120;
+  --color-text-secondary: #52627A;
+  --color-text-muted: #8793A6;
+  --color-border: #E2E8F0;
+  --color-border-strong: #CBD5E1;
+
+  --color-success: #16A36A;
+  --color-warning: #D98A00;
+  --color-error: #DC2626;
+  --color-info: #0EA5E9;
+}
+
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-arabic: 'IBM Plex Sans Arabic', 'Inter', system-ui, -apple-system, sans-serif;
+
+  --color-coral: #FF4D2D;
+  --color-coral-hover: #E5431F;
+  --color-coral-active: #CC3A1A;
+  --color-coral-soft: #FFF1EC;
+
+  --color-navy: #001639;
+  --color-navy-dark: #000F27;
+  --color-navy-light: #00214F;
+  --color-navy-soft: #E8EEF7;
+
+  --color-primary: #001639;
+  --color-primary-hover: #00214F;
+  --color-primary-active: #000F27;
+  --color-primary-soft: #E8EEF7;
+  --color-primary-border: #C8D5E8;
+}
+
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(241, 245, 249, 0.8);
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(203, 213, 225, 0.9);
+    border-radius: 9999px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(148, 163, 184, 1);
+  }
+}
+
+/* Base LTR (English) Typography */
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #F8FAFC;
+  color: #0B1120;
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Automatic Arabic Typography rule when dir="rtl" */
+[dir="rtl"],
+[dir="rtl"] body,
+html[dir="rtl"] body {
+  font-family: 'IBM Plex Sans Arabic', 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* English Brand Name "Hash Resume" Typography override (remains Inter 700) */
+.font-brand,
+.brand-name {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-weight: 700 !important;
+}
+
+/* Heading Typography Line Heights & Refined Balanced Weights */
+h1 {
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+h2 {
+  line-height: 1.25;
+  font-weight: 600;
+}
+
+h3, h4 {
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+/* Clear, accessible focus rings for keyboard navigation */
+:focus-visible {
+  outline: 2px solid #FF4D2D !important;
+  outline-offset: 2px !important;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #001639 !important;
+  outline-offset: 2px !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+
