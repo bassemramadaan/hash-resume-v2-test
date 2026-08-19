@@ -1,8 +1,8 @@
-import { ResumeData } from '../types/resume';
+import { ResumeData, Language } from '../types/resume';
 
 export async function parseResumeFile(
   file: File,
-  language: 'ar' | 'en' = 'ar'
+  language: Language = 'ar'
 ): Promise<ResumeData> {
   // 1. If JSON file, parse directly
   if (file.type === 'application/json' || file.name.endsWith('.json')) {

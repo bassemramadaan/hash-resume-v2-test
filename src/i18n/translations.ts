@@ -5,6 +5,7 @@ export const translations = {
     appName: "Hash Resume",
     tagline: "صانع السير الذاتية الذكي المتوافق مع أنظمة ATS",
     subtitle: "أنشئ سيرة ذاتية احترافية بضغطة زر في أقل من 5 دقائق باللغة العربية والإنجليزية، متوافقة 100% مع خوارزميات التوظيف الحديثة وبخصوصية تامة.",
+    slogan: "بدون إنشاء حساب. أنشئ سيرتك. حمّلها. وقدّم بها.",
     
     // Navbar
     navBuilder: "صانع السيرة",
@@ -168,6 +169,7 @@ export const translations = {
     appName: "Hash Resume",
     tagline: "Smart ATS-Friendly Resume Builder",
     subtitle: "Create professional ATS-compliant resumes in Arabic & English in under 5 minutes. Powered by AI with 100% client-side privacy.",
+    slogan: "No sign-up. Build. Download. Apply.",
 
     // Navbar
     navBuilder: "Resume Builder",
@@ -325,6 +327,176 @@ export const translations = {
     // Footer & Privacy
     privacyGuaranteed: "100% Local Privacy: Your resume data stays strictly inside your browser's local storage and is never uploaded to remote databases.",
     allRightsReserved: "All rights reserved - Hash Resume Platform",
+  },
+
+  fr: {
+    appName: "Hash Resume",
+    tagline: "Générateur de CV intelligent compatible ATS",
+    subtitle: "Créez un CV professionnel compatible ATS en moins de 5 minutes. Optimisé par l'IA avec une confidentialité totale.",
+    slogan: "Sans inscription. Créez. Téléchargez. Postulez.",
+
+    // Navbar
+    navBuilder: "Créateur de CV",
+    navTemplates: "Modèles",
+    navAtsCheck: "Vérification ATS",
+    navPricing: "Tarifs & Activation",
+    navFaq: "FAQ",
+    switchLang: "Français",
+    activatedStatus: "Activé",
+    getActivated: "Activer le CV",
+    downloadPdf: "Télécharger PDF",
+    downloading: "Génération en cours...",
+
+    // Quick Actions
+    loadSample: "Charger un exemple",
+    clearData: "Effacer les données",
+    resetConfirm: "Voulez-vous vraiment réinitialiser toutes les données ?",
+    
+    // Sections Tabs
+    tabPersonal: "Informations personnelles",
+    tabExperience: "Expériences professionnelles",
+    tabEducation: "Formation & Diplômes",
+    tabSkills: "Compétences & Langues",
+    tabProjects: "Projets & Réalisations",
+    tabCustom: "Sections personnalisées",
+    tabAiTools: "Outils IA",
+    tabAtsAnalyzer: "Analyseur ATS",
+
+    // Personal Info Form
+    fullName: "Nom complet",
+    jobTitle: "Titre du poste visé",
+    email: "Adresse e-mail",
+    phone: "Numéro de téléphone",
+    location: "Ville / Pays",
+    linkedin: "Profil LinkedIn",
+    github: "Lien GitHub (optionnel)",
+    website: "Site web / Portfolio (optionnel)",
+    summary: "Résumé professionnel",
+    summaryPlaceholder: "Rédigez un résumé professionnel percutant de vos compétences et réalisations...",
+    aiGenerateSummary: "Générer avec l'IA",
+    photoUrl: "Photo de profil (optionnelle)",
+
+    // Experience Form
+    addExperience: "Ajouter une expérience",
+    position: "Poste occupé",
+    company: "Entreprise / Organisation",
+    startDate: "Date de début",
+    endDate: "Date de fin",
+    currentJob: "Poste actuel",
+    bulletPoints: "Réalisations et missions (points clés ATS)",
+    bulletPlaceholder: "Ex: Dirigé une équipe de 5 personnes et augmenté la productivité de 30%",
+    addBullet: "Ajouter une réalisation",
+    aiEnhanceBullet: "Améliorer avec l'IA",
+
+    // Education
+    addEducation: "Ajouter une formation",
+    degree: "Diplôme / Niveau d'études",
+    institution: "Université / École",
+    fieldOfStudy: "Domaine d'études",
+    gpa: "Mention / Moyenne (optionnel)",
+
+    // Skills
+    addSkill: "Ajouter une compétence",
+    skillName: "Nom de la compétence",
+    skillCategory: "Catégorie",
+    techSkills: "Compétences techniques",
+    softSkills: "Compétences relationnelles",
+    tools: "Outils & Logiciels",
+    aiSuggestSkills: "Suggérer des compétences IA",
+
+    // Languages
+    addLanguage: "Ajouter une langue",
+    languageName: "Langue",
+    proficiency: "Niveau",
+    profNative: "Langue maternelle",
+    profFluent: "Courant",
+    profAdvanced: "Avancé",
+    profIntermediate: "Intermédiaire",
+    profBasic: "Débutant",
+
+    // Projects & Certs
+    addProject: "Ajouter un projet",
+    projectTitle: "Titre du projet",
+    projectDesc: "Description du projet et réalisations",
+    addCert: "Ajouter une certification",
+    certTitle: "Nom de la certification",
+    certIssuer: "Organisme délivreur",
+    certDate: "Date d'obtention",
+
+    // Customization & Templates
+    customizeTitle: "Personnalisation & Mise en page",
+    templateSelect: "Sélectionner un modèle",
+    colorSelect: "Couleur principale",
+    fontSelect: "Police de caractères",
+    fontSizeSelect: "Taille de police",
+    spacingSelect: "Espacement des sections",
+    showPhotoToggle: "Afficher la photo",
+    showIconsToggle: "Afficher les icônes de contact",
+
+    // ATS Score & Validation
+    atsScoreTitle: "Score de compatibilité ATS",
+    atsScoreDesc: "Analyse en temps réel de votre CV selon les standards des recruteurs.",
+    atsPassed: "Optimisé pour ATS",
+    atsWarning: "Améliorations conseillées",
+    atsCritical: "Corrections requises",
+    atsImproveBtn: "Améliorer les sections",
+
+    // ATS Analyzer
+    atsAnalyzerTitle: "Analyseur de CV pour système ATS",
+    atsAnalyzerSub: "Évaluez votre CV par rapport aux exigences du poste pour obtenir un score et des recommandations.",
+    targetJobDescLabel: "Description du poste visé (optionnelle pour ciblage précis) :",
+    jobDescPlaceholder: "Collez ici les exigences ou l'annonce de l'emploi...",
+    runAtsCheck: "Analyser le CV maintenant",
+    atsScore: "Score de compatibilité ATS",
+    atsStrengths: "Points forts identifiés",
+    atsMissingKeywords: "Mots-clés manquants recommandés",
+    atsActionPoints: "Actions rapides pour améliorer votre score",
+
+    // AI Assistant
+    aiAssistantTitle: "Assistant IA Hash Resume",
+    aiAssistantDesc: "Optimisez la rédaction de votre CV grâce à nos modèles d'intelligence artificielle.",
+    aiActionTranslate: "Traduire en anglais professionnel",
+    aiActionMetrics: "Ajouter des indicateurs chiffrés (KPIs)",
+    aiActionPolish: "Perfectionner le style rédactionnel",
+    aiThinking: "Analyse IA en cours...",
+    applyAiText: "Appliquer au CV",
+
+    // Pricing & Activation
+    pricingTitle: "Activation simple et sans abonnement",
+    pricingSub: "Payez une seule fois sans piège d'abonnement récurrent ni frais cachés.",
+    oneTimePayNotice: "Paiement unique sans renouvellement automatique",
+    pricingSubtitle: "Payez une seule fois par CV complet, sans frais cachés ni renouvellement automatique.",
+    planSingleTitle: "Activation Unique",
+    planSinglePrice: "50 EGP",
+    planSingleDesc: "Idéal pour télécharger et finaliser votre CV professionnel immédiatement.",
+    planSingleFeature1: "Export PDF vectoriel haute résolution illimité",
+    planSingleFeature2: "Accès complet aux 5 modèles conformes ATS",
+    planSingleFeature3: "Optimisation de texte et résumé par IA",
+    planSingleFeature4: "Stockage 100% privé dans votre navigateur",
+
+    planBundleTitle: "Pack 3 CVs",
+    planBundleBadge: "Meilleure offre (120 EGP - Économisez 30 EGP)",
+    planBundlePrice: "120 EGP",
+    planBundleDesc: "Parfait pour postuler à différents postes ou en plusieurs langues.",
+    planBundleFeature1: "3 activations distinctes pour différents CVs",
+    planBundleFeature2: "30 EGP d'économie immédiate",
+    planBundleFeature3: "Accès complet à l'analyseur ATS IA",
+    planBundleFeature4: "Support prioritaire et nouveaux modèles",
+
+    paymentMethodsTitle: "Moyens de paiement acceptés (Égypte & MENA) :",
+    payVodafoneCash: "Vodafone Cash / Etisalat / Orange / WE Pay",
+    payInstapay: "InstaPay Mobile Wallet",
+    payCards: "Meeza / Visa / MasterCard",
+    payFawry: "Fawry / Points de paiement",
+
+    enterCodePrompt: "Entrez votre code d'activation après le virement :",
+    codePlaceholder: "Ex: HASH50 ou HASH120",
+    verifyCodeBtn: "Vérifier & Activer maintenant",
+    demoCodesNotice: "Codes démo pour essai immédiat : HASH50 (Unique) ou HASH120 (Pack 3).",
+
+    // Footer & Privacy
+    privacyGuaranteed: "Confidentialité 100% locale : Vos données restent exclusivement stockées dans votre navigateur.",
+    allRightsReserved: "Tous droits réservés - Plateforme Hash Resume",
   }
 };
 

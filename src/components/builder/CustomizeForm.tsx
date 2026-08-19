@@ -55,7 +55,7 @@ export const CustomizeForm: React.FC = () => {
               : 'Switch between Arabic (RTL) and English (LTR)'}
           </p>
         </div>
-        <div className="flex bg-slate-200/60 p-1 rounded-lg gap-1 text-xs font-semibold shrink-0">
+        <div className="flex flex-wrap bg-slate-200/60 p-1 rounded-lg gap-1 text-xs font-semibold shrink-0">
           <button
             type="button"
             onClick={() => setLanguage('ar')}
@@ -77,6 +77,17 @@ export const CustomizeForm: React.FC = () => {
             }`}
           >
             English (LTR)
+          </button>
+          <button
+            type="button"
+            onClick={() => setLanguage('fr')}
+            className={`px-3 py-1.5 rounded-md transition cursor-pointer min-h-[32px] ${
+              settings.language === 'fr'
+                ? 'bg-[#001639] text-white shadow-xs'
+                : 'text-slate-600 hover:text-slate-900'
+            }`}
+          >
+            Français (LTR)
           </button>
         </div>
       </div>

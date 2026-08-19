@@ -31,7 +31,13 @@ export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 
   const toggleLanguage = () => {
-    setLanguage(settings.language === 'ar' ? 'en' : 'ar');
+    if (settings.language === 'ar') {
+      setLanguage('en');
+    } else if (settings.language === 'en') {
+      setLanguage('fr');
+    } else {
+      setLanguage('ar');
+    }
   };
 
   const handleLoadSample = () => {

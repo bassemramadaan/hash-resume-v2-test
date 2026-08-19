@@ -1,10 +1,11 @@
 import { GoogleGenAI } from '@google/genai';
+import { Language } from '../types/resume';
 
 export interface AiEnhanceRequest {
   type: 'summary' | 'bullet' | 'skills' | 'job_match';
   content: string;
   jobTitle?: string;
-  language?: 'ar' | 'en';
+  language?: Language;
 }
 
 export interface AiEnhanceResponse {

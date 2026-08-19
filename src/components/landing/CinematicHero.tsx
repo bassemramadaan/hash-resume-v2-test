@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
-import { Sparkles, ArrowRight, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { Sparkles, ArrowRight, ArrowLeft, CheckCircle2, Flag } from 'lucide-react';
 import { useResumeStore } from '../../store/useResumeStore';
 
 export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
   const navigate = useNavigate();
   const [role, setRole] = useState('');
-  const { setPersonalInfo } = useResumeStore();
+  const { setPersonalInfo, settings } = useResumeStore();
+
+  const currentLang = settings?.language || (isAr ? 'ar' : 'en');
+  const isFrench = currentLang === 'fr';
+  const isArabic = currentLang === 'ar';
 
   const handleStart = () => {
     if (role.trim()) {
@@ -26,15 +30,41 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
       
       <div className="relative z-10 w-full max-w-5xl mx-auto text-center space-y-10">
         
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#E2E8F0] text-[#001639] text-xs font-bold shadow-sm"
-        >
-          <Sparkles className="w-4 h-4 text-coral" />
-          <span>{isAr ? 'النسخة الجديدة 2.0 | أنقى وأسرع' : 'New Version 2.0 | Cleaner & Faster'}</span>
-        </motion.div>
+        {/* Header Badges & Slogan Flag */}
+        <div className="flex flex-col items-center gap-2.5">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#E2E8F0] text-[#001639] text-xs font-bold shadow-xs hover:border-[#CBD5E1] transition"
+          >
+            <Sparkles className="w-4 h-4 text-coral" />
+            <span>
+              {isFrench
+                ? 'Nouvelle Version 2.0 | Plus épurée & Plus rapide'
+                : isArabic
+                ? 'النسخة الجديدة 2.0 | أنقى وأسرع'
+                : 'New Version 2.0 | Cleaner & Faster'}
+            </span>
+          </motion.div>
+
+          {/* Slogan Flag Banner */}
+          <motion.div
+            initial={{ opacity: 0, y: 12, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.08, ease: 'easeOut' }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-orange-50 via-amber-50 to-rose-50 border border-orange-200/90 text-[#001639] text-xs sm:text-sm font-extrabold shadow-xs"
+          >
+            <Flag className="w-3.5 h-3.5 text-[#FF4D2D] fill-[#FF4D2D]/20 shrink-0" />
+            <span className="tracking-tight">
+              {isFrench
+                ? 'Sans inscription. Créez. Téléchargez. Postulez.'
+                : isArabic
+                ? 'بدون إنشاء حساب. أنشئ سيرتك. حمّلها. وقدّم بها.'
+                : 'No sign-up. Build. Download. Apply.'}
+            </span>
+          </motion.div>
+        </div>
 
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
@@ -55,10 +85,47 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           transition={{ duration: 0.5, delay: 0.2, ease: 'easeOut' }}
           className="text-lg sm:text-xl md:text-2xl text-[#52627A] max-w-2xl mx-auto font-medium leading-relaxed"
         >
-          {isAr
+          {isFrench
+            ? 'Nous avons conçu Hash Resume pour être le seul outil de concentration dont vous avez besoin. Créez un CV que les recruteurs acceptent instantanément.'
+            : isAr
             ? 'صممنا Hash Resume ليكون أداة التركيز الوحيدة التي تحتاجها. ابدأ ببناء سيرة ذاتية تقبلها أنظمة الشركات فوراً.'
             : 'We designed Hash Resume to be the only focus tool you need. Build a resume that company systems accept instantly.'}
         </motion.p>
+
+        {/* Founder Signature (Fine-tip pen handwriting in English: Bassem Ramadan) */}
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.25, ease: 'easeOut' }}
+          className="flex flex-col items-center justify-center pt-2 select-none"
+        >
+          <div className="relative inline-flex flex-col items-center">
+            <span
+              className="text-2xl sm:text-3xl text-slate-700 block leading-none font-normal"
+              style={{
+                fontFamily: "'Caveat', 'Alex Brush', cursive, sans-serif",
+                transform: 'rotate(-2.5deg)',
+                letterSpacing: '0.02em',
+              }}
+            >
+              Bassem Ramadan
+            </span>
+            {/* Fine pen signature line */}
+            <svg
+              className="w-28 sm:w-32 h-2 text-slate-400/80 mx-auto mt-0.5 pointer-events-none"
+              viewBox="0 0 100 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M2 5.5C28 2 72 2 98 4.5"
+                stroke="currentColor"
+                strokeWidth="0.75"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

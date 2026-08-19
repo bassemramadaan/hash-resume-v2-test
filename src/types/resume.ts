@@ -5,7 +5,7 @@ export type TemplateId =
   | 'technical-clean'
   | 'creative-compact';
 
-export type Language = 'ar' | 'en';
+export type Language = 'ar' | 'en' | 'fr';
 
 export interface PersonalInfo {
   fullName: string;

@@ -6,6 +6,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 // Import translation fallbacks directly to guarantee offline & iframe reliability
 import arTranslation from '../../public/locales/ar/translation.json';
 import enTranslation from '../../public/locales/en/translation.json';
+import frTranslation from '../../public/locales/fr/translation.json';
 
 i18n
   .use(Backend)
@@ -15,6 +16,7 @@ i18n
     resources: {
       ar: { translation: arTranslation },
       en: { translation: enTranslation },
+      fr: { translation: frTranslation },
     },
     fallbackLng: 'ar',
     debug: false,

@@ -1,3 +1,5 @@
+import { Language } from '../types/resume';
+
 export interface AtsIssue {
   id: string;
   type: 'error' | 'warning' | 'success';
@@ -25,7 +27,7 @@ export interface AtsAnalysisResult {
  * Service to analyze uploaded PDF resume or text against target job descriptions.
  * Uses strict traffic light categorization (success/warning/error).
  */
-export async function analyzeResumeAts(file?: File | null, jobDescription?: string, language: 'ar' | 'en' = 'ar'): Promise<AtsAnalysisResult> {
+export async function analyzeResumeAts(file?: File | null, jobDescription?: string, language: Language = 'ar'): Promise<AtsAnalysisResult> {
   // Simulate processing delay for realistic UX
   await new Promise((resolve) => setTimeout(resolve, 1500));
 
