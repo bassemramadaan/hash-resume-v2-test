@@ -4,7 +4,9 @@
 
 import { PaymentStatusResponse } from '../types/payment';
 
-const PAYMENT_API_URL = 'https://script.google.com/macros/s/AKfycby5ddRmvrXxLNvfszUbjveD_3jzZIflDmxA06aRcyTE208k1_o0v1Yjrvn_rSfz-XI/exec';
+const PAYMENT_API_URL =
+  (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_PAYMENT_API_URL) ||
+  'https://script.google.com/macros/s/AKfycby5ddRmvrXxLNvfszUbjveD_3jzZIflDmxA06aRcyTE208k1_o0v1Yjrvn_rSfz-XI/exec';
 
 export async function callPaymentApi(params: Record<string, string>) {
   const url = new URL(PAYMENT_API_URL);

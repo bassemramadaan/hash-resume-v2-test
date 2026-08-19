@@ -9,20 +9,22 @@ export function waitForResumePreview(): Promise<HTMLElement> {
     const check = () => {
       const element = document.getElementById("resume-preview-document");
 
-      if (
-        element &&
-        element.offsetWidth > 0 &&
-        element.offsetHeight > 0
-      ) {
-        resolve(element);
-        return;
+      if (element) {
+        if (element.offsetWidth > 0 && element.offsetHeight > 0) {
+          resolve(element);
+          return;
+        }
+        if (element.children.length > 0) {
+          resolve(element);
+          return;
+        }
       }
 
       attempts += 1;
 
       if (attempts >= maxAttempts) {
         reject(
-          new Error("Resume preview element was not found or is hidden.")
+          new Error("تعذر تجهيز معاينة السيرة الذاتية للتصدير. ارجع للمحرر وحاول مرة أخرى.")
         );
         return;
       }
@@ -42,12 +44,16 @@ export async function exportResumeToPdf(
 
   // Preserve scale & background
   const clone = element.cloneNode(true) as HTMLElement;
+  clone.querySelectorAll('.no-print').forEach((el) => el.remove());
+  clone.style.display = "block";
+  clone.style.visibility = "visible";
   clone.style.width = "210mm";
   clone.style.minHeight = "297mm";
   clone.style.transform = "none";
-  clone.style.position = "absolute";
+  clone.style.position = "fixed";
   clone.style.left = "-9999px";
   clone.style.top = "0";
+  clone.style.zIndex = "-1000";
   document.body.appendChild(clone);
   try {
     const canvas = await html2canvas(clone, {
@@ -57,6 +63,7 @@ export async function exportResumeToPdf(
       backgroundColor: "#ffffff",
       allowTaint: true,
       onclone: (clonedDoc) => {
+        clonedDoc.querySelectorAll('.no-print').forEach((el) => el.remove());
         const oklchRegex = /oklch\([^)]+\)/gi;
         const tempCanvas = clonedDoc.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");

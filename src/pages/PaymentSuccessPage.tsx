@@ -50,13 +50,12 @@ export const PaymentSuccessPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
         <button
           onClick={() => {
-            addDownloads(credits);
             navigate('/builder');
           }}
           className="px-6 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
         >
           <Sparkles className="w-4 h-4" />
-          <span>{isAr ? 'العودة للمنشئ وتصدير السيرة' : 'Return to Builder & Export'}</span>
+          <span>{isAr ? 'العودة للمحرر وتأكيد التفعيل' : 'Return to Builder & Activate'}</span>
         </button>
       </div>
     </main>
