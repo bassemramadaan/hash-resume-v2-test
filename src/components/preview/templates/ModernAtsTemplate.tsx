@@ -178,9 +178,14 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
             {(skills || []).map((skill) => (
               <span
                 key={skill.id}
-                className="px-2 py-0.5 bg-gray-100 text-gray-800 rounded-sm text-[11px] font-medium border border-gray-200"
+                className="px-2 py-0.5 bg-gray-100 text-gray-800 rounded-sm text-[11px] font-medium border border-gray-200 inline-flex items-center gap-1.5"
               >
-                {skill.name}
+                <span>{skill.name}</span>
+                {skill.level && (
+                  <span className="text-[9px] font-bold text-indigo-600 bg-indigo-50 px-1 py-0.2 rounded-xs uppercase leading-none scale-90">
+                    {skill.level}
+                  </span>
+                )}
               </span>
             ))}
           </div>
@@ -200,9 +205,16 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
             {(projects || []).map((proj) => (
               <div key={proj.id}>
                 <div className="flex justify-between items-baseline">
-                  <h3 className="font-bold text-gray-900 text-xs">{proj.title}</h3>
-                  {proj.link && (
-                    <span className="text-[11px] text-blue-600 underline">{proj.link}</span>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-gray-900 text-xs">{proj.title}</h3>
+                    {proj.link && (
+                      <span className="text-[10px] text-blue-600 underline">{proj.link}</span>
+                    )}
+                  </div>
+                  {(proj.startDate || proj.endDate) && (
+                    <span className="text-[10px] text-gray-500 font-medium">
+                      {proj.startDate} {proj.endDate ? `– ${proj.endDate}` : ''}
+                    </span>
                   )}
                 </div>
                 <p className="text-xs text-gray-700">{proj.description}</p>

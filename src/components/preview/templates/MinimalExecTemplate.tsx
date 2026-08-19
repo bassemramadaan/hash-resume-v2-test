@@ -7,7 +7,7 @@ interface TemplateProps {
 }
 
 export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, settings }) => {
-  const { personalInfo, experiences, education, skills, languages } = data;
+  const { personalInfo, experiences, education, skills, projects, languages } = data;
   const isArabic = settings.language === 'ar';
   const primaryColor = settings.primaryColor || '#0f766e';
 
@@ -73,6 +73,42 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
         </section>
       )}
 
+      {projects && projects.length > 0 && (
+        <section className="mb-5">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-teal-800 mb-3 border-b pb-1 border-gray-200" style={{ color: primaryColor }}>
+            {isArabic ? 'المشاريع' : 'PROJECTS'}
+          </h2>
+          <div className="space-y-4">
+            {(projects || []).map((p) => (
+              <div key={p.id}>
+                <div className="flex justify-between items-baseline">
+                  <h3 className="font-bold text-xs text-gray-900">
+                    {p.title}
+                    {p.link && (
+                      <span className="text-[10px] font-normal text-teal-600 underline ml-2 mr-2">
+                        {p.link}
+                      </span>
+                    )}
+                  </h3>
+                  {(p.startDate || p.endDate) && (
+                    <span className="text-[11px] text-gray-500">
+                      {p.startDate} {p.endDate ? `- ${p.endDate}` : ''}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-gray-700 leading-normal mt-0.5">{p.description}</p>
+                {p.technologies && p.technologies.length > 0 && (
+                  <p className="text-[10px] text-gray-500 mt-1">
+                    <strong>{isArabic ? 'التقنيات: ' : 'Tech Stack: '}</strong>
+                    {p.technologies.join(', ')}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {education && education.length > 0 && (
         <section className="mb-5">
           <h2 className="text-xs font-bold uppercase tracking-wider text-teal-800 mb-2 border-b pb-1 border-gray-200">
@@ -94,14 +130,34 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
 
       {skills && skills.length > 0 && (
         <section className="mb-4">
-          <h2 className="text-xs font-bold uppercase tracking-wider text-teal-800 mb-2 border-b pb-1 border-gray-200">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-teal-800 mb-2 border-b pb-1 border-gray-200" style={{ color: primaryColor }}>
             {isArabic ? 'المهارات والتقنيات' : 'SKILLS'}
           </h2>
-          <div className="flex flex-wrap gap-1">
+          <div className="flex flex-wrap gap-1.5">
             {(skills || []).map((s) => (
-              <span key={s.id} className="text-xs bg-gray-50 text-gray-800 px-2 py-0.5 border rounded-xs">
-                {s.name}
+              <span key={s.id} className="text-xs bg-gray-50 text-gray-800 px-2 py-0.5 border rounded-xs inline-flex items-center gap-1.5">
+                <span>{s.name}</span>
+                {s.level && (
+                  <span className="text-[9px] font-bold text-teal-700 uppercase">
+                    ({isArabic ? (s.level === 'beginner' ? 'مبتدئ' : s.level === 'intermediate' ? 'متوسط' : s.level === 'advanced' ? 'متقدم' : 'خبير') : s.level})
+                  </span>
+                )}
               </span>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {languages && languages.length > 0 && (
+        <section className="mb-4">
+          <h2 className="text-xs font-bold uppercase tracking-wider text-teal-800 mb-2 border-b pb-1 border-gray-200" style={{ color: primaryColor }}>
+            {isArabic ? 'اللغات' : 'LANGUAGES'}
+          </h2>
+          <div className="flex flex-wrap gap-3 text-xs">
+            {(languages || []).map((l) => (
+              <div key={l.id} className="text-gray-800">
+                <span className="font-semibold">{l.language}</span> ({isArabic ? (l.proficiency === 'native' ? 'اللغة الأم' : l.proficiency === 'fluent' ? 'طلاقة' : l.proficiency === 'advanced' ? 'متقدم' : l.proficiency === 'intermediate' ? 'متوسط' : 'مبتدئ') : l.proficiency})
+              </div>
             ))}
           </div>
         </section>

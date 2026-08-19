@@ -20,6 +20,7 @@ export const SkillsForm: React.FC = () => {
 
   const [newSkillName, setNewSkillName] = useState('');
   const [newSkillCategory, setNewSkillCategory] = useState<'technical' | 'soft' | 'tool'>('technical');
+  const [newSkillLevel, setNewSkillLevel] = useState<'beginner' | 'intermediate' | 'advanced' | 'expert' | ''>('');
 
   const [newLangName, setNewLangName] = useState('');
   const [newLangProf, setNewLangProf] =
@@ -31,8 +32,10 @@ export const SkillsForm: React.FC = () => {
     addSkill({
       name: newSkillName.trim(),
       category: newSkillCategory,
+      level: newSkillLevel || undefined,
     });
     setNewSkillName('');
+    setNewSkillLevel('');
   };
 
   const handleAddLangSubmit = (e: React.FormEvent) => {
@@ -74,7 +77,7 @@ export const SkillsForm: React.FC = () => {
 
         {/* Add Skill Form */}
         <form onSubmit={handleAddSkillSubmit} className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-          <div className="sm:col-span-6">
+          <div className="sm:col-span-5">
             <input
               type="text"
               value={newSkillName}
@@ -94,7 +97,20 @@ export const SkillsForm: React.FC = () => {
               <option value="tool">{t.tools}</option>
             </select>
           </div>
-          <div className="sm:col-span-3">
+          <div className="sm:col-span-2">
+            <select
+              value={newSkillLevel}
+              onChange={(e) => setNewSkillLevel(e.target.value as any)}
+              className="w-full px-3 h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-medium text-slate-700 outline-none transition cursor-pointer"
+            >
+              <option value="">{isAr ? 'المستوى (اختياري)' : 'Level (Optional)'}</option>
+              <option value="beginner">{isAr ? 'مبتدئ' : 'Beginner'}</option>
+              <option value="intermediate">{isAr ? 'متوسط' : 'Intermediate'}</option>
+              <option value="advanced">{isAr ? 'متقدم' : 'Advanced'}</option>
+              <option value="expert">{isAr ? 'خبير' : 'Expert'}</option>
+            </select>
+          </div>
+          <div className="sm:col-span-2">
             <button
               type="submit"
               className="w-full h-10 sm:h-11 bg-[#001639] hover:bg-[#00245E] text-white font-semibold rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer text-xs"
@@ -114,6 +130,19 @@ export const SkillsForm: React.FC = () => {
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs"
               >
                 <span>{skill.name}</span>
+                {skill.level && (
+                  <span className="text-[10px] px-1 py-0.5 rounded-sm bg-slate-200 text-slate-600 font-bold uppercase scale-90">
+                    {isAr
+                      ? skill.level === 'beginner'
+                        ? 'مبتدئ'
+                        : skill.level === 'intermediate'
+                        ? 'متوسط'
+                        : skill.level === 'advanced'
+                        ? 'متقدم'
+                        : 'خبير'
+                      : skill.level}
+                  </span>
+                )}
                 <button
                   type="button"
                   onClick={() => removeSkill(skill.id)}

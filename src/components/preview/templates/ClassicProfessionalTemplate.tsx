@@ -78,6 +78,43 @@ export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo((
         </section>
       )}
 
+      {/* Projects */}
+      {projects && projects.length > 0 && (
+        <section className="mb-4">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-2 border-b pb-0.5 border-gray-400">
+            {isArabic ? 'المشاريع البارزة' : 'FEATURED PROJECTS'}
+          </h2>
+          <div className="space-y-3">
+            {(projects || []).map((p) => (
+              <div key={p.id}>
+                <div className="flex justify-between items-baseline">
+                  <span className="font-bold text-xs text-gray-900">
+                    {p.title}
+                    {p.link && (
+                      <span className="text-[10px] font-normal italic text-indigo-600 ml-1.5 mr-1.5 font-sans">
+                        ({p.link})
+                      </span>
+                    )}
+                  </span>
+                  {(p.startDate || p.endDate) && (
+                    <span className="text-[11px] font-semibold text-gray-600">
+                      {p.startDate} {p.endDate ? `– ${p.endDate}` : ''}
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-gray-800 leading-normal">{p.description}</p>
+                {p.technologies && p.technologies.length > 0 && (
+                  <p className="text-[10px] text-gray-500 font-sans mt-0.5">
+                    <strong>{isArabic ? 'التقنيات المستخدمة: ' : 'Tech Stack: '}</strong>
+                    {p.technologies.join(' • ')}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Education */}
       {education && education.length > 0 && (
         <section className="mb-4">
@@ -104,8 +141,8 @@ export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo((
           <h2 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-1 border-b pb-0.5 border-gray-400">
             {isArabic ? 'المهارات الرئيسية' : 'CORE SKILLS'}
           </h2>
-          <p className="text-xs text-gray-800 leading-relaxed">
-            {(skills || []).map((s) => s.name).join(' • ')}
+          <p className="text-xs text-gray-800 leading-relaxed font-sans">
+            {(skills || []).map((s) => s.level ? `${s.name} (${isArabic ? (s.level === 'beginner' ? 'مبتدئ' : s.level === 'intermediate' ? 'متوسط' : s.level === 'advanced' ? 'متقدم' : 'خبير') : s.level})` : s.name).join(' • ')}
           </p>
         </section>
       )}
@@ -133,7 +170,7 @@ export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo((
               {isArabic ? 'اللغات' : 'LANGUAGES'}
             </h2>
             <p className="text-xs text-gray-800">
-              {(languages || []).map((l) => `${l.language} (${l.proficiency})`).join(' • ')}
+              {(languages || []).map((l) => `${l.language} (${isArabic ? (l.proficiency === 'native' ? 'اللغة الأم' : l.proficiency === 'fluent' ? 'طلاقة' : l.proficiency === 'advanced' ? 'متقدم' : l.proficiency === 'intermediate' ? 'متوسط' : 'مبتدئ') : l.proficiency})`).join(' • ')}
             </p>
           </section>
         )}

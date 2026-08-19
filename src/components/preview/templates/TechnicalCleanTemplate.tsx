@@ -50,14 +50,21 @@ export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ dat
 
       {skills && skills.length > 0 && (
         <section className="mb-4">
-          <h2 className="text-xs font-mono font-bold text-indigo-700 uppercase mb-1.5">
-            [TECHNICAL_STACK]
+          <h2 className="text-xs font-mono font-bold text-indigo-700 uppercase mb-1.5" style={{ color: primaryColor }}>
+            {isArabic ? '[المهارات والتقنيات]' : '[TECHNICAL_STACK]'}
           </h2>
           <div className="grid grid-cols-2 gap-2 text-xs">
             {(skills || []).map((s) => (
-              <div key={s.id} className="flex items-center gap-1.5 bg-indigo-50/60 px-2 py-1 rounded border border-indigo-100">
-                <span className="font-mono text-[10px] text-indigo-600">❯</span>
-                <span className="font-medium text-gray-800">{s.name}</span>
+              <div key={s.id} className="flex items-center justify-between bg-indigo-50/60 px-2.5 py-1.5 rounded border border-indigo-100/50">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-mono text-[10px] text-indigo-600">❯</span>
+                  <span className="font-medium text-gray-800">{s.name}</span>
+                </div>
+                {s.level && (
+                  <span className="text-[9px] font-mono font-bold uppercase bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded leading-none">
+                    {s.level}
+                  </span>
+                )}
               </div>
             ))}
           </div>
@@ -66,8 +73,8 @@ export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ dat
 
       {experiences && experiences.length > 0 && (
         <section className="mb-4">
-          <h2 className="text-xs font-mono font-bold text-indigo-700 uppercase mb-2">
-            [EXPERIENCE]
+          <h2 className="text-xs font-mono font-bold text-indigo-700 uppercase mb-2" style={{ color: primaryColor }}>
+            {isArabic ? '[الخبرات المهنية]' : '[EXPERIENCE]'}
           </h2>
           <div className="space-y-3">
             {(experiences || []).map((exp) => (
@@ -75,7 +82,7 @@ export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ dat
                 <div className="flex justify-between items-baseline text-xs">
                   <span className="font-bold text-gray-900">{exp.position} @ {exp.company}</span>
                   <span className="text-[11px] font-mono text-gray-500">
-                    {exp.startDate} - {exp.current ? 'PRESENT' : exp.endDate}
+                    {exp.startDate} - {exp.current ? (isArabic ? 'الآن' : 'PRESENT') : exp.endDate}
                   </span>
                 </div>
                 {exp.bulletPoints && exp.bulletPoints.length > 0 && (
@@ -93,14 +100,34 @@ export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ dat
 
       {projects && projects.length > 0 && (
         <section className="mb-4">
-          <h2 className="text-xs font-mono font-bold text-indigo-700 uppercase mb-1.5">
-            [FEATURED_PROJECTS]
+          <h2 className="text-xs font-mono font-bold text-indigo-700 uppercase mb-1.5" style={{ color: primaryColor }}>
+            {isArabic ? '[المشاريع]' : '[FEATURED_PROJECTS]'}
           </h2>
-          <div className="space-y-2 text-xs">
+          <div className="space-y-2.5 text-xs">
             {(projects || []).map((p) => (
-              <div key={p.id} className="border-l-2 border-indigo-500 pl-2">
-                <div className="font-bold text-gray-900">{p.title}</div>
-                <p className="text-gray-700 text-xs">{p.description}</p>
+              <div key={p.id} className="border-l-2 border-indigo-500 pl-2.5 rtl:border-l-0 rtl:border-r-2 rtl:pr-2.5">
+                <div className="flex justify-between items-baseline font-mono">
+                  <div className="font-bold text-gray-900">
+                    {p.title}
+                    {p.link && (
+                      <span className="text-[10px] font-normal text-indigo-600 underline ml-2 mr-2">
+                        {p.link}
+                      </span>
+                    )}
+                  </div>
+                  {(p.startDate || p.endDate) && (
+                    <span className="text-[10px] text-gray-500">
+                      {p.startDate} {p.endDate ? `- ${p.endDate}` : ''}
+                    </span>
+                  )}
+                </div>
+                <p className="text-gray-700 text-xs mt-0.5">{p.description}</p>
+                {p.technologies && p.technologies.length > 0 && (
+                  <p className="text-[10px] text-gray-500 mt-1">
+                    <strong>{isArabic ? 'التقنيات: ' : 'Tech Stack: '}</strong>
+                    {p.technologies.join(', ')}
+                  </p>
+                )}
               </div>
             ))}
           </div>
@@ -109,8 +136,8 @@ export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ dat
 
       {education && education.length > 0 && (
         <section className="mb-4">
-          <h2 className="text-xs font-mono font-bold text-indigo-700 uppercase mb-1">
-            [EDUCATION]
+          <h2 className="text-xs font-mono font-bold text-indigo-700 uppercase mb-1" style={{ color: primaryColor }}>
+            {isArabic ? '[التعليم]' : '[EDUCATION]'}
           </h2>
           {(education || []).map((e) => (
             <div key={e.id} className="flex justify-between text-xs">
@@ -123,6 +150,55 @@ export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ dat
           ))}
         </section>
       )}
+
+      {/* Certifications & Languages Bottom Grid */}
+      <div className="grid grid-cols-2 gap-4 mt-4 pt-2 border-t border-gray-100">
+        {certifications && certifications.length > 0 && (
+          <section>
+            <h2 className="text-xs font-mono font-bold text-indigo-700 uppercase mb-1.5" style={{ color: primaryColor }}>
+              {isArabic ? '[الشهادات المعتمدة]' : '[CERTIFICATIONS]'}
+            </h2>
+            <div className="space-y-1">
+              {(certifications || []).map((cert) => (
+                <div key={cert.id} className="text-xs">
+                  <p className="font-semibold text-gray-900">{cert.title}</p>
+                  <p className="text-[11px] text-gray-500">
+                    {cert.issuer} ({cert.date})
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {languages && languages.length > 0 && (
+          <section>
+            <h2 className="text-xs font-mono font-bold text-indigo-700 uppercase mb-1.5" style={{ color: primaryColor }}>
+              {isArabic ? '[اللغات]' : '[LANGUAGES]'}
+            </h2>
+            <div className="space-y-1 text-xs">
+              {(languages || []).map((lang) => (
+                <div key={lang.id} className="flex items-center justify-between">
+                  <span className="font-semibold text-gray-800">{lang.language}</span>
+                  <span className="text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded uppercase font-mono font-semibold">
+                    {isArabic
+                      ? lang.proficiency === 'native'
+                        ? 'اللغة الأم'
+                        : lang.proficiency === 'fluent'
+                        ? 'طلاقة'
+                        : lang.proficiency === 'advanced'
+                        ? 'متقدم'
+                        : lang.proficiency === 'intermediate'
+                        ? 'متوسط'
+                        : 'مبتدئ'
+                      : lang.proficiency}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
     </div>
   );
 });

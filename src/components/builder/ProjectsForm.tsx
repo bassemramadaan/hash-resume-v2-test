@@ -126,6 +126,47 @@ export const ProjectsForm: React.FC = () => {
               </div>
             </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  {isAr ? 'تاريخ البدء (مثال: يناير 2026)' : 'Start Date (e.g. Jan 2026)'}
+                </label>
+                <input
+                  type="text"
+                  value={proj.startDate || ''}
+                  onChange={(e) => updateProject(proj.id, { startDate: e.target.value })}
+                  placeholder={isAr ? 'يناير 2026' : 'Jan 2026'}
+                  className="w-full px-3.5 h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  {isAr ? 'تاريخ الانتهاء (مثال: مارس 2026 / حالياً)' : 'End Date (e.g. Mar 2026 / Present)'}
+                </label>
+                <input
+                  type="text"
+                  value={proj.endDate || ''}
+                  onChange={(e) => updateProject(proj.id, { endDate: e.target.value })}
+                  placeholder={isAr ? 'مارس 2026' : 'Present'}
+                  className="w-full px-3.5 h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                {isAr ? 'التقنيات المستخدمة (مفصولة بفاصلة)' : 'Technologies Used (comma separated)'}
+              </label>
+              <input
+                type="text"
+                value={(proj.technologies || []).join(', ')}
+                onChange={(e) => updateProject(proj.id, { technologies: e.target.value.split(',').map(tech => tech.trim()).filter(Boolean) })}
+                placeholder={isAr ? 'React, TypeScript, Tailwind' : 'React, Node.js, PostgreSQL'}
+                className="w-full px-3.5 h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+              />
+            </div>
+
             <div>
               <label className="block text-xs font-semibold text-slate-700 mb-1.5">{t.projectDesc}</label>
               <textarea

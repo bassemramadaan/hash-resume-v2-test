@@ -7,7 +7,7 @@ interface TemplateProps {
 }
 
 export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ data, settings }) => {
-  const { personalInfo, experiences, education, skills, languages } = data;
+  const { personalInfo, experiences, education, skills, projects, languages } = data;
   const isArabic = settings.language === 'ar';
   const primaryColor = settings.primaryColor || '#b91c1c';
 
@@ -53,10 +53,15 @@ export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ da
               <h2 className="text-[10px] font-bold uppercase tracking-wider text-red-400 border-b border-slate-700 pb-1 mb-2">
                 {isArabic ? 'المهارات' : 'SKILLS'}
               </h2>
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1.5">
                 {(skills || []).map((s) => (
-                  <span key={s.id} className="text-[10px] bg-slate-800 text-slate-200 px-2 py-0.5 rounded">
-                    {s.name}
+                  <span key={s.id} className="text-[10px] bg-slate-800 text-slate-200 px-2 py-0.5 rounded inline-flex items-center gap-1">
+                    <span>{s.name}</span>
+                    {s.level && (
+                      <span className="text-[8px] text-red-400 font-bold uppercase">
+                        ({isArabic ? (s.level === 'beginner' ? 'مبتدئ' : s.level === 'intermediate' ? 'متوسط' : s.level === 'advanced' ? 'متقدم' : 'خبير') : s.level.substring(0, 3)})
+                      </span>
+                    )}
                   </span>
                 ))}
               </div>
@@ -71,7 +76,7 @@ export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ da
               <ul className="text-xs space-y-1 text-slate-300">
                 {(languages || []).map((l) => (
                   <li key={l.id}>
-                    <span className="font-semibold text-white">{l.language}</span> ({l.proficiency})
+                    <span className="font-semibold text-white">{l.language}</span> ({isArabic ? (l.proficiency === 'native' ? 'اللغة الأم' : l.proficiency === 'fluent' ? 'طلاقة' : l.proficiency === 'advanced' ? 'متقدم' : l.proficiency === 'intermediate' ? 'متوسط' : 'مبتدئ') : l.proficiency})
                   </li>
                 ))}
               </ul>
@@ -116,6 +121,42 @@ export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ da
                         <li key={i}>{b}</li>
                       ))}
                     </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {projects && projects.length > 0 && (
+          <section className="mb-5">
+            <h2 className="text-xs font-bold uppercase tracking-wider text-red-700 mb-3 border-b pb-1" style={{ color: primaryColor, borderColor: `${primaryColor}30` }}>
+              {isArabic ? 'المشاريع البارزة' : 'FEATURED PROJECTS'}
+            </h2>
+            <div className="space-y-4">
+              {(projects || []).map((p) => (
+                <div key={p.id}>
+                  <div className="flex justify-between items-baseline">
+                    <h3 className="font-bold text-xs text-gray-900">
+                      {p.title}
+                      {p.link && (
+                        <span className="text-[10px] font-normal text-red-600 underline ml-2 mr-2">
+                          {p.link}
+                        </span>
+                      )}
+                    </h3>
+                    {(p.startDate || p.endDate) && (
+                      <span className="text-[11px] text-gray-500">
+                        {p.startDate} {p.endDate ? `- ${p.endDate}` : ''}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-gray-700 leading-normal mt-0.5">{p.description}</p>
+                  {p.technologies && p.technologies.length > 0 && (
+                    <p className="text-[10px] text-gray-500 mt-1">
+                      <strong>{isArabic ? 'التقنيات: ' : 'Tech Stack: '}</strong>
+                      {p.technologies.join(', ')}
+                    </p>
                   )}
                 </div>
               ))}
