@@ -105,6 +105,9 @@ export const translations = {
     showPhotoToggle: "إظهار الصورة الشخصية",
     
     // Templates Names & Desc
+    tplBassux: "ATS Classic (BASSUX) - مناسب لأنظمة التوظيف",
+    tplBassuxDesc: "تنسيق أحادي العمود بدون ألوان أو رسومات لاجتياز كافة أنظمة الفلترة الآلية (ATS).",
+    atsSelectorNote: "الأفضل للتقديم الإلكتروني وأنظمة تتبع المتقدمين (ATS).",
     tplModernAts: "مودرن ATS (الأكثر قبولاً)",
     tplModernAtsDesc: "تنسيق قياسي حديث يضمن أعلى نسبة قراءة عبر أنظمة الفحص الآلي.",
     tplClassicProf: "كلاسيك احترافي",
@@ -269,6 +272,9 @@ export const translations = {
     showPhotoToggle: "Display Photo",
 
     // Templates Names & Desc
+    tplBassux: "ATS Classic (BASSUX)",
+    tplBassuxDesc: "True single-column plain text layout without colors or graphics for 100% ATS compatibility.",
+    atsSelectorNote: "Best for online applications and Applicant Tracking Systems (ATS).",
     tplModernAts: "Modern ATS (Recommended)",
     tplModernAtsDesc: "Optimized clean structure designed for high recruiter readability and scanner compliance.",
     tplClassicProf: "Classic Professional",

@@ -1,5 +1,6 @@
 import React, { useState, useDeferredValue } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
+import { BassuxAtsTemplate } from './templates/BassuxAtsTemplate';
 import { ModernAtsTemplate } from './templates/ModernAtsTemplate';
 import { ClassicProfessionalTemplate } from './templates/ClassicProfessionalTemplate';
 import { MinimalExecTemplate } from './templates/MinimalExecTemplate';
@@ -38,6 +39,7 @@ const QUICK_COLORS = [
 ];
 
 const TEMPLATES: { id: TemplateId; labelAr: string; labelEn: string }[] = [
+  { id: 'bassux', labelAr: 'ATS Classic (BASSUX)', labelEn: 'ATS Classic' },
   { id: 'modern-ats', labelAr: 'Modern ATS', labelEn: 'Modern ATS' },
   { id: 'classic-professional', labelAr: 'Classic', labelEn: 'Classic' },
   { id: 'minimal-exec', labelAr: 'Minimal', labelEn: 'Minimal' },
@@ -116,6 +118,8 @@ export const ResumePreview: React.FC = () => {
 
   const renderActiveTemplate = () => {
     switch (settings.templateId) {
+      case 'bassux':
+        return <BassuxAtsTemplate data={deferredResumeData} settings={settings} />;
       case 'classic-professional':
         return <ClassicProfessionalTemplate data={deferredResumeData} settings={settings} />;
       case 'minimal-exec':

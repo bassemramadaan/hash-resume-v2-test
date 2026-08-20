@@ -14,6 +14,17 @@ export interface TemplateInfo {
 
 export const TEMPLATES: TemplateInfo[] = [
   {
+    id: 'bassux',
+    nameAr: 'ATS مناسب لأنظمة التوظيف (BASSUX)',
+    nameEn: 'ATS Classic (BASSUX)',
+    descAr: 'تنسيق نقي أحادي العمود بدون ألوان أو رسومات، مصمم خصيصاً لاجتياز كافة أنظمة الفلترة الآلية (ATS). الأفضل للتقديم الإلكتروني وأنظمة تتبع المتقدمين.',
+    descEn: 'A true single-column, plain black-and-white text layout without graphics or icons. Best for online applications and Applicant Tracking Systems (ATS).',
+    badgeAr: 'موصى به لـ ATS',
+    badgeEn: 'Recommended',
+    category: 'ats',
+    previewColor: '#000000',
+  },
+  {
     id: 'modern-ats',
     nameAr: 'العصري المتوافق مع ATS',
     nameEn: 'Modern ATS Optimized',

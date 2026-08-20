@@ -5,6 +5,7 @@ import { Palette, Check, Layout, Type, GraduationCap, Briefcase, AlignCenter, Co
 import { TemplateId, HeaderLayout, CareerFocus } from '../../types/resume';
 
 const TEMPLATE_OPTIONS: { id: TemplateId; nameKey: string; descKey: string }[] = [
+  { id: 'bassux', nameKey: 'tplBassux', descKey: 'tplBassuxDesc' },
   { id: 'modern-ats', nameKey: 'tplModernAts', descKey: 'tplModernAtsDesc' },
   { id: 'classic-professional', nameKey: 'tplClassicProf', descKey: 'tplClassicProfDesc' },
   { id: 'minimal-exec', nameKey: 'tplMinimalExec', descKey: 'tplMinimalExecDesc' },
@@ -260,31 +261,44 @@ export const CustomizeForm: React.FC = () => {
 
       {/* Template Selection Cards */}
       <div className="space-y-3">
-        <h3 className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
-          <Layout className="w-4 h-4 text-[#001639]" />
-          <span>{t.templateSelect}</span>
-        </h3>
+        <div className="flex flex-wrap items-center justify-between gap-1.5">
+          <h3 className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+            <Layout className="w-4 h-4 text-[#001639]" />
+            <span>{t.templateSelect}</span>
+          </h3>
+          <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+            {(t as any).atsSelectorNote || 'Best for online applications and Applicant Tracking Systems (ATS).'}
+          </span>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {TEMPLATE_OPTIONS.map((tpl) => {
             const isSelected = settings.templateId === tpl.id;
             const name = (t as any)[tpl.nameKey] || tpl.id;
             const desc = (t as any)[tpl.descKey] || '';
+            const isRecommended = tpl.id === 'bassux';
 
             return (
               <button
                 type="button"
                 key={tpl.id}
                 onClick={() => setTemplate(tpl.id)}
-                className={`p-3.5 rounded-xl border text-start transition cursor-pointer text-xs space-y-1.5 ${
+                className={`p-3.5 rounded-xl border text-start transition cursor-pointer text-xs space-y-1.5 relative ${
                   isSelected
                     ? 'bg-slate-50 border-[#001639] ring-1 ring-[#001639]/20 shadow-xs'
                     : 'bg-white border-slate-200 hover:border-slate-300'
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <span className="font-bold text-slate-900">{name}</span>
-                  {isSelected && <Check className="w-4 h-4 text-[#001639]" />}
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="font-bold text-slate-900 truncate">{name}</span>
+                    {isRecommended && (
+                      <span className="shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">
+                        {isAr ? 'موصى به' : 'Recommended'}
+                      </span>
+                    )}
+                  </div>
+                  {isSelected && <Check className="w-4 h-4 text-[#001639] shrink-0" />}
                 </div>
                 <p className="text-[11px] text-slate-500 leading-relaxed">{desc}</p>
               </button>

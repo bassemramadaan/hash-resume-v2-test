@@ -1,4 +1,5 @@
 export type TemplateId =
+  | 'bassux'
   | 'modern-ats'
   | 'classic-professional'
   | 'minimal-exec'
