@@ -51,6 +51,7 @@ export const BuilderPage: React.FC = () => {
     resetResume,
     resumeData,
     activation,
+    lockResumeForEdits,
     unlockResumeWithCredit,
     setIsActivationModalOpen,
     isSidebarCollapsed,
@@ -59,6 +60,22 @@ export const BuilderPage: React.FC = () => {
 
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
+
+  useEffect(() => {
+    const handlePageShow = () => {
+      const wasDownloaded =
+        sessionStorage.getItem("resume_download_completed") === "true";
+
+      if (wasDownloaded) {
+        lockResumeForEdits();
+      }
+    };
+
+    window.addEventListener("pageshow", handlePageShow);
+    handlePageShow();
+
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, [lockResumeForEdits]);
 
   // Mobile Bottom Sheet Preview State
   const [isMobilePreviewOpen, setIsMobilePreviewOpen] = useState(false);

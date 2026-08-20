@@ -181,6 +181,7 @@ interface ResumeStoreState {
   addDownloads: (count: number) => void;
   useDownloadQuota: () => boolean;
   lockResume: () => void;
+  lockResumeForEdits: () => void;
   unlockResumeWithCredit: () => boolean;
   unlockResumeWithNewApproval: () => void;
 }
@@ -695,6 +696,10 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
       localStorage.setItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(updatedActivation));
       return { activation: updatedActivation };
     });
+  },
+
+  lockResumeForEdits: () => {
+    get().lockResume();
   },
 
   unlockResumeWithCredit: () => {

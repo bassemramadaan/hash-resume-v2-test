@@ -12,7 +12,7 @@ import { submitPayment, checkPaymentStatus, verifyActivationCode } from '../../s
 import { parsePaymentCodes } from '../../types/payment';
 
 type TransferMethod = 'instapay' | 'vodafone' | 'code';
-type PaymentStep = 'payment_details' | 'submitted_pending' | 'check_status' | 'approved' | 'activating' | 'error';
+type PaymentStep = 'payment_details' | 'submitted_pending' | 'check_status' | 'approved' | 'activating' | 'error' | 'used';
 
 const PAYMENT_MODAL_I18N = {
   ar: {
@@ -170,10 +170,28 @@ export const ActivationModal: React.FC = () => {
     setIsPostDownloadModalOpen,
     activatePlan,
     lockResume,
+    lockResumeForEdits,
     unlockResumeWithNewApproval,
     settings,
     resumeData,
   } = useResumeStore();
+
+  useEffect(() => {
+    const handlePageShow = () => {
+      const wasDownloaded =
+        sessionStorage.getItem("resume_download_completed") === "true";
+
+      if (wasDownloaded) {
+        lockResumeForEdits();
+        setPaymentStep("used");
+      }
+    };
+
+    window.addEventListener("pageshow", handlePageShow);
+    handlePageShow();
+
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, [lockResumeForEdits]);
   
   const { grantAndConsumeExport, cancelExport } = useExportGate();
 
@@ -377,6 +395,8 @@ export const ActivationModal: React.FC = () => {
       // Update store plan state and lock resume for post-download protection
       activatePlan(activatedCode, selectedPlan, selectedPlan === 'bundle_3' ? 3 : 1, true);
       lockResume();
+      sessionStorage.setItem("resume_download_completed", "true");
+      setPaymentStep('used');
 
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
 
@@ -387,7 +407,6 @@ export const ActivationModal: React.FC = () => {
         setInputCode('');
         setErrorMessage('');
         setActivatedCode('');
-        setPaymentStep('payment_details');
         setIsActivationModalOpen(false);
         setIsPostDownloadModalOpen(true);
       }, 1800);
@@ -848,6 +867,31 @@ export const ActivationModal: React.FC = () => {
                 <button onClick={() => setPaymentStep('payment_details')} className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs sm:text-sm transition">{labels.backBtn}</button>
                 <button onClick={() => setPaymentStep('check_status')} className="flex-1 py-3 bg-[#001639] hover:bg-[#00245E] text-white font-bold rounded-xl text-xs sm:text-sm transition">{labels.retryBtn}</button>
               </div>
+            </div>
+          )}
+
+          {paymentStep === 'used' && (
+            <div className="text-center space-y-5 py-6 animate-in fade-in">
+              <div className="w-16 h-16 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto ring-8 ring-amber-50">
+                <ShieldCheck className="w-10 h-10 text-amber-600" />
+              </div>
+              <div className="space-y-2">
+                <h4 className="text-lg font-black text-slate-800">
+                  {isAr ? 'تم تحميل السيرة الذاتية وقفل التعديل' : 'Resume Downloaded & Locked for Edits'}
+                </h4>
+                <p className="text-xs sm:text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
+                  {isAr
+                    ? 'تم إقفال السيرة الذاتية لحفظ النسخة المعتمدة. لإجراء تعديلات جديدة أو تنزيل نسخة معدلة، يمكنك شراء تفعيل جديد.'
+                    : 'Your resume has been downloaded and locked to protect your version. To make new edits or download again, purchase a new activation.'}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPaymentStep('payment_details')}
+                className="w-full py-3 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs sm:text-sm rounded-xl transition shadow-sm cursor-pointer"
+              >
+                {isAr ? 'شراء تفعيل جديد للتعديل' : 'Purchase New Activation to Edit'}
+              </button>
             </div>
           )}
         </div>
