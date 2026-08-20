@@ -544,13 +544,14 @@ app.post("/api/verify-code", async (req, res) => {
     const cleanCode = code.trim().toUpperCase();
     const cleanReference = reference ? String(reference).trim() : "";
 
-    // Check Google Apps Script URL from environment variable
-    const gasUrl = process.env.VITE_PAYMENT_API_URL || process.env.GAS_VERIFY_URL;
+    // Check Google Apps Script URL from environment variables
+    const gasUrl = process.env.VITE_PAYMENT_API_URL || process.env.PAYMENT_API_URL || process.env.GAS_VERIFY_URL;
     if (!gasUrl) {
+      console.log("[GAS Verify Proxy] Error: PAYMENT_API_URL environment variable is missing on server");
       return res.status(500).json({
         success: false,
         valid: false,
-        message: "خدمة التحقق من الدفع غير مهيأة في الخادم.",
+        message: "خدمة التحقق من الدفع غير مهيأة في متغيرات الخادم.",
       });
     }
 
@@ -563,39 +564,49 @@ app.post("/api/verify-code", async (req, res) => {
           code: cleanCode,
           reference: cleanReference,
         }),
+        redirect: "follow",
       });
 
-      if (gasResponse.ok) {
-        const data = await gasResponse.json();
-        if (data && data.success && data.status === "USED") {
-          return res.json({
-            success: true,
-            valid: true,
-            status: "USED",
-            remainingDownloads: data.remainingDownloads || 1,
-            message: data.message || "تم التحقق من كود التفعيل بنجاح!",
-            activatedCode: cleanCode,
-          });
-        }
-        return res.status(400).json({
-          success: false,
-          valid: false,
-          message: data?.message || "كود التفعيل غير صالح أو لم يتم تأكيد الدفع بعد.",
+      const rawText = await gasResponse.text();
+      let data: any = null;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        data = null;
+      }
+
+      // Safe debugging: Log only HTTP status, success flag, status, and message (never code, ref, email, url, or secrets)
+      console.log(
+        `[GAS Verify Proxy] gasHttpStatus=${gasResponse.status}, success=${data?.success}, status=${data?.status}, message=${data?.message}`
+      );
+
+      // Strict acceptance: accept only { success: true, status: "USED" }
+      if (gasResponse.ok && data && data.success === true && data.status === "USED") {
+        return res.json({
+          success: true,
+          valid: true,
+          status: "USED",
+          remainingDownloads: data.remainingDownloads || 1,
+          message: data.message || "تم التحقق من كود التفعيل بنجاح!",
+          activatedCode: cleanCode,
         });
       }
-    } catch {
+
+      // Return exact safe response message from Google Apps Script
+      return res.status(400).json({
+        success: false,
+        valid: false,
+        status: data?.status || "INVALID",
+        message: data?.message || "كود التفعيل غير صالح أو لم يتم تأكيد الدفع بعد.",
+      });
+    } catch (gasErr: any) {
+      console.log(`[GAS Verify Proxy] fetchException=${gasErr?.name || "FetchError"}`);
       return res.status(503).json({
         success: false,
         valid: false,
         message: "تعذر الاتصال بنظام التحقق من الدفع حالياً. يرجى المحاولة مرة أخرى بعد قليل.",
       });
     }
-
-    return res.status(400).json({
-      success: false,
-      valid: false,
-      message: "فشل التحقق من كود التفعيل. يرجى التأكد من صحة الكود أو التواصل مع الدعم الفني.",
-    });
   } catch {
     return res.status(500).json({ success: false, valid: false, message: "حدث خطأ في الخادم أثناء التحقق" });
   }
