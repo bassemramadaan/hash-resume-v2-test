@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from '../store/useResumeStore';
 import {
@@ -123,8 +123,9 @@ async function fileToDataUrl(file: File): Promise<string> {
 }
 
 export const HashHuntPage: React.FC = () => {
-  const { settings } = useResumeStore();
+  const { settings, resumeData } = useResumeStore();
   const isAr = settings.language === 'ar';
+  const [searchParams] = useSearchParams();
 
   const [activeFilter, setActiveFilter] = useState('All');
   
@@ -136,7 +137,40 @@ export const HashHuntPage: React.FC = () => {
   const [experience, setExperience] = useState('');
   const [location, setLocation] = useState('');
   const [openTo, setOpenTo] = useState('Any');
+  const [skills, setSkills] = useState('');
   const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [prefilledBanner, setPrefilledBanner] = useState<{
+    jobTitle?: string;
+    location?: string;
+    skills?: string;
+  } | null>(null);
+
+  useEffect(() => {
+    const paramJobTitle = searchParams.get('jobTitle');
+    const paramLocation = searchParams.get('location');
+    const paramExp = searchParams.get('experience');
+    const paramSkills = searchParams.get('skills');
+
+    if (paramJobTitle || paramLocation || paramSkills || paramExp) {
+      if (paramJobTitle) setJobTitle(paramJobTitle);
+      if (paramLocation) setLocation(paramLocation);
+      if (paramExp) setExperience(paramExp);
+      if (paramSkills) setSkills(paramSkills);
+
+      setPrefilledBanner({
+        jobTitle: paramJobTitle || '',
+        location: paramLocation || '',
+        skills: paramSkills || '',
+      });
+
+      // Auto-prefill contact details from resume data if present
+      if (resumeData?.personalInfo) {
+        if (resumeData.personalInfo.fullName) setFullName(resumeData.personalInfo.fullName);
+        if (resumeData.personalInfo.email) setEmail(resumeData.personalInfo.email);
+        if (resumeData.personalInfo.phone) setPhoneNumber(resumeData.personalInfo.phone);
+      }
+    }
+  }, [searchParams, resumeData]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
@@ -531,6 +565,26 @@ export const HashHuntPage: React.FC = () => {
           <div className="bg-white rounded-3xl border border-slate-200 shadow-sm p-4 sm:p-6 md:p-10 relative pb-24 md:pb-10">
             
             <div aria-live="polite">
+              {prefilledBanner && (
+                <div className="mb-6 p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl">
+                  <p className="text-xs font-bold text-emerald-950 mb-1.5 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <span>{isAr ? 'سنبحث عن وظائف بناءً على:' : 'Searching for jobs based on:'}</span>
+                  </p>
+                  <div className="text-xs text-emerald-900 space-y-1 bg-white/70 p-3 rounded-xl border border-emerald-100">
+                    {prefilledBanner.jobTitle && (
+                      <p><strong>{isAr ? 'المسمى: ' : 'Title: '}</strong>{prefilledBanner.jobTitle}</p>
+                    )}
+                    {prefilledBanner.location && (
+                      <p><strong>{isAr ? 'الموقع: ' : 'Location: '}</strong>{prefilledBanner.location}</p>
+                    )}
+                    {prefilledBanner.skills && (
+                      <p><strong>{isAr ? 'المهارات: ' : 'Skills: '}</strong>{prefilledBanner.skills}</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {successMsg && (
                 <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6 md:mb-8 p-4 md:p-5 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-start gap-3">
                   <CheckCircle2 className="w-6 h-6 text-[#10B981] shrink-0 mt-0.5" />

@@ -5,6 +5,7 @@ import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { AiAssistantModal } from './components/builder/AiAssistantModal';
 import { ActivationModal } from './components/activation/ActivationModal';
+import { PostDownloadSuccessModal } from './components/activation/PostDownloadSuccessModal';
 import { WhatsAppButton } from './components/ui/WhatsAppButton';
 
 import { LandingPage } from './pages/LandingPage';
@@ -57,6 +58,7 @@ export default function App() {
       {/* Global AI, WhatsApp Support & Activation Modals */}
       <AiAssistantModal />
       <ActivationModal />
+      <PostDownloadSuccessModal />
       <WhatsAppButton />
 
       <Footer />

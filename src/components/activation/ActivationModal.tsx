@@ -167,6 +167,7 @@ export const ActivationModal: React.FC = () => {
   const {
     isActivationModalOpen,
     setIsActivationModalOpen,
+    setIsPostDownloadModalOpen,
     activatePlan,
     lockResume,
     unlockResumeWithNewApproval,
@@ -388,7 +389,8 @@ export const ActivationModal: React.FC = () => {
         setActivatedCode('');
         setPaymentStep('payment_details');
         setIsActivationModalOpen(false);
-      }, 2400);
+        setIsPostDownloadModalOpen(true);
+      }, 1800);
 
     } catch (err: any) {
       setErrorMessage(err.message || (isAr ? 'تعذر إتمام التحميل. يرجى التواصل معنا مع رقم المرجع.' : 'Download failed. Please contact support with your reference.'));

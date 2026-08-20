@@ -96,6 +96,7 @@ interface ResumeStoreState {
   activeExperienceIdForAi: string | null;
   isAtsPanelOpen: boolean;
   isActivationModalOpen: boolean;
+  isPostDownloadModalOpen: boolean;
   targetJobDescription: string;
   atsResult: AtsScoreResult | null;
   isAnalyzingAts: boolean;
@@ -163,6 +164,7 @@ interface ResumeStoreState {
   closeAiModal: () => void;
   setIsAtsPanelOpen: (open: boolean) => void;
   setIsActivationModalOpen: (open: boolean) => void;
+  setIsPostDownloadModalOpen: (open: boolean) => void;
   setTargetJobDescription: (desc: string) => void;
   setAtsResult: (result: AtsScoreResult | null) => void;
   setIsAnalyzingAts: (analyzing: boolean) => void;
@@ -194,6 +196,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   activeExperienceIdForAi: null,
   isAtsPanelOpen: false,
   isActivationModalOpen: false,
+  isPostDownloadModalOpen: false,
   targetJobDescription: '',
   atsResult: null,
   isAnalyzingAts: false,
@@ -625,6 +628,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   closeAiModal: () => set({ isAiModalOpen: false, aiModalType: null, activeExperienceIdForAi: null }),
   setIsAtsPanelOpen: (open) => set({ isAtsPanelOpen: open }),
   setIsActivationModalOpen: (open) => set({ isActivationModalOpen: open }),
+  setIsPostDownloadModalOpen: (open) => set({ isPostDownloadModalOpen: open }),
   setTargetJobDescription: (desc) => set({ targetJobDescription: desc }),
   setAtsResult: (result) => set({ atsResult: result }),
   setIsAnalyzingAts: (analyzing) => set({ isAnalyzingAts: analyzing }),
