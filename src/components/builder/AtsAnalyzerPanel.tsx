@@ -653,8 +653,8 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                   <Key className="w-3.5 h-3.5" />
                   <span>
                     {activation.remainingDownloads > 0
-                      ? (isAr ? 'فك قفل السيرة للتعديل برصيد متبقي' : 'Unlock to Edit with Credit')
-                      : (isAr ? 'طلب تفعيل جديد لفك قفل التعديل' : 'Get Activation to Unlock')}
+                      ? (isAr ? 'فتح التعديل باستخدام تفعيل متبقي' : 'Unlock to Edit with Credit')
+                      : (isAr ? 'هل تحتاج لإجراء تعديلات؟ اشترِ تفعيل إضافي' : 'Need to make changes? Purchase another download credit.')}
                   </span>
                 </button>
               ) : (

@@ -18,6 +18,10 @@ const PAYMENT_MODAL_I18N = {
   ar: {
     modalTitle: 'تفعيل السيرة الذاتية والتحميل الفوري',
     modalSub: 'خطوات دفع فورية وسريعة بدون اشتراكات متكررة',
+    prePaymentNote: 'سيصبح التحميل متاحاً فور اعتماد التحويل من الإدارة.',
+    keepRefNotice: 'احتفظ برقم المرجع للتحقق من حالة الدفع في أي وقت: Keep this reference number to check your payment status.',
+    downloadCompleteLocked: 'تم تنزيل الـPDF بنجاح — تم إقفال السيرة الذاتية لمنع التعديل غير المقصود.',
+    needChangesText: 'هل تحتاج لإجراء تعديلات جديدة؟ اشترِ تفعيل تحميل إضافي.',
     step1Title: '1. اختر باقة التفعيل:',
     step2Title: '2. اختر وسيلة الدفع المناسبة:',
     step3Title: '3. بيانات التحويل للتفعيل الفوري:',
@@ -60,7 +64,7 @@ const PAYMENT_MODAL_I18N = {
     alreadyHaveRef: 'لدي رقم مرجع أو كود سابق',
     checkStatusBtn: 'التحقق من حالة الدفع والتفعيل',
     pendingTitle: 'تم تسجيل طلب التفعيل بنجاح',
-    pendingDesc: 'تم استلام بيانات التحويل ورقم المرجع. اضغط على الزر أدناه لتأكيد التفعيل الفوري وبدء التنزيل.',
+    pendingDesc: 'تم استلام بيانات التحويل ورقم المرجع. سيصبح التحميل متاحاً فور اعتماد التحويل.',
     approvedTitle: 'تم تأكيد الدفع بنجاح! ✅',
     approvedNote: 'سيرتك الذاتية جاهزة للتحميل الآن.',
     downloadResumeBtn: 'تحميل السيرة الذاتية PDF',
@@ -77,6 +81,7 @@ const PAYMENT_MODAL_I18N = {
     errorTitle: 'تنبيه التفعيل',
     backBtn: 'رجوع لتعديل البيانات',
     retryBtn: 'إعادة المحاولة',
+    whatsappSupportBtn: 'تواصل مع الدعم عبر واتساب',
     checkStatusTitle: 'التحقق من حالة الدفع',
     checkStatusDesc: 'أدخل رقم المرجع للتحقق من حالة السيرة الذاتية وتفعيلها فوراً.',
     verifyBtn: 'تفعيل الكود الفوري',
@@ -86,6 +91,10 @@ const PAYMENT_MODAL_I18N = {
   en: {
     modalTitle: 'Instant Resume Activation & Download',
     modalSub: 'One-time clear checkout with zero recurring subscription fees',
+    prePaymentNote: 'Download will be available immediately once the transfer is approved.',
+    keepRefNotice: 'Keep this reference number to check your payment status.',
+    downloadCompleteLocked: 'Download complete — your resume is locked for editing.',
+    needChangesText: 'Need to make changes? Purchase another download credit.',
     step1Title: '1. Select Plan:',
     step2Title: '2. Select Transfer Method:',
     step3Title: '3. Transfer Details for Instant Activation:',
@@ -128,7 +137,7 @@ const PAYMENT_MODAL_I18N = {
     alreadyHaveRef: 'I already have a reference / code',
     checkStatusBtn: 'Check Status & Activate',
     pendingTitle: 'Request Registered Successfully',
-    pendingDesc: 'We received your reference number. Click check status to unlock your resume and download.',
+    pendingDesc: 'We received your reference number. Download will become available once transfer is approved.',
     approvedTitle: 'Payment Approved! ✅',
     approvedNote: 'Your resume is ready to download.',
     downloadResumeBtn: 'Download Your Resume PDF',
@@ -145,6 +154,7 @@ const PAYMENT_MODAL_I18N = {
     errorTitle: 'Notice',
     backBtn: 'Back',
     retryBtn: 'Retry',
+    whatsappSupportBtn: 'Contact Support on WhatsApp',
     checkStatusTitle: 'Check Payment Status',
     checkStatusDesc: 'Enter your reference number to verify and download immediately.',
     verifyBtn: 'Activate Code Now',
@@ -671,13 +681,27 @@ export const ActivationModal: React.FC = () => {
               <RefreshCw className="w-12 h-12 text-amber-500 mx-auto animate-spin" />
               <h4 className="text-lg font-black text-slate-800">{labels.pendingTitle}</h4>
               <p className="text-sm text-slate-600 max-w-xs mx-auto">{labels.pendingDesc}</p>
-              <div className="p-3 bg-slate-50 border rounded-lg inline-flex items-center gap-2 text-sm font-bold text-slate-700">
-                <span>{referenceInput}</span>
-                <button onClick={() => handleCopy(referenceInput, 'ref')} className="text-[#FF4D2D] hover:opacity-80">
-                  {copiedKey === 'ref' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                </button>
+              
+              <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+                <div className="text-[11px] font-bold text-slate-500">{isAr ? 'رقم مرجع التحويل الخاص بك:' : 'Your Transaction Reference Number:'}</div>
+                <div className="inline-flex items-center justify-center gap-2 text-sm font-mono font-black text-[#001639] bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs">
+                  <span>{referenceInput}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(referenceInput, 'ref')}
+                    className="p-1 text-[#FF4D2D] hover:bg-orange-50 rounded transition flex items-center gap-1 text-xs"
+                    title={labels.copyBtn}
+                  >
+                    {copiedKey === 'ref' ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                    <span className="font-sans font-bold">{copiedKey === 'ref' ? labels.copiedBtn : labels.copyBtn}</span>
+                  </button>
+                </div>
+                <p className="text-[11px] font-semibold text-amber-800 bg-amber-50/80 p-2 rounded-lg leading-relaxed">
+                  {labels.keepRefNotice}
+                </p>
               </div>
-              <div className="pt-4 space-y-3">
+
+              <div className="pt-2 space-y-3">
                 <button disabled={isVerifying} onClick={() => handleCheckStatus(referenceInput)} className="w-full py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold rounded-xl flex items-center justify-center gap-2 shadow-sm active:scale-98 transition">
                   {isVerifying ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
                   {labels.checkStatusBtn}
@@ -685,9 +709,7 @@ export const ActivationModal: React.FC = () => {
                 
                 <a
                   href={`https://wa.me/201101007965?text=${encodeURIComponent(
-                    isAr
-                      ? `مرحباً، قمت بتسجيل طلب تفعيل برقم مرجع: ${referenceInput} وأود التأكيد السريع.`
-                      : `Hello, I submitted an activation request with reference: ${referenceInput} and would like instant confirmation.`
+                    `Hi, I need help with my resume payment. Reference: ${referenceInput || 'N/A'}`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -706,7 +728,16 @@ export const ActivationModal: React.FC = () => {
             <div className="space-y-4 py-4 animate-in fade-in">
               <h4 className="text-lg font-black text-slate-800">{labels.checkStatusTitle}</h4>
               <p className="text-sm text-slate-600">{labels.checkStatusDesc}</p>
-              <input type="text" value={referenceInput} onChange={(e) => setReferenceInput(e.target.value)} placeholder={labels.refPlaceholder} className="w-full px-4 py-3 bg-slate-50 border rounded-xl" />
+              <div className="space-y-1">
+                <input
+                  type="text"
+                  value={referenceInput}
+                  onChange={(e) => setReferenceInput(e.target.value)}
+                  placeholder={labels.refPlaceholder}
+                  className="w-full px-4 py-3 bg-slate-50 border rounded-xl font-mono text-sm"
+                />
+                <p className="text-[11px] text-slate-500 font-medium">{labels.keepRefNotice}</p>
+              </div>
               <button disabled={isVerifying} onClick={() => handleCheckStatus(referenceInput)} className="w-full py-3 bg-[#001639] text-white font-bold rounded-xl flex items-center justify-center gap-2">
                 {isVerifying ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                 {labels.checkStatusBtn}
@@ -793,9 +824,23 @@ export const ActivationModal: React.FC = () => {
               <AlertTriangle className="w-14 h-14 text-rose-500 mx-auto" />
               <h4 className="text-lg font-black text-rose-700">{labels.errorTitle}</h4>
               <p className="text-sm text-slate-700 bg-rose-50 p-4 rounded-xl border border-rose-100">{errorMessage}</p>
-              <div className="flex gap-3 pt-4">
-                <button onClick={() => setPaymentStep('payment_details')} className="flex-1 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl">{labels.backBtn}</button>
-                <button onClick={() => setPaymentStep('check_status')} className="flex-1 py-3 bg-[#001639] text-white font-bold rounded-xl">{labels.retryBtn}</button>
+              
+              {/* WhatsApp Support Button with Auto Reference Link */}
+              <a
+                href={`https://wa.me/201101007965?text=${encodeURIComponent(
+                  `Hi, I need help with my resume payment. Reference: ${referenceInput || 'N/A'}`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 shadow-sm transition"
+              >
+                <PhoneCall className="w-4 h-4" />
+                <span>{labels.whatsappSupportBtn}</span>
+              </a>
+
+              <div className="flex gap-3 pt-2">
+                <button onClick={() => setPaymentStep('payment_details')} className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs sm:text-sm transition">{labels.backBtn}</button>
+                <button onClick={() => setPaymentStep('check_status')} className="flex-1 py-3 bg-[#001639] hover:bg-[#00245E] text-white font-bold rounded-xl text-xs sm:text-sm transition">{labels.retryBtn}</button>
               </div>
             </div>
           )}

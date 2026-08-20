@@ -474,18 +474,18 @@ export const BuilderPage: React.FC = () => {
                   <div className="space-y-1">
                     <h4 className="font-black text-xs sm:text-sm text-amber-950">
                       {isAr
-                        ? 'تم تحميل السيرة الذاتية وإقفال التعديلات'
-                        : 'Resume Downloaded & Locked for Edits'}
+                        ? 'تم تنزيل الـPDF — تم إقفال السيرة الذاتية لمنع التعديل'
+                        : 'Download complete — your resume is locked for editing.'}
                     </h4>
                     <p className="text-xs text-amber-900/90 leading-relaxed">
                       {isAr
-                        ? 'لحماية نسختك المحملة، لا يمكن التعديل في بيانات السيرة الذاتية بعد تحميلها إلا بموافقة/تفعيل جديد.'
-                        : 'To protect your downloaded resume, editing is locked. A new approval/activation is required to make edits.'}
+                        ? 'لحماية نسختك المعتمدة وتجنب التعديلات غير المقصودة، تم قفل الحقول.'
+                        : 'To protect your downloaded version and prevent accidental changes, fields are locked.'}
                     </p>
                     {activation.remainingDownloads > 0 && (
                       <p className="text-[11px] font-bold text-emerald-800">
                         {isAr
-                          ? `رصيدك المتبقي: ${activation.remainingDownloads} تفعيل(ات)`
+                          ? `لديك رصيد متبقي: ${activation.remainingDownloads} تفعيل(ات)`
                           : `Remaining credits: ${activation.remainingDownloads} activation(s)`}
                       </p>
                     )}
@@ -500,8 +500,8 @@ export const BuilderPage: React.FC = () => {
                   <Key className="w-4 h-4 text-amber-400" />
                   <span>
                     {activation.remainingDownloads > 0
-                      ? (isAr ? 'فتح التعديل برصيد متبقي (1 تفعيل)' : 'Unlock with 1 Credit')
-                      : (isAr ? 'طلب موافقة / تفعيل جديد للتعديل' : 'Get New Activation for Edits')}
+                      ? (isAr ? 'فتح التعديل باستخدام تفعيل متبقي' : 'Unlock to Edit with Credit')
+                      : (isAr ? 'هل تحتاج لإجراء تعديلات؟ اشترِ تفعيل إضافي' : 'Need to make changes? Purchase another download credit.')}
                   </span>
                 </button>
               </div>
