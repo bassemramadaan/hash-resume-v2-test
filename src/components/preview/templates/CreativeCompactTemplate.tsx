@@ -7,9 +7,123 @@ interface TemplateProps {
 }
 
 export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ data, settings }) => {
-  const { personalInfo, experiences, education, skills, projects, languages } = data;
+  const { personalInfo, experiences, education, skills, projects, certifications, languages } = data;
   const isArabic = settings.language === 'ar';
   const primaryColor = settings.primaryColor || '#b91c1c';
+  const careerFocus = settings.careerFocus || 'experienced';
+  const isFreshGrad = careerFocus === 'fresh-grad';
+
+  const renderSummary = () =>
+    personalInfo.summary ? (
+      <section className="mb-4">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-red-700 mb-1.5 border-b pb-1" style={{ color: primaryColor }}>
+          {isArabic ? 'الملخص المهني' : 'ABOUT ME'}
+        </h2>
+        <p className="text-xs text-gray-700 leading-normal">{personalInfo.summary}</p>
+      </section>
+    ) : null;
+
+  const renderExperience = () =>
+    experiences && experiences.length > 0 ? (
+      <section className="mb-4">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-red-700 mb-2.5 border-b pb-1" style={{ color: primaryColor }}>
+          {isArabic ? 'الخبرات العملية' : 'EXPERIENCE'}
+        </h2>
+        <div className="space-y-3.5">
+          {(experiences || []).map((exp) => (
+            <div key={exp.id}>
+              <div className="flex justify-between items-baseline">
+                <h3 className="font-bold text-xs text-gray-900">{exp.position}</h3>
+                <span className="text-[11px] font-medium text-gray-500">
+                  {exp.startDate} - {exp.current ? (isArabic ? 'حتى الآن' : 'Present') : exp.endDate}
+                </span>
+              </div>
+              <p className="text-xs font-semibold text-red-600 mb-1" style={{ color: primaryColor }}>{exp.company}</p>
+              {exp.bulletPoints && exp.bulletPoints.length > 0 && (
+                <ul className="list-disc list-inside text-xs text-gray-700 space-y-1">
+                  {(exp.bulletPoints || []).map((b, i) => (
+                    <li key={i}>{b}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    ) : null;
+
+  const renderProjects = () =>
+    projects && projects.length > 0 ? (
+      <section className="mb-4">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-red-700 mb-2.5 border-b pb-1" style={{ color: primaryColor, borderColor: `${primaryColor}30` }}>
+          {isArabic ? 'المشاريع البارزة' : 'FEATURED PROJECTS'}
+        </h2>
+        <div className="space-y-3">
+          {(projects || []).map((p) => (
+            <div key={p.id}>
+              <div className="flex justify-between items-baseline">
+                <h3 className="font-bold text-xs text-gray-900">
+                  {p.title}
+                  {p.link && (
+                    <span className="text-[10px] font-normal text-red-600 underline ml-2 mr-2">
+                      {p.link}
+                    </span>
+                  )}
+                </h3>
+                {(p.startDate || p.endDate) && (
+                  <span className="text-[11px] text-gray-500">
+                    {p.startDate} {p.endDate ? `- ${p.endDate}` : ''}
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-gray-700 leading-normal mt-0.5">{p.description}</p>
+              {p.technologies && p.technologies.length > 0 && (
+                <p className="text-[10px] text-gray-500 mt-1">
+                  <strong>{isArabic ? 'التقنيات: ' : 'Tech Stack: '}</strong>
+                  {p.technologies.join(', ')}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    ) : null;
+
+  const renderEducation = () =>
+    education && education.length > 0 ? (
+      <section className="mb-4">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-red-700 mb-2 border-b pb-1" style={{ color: primaryColor }}>
+          {isArabic ? 'التعليم' : 'EDUCATION'}
+        </h2>
+        <div className="space-y-2">
+          {(education || []).map((edu) => (
+            <div key={edu.id} className="flex justify-between items-start text-xs">
+              <div>
+                <h3 className="font-bold text-gray-900">{edu.degree}</h3>
+                <p className="text-gray-600">{edu.institution} ({edu.fieldOfStudy})</p>
+              </div>
+              <span className="text-[11px] text-gray-500">{edu.startDate} - {edu.endDate}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+    ) : null;
+
+  const renderCertifications = () =>
+    certifications && certifications.length > 0 ? (
+      <section className="mb-4">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-red-700 mb-2 border-b pb-1" style={{ color: primaryColor }}>
+          {isArabic ? 'الشهادات المعتمدة' : 'CERTIFICATIONS'}
+        </h2>
+        <div className="space-y-1.5 text-xs text-gray-700">
+          {(certifications || []).map((cert) => (
+            <div key={cert.id}>
+              <span className="font-bold text-gray-900">{cert.title}</span> – {cert.issuer} ({cert.date})
+            </div>
+          ))}
+        </div>
+      </section>
+    ) : null;
 
   return (
     <div
@@ -91,96 +205,22 @@ export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ da
 
       {/* Main Content Area */}
       <main className="w-2/3 p-6">
-        {personalInfo.summary && (
-          <section className="mb-5">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-red-700 mb-2 border-b pb-1">
-              {isArabic ? 'الملخص المهني' : 'ABOUT ME'}
-            </h2>
-            <p className="text-xs text-gray-700 leading-normal">{personalInfo.summary}</p>
-          </section>
-        )}
+        {renderSummary()}
 
-        {experiences && experiences.length > 0 && (
-          <section className="mb-5">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-red-700 mb-3 border-b pb-1">
-              {isArabic ? 'الخبرات العملية' : 'EXPERIENCE'}
-            </h2>
-            <div className="space-y-4">
-              {(experiences || []).map((exp) => (
-                <div key={exp.id}>
-                  <div className="flex justify-between items-baseline">
-                    <h3 className="font-bold text-xs text-gray-900">{exp.position}</h3>
-                    <span className="text-[11px] font-medium text-gray-500">
-                      {exp.startDate} - {exp.current ? (isArabic ? 'حتى الآن' : 'Present') : exp.endDate}
-                    </span>
-                  </div>
-                  <p className="text-xs font-semibold text-red-600 mb-1">{exp.company}</p>
-                  {exp.bulletPoints && exp.bulletPoints.length > 0 && (
-                    <ul className="list-disc list-inside text-xs text-gray-700 space-y-1">
-                      {(exp.bulletPoints || []).map((b, i) => (
-                        <li key={i}>{b}</li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {projects && projects.length > 0 && (
-          <section className="mb-5">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-red-700 mb-3 border-b pb-1" style={{ color: primaryColor, borderColor: `${primaryColor}30` }}>
-              {isArabic ? 'المشاريع البارزة' : 'FEATURED PROJECTS'}
-            </h2>
-            <div className="space-y-4">
-              {(projects || []).map((p) => (
-                <div key={p.id}>
-                  <div className="flex justify-between items-baseline">
-                    <h3 className="font-bold text-xs text-gray-900">
-                      {p.title}
-                      {p.link && (
-                        <span className="text-[10px] font-normal text-red-600 underline ml-2 mr-2">
-                          {p.link}
-                        </span>
-                      )}
-                    </h3>
-                    {(p.startDate || p.endDate) && (
-                      <span className="text-[11px] text-gray-500">
-                        {p.startDate} {p.endDate ? `- ${p.endDate}` : ''}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-gray-700 leading-normal mt-0.5">{p.description}</p>
-                  {p.technologies && p.technologies.length > 0 && (
-                    <p className="text-[10px] text-gray-500 mt-1">
-                      <strong>{isArabic ? 'التقنيات: ' : 'Tech Stack: '}</strong>
-                      {p.technologies.join(', ')}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {education && education.length > 0 && (
-          <section className="mb-5">
-            <h2 className="text-xs font-bold uppercase tracking-wider text-red-700 mb-2 border-b pb-1">
-              {isArabic ? 'التعليم' : 'EDUCATION'}
-            </h2>
-            <div className="space-y-2">
-              {(education || []).map((edu) => (
-                <div key={edu.id} className="flex justify-between items-start text-xs">
-                  <div>
-                    <h3 className="font-bold text-gray-900">{edu.degree}</h3>
-                    <p className="text-gray-600">{edu.institution} ({edu.fieldOfStudy})</p>
-                  </div>
-                  <span className="text-[11px] text-gray-500">{edu.startDate} - {edu.endDate}</span>
-                </div>
-              ))}
-            </div>
-          </section>
+        {isFreshGrad ? (
+          <>
+            {renderEducation()}
+            {renderProjects()}
+            {renderCertifications()}
+            {renderExperience()}
+          </>
+        ) : (
+          <>
+            {renderExperience()}
+            {renderEducation()}
+            {renderProjects()}
+            {renderCertifications()}
+          </>
         )}
       </main>
     </div>

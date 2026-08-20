@@ -98,6 +98,9 @@ export interface ResumeData {
   customSections?: CustomSection[];
 }
 
+export type HeaderLayout = 'centered' | 'two-column' | 'compact';
+export type CareerFocus = 'experienced' | 'fresh-grad';
+
 export interface ResumeSettings {
   language: Language;
   templateId: TemplateId;
@@ -108,6 +111,25 @@ export interface ResumeSettings {
   showPhoto: boolean;
   showIcons: boolean;
   sectionOrder: string[];
+  headerLayout?: HeaderLayout;
+  careerFocus?: CareerFocus;
+}
+
+export type RedFlagSeverity = 'critical' | 'warning' | 'tip';
+
+export interface RedFlagItem {
+  id: string;
+  category: 'email' | 'gap' | 'sensitive_info' | 'contact' | 'format';
+  severity: RedFlagSeverity;
+  titleAr: string;
+  titleEn: string;
+  descriptionAr: string;
+  descriptionEn: string;
+  suggestionAr: string;
+  suggestionEn: string;
+  autoFixable?: boolean;
+  fixAction?: 'clean_email' | 'remove_sensitive' | 'reorder_fresh_grad' | 'fill_missing';
+  offendingText?: string;
 }
 
 export interface ActivationState {

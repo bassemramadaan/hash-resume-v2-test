@@ -19,8 +19,10 @@ import {
   Layout,
   Type,
   X,
+  Share2,
 } from 'lucide-react';
 import { useResumeExport } from '../../hooks/useResumeExport';
+import { ShareModal } from '../common/ShareModal';
 import { getTranslation } from '../../i18n/translations';
 import { TemplateId } from '../../types/resume';
 import { motion, AnimatePresence } from 'motion/react';
@@ -72,6 +74,7 @@ export const ResumePreview: React.FC = () => {
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
   const [showQuickToolbar, setShowQuickToolbar] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<boolean>(false);
+  const [isShareOpen, setIsShareOpen] = useState<boolean>(false);
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
 
@@ -199,23 +202,35 @@ export const ResumePreview: React.FC = () => {
           </button>
         </div>
 
-        {/* Quick Export CTA */}
-        <button
-          onClick={handlePdfDownload}
-          disabled={isExporting}
-          className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-semibold text-xs rounded-full shadow-2xs transition transform active:scale-95 disabled:opacity-50 cursor-pointer min-h-[34px]"
-        >
-          <Download className="w-3.5 h-3.5" />
-          <span>
-            {isExporting
-              ? isAr
-                ? 'جاري التصدير...'
-                : 'Exporting...'
-              : isAr
-              ? 'تصدير PDF'
-              : 'Download PDF'}
-          </span>
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Quick Share Button */}
+          <button
+            onClick={() => setIsShareOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#001639] font-medium text-xs rounded-full border border-slate-300 transition transform active:scale-95 cursor-pointer min-h-[34px]"
+            title={isAr ? 'مشاركة السيرة الذاتية' : 'Share Resume'}
+          >
+            <Share2 className="w-3.5 h-3.5 text-orange-600" />
+            <span className="hidden sm:inline">{isAr ? 'مشاركة' : 'Share'}</span>
+          </button>
+
+          {/* Quick Export CTA */}
+          <button
+            onClick={handlePdfDownload}
+            disabled={isExporting}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-semibold text-xs rounded-full shadow-2xs transition transform active:scale-95 disabled:opacity-50 cursor-pointer min-h-[34px]"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>
+              {isExporting
+                ? isAr
+                  ? 'جاري التصدير...'
+                  : 'Exporting...'
+                : isAr
+                ? 'تصدير PDF'
+                : 'Download PDF'}
+            </span>
+          </button>
+        </div>
       </div>
 
       {/* Quick Customizer Bar (Expandable) */}
@@ -398,6 +413,14 @@ export const ResumePreview: React.FC = () => {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        data={resumeData}
+        settings={settings}
+      />
     </div>
   );
 };

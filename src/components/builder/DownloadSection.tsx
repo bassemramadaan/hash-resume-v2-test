@@ -21,8 +21,13 @@ import {
   ArrowRight,
   ArrowLeft,
   Info,
+  Share2,
+  MessageSquare,
+  Mail,
+  Copy,
 } from 'lucide-react';
 import { useResumeExport } from '../../hooks/useResumeExport';
+import { ShareModal } from '../common/ShareModal';
 import confetti from 'canvas-confetti';
 
 interface SectionAudit {
@@ -53,6 +58,7 @@ export const DownloadSection: React.FC = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [exportError, setExportError] = useState<string | null>(null);
   const [exportSuccess, setExportSuccess] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   // Safe Section Readiness Auditor Logic
   const auditResults = useMemo(() => {
@@ -491,25 +497,37 @@ export const DownloadSection: React.FC = () => {
 
         {/* Primary Download CTA Button */}
         <div className="text-center space-y-3 pt-1">
-          <button
-            type="button"
-            onClick={handleExport}
-            disabled={isExporting}
-            className="w-full sm:w-auto px-10 py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] active:bg-[#CC3A1A] text-white font-bold text-sm rounded-full shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2.5 mx-auto cursor-pointer disabled:opacity-50 min-h-[48px]"
-          >
-            {isExporting ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                <span>{isAr ? 'جاري إنشاء ملف PDF التوافقية...' : 'Generating High-Res PDF...'}</span>
-              </>
-            ) : (
-              <>
-                <Download className="w-5 h-5" />
-                <span>{isAr ? 'تحميل السيرة الذاتية بصيغة PDF' : 'Download PDF Resume'}</span>
-                <Sparkles className="w-4 h-4 text-amber-300" />
-              </>
-            )}
-          </button>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={handleExport}
+              disabled={isExporting}
+              className="w-full sm:w-auto px-8 py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] active:bg-[#CC3A1A] text-white font-bold text-sm rounded-full shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer disabled:opacity-50 min-h-[48px]"
+            >
+              {isExporting ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <span>{isAr ? 'جاري إنشاء ملف PDF التوافقية...' : 'Generating High-Res PDF...'}</span>
+                </>
+              ) : (
+                <>
+                  <Download className="w-5 h-5" />
+                  <span>{isAr ? 'تحميل السيرة الذاتية بصيغة PDF' : 'Download PDF Resume'}</span>
+                  <Sparkles className="w-4 h-4 text-amber-300" />
+                </>
+              )}
+            </button>
+
+            {/* Instant 1-Click Share Button */}
+            <button
+              type="button"
+              onClick={() => setIsShareModalOpen(true)}
+              className="w-full sm:w-auto px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white font-bold text-sm rounded-full border border-white/20 shadow-md transition transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer min-h-[48px]"
+            >
+              <Share2 className="w-4 h-4 text-orange-400" />
+              <span>{isAr ? 'مشاركة سريعة (واتساب / إيميل)' : 'Instant 1-Click Share'}</span>
+            </button>
+          </div>
 
           {exportSuccess && (
             <div className="p-3 bg-emerald-500/20 border border-emerald-400/40 rounded-xl text-emerald-200 text-xs font-bold flex items-center justify-center gap-2">
@@ -545,6 +563,14 @@ export const DownloadSection: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Instant 1-Click Share Modal */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        data={resumeData}
+        settings={settings}
+      />
     </div>
   );
 };

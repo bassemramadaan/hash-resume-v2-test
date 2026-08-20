@@ -13,8 +13,12 @@ import {
   Certification,
   LanguageItem,
   AtsScoreResult,
+  HeaderLayout,
+  CareerFocus,
+  RedFlagItem,
 } from '../types/resume';
 import { sampleArabicSoftwareEngineer, sampleEnglishMarketingManager } from '../data/sampleResumes';
+import { sanitizeSensitiveText } from '../utils/redFlagDetector';
 
 const LOCAL_STORAGE_KEY_RESUME = 'hash_resume_data_v2';
 const LOCAL_STORAGE_KEY_SETTINGS = 'hash_resume_settings_v2';
@@ -30,6 +34,8 @@ const defaultSettings: ResumeSettings = {
   showPhoto: false,
   showIcons: true,
   sectionOrder: ['personalInfo', 'summary', 'experiences', 'education', 'skills', 'projects', 'certifications', 'languages'],
+  headerLayout: 'centered',
+  careerFocus: 'experienced',
 };
 
 const defaultActivation: ActivationState = {
@@ -142,6 +148,10 @@ interface ResumeStoreState {
   setFontSize: (size: 'sm' | 'md' | 'lg') => void;
   setSpacing: (spacing: 'compact' | 'normal' | 'spacious') => void;
   setShowPhoto: (show: boolean) => void;
+  setHeaderLayout: (layout: HeaderLayout) => void;
+  setCareerFocus: (focus: CareerFocus) => void;
+  setSectionOrder: (order: string[]) => void;
+  applyRedFlagAutoFix: (flag: RedFlagItem) => void;
   
   loadSampleResume: (type: 'arabic' | 'english') => void;
   setResumeData: (data: ResumeData) => void;
@@ -514,6 +524,56 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
       localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
       return { settings: updatedSettings };
     });
+  },
+
+  setHeaderLayout: (headerLayout) => {
+    set((state) => {
+      const updatedSettings = { ...state.settings, headerLayout };
+      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
+      return { settings: updatedSettings };
+    });
+  },
+
+  setCareerFocus: (careerFocus) => {
+    set((state) => {
+      const isFresh = careerFocus === 'fresh-grad';
+      const newSectionOrder = isFresh
+        ? ['personalInfo', 'summary', 'education', 'projects', 'skills', 'certifications', 'experiences', 'languages']
+        : ['personalInfo', 'summary', 'experiences', 'education', 'skills', 'projects', 'certifications', 'languages'];
+
+      const updatedSettings = {
+        ...state.settings,
+        careerFocus,
+        sectionOrder: newSectionOrder,
+      };
+      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
+      return { settings: updatedSettings };
+    });
+  },
+
+  setSectionOrder: (sectionOrder) => {
+    set((state) => {
+      const updatedSettings = { ...state.settings, sectionOrder };
+      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
+      return { settings: updatedSettings };
+    });
+  },
+
+  applyRedFlagAutoFix: (flag) => {
+    const state = get();
+    if (flag.fixAction === 'clean_email') {
+      const cleanName = (state.resumeData.personalInfo.fullName || 'firstname.lastname')
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '.')
+        .replace(/\.+/g, '.');
+      state.setPersonalInfo({ email: `${cleanName}@gmail.com` });
+    } else if (flag.fixAction === 'remove_sensitive') {
+      const cleanSummary = sanitizeSensitiveText(state.resumeData.personalInfo.summary || '');
+      const cleanLocation = sanitizeSensitiveText(state.resumeData.personalInfo.location || '');
+      state.setPersonalInfo({ summary: cleanSummary, location: cleanLocation });
+    } else if (flag.fixAction === 'reorder_fresh_grad') {
+      state.setCareerFocus('fresh-grad');
+    }
   },
 
   loadSampleResume: (type) => {

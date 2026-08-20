@@ -1,8 +1,8 @@
 import React from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
-import { Palette, Check, Layout, Type } from 'lucide-react';
-import { TemplateId } from '../../types/resume';
+import { Palette, Check, Layout, Type, GraduationCap, Briefcase, AlignCenter, Columns, Rows } from 'lucide-react';
+import { TemplateId, HeaderLayout, CareerFocus } from '../../types/resume';
 
 const TEMPLATE_OPTIONS: { id: TemplateId; nameKey: string; descKey: string }[] = [
   { id: 'modern-ats', nameKey: 'tplModernAts', descKey: 'tplModernAtsDesc' },
@@ -23,10 +23,21 @@ const COLOR_PRESETS = [
 ];
 
 export const CustomizeForm: React.FC = () => {
-  const { settings, setTemplate, setPrimaryColor, setFontFamily, setShowPhoto, setLanguage } =
-    useResumeStore();
+  const {
+    settings,
+    setTemplate,
+    setPrimaryColor,
+    setFontFamily,
+    setShowPhoto,
+    setLanguage,
+    setHeaderLayout,
+    setCareerFocus,
+  } = useResumeStore();
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
+
+  const currentHeaderLayout: HeaderLayout = settings.headerLayout || 'centered';
+  const currentCareerFocus: CareerFocus = settings.careerFocus || 'experienced';
 
   return (
     <div className="space-y-6 text-slate-800" aria-live="polite">
@@ -38,9 +49,164 @@ export const CustomizeForm: React.FC = () => {
         </h2>
         <p className="text-xs text-slate-500 mt-0.5">
           {isAr
-            ? 'تخصيص القالب والخطوط وألوان العناوين'
-            : 'Customize template, typography, and accent colors'}
+            ? 'تخصيص القالب والترويسة ونمط التخرج والخطوط وألوان العناوين'
+            : 'Customize template, header layout, fresh grad mode, typography, and accent colors'}
         </p>
+      </div>
+
+      {/* Fresh Graduate Mode vs Experienced Mode */}
+      <div className="bg-gradient-to-r from-orange-50/70 via-amber-50/40 to-orange-50/70 p-4 rounded-xl border border-orange-200/80 space-y-2.5 shadow-2xs">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <GraduationCap className="w-4 h-4 text-orange-600" />
+            <h3 className="font-bold text-xs text-orange-950">
+              {isAr ? 'نمط ترتيب الأقسام (Career Focus)' : 'Career Level & Section Order'}
+            </h3>
+          </div>
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-200 text-orange-900">
+            {currentCareerFocus === 'fresh-grad'
+              ? isAr ? 'نمط حديثي التخرج نشط' : 'Fresh Grad Active'
+              : isAr ? 'النمط المهني للخبرات' : 'Experienced Mode'}
+          </span>
+        </div>
+        <p className="text-[11px] text-orange-900/80 leading-relaxed">
+          {isAr
+            ? 'لحديثي التخرج والطلاب: يقدم قسم التعليم ومشاريع التخرج والمهارات أولاً لإبراز نقاط القوة الأكاديمية قبل الخبرات.'
+            : 'For fresh grads and students: prioritizing Education, Projects, and Skills before work experience highlights your academic strength.'}
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+          <button
+            type="button"
+            onClick={() => setCareerFocus('experienced')}
+            className={`p-3 rounded-lg border text-start transition cursor-pointer flex items-center gap-2.5 ${
+              currentCareerFocus === 'experienced'
+                ? 'bg-white border-[#001639] ring-2 ring-[#001639]/15 shadow-xs'
+                : 'bg-white/70 border-orange-200 hover:bg-white'
+            }`}
+          >
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+              currentCareerFocus === 'experienced' ? 'bg-[#001639] text-white' : 'bg-slate-100 text-slate-600'
+            }`}>
+              <Briefcase className="w-4 h-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="font-bold text-xs text-slate-900 flex items-center justify-between">
+                <span>{isAr ? 'النمط المهني للخبرات' : 'Experienced Professional'}</span>
+                {currentCareerFocus === 'experienced' && <Check className="w-3.5 h-3.5 text-[#001639]" />}
+              </div>
+              <p className="text-[10px] text-slate-500 truncate">
+                {isAr ? 'الخبرات العملية أولاً ثم التعليم' : 'Experience first, then Education'}
+              </p>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setCareerFocus('fresh-grad')}
+            className={`p-3 rounded-lg border text-start transition cursor-pointer flex items-center gap-2.5 ${
+              currentCareerFocus === 'fresh-grad'
+                ? 'bg-white border-orange-600 ring-2 ring-orange-600/20 shadow-xs'
+                : 'bg-white/70 border-orange-200 hover:bg-white'
+            }`}
+          >
+            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+              currentCareerFocus === 'fresh-grad' ? 'bg-orange-600 text-white' : 'bg-orange-100 text-orange-700'
+            }`}>
+              <GraduationCap className="w-4 h-4" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="font-bold text-xs text-slate-900 flex items-center justify-between">
+                <span>{isAr ? 'نمط حديثي التخرج والطلاب' : 'Fresh Graduate Focus'}</span>
+                {currentCareerFocus === 'fresh-grad' && <Check className="w-3.5 h-3.5 text-orange-600" />}
+              </div>
+              <p className="text-[10px] text-slate-500 truncate">
+                {isAr ? 'التعليم ومشاريع التخرج أولاً' : 'Education & Projects first'}
+              </p>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      {/* Header Layout Options */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+            <Layout className="w-4 h-4 text-[#001639]" />
+            <span>{isAr ? 'تنسيق الترويسة (Header Layout)' : 'Header Layout'}</span>
+          </h3>
+          <span className="text-[11px] text-slate-500">
+            {isAr ? 'اختر النمط المناسب لهيكل سيرتك' : 'Choose header structure'}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+          {/* Centered */}
+          <button
+            type="button"
+            onClick={() => setHeaderLayout('centered')}
+            className={`p-3 rounded-xl border text-start transition cursor-pointer space-y-1.5 ${
+              currentHeaderLayout === 'centered'
+                ? 'bg-slate-50 border-[#001639] ring-2 ring-[#001639]/15 shadow-xs'
+                : 'bg-white border-slate-200 hover:border-slate-300'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900">
+                <AlignCenter className="w-3.5 h-3.5 text-[#001639]" />
+                <span>{isAr ? 'الهيدر المتمركز' : 'Centered'}</span>
+              </div>
+              {currentHeaderLayout === 'centered' && <Check className="w-3.5 h-3.5 text-[#001639]" />}
+            </div>
+            <p className="text-[10px] text-slate-500 leading-normal">
+              {isAr ? 'الاسم واللقب في الوسط مع خط اتصال متوازن' : 'Centered name & title with balanced contact bar'}
+            </p>
+          </button>
+
+          {/* Two-Column */}
+          <button
+            type="button"
+            onClick={() => setHeaderLayout('two-column')}
+            className={`p-3 rounded-xl border text-start transition cursor-pointer space-y-1.5 ${
+              currentHeaderLayout === 'two-column'
+                ? 'bg-slate-50 border-[#001639] ring-2 ring-[#001639]/15 shadow-xs'
+                : 'bg-white border-slate-200 hover:border-slate-300'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900">
+                <Columns className="w-3.5 h-3.5 text-[#001639]" />
+                <span>{isAr ? 'ذو العمودين' : 'Two-Column'}</span>
+              </div>
+              {currentHeaderLayout === 'two-column' && <Check className="w-3.5 h-3.5 text-[#001639]" />}
+            </div>
+            <p className="text-[10px] text-slate-500 leading-normal">
+              {isAr ? 'الاسم على جانب وجهات الاتصال على الجانب الآخر' : 'Name on one side, contact info on the other'}
+            </p>
+          </button>
+
+          {/* Compact */}
+          <button
+            type="button"
+            onClick={() => setHeaderLayout('compact')}
+            className={`p-3 rounded-xl border text-start transition cursor-pointer space-y-1.5 ${
+              currentHeaderLayout === 'compact'
+                ? 'bg-slate-50 border-[#001639] ring-2 ring-[#001639]/15 shadow-xs'
+                : 'bg-white border-slate-200 hover:border-slate-300'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 font-bold text-xs text-slate-900">
+                <Rows className="w-3.5 h-3.5 text-[#001639]" />
+                <span>{isAr ? 'الهيدر المدمج' : 'Compact'}</span>
+              </div>
+              {currentHeaderLayout === 'compact' && <Check className="w-3.5 h-3.5 text-[#001639]" />}
+            </div>
+            <p className="text-[10px] text-slate-500 leading-normal">
+              {isAr ? 'توفير المساحة الرأسية وتكثيف الترويسة لصفحة واحدة' : 'Space-saving compact header for 1-page fit'}
+            </p>
+          </button>
+        </div>
       </div>
 
       {/* Language Switch */}
@@ -51,8 +217,8 @@ export const CustomizeForm: React.FC = () => {
           </h3>
           <p className="text-[11px] text-slate-500 mt-0.5">
             {isAr
-              ? 'تبديل فوري بين العربية (RTL) والإنجليزية (LTR)'
-              : 'Switch between Arabic (RTL) and English (LTR)'}
+              ? 'تبديل فوري بين العربية (RTL) والإنجليزية (LTR) والفرنسية'
+              : 'Switch between Arabic (RTL), English (LTR), and French'}
           </p>
         </div>
         <div className="flex flex-wrap bg-slate-200/60 p-1 rounded-lg gap-1 text-xs font-semibold shrink-0">
@@ -193,3 +359,4 @@ export const CustomizeForm: React.FC = () => {
     </div>
   );
 };
+
