@@ -538,33 +538,38 @@ app.post("/api/verify-code", async (req, res) => {
   try {
     const { code, reference } = req.body;
     if (!code || typeof code !== "string") {
-      return res.status(400).json({ valid: false, message: "كود التفعيل مطلوب" });
+      return res.status(400).json({ success: false, valid: false, message: "كود التفعيل مطلوب" });
     }
 
     const cleanCode = code.trim().toUpperCase();
+    const cleanReference = reference ? String(reference).trim() : "";
 
     // Check Google Apps Script URL from environment variable
     const gasUrl = process.env.VITE_PAYMENT_API_URL || process.env.GAS_VERIFY_URL;
     if (!gasUrl) {
       return res.status(500).json({
+        success: false,
         valid: false,
-        message: "خدمة التحقق من الدفع غير مهيأة في الخادم (VITE_PAYMENT_API_URL غير محددة).",
+        message: "خدمة التحقق من الدفع غير مهيأة في الخادم.",
       });
     }
 
     try {
-      const urlWithParams = new URL(gasUrl);
-      urlWithParams.searchParams.append("action", "verify");
-      urlWithParams.searchParams.append("code", cleanCode);
-      if (reference) {
-        urlWithParams.searchParams.append("reference", String(reference).trim());
-      }
+      const gasResponse = await fetch(gasUrl, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({
+          action: "verify",
+          code: cleanCode,
+          reference: cleanReference,
+        }),
+      });
 
-      const gasResponse = await fetch(urlWithParams.toString());
       if (gasResponse.ok) {
         const data = await gasResponse.json();
         if (data && data.success && data.status === "USED") {
           return res.json({
+            success: true,
             valid: true,
             status: "USED",
             remainingDownloads: data.remainingDownloads || 1,
@@ -573,25 +578,26 @@ app.post("/api/verify-code", async (req, res) => {
           });
         }
         return res.status(400).json({
+          success: false,
           valid: false,
           message: data?.message || "كود التفعيل غير صالح أو لم يتم تأكيد الدفع بعد.",
         });
       }
-    } catch (gasErr) {
-      console.warn("GAS endpoint verification request failed:", gasErr);
+    } catch {
       return res.status(503).json({
+        success: false,
         valid: false,
         message: "تعذر الاتصال بنظام التحقق من الدفع حالياً. يرجى المحاولة مرة أخرى بعد قليل.",
       });
     }
 
     return res.status(400).json({
+      success: false,
       valid: false,
       message: "فشل التحقق من كود التفعيل. يرجى التأكد من صحة الكود أو التواصل مع الدعم الفني.",
     });
-  } catch (err: any) {
-    console.error("Error in /api/verify-code:", err);
-    return res.status(500).json({ valid: false, message: "حدث خطأ في الخادم أثناء التحقق" });
+  } catch {
+    return res.status(500).json({ success: false, valid: false, message: "حدث خطأ في الخادم أثناء التحقق" });
   }
 });
 

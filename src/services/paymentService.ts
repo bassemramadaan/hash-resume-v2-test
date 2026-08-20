@@ -16,6 +16,10 @@ export async function callPaymentApi(
   }
 
   const method = options?.method || 'GET';
+  const actionName = (method === 'POST' ? options?.body?.action : params.action) || 'unknown';
+
+  // Safe debugging: Log only action name and HTTP method (never code, email, reference, URL, or env variables)
+  console.log(`[Payment API] Request: method=${method}, action=${actionName}`);
 
   if (method === 'POST') {
     // For POST requests in Google Apps Script, pass text/plain with JSON string to avoid CORS preflight issues
@@ -76,43 +80,36 @@ export async function checkPaymentStatus(reference: string) {
 
 export async function verifyActivationCode(code: string, reference: string) {
   try {
-    // Send state-modifying verify request via POST to keep code/reference out of URL
-    return await callPaymentApi(
-      {},
-      {
-        method: 'POST',
-        body: {
-          action: 'verify',
-          code: code,
-          reference: reference,
-        },
-      }
-    );
-  } catch (err: any) {
-    // If direct Google Apps Script POST fails, fallback to backend verify-code proxy
-    try {
-      const serverRes = await fetch('/api/verify-code', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, reference }),
-      });
-      const data = await serverRes.json();
-      if (serverRes.ok && data.valid && data.status === 'USED') {
-        return {
-          success: true,
-          status: 'USED',
-          message: data.message || 'تم تفعيل الكود بنجاح!',
-          remainingDownloads: data.remainingDownloads || 1,
-        };
-      }
-    } catch {
-      // ignore proxy fetch errors and fail closed below
+    const response = await fetch('/api/verify-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        code: code ? code.trim().toUpperCase() : '',
+        reference: reference ? reference.trim() : '',
+      }),
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (response.ok && data.success && data.status === 'USED') {
+      return {
+        success: true,
+        status: 'USED',
+        message: data.message || 'تم تفعيل الكود بنجاح!',
+        remainingDownloads: data.remainingDownloads || 1,
+      };
     }
 
+    // Fail closed
+    return {
+      success: false,
+      message: data.message || 'فشل التحقق من كود التفعيل. يرجى التأكد من صحة الكود أو التواصل مع الدعم الفني.',
+    };
+  } catch (err: any) {
     // Fail closed: Never return synthetic success on network/verification error
     return {
       success: false,
-      message: err.message || 'فشل التحقق من كود التفعيل. يرجى التأكد من الكود أو المحاولة مرة أخرى.',
+      message: 'تعذر الاتصال بخدمة التحقق من الدفع حالياً. يرجى المحاولة مرة أخرى بعد قليل.',
     };
   }
 }
