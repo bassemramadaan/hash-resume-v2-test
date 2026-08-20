@@ -536,7 +536,9 @@ Required JSON format:
 // 6. Activation Code Verification (Google Apps Script Integration)
 app.post("/api/verify-code", async (req, res) => {
   try {
-    const { code, reference } = req.body;
+    console.log("[verify-proxy] verify-proxy reached");
+
+    const { code, reference } = req.body || {};
     if (!code || typeof code !== "string") {
       return res.status(400).json({ success: false, valid: false, message: "كود التفعيل مطلوب" });
     }
@@ -545,9 +547,13 @@ app.post("/api/verify-code", async (req, res) => {
     const cleanReference = reference ? String(reference).trim() : "";
 
     // Check Google Apps Script URL from environment variables
-    const gasUrl = process.env.VITE_PAYMENT_API_URL || process.env.PAYMENT_API_URL || process.env.GAS_VERIFY_URL;
+    const gasUrl =
+      process.env.PAYMENT_API_URL ||
+      process.env.VITE_PAYMENT_API_URL ||
+      process.env.GAS_VERIFY_URL;
+
     if (!gasUrl) {
-      console.log("[GAS Verify Proxy] Error: PAYMENT_API_URL environment variable is missing on server");
+      console.log("[verify-proxy] Error: PAYMENT_API_URL is missing in environment");
       return res.status(500).json({
         success: false,
         valid: false,
@@ -567,6 +573,8 @@ app.post("/api/verify-code", async (req, res) => {
         redirect: "follow",
       });
 
+      console.log(`[verify-proxy] GAS HTTP status: ${gasResponse.status}`);
+
       const rawText = await gasResponse.text();
       let data: any = null;
       try {
@@ -575,10 +583,8 @@ app.post("/api/verify-code", async (req, res) => {
         data = null;
       }
 
-      // Safe debugging: Log only HTTP status, success flag, and status (never code, ref, email, url, message, or secrets)
-      console.log(
-        `[GAS Verify Proxy] gasHttpStatus=${gasResponse.status}, success=${data?.success}, status=${data?.status}`
-      );
+      console.log(`[verify-proxy] GAS response success: ${data?.success}`);
+      console.log(`[verify-proxy] GAS response status: ${data?.status}`);
 
       // Strict acceptance: accept only { success: true, status: "USED" }
       if (gasResponse.ok && data && data.success === true && data.status === "USED") {
@@ -599,7 +605,7 @@ app.post("/api/verify-code", async (req, res) => {
         message: data?.message || "كود التفعيل غير صالح أو لم يتم تأكيد الدفع بعد.",
       });
     } catch (gasErr: any) {
-      console.log(`[GAS Verify Proxy] fetchException=${gasErr?.name || "FetchError"}`);
+      console.log(`[verify-proxy] GAS request failed: ${gasErr?.name || "FetchError"}`);
       return res.status(503).json({
         success: false,
         valid: false,
