@@ -61,10 +61,10 @@ const PAYMENT_MODAL_I18N = {
     checkStatusBtn: 'التحقق من حالة الدفع والتفعيل',
     pendingTitle: 'تم تسجيل طلب التفعيل بنجاح',
     pendingDesc: 'تم استلام بيانات التحويل ورقم المرجع. اضغط على الزر أدناه لتأكيد التفعيل الفوري وبدء التنزيل.',
-    approvedTitle: 'تم اعتماد التفعيل بنجاح!',
-    approvedNote: 'سيرتك الذاتية جاهزة الآن للتحميل بأعلى دقة متجهة بدون علامة مائية.',
-    verifyAndDownloadBtn: 'تفعيل الكود وتحميل PDF الآن',
-    activatingCode: 'جارِ تفعيل الكود وتجهيز ملفك...',
+    approvedTitle: 'تم تأكيد الدفع بنجاح! ✅',
+    approvedNote: 'سيرتك الذاتية جاهزة للتحميل الآن.',
+    downloadResumeBtn: 'تحميل السيرة الذاتية PDF',
+    downloadingPdf: 'جارِ تجهيز وتحميل ملف السيرة الذاتية...',
     copyBtn: 'نسخ',
     copiedBtn: 'تم النسخ بنجاح',
     enterCodeTitle: 'تفعيل عبر كود مباشر',
@@ -129,10 +129,10 @@ const PAYMENT_MODAL_I18N = {
     checkStatusBtn: 'Check Status & Activate',
     pendingTitle: 'Request Registered Successfully',
     pendingDesc: 'We received your reference number. Click check status to unlock your resume and download.',
-    approvedTitle: 'Payment & Activation Approved!',
-    approvedNote: 'Your resume is ready for instant high-res vector PDF download.',
-    verifyAndDownloadBtn: 'Activate Code & Download PDF',
-    activatingCode: 'Activating code and preparing your file...',
+    approvedTitle: 'Payment Approved! ✅',
+    approvedNote: 'Your resume is ready to download.',
+    downloadResumeBtn: 'Download Your Resume PDF',
+    downloadingPdf: 'Preparing and downloading your resume PDF...',
     copyBtn: 'Copy',
     copiedBtn: 'Copied',
     enterCodeTitle: 'Enter Activation Code',
@@ -277,7 +277,7 @@ export const ActivationModal: React.FC = () => {
       const res: any = await checkPaymentStatus(ref);
       if (res.status === 'approved') {
         const codes = res.codes || [];
-        const code = res.code || res.activatedCode || codes[0];
+        const code = res.code || res.activationCode || res.activatedCode || (codes.length > 0 ? codes[0] : '');
         setActivatedCode(code);
         const parsed = parsePaymentCodes(codes);
         setRemainingCodes(parsed.remainingCodes);
@@ -327,13 +327,32 @@ export const ActivationModal: React.FC = () => {
   };
 
   const handleVerifiedDownload = async () => {
+    if (isVerifying || paymentStep === 'activating') return;
+    setIsVerifying(true);
     setPaymentStep('activating');
     try {
-      const currentRef = referenceInput || localStorage.getItem('payment_reference') || 'MANUAL_CODE';
+      const currentRef = referenceInput || localStorage.getItem('payment_reference');
+
+      if (!currentRef) {
+        throw new Error(
+          isAr
+            ? 'رقم المرجع غير متوفر. يرجى التحقق من حالة الدفع مرة أخرى.'
+            : 'Payment reference is missing. Please check your payment status again.'
+        );
+      }
+
+      if (!activatedCode) {
+        throw new Error(
+          isAr
+            ? 'تعذر تجهيز التحميل. يرجى التحقق من حالة الدفع مرة أخرى.'
+            : 'Download is not ready. Please check your payment status again.'
+        );
+      }
+
       const verifyResult: any = await verifyActivationCode(activatedCode, currentRef);
 
       if (!verifyResult.success || verifyResult.status !== 'USED') {
-        throw new Error(verifyResult.message || 'تعذر تفعيل كود التحميل.');
+        throw new Error(verifyResult.message || (isAr ? 'تعذر تأكيد الدفع وتحميل السيرة الذاتية.' : 'Unable to confirm payment and download resume.'));
       }
 
       // Unlock temporarily for export, then grant export and consume intent
@@ -352,13 +371,16 @@ export const ActivationModal: React.FC = () => {
         setReferenceInput('');
         setInputCode('');
         setErrorMessage('');
+        setActivatedCode('');
         setPaymentStep('payment_details');
         setIsActivationModalOpen(false);
       }, 2400);
 
     } catch (err: any) {
-      setErrorMessage(err.message || 'تم تفعيل الكود بنجاح لكن تعذر إنشاء الملف. تواصل معنا مع رقم المرجع.');
+      setErrorMessage(err.message || (isAr ? 'تعذر إتمام التحميل. يرجى التواصل معنا مع رقم المرجع.' : 'Download failed. Please contact support with your reference.'));
       setPaymentStep('error');
+    } finally {
+      setIsVerifying(false);
     }
   };
 
@@ -693,24 +715,34 @@ export const ActivationModal: React.FC = () => {
           )}
 
           {paymentStep === 'approved' && (
-            <div className="text-center space-y-5 py-4 animate-in fade-in">
-              <CheckCircle2 className="w-14 h-14 text-emerald-500 mx-auto" />
-              <h4 className="text-xl font-black text-emerald-700">{labels.approvedTitle}</h4>
-              <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
-                <span className="block text-xs font-bold text-emerald-800 mb-2">كود التفعيل الحالي:</span>
-                <div className="flex items-center justify-center gap-2">
-                  <span className="font-mono font-black text-xl text-emerald-900 select-all">{activatedCode}</span>
-                  <button onClick={() => handleCopy(activatedCode, 'actCode')} className="p-2 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded-lg">
-                    {copiedKey === 'actCode' ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                </div>
+            <div className="text-center space-y-6 py-6 animate-in fade-in">
+              <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto ring-8 ring-emerald-50/50">
+                <CheckCircle2 className="w-10 h-10 text-emerald-500" />
               </div>
-              <p className="text-sm text-slate-600 font-medium">{labels.approvedNote}</p>
-              
-              <button onClick={handleVerifiedDownload} className="w-full py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold rounded-xl shadow-lg flex items-center justify-center gap-2 transform transition active:scale-95">
-                <Download className="w-5 h-5" />
-                {labels.verifyAndDownloadBtn}
-              </button>
+
+              <div className="space-y-2">
+                <h4 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">
+                  {labels.approvedTitle}
+                </h4>
+                <p className="text-sm font-medium text-slate-600 max-w-sm mx-auto leading-relaxed">
+                  {labels.approvedNote}
+                </p>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  disabled={isVerifying || paymentStep === 'activating'}
+                  onClick={handleVerifiedDownload}
+                  className="w-full py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-sm sm:text-base rounded-xl shadow-lg hover:shadow-xl flex items-center justify-center gap-2.5 transform transition active:scale-98 disabled:opacity-75 disabled:pointer-events-none cursor-pointer"
+                >
+                  {isVerifying ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <Download className="w-5 h-5" />
+                  )}
+                  <span>{labels.downloadResumeBtn}</span>
+                </button>
+              </div>
 
               {remainingCodes.length > 0 && (
                 <div className="mt-4 p-4 bg-slate-50 border rounded-xl space-y-3 text-start">
@@ -745,7 +777,7 @@ export const ActivationModal: React.FC = () => {
               </div>
               <div className="space-y-1.5">
                 <h4 className="text-base font-extrabold text-[#001639]">
-                  {labels.activatingCode}
+                  {labels.downloadingPdf}
                 </h4>
                 <p className="text-xs text-slate-500 max-w-xs mx-auto">
                   {isAr
