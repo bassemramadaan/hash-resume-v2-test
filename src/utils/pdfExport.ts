@@ -1,5 +1,6 @@
 import html2canvas from "html2canvas-pro";
 import { jsPDF } from "jspdf";
+import { useExportGate } from "../store/useExportGate";
 
 export function waitForResumePreview(): Promise<HTMLElement> {
   return new Promise((resolve, reject) => {
@@ -40,6 +41,12 @@ export async function exportResumeToPdf(
   elementId: string = "resume-preview-document",
   filename: string = "Hash_Resume.pdf"
 ): Promise<void> {
+  // Synchronous security verification: Confirm gate authorization is currently active
+  const isGateAuthorized = useExportGate.getState().verifyAuthorization();
+  if (!isGateAuthorized) {
+    throw new Error("غير مصرح بتحميل السيرة الذاتية بدون تفعيل صالح. يرجى إتمام التحقق من الدفع.");
+  }
+
   const element = await waitForResumePreview();
 
   // Preserve scale & background

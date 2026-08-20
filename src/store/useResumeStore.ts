@@ -663,9 +663,9 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
 
   useDownloadQuota: () => {
     const state = get();
-    // Unlimited dev / free preview check
-    if (state.activation.planType === 'unlimited_dev' || !state.activation.isActivated) {
-      return true; // allow download in free preview mode or unlimited
+    // Must be activated strictly
+    if (!state.activation || !state.activation.isActivated) {
+      return false;
     }
 
     if (state.activation.remainingDownloads > 0) {
@@ -679,7 +679,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
       return true;
     }
 
-    return false; // Quota reached
+    return false; // Quota reached or zero downloads left
   },
 
   lockResume: () => {

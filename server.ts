@@ -533,76 +533,61 @@ Required JSON format:
   }
 });
 
-// 6. Activation Code Verification (Google Apps Script Integration & Local Fallback)
+// 6. Activation Code Verification (Google Apps Script Integration)
 app.post("/api/verify-code", async (req, res) => {
   try {
-    const { code } = req.body;
+    const { code, reference } = req.body;
     if (!code || typeof code !== "string") {
       return res.status(400).json({ valid: false, message: "كود التفعيل مطلوب" });
     }
 
     const cleanCode = code.trim().toUpperCase();
 
-    // Check if Google Apps Script URL is set in env
-    const gasUrl = process.env.GAS_VERIFY_URL;
-    if (gasUrl) {
-      try {
-        const gasResponse = await fetch(`${gasUrl}?code=${encodeURIComponent(cleanCode)}`);
-        if (gasResponse.ok) {
-          const data = await gasResponse.json();
-          return res.json(data);
-        }
-      } catch (gasErr) {
-        console.warn("GAS endpoint check failed, falling back to local validator:", gasErr);
+    // Check Google Apps Script URL from environment variable
+    const gasUrl = process.env.VITE_PAYMENT_API_URL || process.env.GAS_VERIFY_URL;
+    if (!gasUrl) {
+      return res.status(500).json({
+        valid: false,
+        message: "خدمة التحقق من الدفع غير مهيأة في الخادم (VITE_PAYMENT_API_URL غير محددة).",
+      });
+    }
+
+    try {
+      const urlWithParams = new URL(gasUrl);
+      urlWithParams.searchParams.append("action", "verify");
+      urlWithParams.searchParams.append("code", cleanCode);
+      if (reference) {
+        urlWithParams.searchParams.append("reference", String(reference).trim());
       }
-    }
 
-    // Default Local Validation Logic for Hash Resume
-    // Instant test codes supported for evaluation & real user payments
-    if (cleanCode === "HASH50" || cleanCode.startsWith("HASH50-")) {
-      return res.json({
-        valid: true,
-        planType: "single",
-        remainingDownloads: 1,
-        message: "تم تفعيل خطة التفعيل الفردي بنجاح! (50 جنيه)",
-        activatedCode: cleanCode,
-      });
-    }
-
-    if (cleanCode === "HASH120" || cleanCode.startsWith("HASH120-")) {
-      return res.json({
-        valid: true,
-        planType: "bundle_3",
-        remainingDownloads: 3,
-        message: "تم تفعيل باقة الـ 3 تفعيلات بنجاح! (120 جنيه - توفير متميز)",
-        activatedCode: cleanCode,
-      });
-    }
-
-    if (cleanCode === "EGYPT2026" || cleanCode === "VIP-RESUME" || cleanCode === "DEMO-FREE") {
-      return res.json({
-        valid: true,
-        planType: "unlimited_dev",
-        remainingDownloads: 99,
-        message: "كود تفعيل عرض خاص مفعل بنجاح!",
-        activatedCode: cleanCode,
-      });
-    }
-
-    // Generic pattern validation for generated codes (e.g., HASH-XXXX-XXXX)
-    if (/^HASH-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(cleanCode)) {
-      return res.json({
-        valid: true,
-        planType: "single",
-        remainingDownloads: 1,
-        message: "تم التحقق من كود التفعيل بنجاح!",
-        activatedCode: cleanCode,
+      const gasResponse = await fetch(urlWithParams.toString());
+      if (gasResponse.ok) {
+        const data = await gasResponse.json();
+        if (data && data.success && data.status === "USED") {
+          return res.json({
+            valid: true,
+            status: "USED",
+            remainingDownloads: data.remainingDownloads || 1,
+            message: data.message || "تم التحقق من كود التفعيل بنجاح!",
+            activatedCode: cleanCode,
+          });
+        }
+        return res.status(400).json({
+          valid: false,
+          message: data?.message || "كود التفعيل غير صالح أو لم يتم تأكيد الدفع بعد.",
+        });
+      }
+    } catch (gasErr) {
+      console.warn("GAS endpoint verification request failed:", gasErr);
+      return res.status(503).json({
+        valid: false,
+        message: "تعذر الاتصال بنظام التحقق من الدفع حالياً. يرجى المحاولة مرة أخرى بعد قليل.",
       });
     }
 
     return res.status(400).json({
       valid: false,
-      message: "كود التفعيل غير صحيح أو تم استخدامه من قبل. يمكنك استخدام الكود التجريبي HASH50 أو HASH120 للاختبار.",
+      message: "فشل التحقق من كود التفعيل. يرجى التأكد من صحة الكود أو التواصل مع الدعم الفني.",
     });
   } catch (err: any) {
     console.error("Error in /api/verify-code:", err);

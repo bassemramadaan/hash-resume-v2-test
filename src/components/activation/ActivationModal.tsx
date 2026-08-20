@@ -69,7 +69,7 @@ const PAYMENT_MODAL_I18N = {
     copiedBtn: 'تم النسخ بنجاح',
     enterCodeTitle: 'تفعيل عبر كود مباشر',
     enterCodeDesc: 'إذا كان لديك كود تفعيل (كود مسبق أو كود شراء)، أدخله هنا للتفعيل الفوري:',
-    codePlaceholder: 'مثال: HASH50 أو HASH120',
+    codePlaceholder: 'مثال: HASH-XXXX-XXXX',
     additionalCodesTitle: 'أكوادك الإضافية المتبقية',
     additionalCodesNote: 'لديك تفعيلان إضافيان لاستخدامهما مستقبلاً لأي سيرة ذاتية أخرى. احفظهما جيداً.',
     saveWarning: '⚠️ يرجى حفظ هذه الأكواد في مكان آمن لاستخدامها لاحقاً.',
@@ -137,7 +137,7 @@ const PAYMENT_MODAL_I18N = {
     copiedBtn: 'Copied',
     enterCodeTitle: 'Enter Activation Code',
     enterCodeDesc: 'Enter your activation code to unlock your resume instantly:',
-    codePlaceholder: 'e.g. HASH50 or HASH120',
+    codePlaceholder: 'e.g. HASH-XXXX-XXXX',
     additionalCodesTitle: 'Your Additional Bundle Codes',
     additionalCodesNote: 'You have additional download credits. Save them carefully.',
     saveWarning: '⚠️ Save these codes now in a safe place for future use.',
@@ -297,14 +297,33 @@ export const ActivationModal: React.FC = () => {
     }
   };
 
-  const handleVerifyExistingCode = () => {
-    if (!inputCode.trim()) {
+  const handleVerifyExistingCode = async () => {
+    const cleanCode = inputCode.trim().toUpperCase();
+    if (!cleanCode) {
       setErrorMessage(labels.codeRequired);
       setPaymentStep('error');
       return;
     }
-    setActivatedCode(inputCode.trim().toUpperCase());
-    setPaymentStep('approved');
+
+    setIsVerifying(true);
+    setErrorMessage('');
+    try {
+      const currentRef = referenceInput || localStorage.getItem('payment_reference') || 'EXISTING_CODE_CHECK';
+      const result = await verifyActivationCode(cleanCode, currentRef);
+
+      if (result.success && result.status === 'USED') {
+        setActivatedCode(cleanCode);
+        setPaymentStep('approved');
+      } else {
+        setErrorMessage(result.message || labels.errorTitle);
+        setPaymentStep('error');
+      }
+    } catch (err: any) {
+      setErrorMessage(err.message || labels.errorTitle);
+      setPaymentStep('error');
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const handleVerifiedDownload = async () => {

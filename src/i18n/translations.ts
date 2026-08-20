@@ -156,9 +156,9 @@ export const translations = {
     payFawry: "فوري / منافذ الدفع الإلكتروني",
     
     enterCodePrompt: "أدخل كود التفعيل بعد إتمام تحويل المبلغ:",
-    codePlaceholder: "مثال: HASH50 أو HASH120",
+    codePlaceholder: "مثال: HASH-XXXX-XXXX",
     verifyCodeBtn: "تحقق وتفعيل الآن",
-    demoCodesNotice: "أكواد تجريبية سريعة للاستعراض والتجربة: HASH50 (تفعيل فردي) أو HASH120 (باقة 3).",
+    demoCodesNotice: "أدخل كود التفعيل المستلم عبر واتساب أو رسالة التأكيد لتفعيل التحميل الفوري.",
 
     // Footer & Privacy
     privacyGuaranteed: "بياناتك بأمان 100%: تُحفظ سيرتك الذاتية محلياً في متصفحك فقط ولن يُنقل أي نص لشيرفر خارجي مجهول.",
@@ -320,9 +320,9 @@ export const translations = {
     payFawry: "Fawry / E-Payment Outlets",
 
     enterCodePrompt: "Enter your activation code after transferring:",
-    codePlaceholder: "e.g. HASH50 or HASH120",
+    codePlaceholder: "e.g. HASH-XXXX-XXXX",
     verifyCodeBtn: "Verify & Activate Now",
-    demoCodesNotice: "Quick demo test codes: HASH50 (Single) or HASH120 (Bundle).",
+    demoCodesNotice: "Enter the activation code received via WhatsApp or confirmation message to unlock download.",
 
     // Footer & Privacy
     privacyGuaranteed: "100% Local Privacy: Your resume data stays strictly inside your browser's local storage and is never uploaded to remote databases.",
@@ -490,9 +490,9 @@ export const translations = {
     payFawry: "Fawry / Points de paiement",
 
     enterCodePrompt: "Entrez votre code d'activation après le virement :",
-    codePlaceholder: "Ex: HASH50 ou HASH120",
+    codePlaceholder: "Ex: HASH-XXXX-XXXX",
     verifyCodeBtn: "Vérifier & Activer maintenant",
-    demoCodesNotice: "Codes démo pour essai immédiat : HASH50 (Unique) ou HASH120 (Pack 3).",
+    demoCodesNotice: "Entrez le code d'activation reçu par WhatsApp ou e-mail pour débloquer le téléchargement.",
 
     // Footer & Privacy
     privacyGuaranteed: "Confidentialité 100% locale : Vos données restent exclusivement stockées dans votre navigateur.",

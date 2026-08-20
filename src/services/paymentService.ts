@@ -5,10 +5,13 @@
 import { PaymentStatusResponse } from '../types/payment';
 
 const PAYMENT_API_URL =
-  (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_PAYMENT_API_URL) ||
-  'https://script.google.com/macros/s/AKfycby5ddRmvrXxLNvfszUbjveD_3jzZIflDmxA06aRcyTE208k1_o0v1Yjrvn_rSfz-XI/exec';
+  (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_PAYMENT_API_URL) || '';
 
 export async function callPaymentApi(params: Record<string, string>) {
+  if (!PAYMENT_API_URL) {
+    throw new Error('خدمة الدفع غير مهيأة (VITE_PAYMENT_API_URL غير محدد).');
+  }
+
   const url = new URL(PAYMENT_API_URL);
   url.search = new URLSearchParams(params).toString();
 
@@ -54,15 +57,15 @@ export async function verifyActivationCode(code: string, reference: string) {
       reference: reference
     });
   } catch (err: any) {
-    // If external Google Apps Script fails, fallback to local backend validation
+    // If external Google Apps Script fails, check backend verify-code proxy
     try {
       const serverRes = await fetch('/api/verify-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code }),
+        body: JSON.stringify({ code, reference }),
       });
       const data = await serverRes.json();
-      if (serverRes.ok && data.valid) {
+      if (serverRes.ok && data.valid && data.status === 'USED') {
         return {
           success: true,
           status: 'USED',
@@ -71,30 +74,14 @@ export async function verifyActivationCode(code: string, reference: string) {
         };
       }
     } catch {
-      // ignore
+      // ignore proxy fetch errors and fail closed below
     }
 
-    // Direct local pattern fallback for instant demo/test codes
-    const cleanCode = code.trim().toUpperCase();
-    if (
-      cleanCode === 'HASH50' ||
-      cleanCode.startsWith('HASH50-') ||
-      cleanCode === 'HASH120' ||
-      cleanCode.startsWith('HASH120-') ||
-      cleanCode === 'EGYPT2026' ||
-      cleanCode === 'VIP-RESUME' ||
-      cleanCode === 'DEMO-FREE' ||
-      /^HASH-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(cleanCode)
-    ) {
-      return {
-        success: true,
-        status: 'USED',
-        message: 'تم تفعيل الكود بنجاح!',
-        remainingDownloads: cleanCode.includes('120') ? 3 : 1,
-      };
-    }
-
-    throw err;
+    // Fail closed: Never return synthetic success on network/verification error
+    return {
+      success: false,
+      message: err.message || 'فشل التحقق من كود التفعيل. يرجى التأكد من الكود أو المحاولة مرة أخرى.',
+    };
   }
 }
 

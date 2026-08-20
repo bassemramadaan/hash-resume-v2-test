@@ -15,7 +15,7 @@ import {
   Briefcase
 } from 'lucide-react';
 
-const HASH_HUNT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxxt9vTIxbliZDn3ucqisI9iwWUvXQ-pCFkLiNAq__wQCGSWYwHkOvhmNjIeehcpWqWbw/exec';
+const HASH_HUNT_ENDPOINT = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_HASH_HUNT_API_URL) || '';
 
 interface Job {
   id: string;
@@ -209,6 +209,14 @@ export const HashHuntPage: React.FC = () => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
+
+    if (!HASH_HUNT_ENDPOINT) {
+      setErrorMsg(isAr ? 'خدمة التقديم غير متاحة حالياً (VITE_HASH_HUNT_API_URL غير مهيأة).' : 'Application service is currently unavailable.');
+      if (formTopRef.current) {
+        formTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
 
     if (!fullName || !phoneNumber || !email || !jobTitle || !location || !openTo || !resumeFile) {
       setErrorMsg(isAr ? 'يرجى تعبئة جميع الحقول المطلوبة وإرفاق السيرة الذاتية.' : 'Please fill all required fields and attach your resume.');
