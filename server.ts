@@ -575,9 +575,9 @@ app.post("/api/verify-code", async (req, res) => {
         data = null;
       }
 
-      // Safe debugging: Log only HTTP status, success flag, status, and message (never code, ref, email, url, or secrets)
+      // Safe debugging: Log only HTTP status, success flag, and status (never code, ref, email, url, message, or secrets)
       console.log(
-        `[GAS Verify Proxy] gasHttpStatus=${gasResponse.status}, success=${data?.success}, status=${data?.status}, message=${data?.message}`
+        `[GAS Verify Proxy] gasHttpStatus=${gasResponse.status}, success=${data?.success}, status=${data?.status}`
       );
 
       // Strict acceptance: accept only { success: true, status: "USED" }
@@ -588,7 +588,6 @@ app.post("/api/verify-code", async (req, res) => {
           status: "USED",
           remainingDownloads: data.remainingDownloads || 1,
           message: data.message || "تم التحقق من كود التفعيل بنجاح!",
-          activatedCode: cleanCode,
         });
       }
 
