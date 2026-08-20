@@ -47,30 +47,90 @@ export async function exportResumeToPdf(
     throw new Error("غير مصرح بتحميل السيرة الذاتية بدون تفعيل صالح. يرجى إتمام التحقق من الدفع.");
   }
 
+  // Ensure document fonts are fully loaded to prevent font-substitution reflow
+  if (typeof document !== "undefined" && "fonts" in document) {
+    try {
+      await document.fonts.ready;
+    } catch {
+      // ignore and proceed
+    }
+  }
+
   const element = await waitForResumePreview();
 
-  // Preserve scale & background
+  // Create an isolated deterministic render sandbox container
+  // Standard A4 at 96 CSS DPI: Width = 794px (~210mm), MinHeight = 1123px (~297mm)
+  const A4_WIDTH_PX = 794;
+  const A4_PAGE_HEIGHT_MM = 297;
+  const A4_PAGE_WIDTH_MM = 210;
+
+  const sandboxContainer = document.createElement("div");
+  sandboxContainer.id = "hash-resume-pdf-sandbox";
+  sandboxContainer.setAttribute("aria-hidden", "true");
+  sandboxContainer.setAttribute("tabindex", "-1");
+  sandboxContainer.style.position = "fixed";
+  sandboxContainer.style.left = "0";
+  sandboxContainer.style.top = "0";
+  sandboxContainer.style.width = `${A4_WIDTH_PX}px`;
+  sandboxContainer.style.minWidth = `${A4_WIDTH_PX}px`;
+  sandboxContainer.style.maxWidth = `${A4_WIDTH_PX}px`;
+  sandboxContainer.style.margin = "0";
+  sandboxContainer.style.padding = "0";
+  sandboxContainer.style.border = "none";
+  sandboxContainer.style.zIndex = "-99999";
+  sandboxContainer.style.opacity = "0";
+  sandboxContainer.style.pointerEvents = "none";
+  sandboxContainer.style.overflow = "visible";
+  sandboxContainer.style.transform = "none";
+  sandboxContainer.style.zoom = "1";
+  sandboxContainer.style.backgroundColor = "#ffffff";
+
+  // Deep clone the resume document content
   const clone = element.cloneNode(true) as HTMLElement;
-  clone.querySelectorAll('.no-print').forEach((el) => el.remove());
+
+  // Clean up any preview-only annotations / break indicators
+  clone.querySelectorAll(".no-print").forEach((el) => el.remove());
+
+  // Force deterministic sizing and neutralize preview-level container transforms on the clone root only.
+  // Note: We deliberately do NOT strip transforms from children (icons, decorative SVGs, badges).
+  clone.style.transform = "none";
+  clone.style.zoom = "1";
+  clone.style.width = `${A4_WIDTH_PX}px`;
+  clone.style.minWidth = `${A4_WIDTH_PX}px`;
+  clone.style.maxWidth = `${A4_WIDTH_PX}px`;
+  clone.style.boxSizing = "border-box";
+  clone.style.margin = "0";
   clone.style.display = "block";
   clone.style.visibility = "visible";
-  clone.style.width = "210mm";
-  clone.style.minHeight = "297mm";
-  clone.style.transform = "none";
-  clone.style.position = "fixed";
-  clone.style.left = "-9999px";
-  clone.style.top = "0";
-  clone.style.zIndex = "-1000";
-  document.body.appendChild(clone);
+
+  sandboxContainer.appendChild(clone);
+  document.body.appendChild(sandboxContainer);
+
   try {
     const canvas = await html2canvas(clone, {
-      scale: 2,
+      scale: 2, // 2x high resolution for crisp text & graphics
       useCORS: true,
       logging: false,
       backgroundColor: "#ffffff",
       allowTaint: true,
-      onclone: (clonedDoc) => {
-        clonedDoc.querySelectorAll('.no-print').forEach((el) => el.remove());
+      width: A4_WIDTH_PX,
+      windowWidth: A4_WIDTH_PX, // Forces html2canvas internal iframe viewport to 794px (prevents responsive layout shifts)
+      scrollX: 0,
+      scrollY: 0,
+      x: 0,
+      y: 0,
+      onclone: (clonedDoc, clonedEl) => {
+        clonedDoc.querySelectorAll(".no-print").forEach((el) => el.remove());
+
+        if (clonedEl instanceof HTMLElement) {
+          clonedEl.style.transform = "none";
+          clonedEl.style.zoom = "1";
+          clonedEl.style.width = `${A4_WIDTH_PX}px`;
+          clonedEl.style.minWidth = `${A4_WIDTH_PX}px`;
+          clonedEl.style.maxWidth = `${A4_WIDTH_PX}px`;
+        }
+
+        // Modern CSS color compatibility converter (Oklch fallback)
         const oklchRegex = /oklch\([^)]+\)/gi;
         const tempCanvas = clonedDoc.createElement("canvas");
         const ctx = tempCanvas.getContext("2d");
@@ -103,6 +163,7 @@ export async function exportResumeToPdf(
         }
       },
     });
+
     const imgData = canvas.toDataURL("image/png", 1.0);
     const pdf = new jsPDF({
       orientation: "portrait",
@@ -110,22 +171,25 @@ export async function exportResumeToPdf(
       format: "a4",
       compress: true,
     });
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-    const imgWidth = pdfWidth;
-    const imgHeight = (canvas.height * pdfWidth) / canvas.width;
-    let heightLeft = imgHeight;
-    let position = 0;
-    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight, undefined, "FAST");
-    heightLeft -= pdfHeight;
-    while (heightLeft > 5) {
-      position = heightLeft - imgHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight, undefined, "FAST");
-      heightLeft -= pdfHeight;
+
+    const totalPdfHeight = (canvas.height * A4_PAGE_WIDTH_MM) / canvas.width;
+    // Calculate total pages with a subpixel 2mm threshold
+    const totalPages = Math.max(1, Math.ceil((totalPdfHeight - 2) / A4_PAGE_HEIGHT_MM));
+
+    for (let page = 0; page < totalPages; page++) {
+      if (page > 0) {
+        pdf.addPage();
+      }
+      const yOffset = -(page * A4_PAGE_HEIGHT_MM);
+      pdf.addImage(imgData, "PNG", 0, yOffset, A4_PAGE_WIDTH_MM, totalPdfHeight, undefined, "FAST");
     }
+
     pdf.save(filename);
   } finally {
-    document.body.removeChild(clone);
+    if (sandboxContainer && sandboxContainer.parentNode) {
+      sandboxContainer.parentNode.removeChild(sandboxContainer);
+    }
+    // Defensive cleanup in case of duplicate instances
+    document.querySelectorAll("#hash-resume-pdf-sandbox").forEach((el) => el.remove());
   }
 }
