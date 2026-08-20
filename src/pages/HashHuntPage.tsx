@@ -194,11 +194,20 @@ export const HashHuntPage: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (window.location.hash === "#apply-now") {
+      document.getElementById("apply-now")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, []);
+
   const handleApplyClick = (title?: string) => {
     if (title) {
       setJobTitle(title);
     }
-    scrollToSection('apply');
+    scrollToSection('apply-now');
     if (title && jobTitleInputRef.current) {
       setTimeout(() => jobTitleInputRef.current?.focus(), 500);
     }
@@ -361,7 +370,7 @@ export const HashHuntPage: React.FC = () => {
 
           <div className="flex items-center gap-3">
             <button
-              onClick={() => scrollToSection('apply')}
+              onClick={() => scrollToSection('apply-now')}
               className="min-h-[40px] px-4 rounded-xl bg-coral text-sm font-bold text-white transition hover:bg-coral-hover focus:outline-none focus:ring-2 focus:ring-coral focus:ring-offset-2 flex items-center justify-center gap-2"
             >
               {isAr ? "قدّم الآن" : "Apply Now"}
@@ -403,7 +412,7 @@ export const HashHuntPage: React.FC = () => {
                   {isAr ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
                 </button>
                 <button
-                  onClick={() => scrollToSection('apply')}
+                  onClick={() => scrollToSection('apply-now')}
                   className="min-h-[48px] w-full rounded-xl bg-white border border-[#E5E7EB] px-5 text-base font-bold text-navy transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:ring-offset-2 md:w-auto flex items-center justify-center"
                 >
                   {isAr ? "تقديم طلب مفتوح" : "General Application"}
@@ -546,7 +555,7 @@ export const HashHuntPage: React.FC = () => {
       </section>
 
       {/* 6. Application Section */}
-      <section id="apply" ref={applySectionRef} className="py-12 md:py-20 bg-white border-t border-slate-200 relative scroll-mt-16 md:scroll-mt-[72px]">
+      <section id="apply-now" ref={applySectionRef} className="py-12 md:py-20 bg-white border-t border-slate-200 relative scroll-mt-16 md:scroll-mt-[72px]">
         <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 relative z-10">
           
           <div className="mb-6 md:mb-10 text-center" ref={formTopRef}>
