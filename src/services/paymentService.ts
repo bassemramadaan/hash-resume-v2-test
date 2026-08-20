@@ -28,9 +28,21 @@ export async function callPaymentApi(
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(options?.body || params),
     });
-    const result = await response.json();
-    if (!response.ok) {
-      throw new Error(result.message || 'تعذر الاتصال بخدمة الدفع.');
+
+    let result: any = null;
+    try {
+      result = await response.json();
+    } catch {
+      result = null;
+    }
+
+    // Safe debugging: Log only method, action, response status, success/status
+    console.log(
+      `[Payment API] Response: method=${method}, action=${actionName}, httpStatus=${response.status}, success=${result?.success}, status=${result?.status}`
+    );
+
+    if (!response.ok || !result || result.success !== true) {
+      throw new Error(result?.message || 'تعذر تسجيل عملية التحويل.');
     }
     return result;
   }
@@ -39,10 +51,20 @@ export async function callPaymentApi(
   url.search = new URLSearchParams(params).toString();
 
   const response = await fetch(url.toString());
-  const result = await response.json();
+  let result: any = null;
+  try {
+    result = await response.json();
+  } catch {
+    result = null;
+  }
 
-  if (!response.ok) {
-    throw new Error(result.message || 'تعذر الاتصال بخدمة الدفع.');
+  // Safe debugging: Log only method, action, response status, success/status
+  console.log(
+    `[Payment API] Response: method=${method}, action=${actionName}, httpStatus=${response.status}, success=${result?.success}, status=${result?.status}`
+  );
+
+  if (!response.ok || !result) {
+    throw new Error(result?.message || 'تعذر الاتصال بخدمة الدفع.');
   }
 
   return result;

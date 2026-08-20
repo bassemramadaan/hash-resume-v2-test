@@ -256,20 +256,24 @@ export const ActivationModal: React.FC = () => {
     
     setIsSubmitting(true);
     try {
-      const amountStr = selectedPlan === 'bundle_3' ? '120 EGP (3 Codes)' : '50 EGP';
+      const amountStr = selectedPlan === 'bundle_3' ? '120 EGP' : '50 EGP';
+      const cleanRef = referenceInput.trim();
+      const cleanEmail = emailInput.trim();
+      const cleanSender = senderInfo.trim();
+
       const res: any = await submitPayment({
-        reference: referenceInput,
-        senderInfo,
-        email: emailInput,
-        amount: amountStr
+        reference: cleanRef,
+        senderInfo: cleanSender,
+        email: cleanEmail,
+        amount: amountStr,
       });
       
-      if (res.success) {
-        localStorage.setItem('payment_reference', referenceInput);
-        localStorage.setItem('payment_email', emailInput);
+      if (res && res.success === true && res.status === 'pending') {
+        localStorage.setItem('payment_reference', cleanRef);
+        localStorage.setItem('payment_email', cleanEmail);
         setPaymentStep('submitted_pending');
       } else {
-        setErrorMessage(res.message || labels.errorTitle);
+        setErrorMessage(res?.message || labels.errorTitle);
         setPaymentStep('error');
       }
     } catch (err: any) {
