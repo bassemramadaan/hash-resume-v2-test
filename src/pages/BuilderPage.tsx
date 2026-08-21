@@ -341,11 +341,12 @@ export const BuilderPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => loadSampleResume(isAr ? 'arabic' : 'english')}
-                className="hidden sm:inline-flex items-center gap-1 px-2.5 py-1 text-slate-600 hover:text-[#001639] hover:bg-slate-100 rounded-full text-xs font-medium border border-transparent hover:border-slate-200 transition cursor-pointer"
+                className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 text-slate-600 hover:text-[#001639] hover:bg-slate-100 rounded-full text-[11px] sm:text-xs font-medium border border-slate-200 sm:border-transparent hover:border-slate-200 transition cursor-pointer"
                 title={t.loadSample}
               >
                 <Sparkles className="w-3 h-3 text-[#FF4D2D]" />
-                <span>{t.loadSample}</span>
+                <span className="hidden xs:inline sm:inline">{t.loadSample}</span>
+                <span className="xs:hidden sm:hidden">{isAr ? 'نموذج جاهز' : 'Sample'}</span>
               </button>
             </div>
           </div>

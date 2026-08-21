@@ -46,17 +46,42 @@ const defaultActivation: ActivationState = {
   activatedAt: null,
 };
 
+export const createEmptyResume = (): ResumeData => ({
+  personalInfo: {
+    fullName: '',
+    jobTitle: '',
+    email: '',
+    phone: '',
+    location: '',
+    linkedin: '',
+    github: '',
+    website: '',
+    photoUrl: '',
+    summary: '',
+  },
+  experiences: [],
+  education: [],
+  skills: [],
+  projects: [],
+  certifications: [],
+  languages: [],
+  customSections: [],
+});
+
 // Initial state loader from LocalStorage
 const loadInitialResume = (): ResumeData => {
   try {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY_RESUME);
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === 'object' && parsed.personalInfo) {
+        return parsed;
+      }
     }
   } catch (e) {
     console.warn("Failed to load saved resume from localStorage", e);
   }
-  return sampleArabicSoftwareEngineer;
+  return createEmptyResume();
 };
 
 const loadInitialSettings = (): ResumeSettings => {
@@ -602,23 +627,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   },
 
   resetResume: () => {
-    const emptyResume: ResumeData = {
-      personalInfo: {
-        fullName: '',
-        jobTitle: '',
-        email: '',
-        phone: '',
-        location: '',
-        linkedin: '',
-        summary: '',
-      },
-      experiences: [],
-      education: [],
-      skills: [],
-      projects: [],
-      certifications: [],
-      languages: [],
-    };
+    const emptyResume = createEmptyResume();
     localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(emptyResume));
     set({ resumeData: emptyResume });
   },
