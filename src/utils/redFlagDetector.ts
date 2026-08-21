@@ -183,8 +183,8 @@ export function detectResumeRedFlags(data: ResumeData): RedFlagItem[] {
     personalInfo.summary || '',
     personalInfo.location || '',
     personalInfo.jobTitle || '',
-    ...(experiences || []).map((e) => `${e.position} ${e.company} ${(e.bulletPoints || []).join(' ')}`),
-    ...(data.customSections || []).map((c) => `${c.sectionTitle} ${c.items.map((i) => `${i.title} ${i.description}`).join(' ')}`),
+    ...(experiences || []).map((e) => `${e?.position || ''} ${e?.company || ''} ${(e?.bulletPoints || []).join(' ')}`),
+    ...(data.customSections || []).map((c) => `${c?.sectionTitle || ''} ${(c?.items || []).map((i) => `${i?.title || ''} ${i?.description || ''}`).join(' ')}`),
   ].join(' ');
 
   for (const pattern of SENSITIVE_PATTERNS) {
