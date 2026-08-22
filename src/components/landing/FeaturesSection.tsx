@@ -217,20 +217,24 @@ export const FeaturesSection: React.FC<FeaturesSectionProps> = ({ isAr }) => {
                   </div>
 
                   {/* Expandable Detailed Explanation for Mobile & Desktop */}
-                  {isExpanded && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="pt-3 border-t border-slate-100 text-[11px] text-[#001639] font-medium leading-relaxed bg-slate-50/80 p-3 rounded-2xl border border-slate-200/80 space-y-1"
-                    >
-                      <div className="font-bold text-xs flex items-center gap-1.5 text-[#001639]">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                        <span>{isAr ? 'القيمة التنافسية:' : 'Key Value:'}</span>
-                      </div>
-                      <p>{isAr ? item.detailedDescAr : item.detailedDescEn}</p>
-                    </motion.div>
-                  )}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        key={`expanded-${item.id}`}
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="pt-3 border-t border-slate-100 text-[11px] text-[#001639] font-medium leading-relaxed bg-slate-50/80 p-3 rounded-2xl border border-slate-200/80 space-y-1 overflow-hidden"
+                      >
+                        <div className="font-bold text-xs flex items-center gap-1.5 text-[#001639]">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                          <span>{isAr ? 'القيمة التنافسية:' : 'Key Value:'}</span>
+                        </div>
+                        <p>{isAr ? item.detailedDescAr : item.detailedDescEn}</p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
 
                 {/* Bottom Interactive Expand Toggle */}

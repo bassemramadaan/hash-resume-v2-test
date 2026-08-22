@@ -2,6 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from '../store/useResumeStore';
 import { getTranslation } from '../i18n/translations';
+import { useMediaQuery } from '../hooks/useMediaQuery';
+
+// Mobile Components
+import { MobileResumeDashboard } from '../components/mobile/MobileResumeDashboard';
+import { MobileSectionEditor, MobileSectionKey } from '../components/mobile/MobileSectionEditor';
+import { MobileBottomNav } from '../components/mobile/MobileBottomNav';
+import { MobilePreviewSheet } from '../components/mobile/MobilePreviewSheet';
 
 // Form Components
 import { PersonalInfoForm } from '../components/builder/PersonalInfoForm';
@@ -56,6 +63,9 @@ export const BuilderPage: React.FC = () => {
     isSidebarCollapsed,
     setIsSidebarCollapsed,
   } = useResumeStore();
+
+  const isMobile = useMediaQuery('(max-width: 767px)');
+  const [mobileActiveSection, setMobileActiveSection] = useState<MobileSectionKey | null>(null);
 
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
@@ -273,6 +283,141 @@ export const BuilderPage: React.FC = () => {
   const ArrowPrev = isAr ? ChevronRight : ChevronLeft;
   const ArrowNext = isAr ? ChevronLeft : ChevronRight;
 
+  const renderResetModal = () => (
+    <AnimatePresence>
+      {isResetModalOpen && (
+        <motion.div
+          key="reset-modal-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs"
+        >
+          <motion.div
+            key="reset-modal-card"
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ duration: 0.18 }}
+            className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden"
+          >
+            <div className="p-5 sm:p-6 text-center space-y-4">
+              <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto">
+                <RotateCcw className="w-6 h-6" />
+              </div>
+
+              <div className="space-y-1.5">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                  {t.startNewResumeTitle}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                  {t.startNewResumeDesc}
+                </p>
+              </div>
+
+              <div className="p-3 bg-amber-50 rounded-xl border border-amber-200/80 text-right text-xs text-amber-900 flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <span>
+                  {isAr
+                    ? 'رصيد التحميل والخطط المفعلة ستبقى كما هي دون أي مساس.'
+                    : 'Your activation credits and purchased plans remain intact.'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsResetModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs sm:text-sm font-semibold hover:bg-slate-50 transition cursor-pointer min-h-[44px]"
+                >
+                  {t.startNewResumeCancelBtn}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    resetResume();
+                    setIsResetModalOpen(false);
+                    setActiveTab('personal');
+                    setMobileActiveSection(null);
+                    setShowResetToast(true);
+                    setTimeout(() => setShowResetToast(false), 4000);
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-bold transition shadow-xs cursor-pointer min-h-[44px]"
+                >
+                  {t.startNewResumeConfirmBtn}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
+  const renderResetToast = () => (
+    <AnimatePresence>
+      {showResetToast && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          className="fixed bottom-20 md:bottom-6 end-6 z-50 bg-emerald-900 text-white px-4 py-3 rounded-xl shadow-xl border border-emerald-700 flex items-center gap-2.5 text-xs sm:text-sm font-medium"
+        >
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span>{t.startNewResumeSuccessMsg}</span>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
+  // MOBILE APP DASHBOARD & DEDICATED SECTION EDITOR (< 768px)
+  if (isMobile) {
+    return (
+      <main className="bg-[#F8FAFC] min-h-screen" aria-label="Mobile Resume Builder">
+        <AnimatePresence mode="wait">
+          {mobileActiveSection ? (
+            <MobileSectionEditor
+              key={mobileActiveSection}
+              sectionKey={mobileActiveSection}
+              onBack={() => setMobileActiveSection(null)}
+              onNavigateSection={(nextKey) => setMobileActiveSection(nextKey)}
+              saveStatus={saveStatus}
+            />
+          ) : (
+            <MobileResumeDashboard
+              key="mobile-dashboard"
+              onSelectSection={(key) => setMobileActiveSection(key)}
+              onOpenResetModal={() => setIsResetModalOpen(true)}
+              saveStatus={saveStatus}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Mobile Sticky Bottom Navigation */}
+        <MobileBottomNav
+          onOpenPreview={() => setIsMobilePreviewOpen(true)}
+          onOpenDownload={() => setMobileActiveSection('download')}
+          isDownloadActive={mobileActiveSection === 'download'}
+        />
+
+        {/* Fullscreen Mobile Preview Bottom Sheet */}
+        <MobilePreviewSheet
+          isOpen={isMobilePreviewOpen}
+          onClose={() => setIsMobilePreviewOpen(false)}
+          onGoToExport={() => setMobileActiveSection('download')}
+        />
+
+        {/* Start New Resume Confirmation Modal */}
+        {renderResetModal()}
+
+        {/* Reset Confirmation Toast */}
+        {renderResetToast()}
+      </main>
+    );
+  }
+
+  // DESKTOP RESUME BUILDER (>= 768px)
   return (
     <main className="space-y-3 sm:space-y-4 pb-24 sm:pb-12 bg-[#F8FAFC] min-h-screen">
       {/* Top Sticky Header */}
@@ -355,44 +500,8 @@ export const BuilderPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Unified Mobile Step Navigation Slider */}
-          <div className="lg:hidden mt-2 pt-1.5 border-t border-slate-100">
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar touch-pan-x">
-              {STEPS.map((s, idx) => {
-                const isActive = idx === currentStepIndex;
-                const isPassed = idx < currentStepIndex;
-                return (
-                  <button
-                    key={s.id}
-                    onClick={() => setActiveTab(s.id as any)}
-                    className={`px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 min-h-[30px] shrink-0 active:scale-95 ${
-                      isActive
-                        ? 'bg-[#001639] text-white shadow-2xs'
-                        : isPassed
-                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/60'
-                        : 'bg-slate-100 text-slate-600'
-                    }`}
-                  >
-                    <span
-                      className={`w-3.5 h-3.5 rounded-full text-[9px] font-bold flex items-center justify-center ${
-                        isActive
-                          ? 'bg-[#FF4D2D] text-white'
-                          : isPassed
-                          ? 'bg-emerald-600 text-white'
-                          : 'bg-slate-200 text-slate-700'
-                      }`}
-                    >
-                      {isPassed ? '✓' : idx + 1}
-                    </span>
-                    <span>{isAr ? s.labelAr.replace(/^\d+\.\s*/, '') : s.labelEn.replace(/^\d+\.\s*/, '')}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
           {/* Desktop Progress Line */}
-          <div className="hidden lg:block w-full bg-slate-100 h-1 rounded-full overflow-hidden mt-2">
+          <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden mt-2">
             <div
               className="bg-[#001639] h-full transition-all duration-300"
               style={{ width: `${((currentStepIndex + 1) / 6) * 100}%` }}
@@ -576,158 +685,11 @@ export const BuilderPage: React.FC = () => {
         </div>
       </div>
 
-      {/* MOBILE STICKY BOTTOM DOCK (Thumb Friendly) */}
-      <div
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 py-2.5 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] flex items-center justify-between gap-2"
-        style={{ paddingBottom: 'calc(env(safe-area-inset-bottom, 8px) + 8px)' }}
-      >
-        <button
-          type="button"
-          onClick={handlePrevStep}
-          disabled={currentStepIndex === 0}
-          className="px-3 py-2 text-xs font-bold rounded-xl border border-slate-200 bg-slate-50 text-[#0B1120] disabled:opacity-30 flex items-center gap-1 min-h-[44px] min-w-[70px] justify-center active:scale-95 transition"
-        >
-          <ArrowPrev className="w-4 h-4" />
-          <span>{isAr ? 'السابق' : 'Prev'}</span>
-        </button>
+      {/* Start New Resume Confirmation Modal */}
+      {renderResetModal()}
 
-        {/* Center: Live Preview Bottom Sheet Trigger */}
-        <button
-          type="button"
-          onClick={() => setIsMobilePreviewOpen(true)}
-          className="flex-1 px-3 py-2 bg-[#001639] text-white font-bold text-xs rounded-xl border border-[#001639] flex items-center justify-center gap-1.5 shadow-sm min-h-[44px] active:scale-98 transition"
-        >
-          <Eye className="w-4 h-4 text-[#FF4D2D]" />
-          <span>{isAr ? 'معاينة السيرة A4' : 'Preview CV A4'}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={handleNextStep}
-          disabled={currentStepIndex === STEPS.length - 1}
-          className="px-3.5 py-2 text-xs font-bold rounded-xl bg-[#FF4D2D] hover:bg-[#E5431F] text-white disabled:opacity-30 flex items-center gap-1 min-h-[44px] min-w-[70px] justify-center active:scale-95 transition shadow-xs"
-        >
-          <span>{isAr ? 'التالي' : 'Next'}</span>
-          <ArrowNext className="w-4 h-4" />
-        </button>
-      </div>
-
-      {/* MOBILE BOTTOM SHEET FOR FULL CV PREVIEW */}
-      <AnimatePresence>
-        {isMobilePreviewOpen && (
-          <div className="fixed inset-0 z-50 flex flex-col justify-end bg-slate-950/80 backdrop-blur-xs lg:hidden">
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ type: 'spring', damping: 26, stiffness: 240 }}
-              className="bg-white rounded-t-3xl max-h-[94vh] h-[92vh] flex flex-col overflow-hidden shadow-2xl"
-            >
-              {/* Drag Handle & Header */}
-              <div className="pt-2.5 pb-2 px-4 border-b border-slate-200 bg-slate-50 flex flex-col gap-1">
-                <div className="w-12 h-1.5 bg-slate-300 rounded-full mx-auto" />
-                <div className="flex items-center justify-between pt-1">
-                  <div className="flex items-center gap-2">
-                    <Eye className="w-4 h-4 text-[#001639]" />
-                    <span className="font-bold text-xs text-[#001639]">
-                      {isAr ? 'معاينة السيرة الذاتية (A4)' : 'Resume Preview (A4)'}
-                    </span>
-                  </div>
-                  <button
-                    onClick={() => setIsMobilePreviewOpen(false)}
-                    className="p-1.5 text-slate-500 hover:text-slate-900 bg-slate-200/80 rounded-full transition cursor-pointer min-w-[32px] min-h-[32px] flex items-center justify-center"
-                    aria-label={isAr ? 'إغلاق المعاينة' : 'Close preview'}
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Scrollable Preview Canvas */}
-              <div className="flex-1 overflow-auto p-2 sm:p-4 bg-slate-100">
-                <ResumePreview />
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* CONFIRM START NEW RESUME MODAL */}
-      <AnimatePresence>
-        {isResetModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              transition={{ duration: 0.18 }}
-              className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden"
-            >
-              <div className="p-5 sm:p-6 text-center space-y-4">
-                <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto">
-                  <RotateCcw className="w-6 h-6" />
-                </div>
-
-                <div className="space-y-1.5">
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900">
-                    {t.startNewResumeTitle}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
-                    {t.startNewResumeDesc}
-                  </p>
-                </div>
-
-                <div className="p-3 bg-amber-50 rounded-xl border border-amber-200/80 text-right text-xs text-amber-900 flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
-                  <span>
-                    {isAr
-                      ? 'رصيد التحميل والخطط المفعلة ستبقى كما هي دون أي مساس.'
-                      : 'Your activation credits and purchased plans remain intact.'}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => setIsResetModalOpen(false)}
-                    className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs sm:text-sm font-semibold hover:bg-slate-50 transition cursor-pointer min-h-[44px]"
-                  >
-                    {t.startNewResumeCancelBtn}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      resetResume();
-                      setIsResetModalOpen(false);
-                      setActiveTab('personal');
-                      setShowResetToast(true);
-                      setTimeout(() => setShowResetToast(false), 4000);
-                    }}
-                    className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-bold transition shadow-xs cursor-pointer min-h-[44px]"
-                  >
-                    {t.startNewResumeConfirmBtn}
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-
-      {/* RESET CONFIRMATION TOAST */}
-      <AnimatePresence>
-        {showResetToast && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-6 end-6 z-50 bg-emerald-900 text-white px-4 py-3 rounded-xl shadow-xl border border-emerald-700 flex items-center gap-2.5 text-xs sm:text-sm font-medium"
-          >
-            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-            <span>{t.startNewResumeSuccessMsg}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Reset Confirmation Toast */}
+      {renderResetToast()}
     </main>
   );
 };

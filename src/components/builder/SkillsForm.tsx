@@ -83,14 +83,14 @@ export const SkillsForm: React.FC = () => {
               value={newSkillName}
               onChange={(e) => setNewSkillName(e.target.value)}
               placeholder={isAr ? 'مثال: React.js, Python, إدارة المشاريع' : 'e.g. React.js, Python, Management'}
-              className="w-full px-3.5 h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+              className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
             />
           </div>
           <div className="sm:col-span-3">
             <select
               value={newSkillCategory}
               onChange={(e) => setNewSkillCategory(e.target.value as any)}
-              className="w-full px-3 h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-medium text-slate-700 outline-none transition cursor-pointer"
+              className="w-full px-3 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-medium text-slate-700 outline-none transition cursor-pointer"
             >
               <option value="technical">{t.techSkills}</option>
               <option value="soft">{t.softSkills}</option>
@@ -101,7 +101,7 @@ export const SkillsForm: React.FC = () => {
             <select
               value={newSkillLevel}
               onChange={(e) => setNewSkillLevel(e.target.value as any)}
-              className="w-full px-3 h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-medium text-slate-700 outline-none transition cursor-pointer"
+              className="w-full px-3 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-medium text-slate-700 outline-none transition cursor-pointer"
             >
               <option value="">{isAr ? 'المستوى (اختياري)' : 'Level (Optional)'}</option>
               <option value="beginner">{isAr ? 'مبتدئ' : 'Beginner'}</option>
@@ -113,9 +113,9 @@ export const SkillsForm: React.FC = () => {
           <div className="sm:col-span-2">
             <button
               type="submit"
-              className="w-full h-10 sm:h-11 bg-[#001639] hover:bg-[#00245E] text-white font-semibold rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer text-xs"
+              className="w-full min-h-[44px] h-11 bg-[#001639] hover:bg-[#00245E] text-white font-bold rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer text-xs active:scale-95"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-4 h-4 text-[#FF4D2D]" />
               <span>{t.addSkill}</span>
             </button>
           </div>

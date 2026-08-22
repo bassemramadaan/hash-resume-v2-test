@@ -1,0 +1,475 @@
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { useResumeStore } from '../../store/useResumeStore';
+import { getTranslation } from '../../i18n/translations';
+import { Logo } from '../ui/Logo';
+import { MobileMenuDrawer } from './MobileMenuDrawer';
+import { MobileSectionKey } from './MobileSectionEditor';
+import {
+  User,
+  Briefcase,
+  GraduationCap,
+  Wrench,
+  Award,
+  FolderGit2,
+  Layout,
+  FileText,
+  Download,
+  Menu,
+  RotateCcw,
+  CheckCircle2,
+  ChevronRight,
+  ChevronLeft,
+  Sparkles,
+  ShieldCheck,
+  Check,
+  Lock,
+  Key,
+} from 'lucide-react';
+
+interface MobileResumeDashboardProps {
+  onSelectSection: (key: MobileSectionKey) => void;
+  onOpenResetModal: () => void;
+  saveStatus: 'saved' | 'saving';
+}
+
+export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
+  onSelectSection,
+  onOpenResetModal,
+  saveStatus,
+}) => {
+  const { resumeData, settings, activation, unlockResumeWithCredit, resetResume, setIsActivationModalOpen } =
+    useResumeStore();
+  const t = getTranslation(settings.language);
+  const isAr = settings.language === 'ar';
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Overall Completion Calculation (Strict 0% on clean state)
+  const completionScore = React.useMemo(() => {
+    let score = 0;
+    if (resumeData.personalInfo.fullName?.trim()) score += 15;
+    if (resumeData.personalInfo.email?.trim() || resumeData.personalInfo.phone?.trim()) score += 15;
+    if (resumeData.personalInfo.summary?.trim()) score += 10;
+    if (
+      resumeData.experiences &&
+      resumeData.experiences.length > 0 &&
+      resumeData.experiences.some((e) => e.position?.trim())
+    )
+      score += 25;
+    if (
+      resumeData.education &&
+      resumeData.education.length > 0 &&
+      resumeData.education.some((e) => e.institution?.trim())
+    )
+      score += 15;
+    if (resumeData.skills && resumeData.skills.length >= 2) score += 10;
+    if (
+      (resumeData.projects && resumeData.projects.length > 0) ||
+      (resumeData.certifications && resumeData.certifications.length > 0)
+    )
+      score += 10;
+    return Math.min(100, score);
+  }, [resumeData]);
+
+  // Section completion checks
+  const isPersonalComplete = Boolean(
+    resumeData.personalInfo.fullName?.trim() &&
+      (resumeData.personalInfo.email?.trim() || resumeData.personalInfo.phone?.trim())
+  );
+  const experiencesCount = resumeData.experiences?.length || 0;
+  const educationCount = resumeData.education?.length || 0;
+  const skillsCount = resumeData.skills?.length || 0;
+  const certsCount = resumeData.certifications?.length || 0;
+  const projectsCount = resumeData.projects?.length || 0;
+
+  const getSectionStatus = (key: MobileSectionKey): { label: string; isComplete: boolean } => {
+    switch (key) {
+      case 'personal':
+        if (isPersonalComplete) return { label: isAr ? 'مكتمل' : 'Complete', isComplete: true };
+        if (resumeData.personalInfo.fullName?.trim())
+          return { label: isAr ? 'قيد الإدخال' : 'In Progress', isComplete: false };
+        return { label: isAr ? 'لم تُضف بعد' : 'Not added yet', isComplete: false };
+
+      case 'experiences':
+        if (experiencesCount > 0) {
+          const text =
+            experiencesCount === 1
+              ? isAr
+                ? 'خبرة واحدة مضافة'
+                : '1 item added'
+              : isAr
+              ? `${experiencesCount} خبرات مضافة`
+              : `${experiencesCount} items added`;
+          return { label: text, isComplete: true };
+        }
+        return { label: isAr ? 'لم تُضف بعد' : 'Not added yet', isComplete: false };
+
+      case 'education':
+        if (educationCount > 0) {
+          const text =
+            educationCount === 1
+              ? isAr
+                ? 'مؤهل واحد مضاف'
+                : '1 item added'
+              : isAr
+              ? `${educationCount} مؤهلات مضافة`
+              : `${educationCount} items added`;
+          return { label: text, isComplete: true };
+        }
+        return { label: isAr ? 'لم تُضف بعد' : 'Not added yet', isComplete: false };
+
+      case 'skills':
+        if (skillsCount > 0) {
+          const text =
+            skillsCount === 1
+              ? isAr
+                ? 'مهارة واحدة مضافة'
+                : '1 skill added'
+              : isAr
+              ? `${skillsCount} مهارات مضافة`
+              : `${skillsCount} skills added`;
+          return { label: text, isComplete: true };
+        }
+        return { label: isAr ? 'لم تُضف بعد' : 'Not added yet', isComplete: false };
+
+      case 'certifications':
+        if (certsCount > 0) {
+          const text =
+            certsCount === 1
+              ? isAr
+                ? 'شهادة واحدة'
+                : '1 cert added'
+              : isAr
+              ? `${certsCount} شهادات`
+              : `${certsCount} certs added`;
+          return { label: text, isComplete: true };
+        }
+        return { label: isAr ? 'اختياري' : 'Optional', isComplete: false };
+
+      case 'projects':
+        if (projectsCount > 0) {
+          const text =
+            projectsCount === 1
+              ? isAr
+                ? 'مشروع واحد'
+                : '1 project added'
+              : isAr
+              ? `${projectsCount} مشاريع`
+              : `${projectsCount} projects added`;
+          return { label: text, isComplete: true };
+        }
+        return { label: isAr ? 'اختياري' : 'Optional', isComplete: false };
+
+      case 'customize':
+        return {
+          label: isAr
+            ? `القالب: ${settings.templateId || 'كلاسيك'}`
+            : `Template: ${settings.templateId || 'Classic'}`,
+          isComplete: true,
+        };
+
+      case 'ats':
+        return {
+          label: isPersonalComplete && experiencesCount > 0
+            ? isAr ? 'جاهز للفحص' : 'Ready to scan'
+            : isAr ? 'يتطلب البيانات والخبرة' : 'Requires info & exp',
+          isComplete: isPersonalComplete && experiencesCount > 0,
+        };
+
+      case 'download':
+        return {
+          label: isAr ? 'تصدير PDF والطباعة' : 'Export PDF & Print',
+          isComplete: completionScore >= 40,
+        };
+
+      default:
+        return { label: '', isComplete: false };
+    }
+  };
+
+  const SECTIONS: Array<{
+    key: MobileSectionKey;
+    titleAr: string;
+    titleEn: string;
+    icon: any;
+    accentColor?: string;
+  }> = [
+    { key: 'personal', titleAr: 'البيانات الشخصية', titleEn: 'Personal Information', icon: User },
+    { key: 'experiences', titleAr: 'الخبرات المهنية', titleEn: 'Work Experience', icon: Briefcase },
+    { key: 'education', titleAr: 'المؤهلات التعليمية', titleEn: 'Education', icon: GraduationCap },
+    { key: 'skills', titleAr: 'المهارات واللغات', titleEn: 'Skills & Languages', icon: Wrench },
+    { key: 'certifications', titleAr: 'الشهادات والدورات', titleEn: 'Certifications', icon: Award },
+    { key: 'projects', titleAr: 'المشاريع العملية', titleEn: 'Projects', icon: FolderGit2 },
+    { key: 'customize', titleAr: 'القالب والتنسيق', titleEn: 'Template & Style', icon: Layout },
+    { key: 'ats', titleAr: 'فحص ATS الذكي', titleEn: 'ATS Scanner', icon: FileText },
+    { key: 'download', titleAr: 'المراجعة والتصدير', titleEn: 'Review & Export', icon: Download },
+  ];
+
+  const Arrow = isAr ? ChevronLeft : ChevronRight;
+
+  const handleUnlockRequest = () => {
+    if (activation.remainingDownloads > 0) {
+      const confirmMsg = isAr
+        ? `لديك ${activation.remainingDownloads} تفعيل(ات) متبقية. هل ترغب في استخدام 1 تفعيل لفتح السيرة الذاتية للتعديل الآن؟`
+        : `You have ${activation.remainingDownloads} credit(s) remaining. Use 1 credit to unlock editing for a new version?`;
+      if (window.confirm(confirmMsg)) {
+        const optionMsg = isAr
+          ? `هل تريد الحفاظ على البيانات الحالية وتعديلها؟\n\nاضغط "موافق" (OK) للتحرير والتعديل.\nاضغط "إلغاء الأمر" (Cancel) لمسح كافة البيانات والبدء بسيرة ذاتية جديدة.`
+          : `Do you want to keep and edit the current data?\n\nClick "OK" to keep and edit.\nClick "Cancel" to clear all data and start a fresh resume.`;
+
+        const keepData = window.confirm(optionMsg);
+        if (!keepData) {
+          resetResume();
+        }
+        unlockResumeWithCredit();
+      }
+    } else {
+      setIsActivationModalOpen(true);
+    }
+  };
+
+  return (
+    <div className="space-y-4 pb-28">
+      {/* Compact Top Bar */}
+      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3.5 py-2.5 shadow-2xs">
+        <div className="flex items-center justify-between gap-2">
+          {/* Logo & Name */}
+          <div className="flex items-center gap-2">
+            <Logo variant="icon" size="sm" className="!h-8 w-auto shrink-0" />
+            <div className="flex flex-col">
+              <span className="font-brand font-extrabold text-sm text-[#001639] leading-tight">
+                Hash <span className="text-[#FF4D2D]">Resume</span>
+              </span>
+              <span className="text-[10px] text-slate-500 font-medium leading-none">
+                {isAr ? 'محرر السيرة الذاتية' : 'Resume Builder'}
+              </span>
+            </div>
+          </div>
+
+          {/* Autosave badge & actions */}
+          <div className="flex items-center gap-1.5">
+            {/* Autosave status indicator */}
+            <div
+              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold border transition-all ${
+                saveStatus === 'saving'
+                  ? 'bg-amber-50 text-amber-800 border-amber-200'
+                  : 'bg-emerald-50 text-emerald-800 border-emerald-200/80'
+              }`}
+            >
+              {saveStatus === 'saving' ? (
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
+              ) : (
+                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+              )}
+              <span>
+                {saveStatus === 'saving'
+                  ? isAr
+                    ? 'حفظ...'
+                    : 'Saving...'
+                  : isAr
+                  ? 'محفوظ'
+                  : 'Saved'}
+              </span>
+            </div>
+
+            {/* Reset / Clear Button */}
+            <button
+              type="button"
+              onClick={onOpenResetModal}
+              className="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl border border-slate-200 transition cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
+              title={isAr ? 'بدء سيرة جديدة' : 'Start New Resume'}
+              aria-label={isAr ? 'بدء سيرة جديدة' : 'Start New Resume'}
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Hamburger Menu Toggle */}
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen(true)}
+              className="p-2 text-[#001639] hover:bg-slate-100 rounded-xl border border-slate-200 transition min-w-[36px] min-h-[36px] flex items-center justify-center cursor-pointer"
+              aria-label={isAr ? 'فتح القائمة' : 'Open Menu'}
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Menu Drawer */}
+      <MobileMenuDrawer isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+
+      {/* Lock Banner if Resume is Locked */}
+      {activation.isResumeLocked && (
+        <div className="px-3">
+          <div className="p-3.5 bg-amber-50 border border-amber-300 rounded-2xl flex flex-col gap-2.5 text-amber-950 shadow-2xs">
+            <div className="flex items-start gap-2.5">
+              <Lock className="w-5 h-5 text-amber-800 shrink-0 mt-0.5" />
+              <div className="space-y-0.5">
+                <h4 className="font-bold text-xs text-amber-950">
+                  {isAr ? 'تم قفل السيرة الذاتية بعد التحميل' : 'Resume Locked After Download'}
+                </h4>
+                <p className="text-[11px] text-amber-900/90 leading-relaxed">
+                  {isAr
+                    ? 'لحماية نسختك المعتمدة، تم قفل الحقول لمنع التعديلات العشوائية.'
+                    : 'Fields are locked to protect your finalized download.'}
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleUnlockRequest}
+              className="w-full py-2.5 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition cursor-pointer min-h-[44px] active:scale-98"
+            >
+              <Key className="w-4 h-4 text-amber-400" />
+              <span>
+                {activation.remainingDownloads > 0
+                  ? isAr
+                    ? 'فتح التعديل برصيد متبقي'
+                    : 'Unlock with remaining credit'
+                  : isAr
+                  ? 'شراء تفعيل إضافي'
+                  : 'Purchase unlock credit'}
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Progress & Header Card */}
+      <div className="px-3">
+        <div className="bg-gradient-to-br from-[#001639] to-[#00245E] text-white rounded-2xl p-4 sm:p-5 shadow-sm space-y-3">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-white/10 text-[#FF4D2D] text-[10px] font-extrabold tracking-wide uppercase">
+                <Sparkles className="w-3 h-3" />
+                <span>{isAr ? 'محرر السيرة الذاتية' : 'Resume Builder'}</span>
+              </span>
+              <h1 className="text-base sm:text-lg font-bold text-white mt-1">
+                {isAr ? 'ابنِ سيرتك الذاتية' : 'Build your resume'}
+              </h1>
+              <p className="text-xs text-slate-300">
+                {isAr ? 'أكمل ملفك التعريفي للحصول على أفضل نتيجة' : 'Complete your profile for best results'}
+              </p>
+            </div>
+
+            {/* Percentage Badge */}
+            <div className="text-end shrink-0">
+              <span
+                className={`text-xl font-black ${
+                  completionScore >= 80
+                    ? 'text-emerald-400'
+                    : completionScore >= 40
+                    ? 'text-amber-400'
+                    : 'text-[#FF4D2D]'
+                }`}
+              >
+                {completionScore}%
+              </span>
+              <span className="block text-[10px] text-slate-300 font-semibold">
+                {isAr ? 'اكتمال الملف' : 'complete'}
+              </span>
+            </div>
+          </div>
+
+          {/* Visual Progress Bar */}
+          <div className="w-full bg-white/15 h-2 rounded-full overflow-hidden p-0.5">
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: `${completionScore}%` }}
+              transition={{ duration: 0.4, ease: 'easeOut' }}
+              className={`h-full rounded-full transition-all duration-300 ${
+                completionScore >= 80
+                  ? 'bg-emerald-400'
+                  : completionScore >= 40
+                  ? 'bg-amber-400'
+                  : 'bg-[#FF4D2D]'
+              }`}
+            />
+          </div>
+
+          <div className="flex items-center justify-between text-[11px] text-slate-300 pt-0.5">
+            <span>
+              {isAr
+                ? `${completionScore === 0 ? 'ابدأ بإضافة بياناتك' : completionScore < 100 ? 'واصل ملء الأقسام' : 'سيرتك جاهزة للتحميل!'}`
+                : `${completionScore === 0 ? 'Start adding your info' : completionScore < 100 ? 'Keep completing sections' : 'Resume is ready to export!'}`}
+            </span>
+            <span className="font-bold text-white">
+              {completionScore >= 80
+                ? isAr ? 'ممتاز ⭐' : 'Excellent ⭐'
+                : completionScore >= 40
+                ? isAr ? 'جيد 👍' : 'Good 👍'
+                : isAr ? 'غير مكتمل' : 'Incomplete'}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Section Cards List */}
+      <div className="px-3 space-y-2.5" role="list">
+        {SECTIONS.map((sec, idx) => {
+          const Icon = sec.icon;
+          const status = getSectionStatus(sec.key);
+
+          return (
+            <motion.button
+              key={sec.key}
+              type="button"
+              onClick={() => onSelectSection(sec.key)}
+              whileTap={{ scale: 0.98 }}
+              role="listitem"
+              className="w-full min-h-[58px] p-3.5 bg-white border border-slate-200 hover:border-[#001639]/40 rounded-2xl shadow-2xs flex items-center justify-between gap-3 text-start transition cursor-pointer group active:bg-slate-50"
+              aria-label={`${isAr ? sec.titleAr : sec.titleEn} - ${status.label}`}
+            >
+              {/* Left/Start: Icon & Titles */}
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition ${
+                    status.isComplete
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80'
+                      : 'bg-slate-100 text-[#001639] group-hover:bg-[#001639] group-hover:text-white'
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                </div>
+
+                <div className="min-w-0 flex-1 truncate">
+                  <div className="flex items-center gap-2">
+                    <h2 className="font-bold text-xs sm:text-sm text-[#001639] truncate">
+                      {isAr ? sec.titleAr : sec.titleEn}
+                    </h2>
+                    {sec.key === 'ats' && (
+                      <span className="px-1.5 py-0.5 rounded-md bg-orange-100 text-[#FF4D2D] text-[9px] font-extrabold shrink-0">
+                        AI
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
+                    {status.label}
+                  </p>
+                </div>
+              </div>
+
+              {/* Right/End: Status Pill & Arrow */}
+              <div className="flex items-center gap-2 shrink-0">
+                {status.isComplete ? (
+                  <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                    <Check className="w-3.5 h-3.5" />
+                  </span>
+                ) : (
+                  <span className="text-[11px] font-bold text-slate-400 px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200/60 hidden xs:inline-block">
+                    {idx + 1}
+                  </span>
+                )}
+
+                <Arrow className="w-4 h-4 text-slate-400 group-hover:text-[#001639] group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
+              </div>
+            </motion.button>
+          );
+        })}
+      </div>
+    </div>
+  );
+};

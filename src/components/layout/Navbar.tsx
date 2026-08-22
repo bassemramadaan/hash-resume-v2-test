@@ -57,32 +57,36 @@ export const Navbar: React.FC = () => {
     return false;
   };
 
+  const isBuilderMobile = location.pathname === '/builder';
+
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] text-[#0B1120] shadow-xs">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-18 lg:h-20 flex items-center justify-between gap-3 sm:gap-6">
+    <header
+      className={`${
+        isBuilderMobile ? 'hidden md:block' : ''
+      } sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] text-[#0B1120] shadow-xs`}
+    >
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-16 lg:h-18 flex items-center justify-between gap-2 sm:gap-6">
         {/* Brand Logo & Title */}
-        <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group py-1 shrink-0">
-          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-            <Logo
-              variant="icon"
-              size="lg"
-              loading="eager"
-              className="!h-[36px] sm:!h-[42px] lg:!h-[48px] w-auto !max-w-none shrink-0 object-contain"
-            />
-            <div className="flex flex-col">
-              <span className="font-brand font-extrabold text-sm sm:text-base lg:text-lg tracking-tight text-[#0B1120] leading-tight group-hover:text-[#001639] transition">
-                Hash <span className="text-[#001639]">Resume</span>
-              </span>
-              <span className="text-[9px] sm:text-[10px] lg:text-[11px] font-semibold text-[#52627A]">
-                {location.pathname === '/builder'
-                  ? isAr
-                    ? 'محرر السيرة الذاتية'
-                    : 'Resume Editor'
-                  : isAr
-                  ? 'احصل على وظيفتك بسهولة'
-                  : 'Land the Job. Effortlessly.'}
-              </span>
-            </div>
+        <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group py-1 shrink-0">
+          <Logo
+            variant="icon"
+            size="lg"
+            loading="eager"
+            className="!h-[32px] sm:!h-[38px] lg:!h-[44px] w-auto !max-w-none shrink-0 object-contain"
+          />
+          <div className="flex flex-col">
+            <span className="font-brand font-extrabold text-sm sm:text-base lg:text-lg tracking-tight text-[#0B1120] leading-tight group-hover:text-[#001639] transition">
+              Hash <span className="text-[#001639]">Resume</span>
+            </span>
+            <span className="text-[9px] sm:text-[10px] lg:text-[11px] font-semibold text-[#52627A] hidden xs:inline sm:inline">
+              {location.pathname === '/builder'
+                ? isAr
+                  ? 'محرر السيرة الذاتية'
+                  : 'Resume Editor'
+                : isAr
+                ? 'احصل على وظيفتك بسهولة'
+                : 'Land the Job. Effortlessly.'}
+            </span>
           </div>
         </Link>
 
@@ -112,20 +116,20 @@ export const Navbar: React.FC = () => {
         </nav>
 
         {/* Right Action Controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Language Switch Button */}
+        <div className="flex items-center gap-1.5 sm:gap-3">
+          {/* Desktop Language Switch Button */}
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#F1F5F9] text-[#001639] text-xs font-semibold rounded-full border border-[#E2E8F0] transition cursor-pointer shadow-xs"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#F1F5F9] text-[#001639] text-xs font-semibold rounded-full border border-[#E2E8F0] transition cursor-pointer shadow-xs"
           >
             <Globe className="w-3.5 h-3.5 text-[#001639]" />
             <span>{t.switchLang}</span>
           </button>
 
-          {/* Mobile Menu Toggle Button */}
+          {/* Mobile Menu Toggle Button (Clean & Direct) */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-[#001639] hover:bg-slate-100 rounded-lg transition"
+            className="lg:hidden p-2 text-[#001639] hover:bg-slate-100 rounded-xl transition min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
             aria-label="Toggle Navigation"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -136,7 +140,21 @@ export const Navbar: React.FC = () => {
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-[#E2E8F0] bg-white p-4 space-y-3 shadow-lg animate-in slide-in-from-top-2 duration-150">
-          <div className="flex flex-col gap-1.5">
+          {/* Mobile Language Switcher Row */}
+          <div className="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl">
+            <span className="text-xs font-bold text-slate-700 flex items-center gap-2">
+              <Globe className="w-4 h-4 text-[#001639]" />
+              <span>{isAr ? 'لغة الواجهة:' : 'Interface Language:'}</span>
+            </span>
+            <button
+              onClick={toggleLanguage}
+              className="px-3 py-1.5 bg-white hover:bg-slate-100 text-[#001639] text-xs font-bold rounded-lg border border-slate-200 shadow-2xs transition"
+            >
+              {t.switchLang}
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-1">
             {navLinks.map((link) => {
               const active = isActive(link.path);
               const isSpecial = (link as any).isSpecial;

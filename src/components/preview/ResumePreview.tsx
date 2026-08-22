@@ -377,8 +377,22 @@ export const ResumePreview: React.FC = () => {
       {/* Fullscreen Preview Modal */}
       <AnimatePresence>
         {isFullscreen && (
-          <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex flex-col p-3 sm:p-6">
-            <div className="bg-white rounded-2xl flex-1 flex flex-col overflow-hidden shadow-2xl">
+          <motion.div
+            key="fullscreen-preview-modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md flex flex-col p-3 sm:p-6"
+          >
+            <motion.div
+              key="fullscreen-preview-card"
+              initial={{ scale: 0.96, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.96, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white rounded-2xl flex-1 flex flex-col overflow-hidden shadow-2xl"
+            >
               {/* Fullscreen Header Bar */}
               <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
                 <div className="flex items-center gap-2.5">
@@ -413,8 +427,8 @@ export const ResumePreview: React.FC = () => {
                   {renderActiveTemplate()}
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
 

@@ -58,13 +58,19 @@ export const PostDownloadSuccessModal: React.FC = () => {
   return (
     <AnimatePresence>
       {isPostDownloadModalOpen && (
-        <div
+        <motion.div
+          key="post-download-modal-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity"
           onClick={(e) => {
             if (e.target === e.currentTarget) handleClose();
           }}
         >
           <motion.div
+            key="post-download-modal-card"
             initial={{ opacity: 0, scale: 0.92, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 10 }}
@@ -127,7 +133,7 @@ export const PostDownloadSuccessModal: React.FC = () => {
               </div>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       )}
     </AnimatePresence>
   );

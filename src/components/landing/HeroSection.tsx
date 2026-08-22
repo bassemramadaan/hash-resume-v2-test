@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from '../../store/useResumeStore';
 import {
   Sparkles,
