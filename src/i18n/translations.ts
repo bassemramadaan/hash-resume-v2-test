@@ -20,9 +20,14 @@ export const translations = {
     downloading: "جاري الإنشاء...",
 
     // Quick Actions
-    loadSample: "تعبئة نموذج جاهز",
+    startNewResume: "بدء سيرة جديدة",
     clearData: "مسح البيانات",
-    resetConfirm: "هل أنت أصلح متأكد من إعادة ضبط البيانات؟ ستفقد أي تعديلات غير محفوظة.",
+    resetConfirm: "هل أنت متأكد من تفريغ كافة الحقول والبدء بسيرة ذاتية جديدة فارغة؟",
+    startNewResumeTitle: "بدء سيرة ذاتية جديدة فارغة",
+    startNewResumeDesc: "سيتم مسح بيانات السيرة الذاتية المدخلة وتفريغ الحقول بالكامل لتتمكن من كتابة سيرة ذاتية جديدة من الصفر. رصيد التفعيل والاشتراكات سيبقى محفوظاً.",
+    startNewResumeConfirmBtn: "نعم، ابدأ سيرة جديدة",
+    startNewResumeCancelBtn: "إلغاء والتراجع",
+    startNewResumeSuccessMsg: "تم تفريغ النموذج والبدء بسيرة ذاتية جديدة بنجاح.",
     
     // Sections Tabs
     tabPersonal: "المعلومات الشخصية",
@@ -187,9 +192,14 @@ export const translations = {
     downloading: "Generating PDF...",
 
     // Quick Actions
-    loadSample: "Load Pre-filled Sample",
+    startNewResume: "Start New Resume",
     clearData: "Reset Builder",
-    resetConfirm: "Are you sure you want to reset all data? Unsaved changes will be cleared.",
+    resetConfirm: "Are you sure you want to clear all fields and start a fresh, empty resume?",
+    startNewResumeTitle: "Start a Fresh New Resume",
+    startNewResumeDesc: "This will clear all entered resume data so you can start from a completely blank slate. Your activation credits and account status remain safe.",
+    startNewResumeConfirmBtn: "Yes, Start Fresh",
+    startNewResumeCancelBtn: "Cancel",
+    startNewResumeSuccessMsg: "Resume has been cleared. You are ready to start fresh.",
 
     // Sections Tabs
     tabPersonal: "Personal Info",
@@ -354,9 +364,14 @@ export const translations = {
     downloading: "Génération en cours...",
 
     // Quick Actions
-    loadSample: "Charger un exemple",
+    startNewResume: "Nouveau CV",
     clearData: "Effacer les données",
-    resetConfirm: "Voulez-vous vraiment réinitialiser toutes les données ?",
+    resetConfirm: "Voulez-vous vraiment réinitialiser toutes les données et commencer un nouveau CV vierge ?",
+    startNewResumeTitle: "Commencer un nouveau CV vierge",
+    startNewResumeDesc: "Toutes les données saisies seront effacées pour vous permettre de recommencer à zéro. Vos crédits d'activation et paramètres sont conservés.",
+    startNewResumeConfirmBtn: "Oui, nouveau CV",
+    startNewResumeCancelBtn: "Annuler",
+    startNewResumeSuccessMsg: "Le CV a été réinitialisé avec succès.",
     
     // Sections Tabs
     tabPersonal: "Informations personnelles",

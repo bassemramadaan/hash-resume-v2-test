@@ -23,7 +23,6 @@ export const Navbar: React.FC = () => {
   const {
     settings,
     setLanguage,
-    loadSampleResume,
   } = useResumeStore();
 
   const location = useLocation();
@@ -38,10 +37,6 @@ export const Navbar: React.FC = () => {
     } else {
       setLanguage('ar');
     }
-  };
-
-  const handleLoadSample = () => {
-    loadSampleResume(settings.language === 'ar' ? 'arabic' : 'english');
   };
 
   const isAr = settings.language === 'ar';
@@ -118,18 +113,6 @@ export const Navbar: React.FC = () => {
 
         {/* Right Action Controls */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Quick Sample Action if on Builder Page */}
-          {location.pathname === '/builder' && (
-            <button
-              onClick={handleLoadSample}
-              className="hidden md:flex items-center gap-1.5 px-3.5 py-1.5 bg-[#F1F5F9] hover:bg-[#E2E8F0] text-[#001639] text-xs font-semibold rounded-full border border-[#E2E8F0] transition cursor-pointer"
-              title={t.loadSample}
-            >
-              <Sparkles className="w-3.5 h-3.5 text-[#001639]" />
-              <span>{t.loadSample}</span>
-            </button>
-          )}
-
           {/* Language Switch Button */}
           <button
             onClick={toggleLanguage}

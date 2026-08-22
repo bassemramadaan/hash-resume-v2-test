@@ -103,8 +103,8 @@ export const AtsCheckerPage: React.FC = () => {
     setIsImporting(true);
     setFileError(null);
     try {
-      const extractedData = await parseResumeFile(uploadedFile, settings.language);
-      setResumeData(extractedData);
+      const result = await parseResumeFile(uploadedFile, settings.language);
+      setResumeData(result.resumeData);
       navigate('/builder');
     } catch (err: any) {
       console.error('Import Error:', err);

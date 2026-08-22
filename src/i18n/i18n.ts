@@ -30,14 +30,18 @@ i18n
 
 // Automatically update HTML dir and lang attributes on language change
 i18n.on('languageChanged', (lng) => {
-  const isAr = lng === 'ar';
-  document.documentElement.setAttribute('dir', isAr ? 'rtl' : 'ltr');
-  document.documentElement.setAttribute('lang', lng);
+  if (typeof document !== 'undefined') {
+    const isAr = lng === 'ar';
+    document.documentElement.setAttribute('dir', isAr ? 'rtl' : 'ltr');
+    document.documentElement.setAttribute('lang', lng);
+  }
 });
 
 // Set initial html attributes
-const initialLng = i18n.language || 'ar';
-document.documentElement.setAttribute('dir', initialLng === 'ar' ? 'rtl' : 'ltr');
-document.documentElement.setAttribute('lang', initialLng);
+if (typeof document !== 'undefined') {
+  const initialLng = i18n.language || 'ar';
+  document.documentElement.setAttribute('dir', initialLng === 'ar' ? 'rtl' : 'ltr');
+  document.documentElement.setAttribute('lang', initialLng);
+}
 
 export default i18n;

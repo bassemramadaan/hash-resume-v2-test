@@ -1,8 +1,24 @@
 import React, { useState, useRef } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
-import { parseResumeFile } from '../../services/resumeParser';
-import { User, Mail, Phone, MapPin, Linkedin, Github, Sparkles, Image, UploadCloud, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
+import { parseResumeFile, ParseResult } from '../../services/resumeParser';
+import { ImportResumeModal } from './ImportResumeModal';
+import { ResumeData } from '../../types/resume';
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Linkedin,
+  Github,
+  Sparkles,
+  Image,
+  UploadCloud,
+  Loader2,
+  CheckCircle2,
+  AlertCircle,
+  FileText,
+} from 'lucide-react';
 
 export const PersonalInfoForm: React.FC = () => {
   const { resumeData, setPersonalInfo, setResumeData, settings, openAiModal } = useResumeStore();
@@ -11,40 +27,87 @@ export const PersonalInfoForm: React.FC = () => {
   const info = resumeData.personalInfo;
 
   const [isUploading, setIsUploading] = useState(false);
+  const [loadingText, setLoadingText] = useState<string>('');
   const [uploadStatus, setUploadStatus] = useState<string | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [parseResult, setParseResult] = useState<ParseResult | null>(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    setIsUploading(true);
     setUploadError(null);
-    setUploadStatus(isAr ? 'جاري قراءة واستخراج بيانات الملف...' : 'Extracting CV data...');
+    setUploadStatus(null);
 
-    try {
-      const extractedResume = await parseResumeFile(file, settings.language);
-      setResumeData(extractedResume);
-      setUploadStatus(
-        isAr
-          ? 'تم استخراج وتعبئة جميع البيانات بنجاح في المحرر! 🎉'
-          : 'All CV fields extracted and filled successfully! 🎉'
-      );
-      setTimeout(() => setUploadStatus(null), 5000);
-    } catch (err: any) {
-      console.error('File Upload & Extraction Error:', err);
+    const fileName = file.name.toLowerCase();
+    const isPdf = fileName.endsWith('.pdf') || file.type.includes('pdf');
+    const isJson = fileName.endsWith('.json') || file.type.includes('json');
+
+    if (!isPdf && !isJson) {
       setUploadError(
         isAr
-          ? 'تعذر استخراج البيانات من هذا الملف. يرجى التأكد من اختيار ملف PDF أو JSON صالح.'
-          : 'Failed to parse file. Please select a valid PDF or JSON resume file.'
+          ? 'يرجى رفع ملف سيرة ذاتية بصيغة PDF أو JSON.'
+          : 'Please upload a PDF or JSON resume file.'
+      );
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setUploadError(
+        isAr ? 'يجب ألا يتجاوز حجم الملف 10 ميجابايت.' : 'The file must be 10 MB or smaller.'
+      );
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+
+    setIsUploading(true);
+    setLoadingText(
+      isPdf
+        ? isAr
+          ? 'جاري قراءة السيرة الذاتية (PDF)...'
+          : 'Reading your CV…'
+        : isAr
+        ? 'جاري استيراد السيرة الذاتية...'
+        : 'Importing resume…'
+    );
+
+    try {
+      const result = await parseResumeFile(file, settings.language);
+      setParseResult(result);
+      setIsConfirmModalOpen(true);
+    } catch (err: any) {
+      setUploadError(
+        err.message ||
+          (isAr
+            ? 'فشل استيراد السيرة الذاتية. يرجى تجربة ملف آخر أو إدخال البيانات يدوياً.'
+            : 'Import failed. Please try another file or fill in the form manually.')
       );
     } finally {
       setIsUploading(false);
+      setLoadingText('');
+      // Reset input value so re-importing the same file works immediately
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
     }
+  };
+
+  const handleConfirmImport = (finalData: ResumeData) => {
+    setResumeData(finalData);
+    setIsConfirmModalOpen(false);
+    setParseResult(null);
+    setUploadStatus(
+      isAr
+        ? 'تم استيراد السيرة الذاتية بنجاح. يرجى مراجعة بياناتك وتدقيقها.'
+        : 'CV imported successfully. Please review your information.'
+    );
+    setTimeout(() => {
+      setUploadStatus(null);
+    }, 6000);
   };
 
   const SUMMARY_PRESETS = [
@@ -92,63 +155,95 @@ export const PersonalInfoForm: React.FC = () => {
       </div>
 
       {/* CV File Upload & Auto-Fill Compact Card */}
-      <div className="bg-slate-50/80 border border-slate-200/80 rounded-xl p-3 sm:p-3.5">
+      <div
+        id="import-cv-section"
+        className="bg-slate-50/80 border border-slate-200/80 rounded-xl p-3 sm:p-3.5"
+      >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-[#001639] text-white flex items-center justify-center shrink-0">
-              <UploadCloud className="w-3.5 h-3.5 text-[#FF4D2D]" />
+            <div className="w-8 h-8 rounded-lg bg-[#001639] text-white flex items-center justify-center shrink-0 shadow-2xs">
+              <UploadCloud className="w-4 h-4 text-[#FF4D2D]" />
             </div>
             <div>
-              <h3 className="font-semibold text-xs text-[#001639]">
-                {isAr ? 'استيراد من سيرة ذاتية سابقة' : 'Import from existing CV'}
+              <h3 className="font-semibold text-xs text-[#001639] flex items-center gap-1.5">
+                <span>{isAr ? 'استيراد من سيرة ذاتية سابقة' : 'Import from existing CV'}</span>
+                <span className="px-1.5 py-0.2 bg-slate-200 text-slate-700 text-[10px] font-bold rounded">
+                  PDF / JSON
+                </span>
               </h3>
               <p className="text-[11px] text-slate-500">
-                {isAr ? 'يدعم PDF أو JSON لتعبئة البيانات تلقائياً' : 'Supports PDF or JSON to auto-fill fields'}
+                {isAr
+                  ? 'يدعم PDF أو JSON لتعبئة البيانات تلقائياً'
+                  : 'Supports PDF or JSON to auto-fill fields'}
               </p>
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isUploading}
-            className="w-full sm:w-auto px-3.5 py-1.5 bg-white hover:bg-slate-100 text-[#001639] font-semibold text-xs rounded-lg border border-slate-200 shadow-2xs transition flex items-center justify-center gap-1.5 shrink-0 cursor-pointer disabled:opacity-50 min-h-[34px]"
-          >
-            {isUploading ? (
-              <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-[#FF4D2D]" />
-                <span>{isAr ? 'جاري الاستخراج...' : 'Extracting...'}</span>
-              </>
-            ) : (
-              <>
-                <UploadCloud className="w-3.5 h-3.5 text-slate-500" />
-                <span>{isAr ? 'رفع ملف' : 'Upload File'}</span>
-              </>
-            )}
-          </button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleFileUpload}
-            accept=".pdf,.json,application/pdf,application/json"
-            className="hidden"
-          />
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <button
+              id="import-cv-button"
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="w-full sm:w-auto px-4 py-2 bg-white hover:bg-slate-100 text-[#001639] font-bold text-xs rounded-lg border border-slate-200 shadow-2xs transition flex items-center justify-center gap-2 shrink-0 cursor-pointer disabled:opacity-60 min-h-[36px]"
+            >
+              {isUploading ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#FF4D2D]" />
+                  <span>{loadingText}</span>
+                </>
+              ) : (
+                <>
+                  <FileText className="w-3.5 h-3.5 text-[#FF4D2D]" />
+                  <span>{isAr ? 'رفع واختيار ملف' : 'Upload CV File'}</span>
+                </>
+              )}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,application/pdf,.json,application/json"
+              className="hidden"
+              onChange={handleImportFile}
+            />
+          </div>
         </div>
 
         {uploadStatus && (
-          <div className="mt-2.5 p-2 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 font-medium text-xs flex items-center gap-2 animate-in fade-in">
+          <div
+            id="import-success-banner"
+            className="mt-3 p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-800 font-medium text-xs flex items-center gap-2 animate-in fade-in"
+          >
             <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>{uploadStatus}</span>
           </div>
         )}
 
         {uploadError && (
-          <div className="mt-2.5 p-2 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 font-medium text-xs flex items-center gap-2 animate-in fade-in">
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-            <span>{uploadError}</span>
+          <div
+            id="import-error-banner"
+            className="mt-3 p-2.5 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 font-medium text-xs flex items-start gap-2 animate-in fade-in"
+          >
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <span>{uploadError}</span>
+            </div>
           </div>
         )}
       </div>
+
+      {/* Confirmation & Preview Modal */}
+      <ImportResumeModal
+        isOpen={isConfirmModalOpen}
+        onClose={() => {
+          setIsConfirmModalOpen(false);
+          setParseResult(null);
+        }}
+        parseResult={parseResult}
+        currentResume={resumeData}
+        onConfirmImport={handleConfirmImport}
+        language={settings.language}
+      />
 
       {/* Main Form Fields Grouping */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

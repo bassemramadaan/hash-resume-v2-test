@@ -17,7 +17,6 @@ import {
   CareerFocus,
   RedFlagItem,
 } from '../types/resume';
-import { sampleArabicSoftwareEngineer, sampleEnglishMarketingManager } from '../data/sampleResumes';
 import { sanitizeSensitiveText } from '../utils/redFlagDetector';
 
 const LOCAL_STORAGE_KEY_RESUME = 'hash_resume_data_v2';
@@ -68,14 +67,56 @@ export const createEmptyResume = (): ResumeData => ({
   customSections: [],
 });
 
+/**
+ * Checks whether the stored resume is legacy demo/sample data
+ */
+const isLegacySampleResume = (data: any): boolean => {
+  if (!data || typeof data !== 'object') return false;
+  const name = (data.personalInfo?.fullName || '').trim().toLowerCase();
+  const email = (data.personalInfo?.email || '').trim().toLowerCase();
+  const summary = (data.personalInfo?.summary || '').trim().toLowerCase();
+
+  return (
+    name === 'أحمد محمود الفقي' ||
+    name === 'nouran el-sayed' ||
+    name === 'أحمد محمد علي' ||
+    name === 'sarah jenkins' ||
+    name === 'ahmed elfeqy' ||
+    email === 'ahmed.elfeqy@example.com' ||
+    email === 'nouran.elsayed@example.com' ||
+    email === 'sarah.jenkins@example.com' ||
+    email === 'ahmed.ali@example.com' ||
+    email === 'ahmed@example.com' ||
+    email === 'bassem@example.com' ||
+    summary.includes('paytech egypt') ||
+    summary.includes('mena e-commerce growth agency') ||
+    summary.includes('أكثر من 5 سنوات من الخبرة المتميزة في بناء وتطوير التطبيقات السحابية')
+  );
+};
+
 // Initial state loader from LocalStorage
 const loadInitialResume = (): ResumeData => {
   try {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY_RESUME);
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed && typeof parsed === 'object' && parsed.personalInfo) {
-        return parsed;
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      // Clean legacy v1 keys if any exist
+      try {
+        localStorage.removeItem('hash_resume_data');
+      } catch {
+        // ignore
+      }
+
+      const saved = localStorage.getItem(LOCAL_STORAGE_KEY_RESUME);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object' && parsed.personalInfo) {
+          // If the stored data matches legacy demo data, replace it with blank resume
+          if (isLegacySampleResume(parsed)) {
+            const blank = createEmptyResume();
+            localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(blank));
+            return blank;
+          }
+          return parsed;
+        }
       }
     }
   } catch (e) {
@@ -86,9 +127,11 @@ const loadInitialResume = (): ResumeData => {
 
 const loadInitialSettings = (): ResumeSettings => {
   try {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY_SETTINGS);
-    if (saved) {
-      return JSON.parse(saved);
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const saved = localStorage.getItem(LOCAL_STORAGE_KEY_SETTINGS);
+      if (saved) {
+        return JSON.parse(saved);
+      }
     }
   } catch (e) {
     console.warn("Failed to load saved settings from localStorage", e);
@@ -98,9 +141,11 @@ const loadInitialSettings = (): ResumeSettings => {
 
 const loadInitialActivation = (): ActivationState => {
   try {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY_ACTIVATION);
-    if (saved) {
-      return JSON.parse(saved);
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const saved = localStorage.getItem(LOCAL_STORAGE_KEY_ACTIVATION);
+      if (saved) {
+        return JSON.parse(saved);
+      }
     }
   } catch (e) {
     console.warn("Failed to load saved activation from localStorage", e);
@@ -179,7 +224,6 @@ interface ResumeStoreState {
   setSectionOrder: (order: string[]) => void;
   applyRedFlagAutoFix: (flag: RedFlagItem) => void;
   
-  loadSampleResume: (type: 'arabic' | 'english') => void;
   setResumeData: (data: ResumeData) => void;
   resetResume: () => void;
 
@@ -605,20 +649,6 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
     }
   },
 
-  loadSampleResume: (type) => {
-    set((state) => {
-      const sample = type === 'arabic' ? sampleArabicSoftwareEngineer : sampleEnglishMarketingManager;
-      const updatedSettings = {
-        ...state.settings,
-        language: (type === 'arabic' ? 'ar' : 'en') as Language,
-        fontFamily: type === 'arabic' ? 'Tajawal' : 'Inter',
-      };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(sample));
-      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
-      return { resumeData: sample, settings: updatedSettings };
-    });
-  },
-
   setResumeData: (data) => {
     set(() => {
       localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(data));
@@ -628,7 +658,15 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
 
   resetResume: () => {
     const emptyResume = createEmptyResume();
-    localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(emptyResume));
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(emptyResume));
+        // Also remove legacy key if present
+        localStorage.removeItem('hash_resume_data');
+      } catch (e) {
+        console.warn("Failed to reset resume in localStorage", e);
+      }
+    }
     set({ resumeData: emptyResume });
   },
 

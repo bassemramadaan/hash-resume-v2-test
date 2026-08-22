@@ -47,7 +47,6 @@ export const BuilderPage: React.FC = () => {
     settings,
     activeTab,
     setActiveTab,
-    loadSampleResume,
     resetResume,
     resumeData,
     activation,
@@ -60,6 +59,10 @@ export const BuilderPage: React.FC = () => {
 
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
+
+  // Start New Resume Confirmation Modal state
+  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+  const [showResetToast, setShowResetToast] = useState(false);
 
   useEffect(() => {
     const handlePageShow = () => {
@@ -337,16 +340,16 @@ export const BuilderPage: React.FC = () => {
                 </span>
               </div>
 
-              {/* Sample Data Loader */}
+              {/* Start New Resume Action */}
               <button
                 type="button"
-                onClick={() => loadSampleResume(isAr ? 'arabic' : 'english')}
-                className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 text-slate-600 hover:text-[#001639] hover:bg-slate-100 rounded-full text-[11px] sm:text-xs font-medium border border-slate-200 sm:border-transparent hover:border-slate-200 transition cursor-pointer"
-                title={t.loadSample}
+                onClick={() => setIsResetModalOpen(true)}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-slate-600 hover:text-rose-700 hover:bg-rose-50 rounded-full text-[11px] sm:text-xs font-semibold border border-slate-200 hover:border-rose-200 transition cursor-pointer group"
+                title={t.startNewResume}
               >
-                <Sparkles className="w-3 h-3 text-[#FF4D2D]" />
-                <span className="hidden xs:inline sm:inline">{t.loadSample}</span>
-                <span className="xs:hidden sm:hidden">{isAr ? 'نموذج جاهز' : 'Sample'}</span>
+                <RotateCcw className="w-3 h-3 text-slate-500 group-hover:text-rose-600 group-hover:-rotate-90 transition-transform duration-200" />
+                <span className="hidden xs:inline sm:inline">{t.startNewResume}</span>
+                <span className="xs:hidden sm:hidden">{isAr ? 'سيرة جديدة' : 'Reset'}</span>
               </button>
             </div>
           </div>
@@ -677,6 +680,83 @@ export const BuilderPage: React.FC = () => {
               </div>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* CONFIRM START NEW RESUME MODAL */}
+      <AnimatePresence>
+        {isResetModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.18 }}
+              className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden"
+            >
+              <div className="p-5 sm:p-6 text-center space-y-4">
+                <div className="w-12 h-12 rounded-full bg-rose-50 text-rose-600 border border-rose-200 flex items-center justify-center mx-auto">
+                  <RotateCcw className="w-6 h-6" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                    {t.startNewResumeTitle}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                    {t.startNewResumeDesc}
+                  </p>
+                </div>
+
+                <div className="p-3 bg-amber-50 rounded-xl border border-amber-200/80 text-right text-xs text-amber-900 flex items-start gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  <span>
+                    {isAr
+                      ? 'رصيد التحميل والخطط المفعلة ستبقى كما هي دون أي مساس.'
+                      : 'Your activation credits and purchased plans remain intact.'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setIsResetModalOpen(false)}
+                    className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs sm:text-sm font-semibold hover:bg-slate-50 transition cursor-pointer min-h-[44px]"
+                  >
+                    {t.startNewResumeCancelBtn}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      resetResume();
+                      setIsResetModalOpen(false);
+                      setActiveTab('personal');
+                      setShowResetToast(true);
+                      setTimeout(() => setShowResetToast(false), 4000);
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs sm:text-sm font-bold transition shadow-xs cursor-pointer min-h-[44px]"
+                  >
+                    {t.startNewResumeConfirmBtn}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* RESET CONFIRMATION TOAST */}
+      <AnimatePresence>
+        {showResetToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
+            className="fixed bottom-6 end-6 z-50 bg-emerald-900 text-white px-4 py-3 rounded-xl shadow-xl border border-emerald-700 flex items-center gap-2.5 text-xs sm:text-sm font-medium"
+          >
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>{t.startNewResumeSuccessMsg}</span>
+          </motion.div>
         )}
       </AnimatePresence>
     </main>
