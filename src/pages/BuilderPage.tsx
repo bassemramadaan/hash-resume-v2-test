@@ -274,10 +274,11 @@ export const BuilderPage: React.FC = () => {
   const ArrowNext = isAr ? ChevronLeft : ChevronRight;
 
   return (
-    <main className="space-y-4 pb-28 sm:pb-12 bg-[#F8FAFC] min-h-screen">
-      {/* Top Sticky Quiet Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-16 sm:top-20 z-30 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2">
+    <main className="space-y-3 sm:space-y-4 pb-24 sm:pb-12 bg-[#F8FAFC] min-h-screen">
+      {/* Top Sticky Header */}
+      <div className="bg-white border-b border-slate-200 sticky top-16 sm:top-18 lg:top-20 z-30 shadow-2xs">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-2.5">
+          {/* Main Top Header Controls */}
           <div className="flex items-center justify-between gap-2">
             {/* Step Info */}
             <div className="flex items-center gap-2 min-w-0">
@@ -297,27 +298,27 @@ export const BuilderPage: React.FC = () => {
               <span className="w-6 h-6 rounded-full bg-[#001639] text-white text-xs font-bold flex items-center justify-center shrink-0">
                 {currentStepIndex + 1}
               </span>
-              <span className="font-bold text-xs text-[#001639] truncate">
+              <span className="font-bold text-xs sm:text-sm text-[#001639] truncate">
                 {isAr ? STEPS[currentStepIndex]?.labelAr : STEPS[currentStepIndex]?.labelEn}
               </span>
-              <span className="text-[10px] text-slate-400 shrink-0 font-medium">
+              <span className="text-[10px] text-slate-400 shrink-0 font-medium hidden sm:inline">
                 ({currentStepIndex + 1}/6)
               </span>
             </div>
 
-            {/* Quiet Controls & Auto Save Indicator & Completion Meter */}
+            {/* Controls: Auto Save & Start New Resume */}
             <div className="flex items-center gap-1.5 sm:gap-2">
-              {/* Resume Completion Badge */}
-              <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200">
+              {/* Resume Completion Badge (Desktop / Tablet) */}
+              <div className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200">
                 <span className="text-[10px] text-slate-500">{isAr ? 'اكتمال السيرة:' : 'Completeness:'}</span>
                 <span className={`text-xs font-extrabold ${completionScore >= 80 ? 'text-emerald-600' : completionScore >= 50 ? 'text-amber-600' : 'text-[#FF4D2D]'}`}>
                   {completionScore}%
                 </span>
               </div>
 
-              {/* Auto Save Feedback Indicator with Pulse Badge */}
+              {/* Auto Save Feedback Indicator */}
               <div
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-medium border transition-all duration-300 ${
+                className={`inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-medium border transition-all duration-300 ${
                   saveStatus === 'saving'
                     ? 'bg-amber-50 text-amber-800 border-amber-200'
                     : 'bg-emerald-50 text-emerald-800 border-emerald-200/80 shadow-2xs'
@@ -335,8 +336,8 @@ export const BuilderPage: React.FC = () => {
                       ? 'جارِ الحفظ...'
                       : 'Saving...'
                     : isAr
-                    ? 'تم الحفظ تلقائياً'
-                    : 'Auto-Saved'}
+                    ? 'محفوظ'
+                    : 'Saved'}
                 </span>
               </div>
 
@@ -344,19 +345,19 @@ export const BuilderPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsResetModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-slate-600 hover:text-rose-700 hover:bg-rose-50 rounded-full text-[11px] sm:text-xs font-semibold border border-slate-200 hover:border-rose-200 transition cursor-pointer group"
+                className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 text-slate-600 hover:text-rose-700 hover:bg-rose-50 rounded-full text-[10px] sm:text-xs font-semibold border border-slate-200 hover:border-rose-200 transition cursor-pointer group shrink-0"
                 title={t.startNewResume}
               >
-                <RotateCcw className="w-3 h-3 text-slate-500 group-hover:text-rose-600 group-hover:-rotate-90 transition-transform duration-200" />
-                <span className="hidden xs:inline sm:inline">{t.startNewResume}</span>
-                <span className="xs:hidden sm:hidden">{isAr ? 'سيرة جديدة' : 'Reset'}</span>
+                <RotateCcw className="w-3 h-3 text-slate-500 group-hover:text-rose-600 group-hover:-rotate-90 transition-transform duration-200 shrink-0" />
+                <span className="hidden sm:inline">{t.startNewResume}</span>
+                <span className="sm:hidden">{isAr ? 'سيرة جديدة' : 'New'}</span>
               </button>
             </div>
           </div>
 
-          {/* Mobile Step Wizard Progress Bar */}
+          {/* Unified Mobile Step Navigation Slider */}
           <div className="lg:hidden mt-2 pt-1.5 border-t border-slate-100">
-            <div className="flex items-center justify-between gap-1">
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar touch-pan-x">
               {STEPS.map((s, idx) => {
                 const isActive = idx === currentStepIndex;
                 const isPassed = idx < currentStepIndex;
@@ -364,27 +365,29 @@ export const BuilderPage: React.FC = () => {
                   <button
                     key={s.id}
                     onClick={() => setActiveTab(s.id as any)}
-                    className="flex-1 py-1 focus:outline-none cursor-pointer group"
-                    title={isAr ? s.labelAr : s.labelEn}
+                    className={`px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 min-h-[30px] shrink-0 active:scale-95 ${
+                      isActive
+                        ? 'bg-[#001639] text-white shadow-2xs'
+                        : isPassed
+                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/60'
+                        : 'bg-slate-100 text-slate-600'
+                    }`}
                   >
-                    <div
-                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                    <span
+                      className={`w-3.5 h-3.5 rounded-full text-[9px] font-bold flex items-center justify-center ${
                         isActive
-                          ? 'bg-[#FF4D2D] shadow-xs'
+                          ? 'bg-[#FF4D2D] text-white'
                           : isPassed
-                          ? 'bg-[#001639]'
-                          : 'bg-slate-200'
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-slate-200 text-slate-700'
                       }`}
-                    />
+                    >
+                      {isPassed ? '✓' : idx + 1}
+                    </span>
+                    <span>{isAr ? s.labelAr.replace(/^\d+\.\s*/, '') : s.labelEn.replace(/^\d+\.\s*/, '')}</span>
                   </button>
                 );
               })}
-            </div>
-            <div className="flex justify-between items-center text-[10px] text-slate-400 font-semibold pt-1">
-              <span>{isAr ? 'الخطوة ' + (currentStepIndex + 1) + ' من 6' : 'Step ' + (currentStepIndex + 1) + ' of 6'}</span>
-              <span className="text-[#001639] font-bold truncate max-w-[180px]">
-                {isAr ? STEPS[currentStepIndex]?.labelAr : STEPS[currentStepIndex]?.labelEn}
-              </span>
             </div>
           </div>
 
@@ -399,8 +402,8 @@ export const BuilderPage: React.FC = () => {
       </div>
 
       {/* Main Builder Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-1 sm:pt-2">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
           {/* Sidebar Navigation */}
           {!isSidebarCollapsed && (
             <div className="hidden lg:block lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-2.5 space-y-1.5 sticky top-32">
@@ -449,42 +452,8 @@ export const BuilderPage: React.FC = () => {
           <div
             className={`${
               isSidebarCollapsed ? 'lg:col-span-6' : 'lg:col-span-5'
-            } bg-white border border-slate-200 rounded-2xl p-4 sm:p-7 text-[#0B1120] min-h-[500px] flex flex-col justify-between space-y-6 shadow-xs transition-all duration-200`}
+            } bg-white border border-slate-200 rounded-2xl p-3.5 sm:p-6 lg:p-7 text-[#0B1120] min-h-[460px] flex flex-col justify-between space-y-4 sm:space-y-6 shadow-xs transition-all duration-200`}
           >
-            {/* Scrollable Horizontal Step Chips for Mobile */}
-            <div className="lg:hidden flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-slate-100 no-scrollbar touch-pan-x">
-              {STEPS.map((s, idx) => {
-                const isActive = currentStepIndex === idx;
-                const isCompleted = idx < currentStepIndex;
-                return (
-                  <button
-                    key={s.id}
-                    onClick={() => setActiveTab(s.id as any)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition cursor-pointer flex items-center gap-1.5 min-h-[36px] active:scale-95 ${
-                      isActive
-                        ? 'bg-[#001639] text-white shadow-xs'
-                        : isCompleted
-                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/60'
-                        : 'bg-slate-100 text-slate-600'
-                    }`}
-                  >
-                    <span
-                      className={`w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center ${
-                        isActive
-                          ? 'bg-[#FF4D2D] text-white'
-                          : isCompleted
-                          ? 'bg-emerald-600 text-white'
-                          : 'bg-slate-200 text-slate-700'
-                      }`}
-                    >
-                      {isCompleted ? '✓' : idx + 1}
-                    </span>
-                    <span>{isAr ? s.labelAr : s.labelEn}</span>
-                  </button>
-                );
-              })}
-            </div>
-
             {/* Lock Banner when Resume is Downloaded & Locked */}
             {activation.isResumeLocked && (
               <div className="mb-5 p-4 bg-amber-50/90 border border-amber-300 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 text-amber-950 shadow-xs animate-in fade-in">

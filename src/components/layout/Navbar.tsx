@@ -59,21 +59,21 @@ export const Navbar: React.FC = () => {
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] text-[#0B1120] shadow-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-22 lg:h-24 flex items-center justify-between gap-4 sm:gap-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-18 lg:h-20 flex items-center justify-between gap-3 sm:gap-6">
         {/* Brand Logo & Title */}
-        <Link to="/" className="flex items-center gap-3 group py-1 shrink-0">
-          <div className="flex items-center gap-2.5 shrink-0">
+        <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group py-1 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <Logo
               variant="icon"
               size="lg"
               loading="eager"
-              className="!h-[44px] sm:!h-[48px] lg:!h-[52px] w-auto !max-w-none shrink-0 object-contain"
+              className="!h-[36px] sm:!h-[42px] lg:!h-[48px] w-auto !max-w-none shrink-0 object-contain"
             />
             <div className="flex flex-col">
-              <span className="font-brand font-extrabold text-base sm:text-lg tracking-tight text-[#0B1120] leading-tight group-hover:text-[#001639] transition">
+              <span className="font-brand font-extrabold text-sm sm:text-base lg:text-lg tracking-tight text-[#0B1120] leading-tight group-hover:text-[#001639] transition">
                 Hash <span className="text-[#001639]">Resume</span>
               </span>
-              <span className="text-[10px] sm:text-[11px] font-semibold text-[#52627A]">
+              <span className="text-[9px] sm:text-[10px] lg:text-[11px] font-semibold text-[#52627A]">
                 {location.pathname === '/builder'
                   ? isAr
                     ? 'محرر السيرة الذاتية'
