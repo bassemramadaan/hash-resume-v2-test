@@ -64,12 +64,27 @@ export const BuilderPage: React.FC = () => {
     lockResumeForEdits,
     unlockResumeWithCredit,
     setIsActivationModalOpen,
-    isSidebarCollapsed,
-    setIsSidebarCollapsed,
   } = useResumeStore();
 
   const isMobile = useMediaQuery('(max-width: 767px)');
   const [mobileActiveSection, setMobileActiveSection] = useState<MobileSectionKey | null>(null);
+
+  // Desktop active section: null = Dashboard view, or a specific section key for focused editing
+  const [desktopActiveSection, setDesktopActiveSection] = useState<
+    | 'personal'
+    | 'experiences'
+    | 'education'
+    | 'skills'
+    | 'certifications'
+    | 'projects'
+    | 'customize'
+    | 'ats'
+    | 'pricing'
+    | null
+  >(null);
+
+  // Tablet view mode switcher (768px - 1023px)
+  const [tabletViewTab, setTabletViewTab] = useState<'editor' | 'preview'>('editor');
 
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
@@ -109,96 +124,38 @@ export const BuilderPage: React.FC = () => {
     return () => clearTimeout(timer);
   }, [resumeData, settings]);
 
+  // Handle ESC key to close desktop editor panel
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && desktopActiveSection !== null) {
+        setDesktopActiveSection(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [desktopActiveSection]);
+
   // Dynamic section completion checkers
   const isPersonalInfoCompleted = Boolean(
     resumeData.personalInfo.fullName?.trim() &&
       (resumeData.personalInfo.email?.trim() || resumeData.personalInfo.phone?.trim())
   );
+  const experiencesCount = resumeData.experiences?.length || 0;
   const isExperienceCompleted = Boolean(
-    resumeData.experiences &&
-      resumeData.experiences.length > 0 &&
+    experiencesCount > 0 &&
       resumeData.experiences.some((e) => e.position?.trim() && e.company?.trim())
   );
+  const educationCount = resumeData.education?.length || 0;
   const isEducationCompleted = Boolean(
-    resumeData.education &&
-      resumeData.education.length > 0 &&
+    educationCount > 0 &&
       resumeData.education.some((e) => e.institution?.trim() && e.degree?.trim())
   );
-  const isSkillsCompleted = Boolean(resumeData.skills && resumeData.skills.length > 0);
-  const isProjectsCompleted = Boolean(resumeData.projects && resumeData.projects.length > 0);
-  const isCertificationsCompleted = Boolean(
-    resumeData.certifications && resumeData.certifications.length > 0
-  );
-
-  const getIsCompleted = (id: string, idx: number) => {
-    switch (id) {
-      case 'customize':
-        return true;
-      case 'personal':
-        return isPersonalInfoCompleted;
-      case 'experiences':
-        return isExperienceCompleted;
-      case 'education':
-        return isEducationCompleted;
-      case 'skills':
-        return isSkillsCompleted;
-      case 'projects':
-        return isProjectsCompleted;
-      case 'certifications':
-        return isCertificationsCompleted;
-      case 'ats':
-        return isPersonalInfoCompleted && isExperienceCompleted;
-      case 'pricing':
-        return isPersonalInfoCompleted;
-      default:
-        return idx < currentStepIndex;
-    }
-  };
-
-  // 6 Streamlined Guided Steps
-  const STEPS = [
-    {
-      id: 'personal',
-      labelAr: '1. البيانات الشخصية',
-      labelEn: '1. Personal Info',
-      icon: User,
-    },
-    {
-      id: 'experiences',
-      labelAr: '2. الخبرات والتعليم',
-      labelEn: '2. Experience & Education',
-      icon: Briefcase,
-    },
-    {
-      id: 'skills',
-      labelAr: '3. المهارات والشهادات',
-      labelEn: '3. Skills & Certifications',
-      icon: Wrench,
-    },
-    {
-      id: 'customize',
-      labelAr: '4. القالب والتنسيق',
-      labelEn: '4. Template & Style',
-      icon: Layout,
-    },
-    {
-      id: 'ats',
-      labelAr: '5. فحص جودة ATS',
-      labelEn: '5. ATS Quality Scan',
-      icon: FileText,
-    },
-    {
-      id: 'pricing',
-      labelAr: '6. المراجعة والتصدير',
-      labelEn: '6. Review & Export',
-      icon: Download,
-    },
-  ] as const;
-
-  const currentStepIndex = Math.max(
-    0,
-    STEPS.findIndex((s) => s.id === activeTab || (activeTab === 'education' && s.id === 'experiences') || ((activeTab === 'projects' || activeTab === 'certifications') && s.id === 'skills'))
-  );
+  const skillsCount = resumeData.skills?.length || 0;
+  const isSkillsCompleted = skillsCount > 0;
+  const projectsCount = resumeData.projects?.length || 0;
+  const isProjectsCompleted = projectsCount > 0;
+  const certsCount = resumeData.certifications?.length || 0;
+  const isCertificationsCompleted = certsCount > 0;
 
   // Dynamic completion percentage calculator
   const completionScore = React.useMemo(() => {
@@ -213,15 +170,183 @@ export const BuilderPage: React.FC = () => {
     return Math.min(100, score);
   }, [resumeData]);
 
-  const handleNextStep = () => {
-    if (currentStepIndex < STEPS.length - 1) {
-      setActiveTab(STEPS[currentStepIndex + 1].id as any);
+  // Desktop sections configuration
+  const DESKTOP_SECTIONS: Array<{
+    id: 'personal' | 'experiences' | 'education' | 'skills' | 'certifications' | 'projects' | 'customize' | 'ats' | 'pricing';
+    titleAr: string;
+    titleEn: string;
+    descriptionAr: string;
+    descriptionEn: string;
+    icon: any;
+    statusLabelAr: string;
+    statusLabelEn: string;
+    isComplete: boolean;
+    isOptional?: boolean;
+    accentColor: string;
+  }> = [
+    {
+      id: 'personal',
+      titleAr: 'البيانات الشخصية',
+      titleEn: 'Personal Information',
+      descriptionAr: resumeData.personalInfo.fullName?.trim()
+        ? `${resumeData.personalInfo.fullName} ${resumeData.personalInfo.jobTitle ? `• ${resumeData.personalInfo.jobTitle}` : ''}`
+        : 'الاسم، معلومات الاتصال، المسمى الوظيفي والملخص',
+      descriptionEn: resumeData.personalInfo.fullName?.trim()
+        ? `${resumeData.personalInfo.fullName} ${resumeData.personalInfo.jobTitle ? `• ${resumeData.personalInfo.jobTitle}` : ''}`
+        : 'Full name, contact details, job title & summary',
+      icon: User,
+      statusLabelAr: isPersonalInfoCompleted ? 'مكتمل' : resumeData.personalInfo.fullName?.trim() ? 'قيد الإدخال' : 'لم تبدأ بعد',
+      statusLabelEn: isPersonalInfoCompleted ? 'Complete' : resumeData.personalInfo.fullName?.trim() ? 'In Progress' : 'Not started',
+      isComplete: isPersonalInfoCompleted,
+      accentColor: 'text-blue-600 bg-blue-50 border-blue-200',
+    },
+    {
+      id: 'experiences',
+      titleAr: 'الخبرات المهنية',
+      titleEn: 'Work Experience',
+      descriptionAr: experiencesCount > 0
+        ? `${experiencesCount} ${experiencesCount === 1 ? 'خبرة مسجلة' : 'خبرات مسجلة'}`
+        : 'المناصب السابقة، الشركات والإنجازات المهنية',
+      descriptionEn: experiencesCount > 0
+        ? `${experiencesCount} ${experiencesCount === 1 ? 'role added' : 'roles added'}`
+        : 'Previous positions, companies & achievements',
+      icon: Briefcase,
+      statusLabelAr: experiencesCount > 0 ? `${experiencesCount} خبرة` : 'لم تُضف بعد',
+      statusLabelEn: experiencesCount > 0 ? `${experiencesCount} added` : 'Not added yet',
+      isComplete: isExperienceCompleted,
+      accentColor: 'text-indigo-600 bg-indigo-50 border-indigo-200',
+    },
+    {
+      id: 'education',
+      titleAr: 'المؤهلات التعليمية',
+      titleEn: 'Education',
+      descriptionAr: educationCount > 0
+        ? `${educationCount} ${educationCount === 1 ? 'مؤهل مضاف' : 'مؤهلات مضافة'}`
+        : 'الدرجات الأكاديمية، الجامعات وسنوات التخرج',
+      descriptionEn: educationCount > 0
+        ? `${educationCount} ${educationCount === 1 ? 'degree added' : 'degrees added'}`
+        : 'Academic degrees, universities & graduation years',
+      icon: GraduationCap,
+      statusLabelAr: educationCount > 0 ? `${educationCount} مؤهل` : 'لم تُضف بعد',
+      statusLabelEn: educationCount > 0 ? `${educationCount} added` : 'Not added yet',
+      isComplete: isEducationCompleted,
+      accentColor: 'text-teal-600 bg-teal-50 border-teal-200',
+    },
+    {
+      id: 'skills',
+      titleAr: 'المهارات واللغات',
+      titleEn: 'Skills & Languages',
+      descriptionAr: skillsCount > 0
+        ? `${skillsCount} ${skillsCount === 1 ? 'مهارة مسجلة' : 'مهارات مسجلة'}`
+        : 'المهارات التقنية والشخصية، اللغات ومستويات الإتقان',
+      descriptionEn: skillsCount > 0
+        ? `${skillsCount} ${skillsCount === 1 ? 'skill added' : 'skills added'}`
+        : 'Technical & soft skills, languages & proficiency',
+      icon: Wrench,
+      statusLabelAr: skillsCount > 0 ? `${skillsCount} مهارة` : 'لم تُضف بعد',
+      statusLabelEn: skillsCount > 0 ? `${skillsCount} added` : 'Not added yet',
+      isComplete: isSkillsCompleted,
+      accentColor: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+    },
+    {
+      id: 'certifications',
+      titleAr: 'الشهادات والدورات',
+      titleEn: 'Certifications',
+      descriptionAr: certsCount > 0
+        ? `${certsCount} ${certsCount === 1 ? 'شهادة مسجلة' : 'شهادات مسجلة'}`
+        : 'الشهادات الاحترافية والدورات التدريبية المعتمدة',
+      descriptionEn: certsCount > 0
+        ? `${certsCount} ${certsCount === 1 ? 'cert added' : 'certs added'}`
+        : 'Professional certificates & accredited licenses',
+      icon: Award,
+      statusLabelAr: certsCount > 0 ? `${certsCount} شهادة` : 'اختياري',
+      statusLabelEn: certsCount > 0 ? `${certsCount} added` : 'Optional',
+      isComplete: isCertificationsCompleted,
+      isOptional: true,
+      accentColor: 'text-amber-600 bg-amber-50 border-amber-200',
+    },
+    {
+      id: 'projects',
+      titleAr: 'المشاريع العملية',
+      titleEn: 'Projects',
+      descriptionAr: projectsCount > 0
+        ? `${projectsCount} ${projectsCount === 1 ? 'مشروع مضاف' : 'مشاريع مضافة'}`
+        : 'المشاريع التطبيقية والأعمال البارزة وروابطها',
+      descriptionEn: projectsCount > 0
+        ? `${projectsCount} ${projectsCount === 1 ? 'project added' : 'projects added'}`
+        : 'Key applications, portfolios & practical projects',
+      icon: FolderGit2,
+      statusLabelAr: projectsCount > 0 ? `${projectsCount} مشروع` : 'اختياري',
+      statusLabelEn: projectsCount > 0 ? `${projectsCount} added` : 'Optional',
+      isComplete: isProjectsCompleted,
+      isOptional: true,
+      accentColor: 'text-violet-600 bg-violet-50 border-violet-200',
+    },
+    {
+      id: 'customize',
+      titleAr: 'القالب والتنسيق',
+      titleEn: 'Template & Style',
+      descriptionAr: `القالب الحالي: ${settings.templateId || 'BASSUX ATS'} • التخصيص والألوان`,
+      descriptionEn: `Current template: ${settings.templateId || 'BASSUX ATS'} • Fonts & colors`,
+      icon: Layout,
+      statusLabelAr: 'محدد',
+      statusLabelEn: 'Ready',
+      isComplete: true,
+      accentColor: 'text-rose-600 bg-rose-50 border-rose-200',
+    },
+    {
+      id: 'ats',
+      titleAr: 'فحص جودة ATS',
+      titleEn: 'ATS Quality Scan',
+      descriptionAr: 'فحص التوافق مع أنظمة التوظيف وتحسين الكلمات المفتاحية',
+      descriptionEn: 'Scan ATS compatibility score and optimize keywords',
+      icon: FileText,
+      statusLabelAr: isPersonalInfoCompleted && isExperienceCompleted ? 'جاهز للفحص' : 'يتطلب البيانات',
+      statusLabelEn: isPersonalInfoCompleted && isExperienceCompleted ? 'Ready to scan' : 'Needs info',
+      isComplete: isPersonalInfoCompleted && isExperienceCompleted,
+      accentColor: 'text-cyan-600 bg-cyan-50 border-cyan-200',
+    },
+    {
+      id: 'pricing',
+      titleAr: 'المراجعة والتصدير',
+      titleEn: 'Review & Export',
+      descriptionAr: 'معاينة نهائية واعتماد وتنزيل ملف PDF عالي الدقة',
+      descriptionEn: 'Final review, approve & download high-res PDF',
+      icon: Download,
+      statusLabelAr: completionScore >= 40 ? 'جاهز للتحميل' : 'قيد الإنشاء',
+      statusLabelEn: completionScore >= 40 ? 'Ready to Export' : 'In draft',
+      isComplete: completionScore >= 40,
+      accentColor: 'text-emerald-700 bg-emerald-50 border-emerald-300',
+    },
+  ];
+
+  const currentSectionIndex = desktopActiveSection
+    ? DESKTOP_SECTIONS.findIndex((s) => s.id === desktopActiveSection)
+    : -1;
+
+  const handleOpenSection = (sectionId: typeof desktopActiveSection) => {
+    if (!sectionId) return;
+    setDesktopActiveSection(sectionId);
+    setActiveTab(sectionId);
+  };
+
+  const handleNextSection = () => {
+    if (currentSectionIndex >= 0 && currentSectionIndex < DESKTOP_SECTIONS.length - 1) {
+      const nextId = DESKTOP_SECTIONS[currentSectionIndex + 1].id;
+      setDesktopActiveSection(nextId);
+      setActiveTab(nextId);
+    } else {
+      setDesktopActiveSection(null);
     }
   };
 
-  const handlePrevStep = () => {
-    if (currentStepIndex > 0) {
-      setActiveTab(STEPS[currentStepIndex - 1].id as any);
+  const handlePrevSection = () => {
+    if (currentSectionIndex > 0) {
+      const prevId = DESKTOP_SECTIONS[currentSectionIndex - 1].id;
+      setDesktopActiveSection(prevId);
+      setActiveTab(prevId);
+    } else {
+      setDesktopActiveSection(null);
     }
   };
 
@@ -246,34 +371,20 @@ export const BuilderPage: React.FC = () => {
     }
   };
 
-  const renderActiveForm = () => {
-    switch (activeTab) {
+  const renderSectionForm = (sectionId: string) => {
+    switch (sectionId) {
       case 'personal':
         return <PersonalInfoForm />;
       case 'experiences':
+        return <ExperienceForm />;
       case 'education':
-        return (
-          <div className="space-y-8">
-            <ExperienceForm />
-            <div className="border-t border-slate-200 pt-6">
-              <EducationForm />
-            </div>
-          </div>
-        );
+        return <EducationForm />;
       case 'skills':
-      case 'projects':
+        return <SkillsForm />;
       case 'certifications':
-        return (
-          <div className="space-y-8">
-            <SkillsForm />
-            <div className="border-t border-slate-200 pt-6">
-              <ProjectsForm />
-            </div>
-            <div className="border-t border-slate-200 pt-6">
-              <CertificationsForm />
-            </div>
-          </div>
-        );
+        return <CertificationsForm />;
+      case 'projects':
+        return <ProjectsForm />;
       case 'customize':
         return <CustomizeForm />;
       case 'ats':
@@ -286,6 +397,7 @@ export const BuilderPage: React.FC = () => {
 
   const ArrowPrev = isAr ? ChevronRight : ChevronLeft;
   const ArrowNext = isAr ? ChevronLeft : ChevronRight;
+  const ChevronIcon = isAr ? ChevronLeft : ChevronRight;
 
   const renderResetModal = () => (
     <AnimatePresence>
@@ -343,6 +455,7 @@ export const BuilderPage: React.FC = () => {
                     resetResume();
                     setIsResetModalOpen(false);
                     setActiveTab('personal');
+                    setDesktopActiveSection(null);
                     setMobileActiveSection(null);
                     setShowResetToast(true);
                     setTimeout(() => setShowResetToast(false), 4000);
@@ -375,7 +488,9 @@ export const BuilderPage: React.FC = () => {
     </AnimatePresence>
   );
 
-  // MOBILE APP DASHBOARD & DEDICATED SECTION EDITOR (< 768px)
+  // ==========================================
+  // MOBILE APP DASHBOARD (< 768px) - UNCHANGED
+  // ==========================================
   if (isMobile) {
     return (
       <main className="bg-[#F8FAFC] min-h-screen" aria-label="Mobile Resume Builder">
@@ -421,270 +536,439 @@ export const BuilderPage: React.FC = () => {
     );
   }
 
-  // DESKTOP RESUME BUILDER (>= 768px)
-  return (
-    <main className="space-y-3 sm:space-y-4 pb-24 sm:pb-12 bg-[#F8FAFC] min-h-screen">
-      {/* Top Sticky Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-14 sm:top-16 lg:top-[72px] z-30 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-2.5">
-          {/* Main Top Header Controls */}
-          <div className="flex items-center justify-between gap-2">
-            {/* Step Info */}
-            <div className="flex items-center gap-2 min-w-0">
-              <button
-                type="button"
-                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                className="hidden lg:flex p-1.5 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-[#001639] transition cursor-pointer"
-                title={isSidebarCollapsed ? 'إظهار الخطوات' : 'إخفاء الخطوات'}
-              >
-                {isSidebarCollapsed ? (
-                  <PanelLeftOpen className="w-4 h-4" />
-                ) : (
-                  <PanelLeftClose className="w-4 h-4" />
-                )}
-              </button>
+  // ==========================================
+  // DESKTOP WORKSPACE DASHBOARD (>= 768px)
+  // ==========================================
+  const activeSectionData = desktopActiveSection
+    ? DESKTOP_SECTIONS.find((s) => s.id === desktopActiveSection)
+    : null;
 
-              <span className="w-6 h-6 rounded-full bg-[#001639] text-white text-xs font-bold flex items-center justify-center shrink-0">
-                {currentStepIndex + 1}
-              </span>
-              <span className="font-bold text-xs sm:text-sm text-[#001639] truncate">
-                {isAr ? STEPS[currentStepIndex]?.labelAr : STEPS[currentStepIndex]?.labelEn}
-              </span>
-              <span className="text-[10px] text-slate-400 shrink-0 font-medium hidden sm:inline">
-                ({currentStepIndex + 1}/6)
-              </span>
+  return (
+    <main className="min-h-screen bg-[#F8FAFC] pb-16">
+      {/* 1. Compact Sticky Workspace Header */}
+      <header
+        id="desktop-workspace-header"
+        className="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-14 sm:top-16 lg:top-[72px] z-30 shadow-2xs"
+      >
+        <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-2.5">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            {/* Title & Active Path Breadcrumb */}
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-8 h-8 rounded-xl bg-[#001639] text-white flex items-center justify-center font-bold text-xs shadow-2xs shrink-0">
+                <Sparkles className="w-4 h-4 text-[#FF4D2D]" />
+              </div>
+              <div className="flex items-center gap-1.5 min-w-0">
+                <button
+                  type="button"
+                  onClick={() => setDesktopActiveSection(null)}
+                  className={`font-black text-sm sm:text-base text-[#001639] hover:text-[#FF4D2D] transition cursor-pointer truncate ${
+                    desktopActiveSection ? 'text-slate-500 font-bold hover:text-[#001639]' : ''
+                  }`}
+                >
+                  {isAr ? 'محرر السيرة الذاتية' : 'Resume Builder'}
+                </button>
+
+                {activeSectionData && (
+                  <>
+                    <span className="text-slate-300 font-medium">/</span>
+                    <span className="font-extrabold text-sm sm:text-base text-[#001639] truncate flex items-center gap-1.5">
+                      <activeSectionData.icon className="w-4 h-4 text-slate-600 shrink-0" />
+                      {isAr ? activeSectionData.titleAr : activeSectionData.titleEn}
+                    </span>
+                  </>
+                )}
+              </div>
             </div>
 
-            {/* Controls: Auto Save & Start New Resume */}
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              {/* Resume Completion Badge (Desktop / Tablet) */}
-              <div className="hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold border border-slate-200">
-                <span className="text-[10px] text-slate-500">{isAr ? 'اكتمال السيرة:' : 'Completeness:'}</span>
-                <span className={`text-xs font-extrabold ${completionScore >= 80 ? 'text-emerald-600' : completionScore >= 50 ? 'text-amber-600' : 'text-[#FF4D2D]'}`}>
+            {/* Middle: Progress Indicator & Score */}
+            <div className="hidden sm:flex items-center gap-3 bg-slate-50 px-3.5 py-1.5 rounded-full border border-slate-200/80">
+              <div className="flex items-center gap-1.5 text-xs">
+                <span className="text-slate-500 font-medium">{isAr ? 'اكتمال السيرة:' : 'Complete:'}</span>
+                <span
+                  className={`font-extrabold ${
+                    completionScore >= 80
+                      ? 'text-emerald-600'
+                      : completionScore >= 50
+                      ? 'text-amber-600'
+                      : 'text-[#FF4D2D]'
+                  }`}
+                >
                   {completionScore}%
                 </span>
               </div>
+              <div className="w-24 bg-slate-200 h-1.5 rounded-full overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-300 rounded-full ${
+                    completionScore >= 80
+                      ? 'bg-emerald-500'
+                      : completionScore >= 50
+                      ? 'bg-amber-500'
+                      : 'bg-[#FF4D2D]'
+                  }`}
+                  style={{ width: `${completionScore}%` }}
+                />
+              </div>
+            </div>
 
-              {/* Auto Save Feedback Indicator */}
+            {/* Actions: Autosave status & Start New Resume */}
+            <div className="flex items-center gap-2">
+              {/* Tablet View Switcher (768px - 1023px) */}
+              <div className="flex lg:hidden bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs font-semibold">
+                <button
+                  type="button"
+                  onClick={() => setTabletViewTab('editor')}
+                  className={`px-2.5 py-1 rounded-md transition cursor-pointer ${
+                    tabletViewTab === 'editor' ? 'bg-white text-[#001639] shadow-2xs' : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  {isAr ? 'المحرر' : 'Editor'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setTabletViewTab('preview')}
+                  className={`px-2.5 py-1 rounded-md transition cursor-pointer ${
+                    tabletViewTab === 'preview' ? 'bg-white text-[#001639] shadow-2xs' : 'text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  {isAr ? 'المعاينة' : 'Preview'}
+                </button>
+              </div>
+
+              {/* Autosave Status Badge */}
               <div
-                className={`inline-flex items-center gap-1.5 px-2 sm:px-2.5 py-1 rounded-full text-[10px] sm:text-xs font-medium border transition-all duration-300 ${
+                id="desktop-autosave-badge"
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-all duration-300 ${
                   saveStatus === 'saving'
                     ? 'bg-amber-50 text-amber-800 border-amber-200'
                     : 'bg-emerald-50 text-emerald-800 border-emerald-200/80 shadow-2xs'
                 }`}
-                title={isAr ? 'يتم حفظ كافة تعديلاتك تلقائياً في ذاكرة المتصفح' : 'All changes saved automatically in local browser storage'}
+                title={
+                  isAr
+                    ? 'يتم حفظ كافة تعديلاتك تلقائياً في ذاكرة المتصفح'
+                    : 'All changes saved automatically in local browser storage'
+                }
               >
                 {saveStatus === 'saving' ? (
                   <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0" />
                 ) : (
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                 )}
-                <span className="font-semibold whitespace-nowrap">
+                <span className="font-semibold whitespace-nowrap text-[11px] sm:text-xs">
                   {saveStatus === 'saving'
                     ? isAr
                       ? 'جارِ الحفظ...'
                       : 'Saving...'
                     : isAr
                     ? 'محفوظ'
-                    : 'Saved'}
+                    : 'Saved ✓'}
                 </span>
               </div>
 
               {/* Start New Resume Action */}
               <button
                 type="button"
+                id="btn-start-new-resume"
                 onClick={() => setIsResetModalOpen(true)}
-                className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 text-slate-600 hover:text-rose-700 hover:bg-rose-50 rounded-full text-[10px] sm:text-xs font-semibold border border-slate-200 hover:border-rose-200 transition cursor-pointer group shrink-0"
+                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 text-slate-600 hover:text-rose-700 hover:bg-rose-50 rounded-full text-xs font-semibold border border-slate-200 hover:border-rose-200 transition cursor-pointer group shrink-0"
                 title={t.startNewResume}
               >
-                <RotateCcw className="w-3 h-3 text-slate-500 group-hover:text-rose-600 group-hover:-rotate-90 transition-transform duration-200 shrink-0" />
+                <RotateCcw className="w-3.5 h-3.5 text-slate-500 group-hover:text-rose-600 group-hover:-rotate-90 transition-transform duration-200 shrink-0" />
                 <span className="hidden sm:inline">{t.startNewResume}</span>
-                <span className="sm:hidden">{isAr ? 'سيرة جديدة' : 'New'}</span>
+                <span className="sm:hidden">{isAr ? 'جديد' : 'New'}</span>
               </button>
             </div>
-          </div>
-
-          {/* Desktop Progress Line */}
-          <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden mt-2">
-            <div
-              className="bg-[#001639] h-full transition-all duration-300"
-              style={{ width: `${((currentStepIndex + 1) / 6) * 100}%` }}
-            />
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Main Builder Area */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-1 sm:pt-2">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
-          {/* Sidebar Navigation */}
-          {!isSidebarCollapsed && (
-            <div className="hidden lg:block lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-2.5 space-y-1.5 sticky top-32">
-              <div className="px-2 py-1 mb-1 border-b border-slate-100">
-                <h3 className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">
-                  {isAr ? 'خطوات السيرة (6)' : 'Steps (6)'}
-                </h3>
+      {/* 2. Main Two-Column Desktop Workspace Area */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6">
+        {/* Global Resume Locked Alert if Downloaded */}
+        {activation.isResumeLocked && (
+          <div className="mb-5 p-4 bg-amber-50/90 border border-amber-300 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 text-amber-950 shadow-xs animate-in fade-in">
+            <div className="flex items-start gap-3">
+              <div className="p-2.5 bg-amber-200/80 rounded-xl text-amber-900 shrink-0">
+                <Lock className="w-5 h-5" />
               </div>
               <div className="space-y-1">
-                {STEPS.map((s, idx) => {
-                  const isActive = currentStepIndex === idx;
-                  const isCompleted = idx < currentStepIndex;
-
-                  return (
-                    <button
-                      key={s.id}
-                      onClick={() => setActiveTab(s.id as any)}
-                      className={`w-full flex items-center gap-2 px-2.5 py-2 rounded-xl text-xs font-semibold transition text-start cursor-pointer ${
-                        isActive
-                          ? 'bg-[#001639] text-white shadow-2xs'
-                          : isCompleted
-                          ? 'bg-slate-50 text-slate-700 hover:bg-slate-100'
-                          : 'text-slate-500 hover:bg-slate-50'
-                      }`}
-                    >
-                      <div
-                        className={`w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center shrink-0 ${
-                          isActive
-                            ? 'bg-[#FF4D2D] text-white'
-                            : isCompleted
-                            ? 'bg-emerald-100 text-emerald-700'
-                            : 'bg-slate-200 text-slate-600'
-                        }`}
-                      >
-                        {isCompleted ? <Check className="w-2.5 h-2.5 text-emerald-700" /> : idx + 1}
-                      </div>
-                      <span className="truncate text-xs">{isAr ? s.labelAr : s.labelEn}</span>
-                    </button>
-                  );
-                })}
+                <h4 className="font-black text-xs sm:text-sm text-amber-950">
+                  {isAr
+                    ? 'تم تنزيل الـPDF — تم إقفال السيرة الذاتية لمنع التعديل'
+                    : 'Download complete — your resume is locked for editing.'}
+                </h4>
+                <p className="text-xs text-amber-900/90 leading-relaxed">
+                  {isAr
+                    ? 'لحماية نسختك المعتمدة وتجنب التعديلات غير المقصودة، تم قفل الحقول.'
+                    : 'To protect your downloaded version and prevent accidental changes, fields are locked.'}
+                </p>
+                {activation.remainingDownloads > 0 && (
+                  <p className="text-[11px] font-bold text-emerald-800">
+                    {isAr
+                      ? `لديك رصيد متبقي: ${activation.remainingDownloads} تفعيل(ات)`
+                      : `Remaining credits: ${activation.remainingDownloads} activation(s)`}
+                  </p>
+                )}
               </div>
             </div>
-          )}
 
-          {/* Form Editor */}
+            <button
+              type="button"
+              onClick={handleUnlockRequest}
+              className="w-full sm:w-auto px-4 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition shrink-0 cursor-pointer shadow-xs active:scale-98"
+            >
+              <Key className="w-4 h-4 text-amber-400" />
+              <span>
+                {activation.remainingDownloads > 0
+                  ? isAr
+                    ? 'فتح التعديل باستخدام تفعيل متبقي'
+                    : 'Unlock to Edit with Credit'
+                  : isAr
+                  ? 'هل تحتاج لإجراء تعديلات؟ اشترِ تفعيل إضافي'
+                  : 'Need to make changes? Purchase another download credit.'}
+              </span>
+            </button>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* ========================================================= */}
+          {/* LEFT COLUMN: Workspace Dashboard OR Focused Section Editor */}
+          {/* ========================================================= */}
           <div
-            className={`${
-              isSidebarCollapsed ? 'lg:col-span-6' : 'lg:col-span-5'
-            } bg-white border border-slate-200 rounded-2xl p-3.5 sm:p-6 lg:p-7 text-[#0B1120] min-h-[460px] flex flex-col justify-between space-y-4 sm:space-y-6 shadow-xs transition-all duration-200`}
+            className={`w-full ${
+              tabletViewTab === 'preview' ? 'hidden lg:block' : 'block'
+            } lg:col-span-6 xl:col-span-6 space-y-4`}
           >
-            {/* Lock Banner when Resume is Downloaded & Locked */}
-            {activation.isResumeLocked && (
-              <div className="mb-5 p-4 bg-amber-50/90 border border-amber-300 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 text-amber-950 shadow-xs animate-in fade-in">
-                <div className="flex items-start gap-3">
-                  <div className="p-2.5 bg-amber-200/80 rounded-xl text-amber-900 shrink-0">
-                    <Lock className="w-5 h-5" />
-                  </div>
-                  <div className="space-y-1">
-                    <h4 className="font-black text-xs sm:text-sm text-amber-950">
-                      {isAr
-                        ? 'تم تنزيل الـPDF — تم إقفال السيرة الذاتية لمنع التعديل'
-                        : 'Download complete — your resume is locked for editing.'}
-                    </h4>
-                    <p className="text-xs text-amber-900/90 leading-relaxed">
-                      {isAr
-                        ? 'لحماية نسختك المعتمدة وتجنب التعديلات غير المقصودة، تم قفل الحقول.'
-                        : 'To protect your downloaded version and prevent accidental changes, fields are locked.'}
-                    </p>
-                    {activation.remainingDownloads > 0 && (
-                      <p className="text-[11px] font-bold text-emerald-800">
-                        {isAr
-                          ? `لديك رصيد متبقي: ${activation.remainingDownloads} تفعيل(ات)`
-                          : `Remaining credits: ${activation.remainingDownloads} activation(s)`}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleUnlockRequest}
-                  className="w-full sm:w-auto px-4 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition shrink-0 cursor-pointer shadow-xs active:scale-98"
-                >
-                  <Key className="w-4 h-4 text-amber-400" />
-                  <span>
-                    {activation.remainingDownloads > 0
-                      ? (isAr ? 'فتح التعديل باستخدام تفعيل متبقي' : 'Unlock to Edit with Credit')
-                      : (isAr ? 'هل تحتاج لإجراء تعديلات؟ اشترِ تفعيل إضافي' : 'Need to make changes? Purchase another download credit.')}
-                  </span>
-                </button>
-              </div>
-            )}
-
             <AnimatePresence mode="wait">
-              <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.12 }}
-              >
-                <fieldset
-                  disabled={activation.isResumeLocked}
-                  className={activation.isResumeLocked ? 'pointer-events-none opacity-75 select-none relative border-none p-0 m-0' : 'border-none p-0 m-0'}
+              {desktopActiveSection ? (
+                /* ------------------------------------------- */
+                /* A. Focused Section Editor Panel             */
+                /* ------------------------------------------- */
+                <motion.div
+                  key={`editor-panel-${desktopActiveSection}`}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.15 }}
+                  className="bg-white border border-slate-200/90 rounded-2xl shadow-xs overflow-hidden"
                 >
-                  {renderActiveForm()}
-                </fieldset>
+                  {/* Editor Panel Header */}
+                  <div className="p-4 sm:p-5 border-b border-slate-200/80 bg-slate-50/70 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <button
+                        type="button"
+                        onClick={() => setDesktopActiveSection(null)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:text-[#001639] hover:bg-slate-100 text-xs font-bold transition cursor-pointer shadow-2xs active:scale-98"
+                        title={isAr ? 'العودة إلى لوحة الأقسام' : 'Back to Sections Dashboard'}
+                      >
+                        <ArrowPrev className="w-4 h-4" />
+                        <span>{isAr ? 'لوحة الأقسام' : 'Dashboard'}</span>
+                      </button>
 
-                {/* Smart Form Step Flow Navigation Banner */}
-                <div className="mt-8 p-4 bg-slate-50 border border-slate-200/80 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 shadow-2xs">
-                  <div className="flex items-center gap-2 text-xs text-slate-600">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>
-                      {isAr
-                        ? `ملاحظة: يتم حفظ البيانات تلقائياً. المتبقي: ${6 - (currentStepIndex + 1)} خطوات`
-                        : `Data auto-saved. Remaining: ${6 - (currentStepIndex + 1)} steps`}
-                    </span>
+                      {activeSectionData && (
+                        <div className="flex items-center gap-2 min-w-0">
+                          <div className={`p-1.5 rounded-lg border shrink-0 ${activeSectionData.accentColor}`}>
+                            <activeSectionData.icon className="w-4 h-4" />
+                          </div>
+                          <div className="truncate">
+                            <h2 className="font-extrabold text-sm sm:text-base text-[#001639] truncate">
+                              {isAr ? activeSectionData.titleAr : activeSectionData.titleEn}
+                            </h2>
+                            <p className="text-[11px] text-slate-500 truncate hidden sm:block">
+                              {isAr ? activeSectionData.descriptionAr : activeSectionData.descriptionEn}
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {/* Section Quick Switcher */}
+                      <button
+                        type="button"
+                        onClick={handlePrevSection}
+                        disabled={currentSectionIndex <= 0}
+                        className="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+                        title={isAr ? 'القسم السابق' : 'Previous section'}
+                      >
+                        <ArrowPrev className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleNextSection}
+                        disabled={currentSectionIndex >= DESKTOP_SECTIONS.length - 1}
+                        className="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
+                        title={isAr ? 'القسم التالي' : 'Next section'}
+                      >
+                        <ArrowNext className="w-4 h-4" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setDesktopActiveSection(null)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer ms-1"
+                        title={isAr ? 'إغلاق (Esc)' : 'Close (Esc)'}
+                      >
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
                   </div>
 
-                  {currentStepIndex < STEPS.length - 1 && (
+                  {/* Editor Panel Form Body */}
+                  <div className="p-4 sm:p-6 lg:p-7 text-[#0B1120]">
+                    <fieldset
+                      disabled={activation.isResumeLocked}
+                      className={
+                        activation.isResumeLocked
+                          ? 'pointer-events-none opacity-75 select-none relative border-none p-0 m-0'
+                          : 'border-none p-0 m-0'
+                      }
+                    >
+                      {renderSectionForm(desktopActiveSection)}
+                    </fieldset>
+                  </div>
+
+                  {/* Editor Panel Footer Actions */}
+                  <div className="p-4 sm:p-5 border-t border-slate-200/80 bg-slate-50/60 flex flex-wrap items-center justify-between gap-3">
                     <button
                       type="button"
-                      onClick={handleNextStep}
-                      className="w-full sm:w-auto px-5 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition shadow-xs cursor-pointer active:scale-98"
+                      onClick={() => setDesktopActiveSection(null)}
+                      className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-white text-xs font-bold transition cursor-pointer shadow-2xs"
                     >
-                      <span>
-                        {isAr
-                          ? `حفظ ومتابعة إلى: ${STEPS[currentStepIndex + 1]?.labelAr}`
-                          : `Save & Continue to: ${STEPS[currentStepIndex + 1]?.labelEn}`}
-                      </span>
-                      <ArrowNext className="w-4 h-4" />
+                      {isAr ? '← العودة للأقسام' : '← Back to Sections'}
                     </button>
-                  )}
-                </div>
-              </motion.div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setDesktopActiveSection(null)}
+                        className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition cursor-pointer"
+                      >
+                        {isAr ? 'حفظ وإغلاق' : 'Save & Close'}
+                      </button>
+
+                      {currentSectionIndex < DESKTOP_SECTIONS.length - 1 && (
+                        <button
+                          type="button"
+                          onClick={handleNextSection}
+                          className="px-4 py-2 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition shadow-xs cursor-pointer active:scale-98"
+                        >
+                          <span>
+                            {isAr
+                              ? `التالي: ${DESKTOP_SECTIONS[currentSectionIndex + 1]?.titleAr}`
+                              : `Next: ${DESKTOP_SECTIONS[currentSectionIndex + 1]?.titleEn}`}
+                          </span>
+                          <ArrowNext className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              ) : (
+                /* ------------------------------------------- */
+                /* B. Desktop Sections Dashboard Cards         */
+                /* ------------------------------------------- */
+                <motion.div
+                  key="dashboard-overview"
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.12 }}
+                  className="space-y-4"
+                >
+                  {/* Dashboard Welcome & Overview Card */}
+                  <div className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <h2 className="font-extrabold text-base sm:text-lg text-[#001639]">
+                        {isAr ? 'أقسام السيرة الذاتية' : 'Your Resume Sections'}
+                      </h2>
+                      <p className="text-xs text-slate-500">
+                        {isAr
+                          ? 'اضغط على أي قسم لفتحه وتحريره بسهولة مع المعاينة الفورية المباشرة'
+                          : 'Select any section below to edit with live real-time preview'}
+                      </p>
+                    </div>
+
+                    <div className="hidden sm:flex flex-col items-end shrink-0">
+                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                        {isAr ? 'نسبة الإنجاز' : 'Progress'}
+                      </span>
+                      <span className="text-lg font-black text-[#001639]">{completionScore}%</span>
+                    </div>
+                  </div>
+
+                  {/* Section Cards Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5" id="desktop-sections-grid">
+                    {DESKTOP_SECTIONS.map((sec) => {
+                      const Icon = sec.icon;
+
+                      return (
+                        <button
+                          key={sec.id}
+                          type="button"
+                          id={`desktop-section-card-${sec.id}`}
+                          onClick={() => handleOpenSection(sec.id)}
+                          className={`w-full text-start p-4 rounded-2xl border transition-all duration-180 flex flex-col justify-between gap-3 group cursor-pointer bg-white hover:bg-slate-50/90 shadow-2xs hover:shadow-xs relative overflow-hidden focus-visible:ring-2 focus-visible:ring-[#001639] focus:outline-none ${
+                            sec.id === 'pricing'
+                              ? 'border-emerald-300/80 bg-emerald-50/20 sm:col-span-2'
+                              : sec.isComplete
+                              ? 'border-slate-200 hover:border-slate-300'
+                              : 'border-slate-200/80 hover:border-slate-300'
+                          }`}
+                        >
+                          <div className="flex items-start justify-between gap-2.5 w-full">
+                            <div className="flex items-start gap-3 min-w-0 flex-1">
+                              <div
+                                className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105 ${sec.accentColor}`}
+                              >
+                                <Icon className="w-5 h-5" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <h3 className="font-bold text-sm text-[#001639] group-hover:text-[#FF4D2D] transition leading-snug break-words line-clamp-2">
+                                  {isAr ? sec.titleAr : sec.titleEn}
+                                </h3>
+                                <p className="text-[11px] text-slate-500 line-clamp-1 leading-snug mt-0.5">
+                                  {isAr ? sec.descriptionAr : sec.descriptionEn}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Section Status Badge */}
+                            <div className="shrink-0 flex items-center gap-1.5 mt-0.5">
+                              {sec.isComplete ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 whitespace-nowrap">
+                                  <Check className="w-3 h-3" />
+                                  <span>{isAr ? sec.statusLabelAr : sec.statusLabelEn}</span>
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap">
+                                  {isAr ? sec.statusLabelAr : sec.statusLabelEn}
+                                </span>
+                              )}
+                              <ChevronIcon className="w-4 h-4 text-slate-400 group-hover:text-[#001639] group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform shrink-0" />
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
-
-            {/* Bottom Desktop Navigation Controls */}
-            <div className="hidden sm:flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
-              <button
-                type="button"
-                onClick={handlePrevStep}
-                disabled={currentStepIndex === 0}
-                className="px-4 py-2 text-xs font-semibold rounded-full border border-slate-200 hover:bg-slate-50 text-slate-700 transition flex items-center gap-1 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                <ArrowPrev className="w-4 h-4" />
-                <span>{isAr ? 'السابق' : 'Previous'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleNextStep}
-                disabled={currentStepIndex === STEPS.length - 1}
-                className="px-5 py-2 text-xs font-semibold rounded-full bg-[#001639] hover:bg-[#00245E] text-white transition flex items-center gap-1 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-              >
-                <span>{isAr ? 'التالي' : 'Next'}</span>
-                <ArrowNext className="w-4 h-4" />
-              </button>
-            </div>
           </div>
 
-          {/* Right Live Preview Column */}
+          {/* ========================================================= */}
+          {/* RIGHT COLUMN: Large Sticky Real-Time Live Preview         */}
+          {/* ========================================================= */}
           <div
-            className={`${
-              isSidebarCollapsed ? 'lg:col-span-6' : 'lg:col-span-5'
-            } hidden lg:block sticky top-28 h-[calc(100vh-8rem)] transition-all duration-200`}
+            id="desktop-preview-column"
+            className={`w-full ${
+              tabletViewTab === 'editor' ? 'hidden lg:block' : 'block'
+            } lg:col-span-6 xl:col-span-6 sticky top-28 h-[calc(100vh-8.5rem)] min-h-[640px] transition-all duration-200`}
           >
-            <ResumePreview />
+            <div className="h-full bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden flex flex-col">
+              <ResumePreview />
+            </div>
           </div>
         </div>
       </div>
@@ -695,10 +979,13 @@ export const BuilderPage: React.FC = () => {
       {/* Reset Confirmation Toast */}
       {renderResetToast()}
 
-      {/* App Version Tag */}
-      <div id="editor-version-flag" className="text-center py-2 text-[10px] font-mono text-slate-400 select-none pb-20 sm:pb-4">
-        UPDATE VER 3.2
-      </div>
+      {/* App Version Tag (Development Only) */}
+      {import.meta.env.DEV && (
+        <div id="editor-version-flag" className="text-center py-2 text-[10px] font-mono text-slate-400 select-none pb-20 sm:pb-4 mt-8">
+          UPDATE VER 3.2
+        </div>
+      )}
     </main>
   );
 };
+

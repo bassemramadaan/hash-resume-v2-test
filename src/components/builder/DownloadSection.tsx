@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { useResumeExport } from '../../hooks/useResumeExport';
 import { ShareModal } from '../common/ShareModal';
+import { isResumeBlank } from '../../utils/resumeFingerprint';
 
 interface IssueItem {
   id: 'personal' | 'experiences' | 'education' | 'skills' | 'projects' | 'certifications';
@@ -48,6 +49,7 @@ export const DownloadSection: React.FC = () => {
   const [isExporting, setIsExporting] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [showImprovements, setShowImprovements] = useState(false);
+  const [emptyWarning, setEmptyWarning] = useState<string | null>(null);
 
   // Compute key checklist items and readiness score
   const { readinessScore, issues, completedCount, totalChecks } = useMemo(() => {
@@ -146,6 +148,18 @@ export const DownloadSection: React.FC = () => {
   }, [resumeData]);
 
   const handleExport = () => {
+    const isBlank = isResumeBlank(resumeData) || !resumeData.personalInfo?.fullName?.trim();
+    if (isBlank) {
+      setEmptyWarning(
+        isAr
+          ? 'يرجى إكمال بياناتك الشخصية قبل تحميل السيرة الذاتية.'
+          : 'Complete your Personal Information before downloading your CV.'
+      );
+      setTimeout(() => setEmptyWarning(null), 5000);
+      return;
+    }
+
+    setEmptyWarning(null);
     setIsExporting(true);
     try {
       requestPdfExport('finish_step');
@@ -259,6 +273,14 @@ export const DownloadSection: React.FC = () => {
             </div>
           </div>
         </div>
+
+        {/* Empty Resume Warning Alert */}
+        {emptyWarning && (
+          <div className="p-3.5 bg-amber-500/20 border border-amber-400/50 rounded-xl flex items-center gap-3 text-amber-200 text-xs font-semibold animate-in fade-in">
+            <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
+            <span className="flex-1">{emptyWarning}</span>
+          </div>
+        )}
 
         {/* Primary Download & Share Buttons */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">

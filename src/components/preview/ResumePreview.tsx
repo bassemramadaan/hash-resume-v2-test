@@ -26,6 +26,7 @@ import { useResumeExport } from '../../hooks/useResumeExport';
 import { ShareModal } from '../common/ShareModal';
 import { getTranslation } from '../../i18n/translations';
 import { TemplateId } from '../../types/resume';
+import { isResumeBlank } from '../../utils/resumeFingerprint';
 import { motion, AnimatePresence } from 'motion/react';
 
 const QUICK_COLORS = [
@@ -77,8 +78,24 @@ export const ResumePreview: React.FC = () => {
   const [showQuickToolbar, setShowQuickToolbar] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [isShareOpen, setIsShareOpen] = useState<boolean>(false);
+  const [emptyWarningToast, setEmptyWarningToast] = useState<string | null>(null);
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
+
+  const isCurrentResumeBlank = isResumeBlank(deferredResumeData) || !deferredResumeData.personalInfo?.fullName?.trim();
+
+  // Listen to empty download warning events from any trigger
+  React.useEffect(() => {
+    const handleEmptyWarning = (e: Event) => {
+      const customEvent = e as CustomEvent<{ message: string }>;
+      if (customEvent.detail?.message) {
+        setEmptyWarningToast(customEvent.detail.message);
+        setTimeout(() => setEmptyWarningToast(null), 4500);
+      }
+    };
+    window.addEventListener('resume:empty-download-warning', handleEmptyWarning);
+    return () => window.removeEventListener('resume:empty-download-warning', handleEmptyWarning);
+  }, []);
 
   // Responsive dynamic auto-scale on resize
   React.useEffect(() => {
@@ -113,6 +130,15 @@ export const ResumePreview: React.FC = () => {
   };
 
   const handlePdfDownload = () => {
+    if (isCurrentResumeBlank) {
+      setEmptyWarningToast(
+        isAr
+          ? 'يرجى إكمال بياناتك الشخصية قبل تحميل السيرة الذاتية.'
+          : 'Complete your Personal Information before downloading your CV.'
+      );
+      setTimeout(() => setEmptyWarningToast(null), 4500);
+      return;
+    }
     requestPdfExport('preview');
   };
 
@@ -355,8 +381,28 @@ export const ResumePreview: React.FC = () => {
             }}
           >
             {/* Render Active Template Document */}
-            <div id="resume-preview-document" className="relative">
+            <div id="resume-preview-document" className="relative min-h-[1050px]">
               {renderActiveTemplate()}
+
+              {/* Subtle Empty State Watermark Placeholder (Only for empty resume, never rendered in PDF) */}
+              {isCurrentResumeBlank && (
+                <div
+                  id="preview-empty-placeholder"
+                  className="absolute inset-0 z-10 flex flex-col items-center justify-center p-6 sm:p-10 text-center bg-white/85 backdrop-blur-[2px] no-print pointer-events-none transition-all duration-300"
+                >
+                  <div className="w-14 h-14 rounded-2xl bg-[#001639]/5 border border-[#001639]/10 flex items-center justify-center text-[#001639] mb-3.5 shadow-2xs">
+                    <Sparkles className="w-7 h-7 text-[#FF4D2D]" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-black text-[#001639] mb-1.5 tracking-tight">
+                    {isAr ? 'ستظهر معاينة سيرتك الذاتية هنا' : 'Your resume preview will appear here'}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 max-w-xs sm:max-w-sm leading-relaxed font-medium">
+                    {isAr
+                      ? 'ابدأ بإدخال بياناتك الشخصية في لوحة الأقسام لتراها تتشكل لحظياً بدقة عالية.'
+                      : 'Start by completing your Personal Information in the sections dashboard.'}
+                  </p>
+                </div>
+              )}
 
               {/* Visual Page Break Line (Hidden during PDF export via no-print class) */}
               <div
@@ -373,6 +419,33 @@ export const ResumePreview: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Floating Download Warning Toast */}
+      <AnimatePresence>
+        {emptyWarningToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 12, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="absolute bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-40 bg-[#001639] text-white px-4 py-3 rounded-2xl shadow-xl border border-amber-400/40 flex items-center gap-3 max-w-md no-print"
+          >
+            <div className="p-1 bg-amber-400/20 rounded-lg shrink-0">
+              <AlertCircle className="w-5 h-5 text-amber-400" />
+            </div>
+            <div className="flex-1 text-xs font-semibold leading-relaxed">
+              {emptyWarningToast}
+            </div>
+            <button
+              type="button"
+              onClick={() => setEmptyWarningToast(null)}
+              className="text-slate-400 hover:text-white p-1 transition cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Fullscreen Preview Modal */}
       <AnimatePresence>
