@@ -145,5 +145,33 @@ textarea:focus-visible,
   }
 }
 
+/* Dedicated PDF Export Container & Layout */
+.pdf-export-container {
+  width: 210mm;
+  min-height: 297mm;
+  box-sizing: border-box;
+  background: #ffffff;
+  overflow: visible !important;
+  position: absolute;
+  left: -100000px;
+  top: 0;
+}
+
+.pdf-export-container .resume-page {
+  width: 210mm;
+  min-height: 297mm;
+  box-sizing: border-box;
+  overflow: visible !important;
+}
+
+.resume-section,
+section,
+.experience-item,
+.education-item,
+.project-item {
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
 
 

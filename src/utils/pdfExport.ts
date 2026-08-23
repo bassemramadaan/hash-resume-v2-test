@@ -45,97 +45,83 @@ export function waitForResumePreview(): Promise<HTMLElement> {
 }
 
 export async function exportResumeToPdf(
-  elementId: string = "resume-preview-document",
+  _elementId: string = "resume-preview-document",
   filename: string = "Hash_Resume.pdf"
 ): Promise<void> {
-  // Synchronous security verification: Confirm gate authorization is currently active
+  // 1. Security verification: Confirm gate authorization is currently active
   const isGateAuthorized = useExportGate.getState().verifyAuthorization();
   if (!isGateAuthorized) {
     throw new Error("غير مصرح بتحميل السيرة الذاتية بدون تفعيل صالح. يرجى إتمام التحقق من الدفع.");
   }
 
-  // Ensure document fonts are fully loaded to prevent font-substitution reflow
-  if (typeof document !== "undefined" && "fonts" in document) {
-    try {
-      await document.fonts.ready;
-    } catch {
-      // ignore and proceed
-    }
-  }
+  // 2. Locate source resume document
+  const sourceElement = await waitForResumePreview();
 
-  const element = await waitForResumePreview();
+  // 3. Create dedicated off-screen export container with a fixed A4 layout
+  const exportNode = document.createElement("div");
+  exportNode.className = "pdf-export-container";
+  exportNode.id = "dedicated-pdf-export-container";
+  exportNode.style.position = "absolute";
+  exportNode.style.left = "-100000px";
+  exportNode.style.top = "0";
+  exportNode.style.width = "210mm";
+  exportNode.style.minHeight = "297mm";
+  exportNode.style.boxSizing = "border-box";
+  exportNode.style.background = "#ffffff";
+  exportNode.style.overflow = "visible";
+  exportNode.style.maxHeight = "none";
+  exportNode.style.transform = "none";
+  exportNode.style.zoom = "1";
 
-  // Create an isolated deterministic render sandbox container
-  // Standard A4 at 96 CSS DPI: Width = 794px (~210mm), MinHeight = 1123px (~297mm)
-  const A4_WIDTH_PX = 794;
-  const A4_PAGE_HEIGHT_MM = 297;
-  const A4_PAGE_WIDTH_MM = 210;
-
-  const sandboxContainer = document.createElement("div");
-  sandboxContainer.id = "hash-resume-pdf-sandbox";
-  sandboxContainer.setAttribute("aria-hidden", "true");
-  sandboxContainer.setAttribute("tabindex", "-1");
-  sandboxContainer.style.position = "fixed";
-  sandboxContainer.style.left = "0";
-  sandboxContainer.style.top = "0";
-  sandboxContainer.style.width = `${A4_WIDTH_PX}px`;
-  sandboxContainer.style.minWidth = `${A4_WIDTH_PX}px`;
-  sandboxContainer.style.maxWidth = `${A4_WIDTH_PX}px`;
-  sandboxContainer.style.margin = "0";
-  sandboxContainer.style.padding = "0";
-  sandboxContainer.style.border = "none";
-  sandboxContainer.style.zIndex = "-99999";
-  sandboxContainer.style.opacity = "0";
-  sandboxContainer.style.pointerEvents = "none";
-  sandboxContainer.style.overflow = "visible";
-  sandboxContainer.style.transform = "none";
-  sandboxContainer.style.zoom = "1";
-  sandboxContainer.style.backgroundColor = "#ffffff";
-
-  // Deep clone the resume document content
-  const clone = element.cloneNode(true) as HTMLElement;
-
-  // Clean up any preview-only annotations / break indicators
-  clone.querySelectorAll(".no-print").forEach((el) => el.remove());
-
-  // Force deterministic sizing and neutralize preview-level container transforms on the clone root only.
-  // Note: We deliberately do NOT strip transforms from children (icons, decorative SVGs, badges).
+  // Deep clone current resume data and selected template into export container
+  const clone = sourceElement.cloneNode(true) as HTMLElement;
+  clone.classList.add("resume-page");
+  clone.style.width = "210mm";
+  clone.style.minHeight = "297mm";
+  clone.style.boxSizing = "border-box";
+  clone.style.overflow = "visible";
+  clone.style.maxHeight = "none";
   clone.style.transform = "none";
   clone.style.zoom = "1";
-  clone.style.width = `${A4_WIDTH_PX}px`;
-  clone.style.minWidth = `${A4_WIDTH_PX}px`;
-  clone.style.maxWidth = `${A4_WIDTH_PX}px`;
-  clone.style.boxSizing = "border-box";
-  clone.style.margin = "0";
-  clone.style.display = "block";
-  clone.style.visibility = "visible";
 
-  sandboxContainer.appendChild(clone);
-  document.body.appendChild(sandboxContainer);
+  // Remove any preview-only annotations or page break guidelines
+  clone.querySelectorAll(".no-print").forEach((el) => el.remove());
+
+  exportNode.appendChild(clone);
+  document.body.appendChild(exportNode);
 
   try {
-    const canvas = await html2canvas(clone, {
-      scale: 2, // 2x high resolution for crisp text & graphics
+    // 4. Wait for fonts and images
+    if (typeof document !== "undefined" && "fonts" in document) {
+      try {
+        await document.fonts.ready;
+      } catch {
+        // ignore and continue
+      }
+    }
+
+    await Promise.all(
+      Array.from(exportNode.querySelectorAll("img")).map((img) => {
+        if (img.complete) return Promise.resolve();
+        return new Promise((resolve) => {
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      })
+    );
+
+    // 5. Capture with html2canvas using dedicated export node
+    const canvas = await html2canvas(exportNode, {
+      scale: 2,
       useCORS: true,
-      logging: false,
       backgroundColor: "#ffffff",
-      allowTaint: true,
-      width: A4_WIDTH_PX,
-      windowWidth: A4_WIDTH_PX, // Forces html2canvas internal iframe viewport to 794px (prevents responsive layout shifts)
+      width: exportNode.scrollWidth,
+      height: exportNode.scrollHeight,
       scrollX: 0,
       scrollY: 0,
-      x: 0,
-      y: 0,
-      onclone: (clonedDoc, clonedEl) => {
+      logging: false,
+      onclone: (clonedDoc) => {
         clonedDoc.querySelectorAll(".no-print").forEach((el) => el.remove());
-
-        if (clonedEl instanceof HTMLElement) {
-          clonedEl.style.transform = "none";
-          clonedEl.style.zoom = "1";
-          clonedEl.style.width = `${A4_WIDTH_PX}px`;
-          clonedEl.style.minWidth = `${A4_WIDTH_PX}px`;
-          clonedEl.style.maxWidth = `${A4_WIDTH_PX}px`;
-        }
 
         // Modern CSS color compatibility converter (Oklch fallback)
         const oklchRegex = /oklch\([^)]+\)/gi;
@@ -171,7 +157,7 @@ export async function exportResumeToPdf(
       },
     });
 
-    const imgData = canvas.toDataURL("image/png", 1.0);
+    // 6. Generate an A4 portrait PDF
     const pdf = new jsPDF({
       orientation: "portrait",
       unit: "mm",
@@ -179,24 +165,36 @@ export async function exportResumeToPdf(
       compress: true,
     });
 
-    const totalPdfHeight = (canvas.height * A4_PAGE_WIDTH_MM) / canvas.width;
-    // Calculate total pages with a subpixel 2mm threshold
-    const totalPages = Math.max(1, Math.ceil((totalPdfHeight - 2) / A4_PAGE_HEIGHT_MM));
+    // 7. Scale canvas proportionally to A4 page dimensions
+    const pageWidth = 210;
+    const pageHeight = 297;
+    const margin = 8;
+    const usableWidth = pageWidth - margin * 2;
+    const usableHeight = pageHeight - margin * 2;
+    const imageHeight = (canvas.height * usableWidth) / canvas.width;
+    const imgData = canvas.toDataURL("image/png", 1.0);
 
-    for (let page = 0; page < totalPages; page++) {
-      if (page > 0) {
-        pdf.addPage();
+    // 8. Multi-page slice handling
+    if (imageHeight <= usableHeight) {
+      // Fits within a single A4 page
+      pdf.addImage(imgData, "PNG", margin, margin, usableWidth, imageHeight, undefined, "FAST");
+    } else {
+      // Multi-page export: slice without distorting or compressing text
+      const totalPages = Math.ceil((imageHeight - 2) / usableHeight);
+      for (let page = 0; page < totalPages; page++) {
+        if (page > 0) {
+          pdf.addPage();
+        }
+        const yOffset = margin - page * usableHeight;
+        pdf.addImage(imgData, "PNG", margin, yOffset, usableWidth, imageHeight, undefined, "FAST");
       }
-      const yOffset = -(page * A4_PAGE_HEIGHT_MM);
-      pdf.addImage(imgData, "PNG", 0, yOffset, A4_PAGE_WIDTH_MM, totalPdfHeight, undefined, "FAST");
     }
 
     pdf.save(filename);
   } finally {
-    if (sandboxContainer && sandboxContainer.parentNode) {
-      sandboxContainer.parentNode.removeChild(sandboxContainer);
+    // 9. Guarantee cleanup of export node in all cases
+    if (exportNode && exportNode.parentNode) {
+      exportNode.remove();
     }
-    // Defensive cleanup in case of duplicate instances
-    document.querySelectorAll("#hash-resume-pdf-sandbox").forEach((el) => el.remove());
   }
 }
