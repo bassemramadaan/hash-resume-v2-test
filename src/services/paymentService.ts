@@ -72,22 +72,31 @@ export async function callPaymentApi(
 
 export interface SubmitPaymentRequest {
   reference: string;
-  senderInfo: string;
+  senderInfo?: string;
   email: string;
-  amount: string;
+  amount: '50' | '120';
 }
 
 export async function submitPayment(req: SubmitPaymentRequest) {
+  const cleanRef = (req.reference || '').trim();
+  const cleanEmail = (req.email || '').trim();
+  const cleanSender = (req.senderInfo || '').trim() || 'InstaPay';
+  const cleanAmount = req.amount === '120' ? '120' : '50';
+
+  if (!cleanRef || !cleanEmail || !cleanAmount) {
+    throw new Error('جميع الحقول الإلزامية مطلوبة (المرجع، البريد الإلكتروني، والمبلغ).');
+  }
+
   return await callPaymentApi(
     {},
     {
       method: 'POST',
       body: {
         action: 'submitPayment',
-        reference: req.reference,
-        senderInfo: req.senderInfo,
-        email: req.email,
-        amount: req.amount,
+        reference: cleanRef,
+        senderInfo: cleanSender,
+        email: cleanEmail,
+        amount: cleanAmount,
       },
     }
   );

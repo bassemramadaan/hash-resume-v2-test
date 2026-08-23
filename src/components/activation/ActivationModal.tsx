@@ -275,27 +275,30 @@ export const ActivationModal: React.FC = () => {
     
     setIsSubmitting(true);
     try {
-      const amountStr = selectedPlan === 'bundle_3' ? '120 EGP' : '50 EGP';
+      const amountValue: '50' | '120' = selectedPlan === 'bundle_3' ? '120' : '50';
       const cleanRef = referenceInput.trim();
       const cleanEmail = emailInput.trim();
-      const cleanSender = senderInfo.trim();
+      const cleanSender = senderInfo.trim() || 'InstaPay';
 
       const res: any = await submitPayment({
         reference: cleanRef,
         senderInfo: cleanSender,
         email: cleanEmail,
-        amount: amountStr,
+        amount: amountValue,
       });
       
-      if (res && res.success === true && res.status === 'pending') {
+      if (res && res.success === true) {
         localStorage.setItem('payment_reference', cleanRef);
         localStorage.setItem('payment_email', cleanEmail);
         setPaymentStep('submitted_pending');
       } else {
+        // Clear any completion/download flags on failure to prevent false success
+        sessionStorage.removeItem("resume_download_completed");
         setErrorMessage(res?.message || labels.errorTitle);
         setPaymentStep('error');
       }
     } catch (err: any) {
+      sessionStorage.removeItem("resume_download_completed");
       setErrorMessage(err.message || labels.errorTitle);
       setPaymentStep('error');
     } finally {
@@ -307,22 +310,25 @@ export const ActivationModal: React.FC = () => {
     if (!ref) return;
     setIsVerifying(true);
     try {
-      const res: any = await checkPaymentStatus(ref);
-      if (res.status === 'approved') {
+      const res: any = await checkPaymentStatus(ref.trim());
+      if (res && res.success === true && (res.status === 'approved' || res.approved === true)) {
         const codes = res.codes || [];
         const code = res.code || res.activationCode || res.activatedCode || (codes.length > 0 ? codes[0] : '');
         setActivatedCode(code);
         const parsed = parsePaymentCodes(codes);
         setRemainingCodes(parsed.remainingCodes);
         setPaymentStep('approved');
-      } else if (res.status === 'pending') {
+      } else if (res && res.status === 'pending') {
+        sessionStorage.removeItem("resume_download_completed");
         setErrorMessage(res.message || labels.pendingTitle);
         setPaymentStep('submitted_pending');
       } else {
-        setErrorMessage(res.message || 'لم يتم العثور على المعاملة.');
+        sessionStorage.removeItem("resume_download_completed");
+        setErrorMessage(res?.message || 'لم يتم العثور على المعاملة أو أنها قيد المراجعة.');
         setPaymentStep('error');
       }
     } catch (err: any) {
+      sessionStorage.removeItem("resume_download_completed");
       setErrorMessage(err.message || labels.errorTitle);
       setPaymentStep('error');
     } finally {
@@ -348,10 +354,12 @@ export const ActivationModal: React.FC = () => {
         setActivatedCode(cleanCode);
         setPaymentStep('approved');
       } else {
+        sessionStorage.removeItem("resume_download_completed");
         setErrorMessage(result.message || labels.errorTitle);
         setPaymentStep('error');
       }
     } catch (err: any) {
+      sessionStorage.removeItem("resume_download_completed");
       setErrorMessage(err.message || labels.errorTitle);
       setPaymentStep('error');
     } finally {

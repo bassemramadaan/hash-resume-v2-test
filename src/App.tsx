@@ -7,6 +7,7 @@ import { AiAssistantModal } from './components/builder/AiAssistantModal';
 import { ActivationModal } from './components/activation/ActivationModal';
 import { PostDownloadSuccessModal } from './components/activation/PostDownloadSuccessModal';
 import { WhatsAppButton } from './components/ui/WhatsAppButton';
+import { ResumeOffscreenRenderer } from './components/preview/ResumeOffscreenRenderer';
 
 import { LandingPage } from './pages/LandingPage';
 import { BuilderPage } from './pages/BuilderPage';
@@ -55,11 +56,12 @@ export default function App() {
         </Routes>
       </main>
 
-      {/* Global AI, WhatsApp Support & Activation Modals */}
+      {/* Global AI, WhatsApp Support, Activation Modals & Headless PDF Exporter */}
       <AiAssistantModal />
       <ActivationModal />
       <PostDownloadSuccessModal />
       <WhatsAppButton />
+      <ResumeOffscreenRenderer />
 
       <Footer />
     </div>

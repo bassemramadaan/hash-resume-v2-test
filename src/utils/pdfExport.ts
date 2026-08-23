@@ -8,15 +8,22 @@ export function waitForResumePreview(): Promise<HTMLElement> {
     const maxAttempts = 50;
 
     const check = () => {
-      const element = document.getElementById("resume-preview-document");
+      // 1. First priority: Offscreen headless render source (clean 1:1, non-zoomed)
+      const offscreenSource = document.getElementById("resume-export-source-document");
+      if (offscreenSource && offscreenSource.children.length > 0) {
+        resolve(offscreenSource);
+        return;
+      }
 
-      if (element) {
-        if (element.offsetWidth > 0 && element.offsetHeight > 0) {
-          resolve(element);
+      // 2. Second priority: Standard preview document in the editor
+      const previewElement = document.getElementById("resume-preview-document");
+      if (previewElement) {
+        if (previewElement.offsetWidth > 0 && previewElement.offsetHeight > 0) {
+          resolve(previewElement);
           return;
         }
-        if (element.children.length > 0) {
-          resolve(element);
+        if (previewElement.children.length > 0) {
+          resolve(previewElement);
           return;
         }
       }
