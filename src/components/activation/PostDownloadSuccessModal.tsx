@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { CheckCircle2, ArrowRight, ArrowLeft } from 'lucide-react';
@@ -8,9 +8,19 @@ export const PostDownloadSuccessModal: React.FC = () => {
   const { isPostDownloadModalOpen, setIsPostDownloadModalOpen, settings } = useResumeStore();
   const isAr = settings.language === 'ar';
   const [countdown, setCountdown] = useState(3);
+  const hasRedirectedRef = useRef(false);
+
+  const performRedirect = () => {
+    if (hasRedirectedRef.current) return;
+    hasRedirectedRef.current = true;
+    setIsPostDownloadModalOpen(false);
+    window.location.assign('/hash-hunt#apply-now');
+  };
 
   useEffect(() => {
     if (isPostDownloadModalOpen) {
+      hasRedirectedRef.current = false;
+
       // Trigger small celebration confetti on mount
       try {
         confetti({
@@ -34,7 +44,7 @@ export const PostDownloadSuccessModal: React.FC = () => {
       }, 1000);
 
       const redirectTimeout = setTimeout(() => {
-        window.location.assign('/hash-hunt#apply-now');
+        performRedirect();
       }, 2800);
 
       return () => {
@@ -46,13 +56,13 @@ export const PostDownloadSuccessModal: React.FC = () => {
 
   if (!isPostDownloadModalOpen) return null;
 
-  const handleClose = () => {
+  const handleStayHere = () => {
+    hasRedirectedRef.current = true;
     setIsPostDownloadModalOpen(false);
   };
 
   const handleImmediateNavigate = () => {
-    setIsPostDownloadModalOpen(false);
-    window.location.assign('/hash-hunt#apply-now');
+    performRedirect();
   };
 
   return (
@@ -65,9 +75,6 @@ export const PostDownloadSuccessModal: React.FC = () => {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) handleClose();
-          }}
         >
           <motion.div
             key="post-download-modal-card"
@@ -125,7 +132,7 @@ export const PostDownloadSuccessModal: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={handleClose}
+                  onClick={handleStayHere}
                   className="w-full sm:w-auto py-2.5 px-4 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 font-semibold text-xs sm:text-sm transition cursor-pointer"
                 >
                   {isAr ? 'البقاء هنا' : 'Stay here'}
