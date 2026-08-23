@@ -113,10 +113,14 @@ export async function verifyActivationCode(code: string, reference: string) {
 
     const data = await response.json().catch(() => ({}));
 
-    if (response.ok && data.success && data.status === 'USED') {
+    if (
+      response.ok &&
+      data.success &&
+      (data.status === 'USED' || data.status === 'APPROVED' || data.status === 'ACTIVE' || data.valid === true)
+    ) {
       return {
         success: true,
-        status: 'USED',
+        status: data.status || 'USED',
         message: data.message || 'تم تفعيل الكود بنجاح!',
         remainingDownloads: data.remainingDownloads || 1,
       };

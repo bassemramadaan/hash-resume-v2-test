@@ -586,12 +586,17 @@ app.post("/api/verify-code", async (req, res) => {
       console.log(`[verify-proxy] GAS response success: ${data?.success}`);
       console.log(`[verify-proxy] GAS response status: ${data?.status}`);
 
-      // Strict acceptance: accept only { success: true, status: "USED" }
-      if (gasResponse.ok && data && data.success === true && data.status === "USED") {
+      // Strict acceptance: accept valid states from Google Apps Script
+      if (
+        gasResponse.ok &&
+        data &&
+        data.success === true &&
+        (data.status === "USED" || data.status === "APPROVED" || data.status === "ACTIVE" || data.valid === true)
+      ) {
         return res.json({
           success: true,
           valid: true,
-          status: "USED",
+          status: data.status || "USED",
           remainingDownloads: data.remainingDownloads || 1,
           message: data.message || "تم التحقق من كود التفعيل بنجاح!",
         });

@@ -395,7 +395,7 @@ export const DownloadSection: React.FC = () => {
         {/* Customize style card */}
         <button
           type="button"
-          onClick={() => setActiveTab('custom' as any)}
+          onClick={() => setActiveTab('customize')}
           className="p-3.5 bg-white border border-slate-200 hover:border-[#001639]/40 rounded-2xl text-start transition flex items-center justify-between gap-3 shadow-2xs group cursor-pointer"
         >
           <div className="flex items-center gap-3">

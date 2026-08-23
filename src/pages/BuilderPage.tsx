@@ -421,7 +421,7 @@ export const BuilderPage: React.FC = () => {
   return (
     <main className="space-y-3 sm:space-y-4 pb-24 sm:pb-12 bg-[#F8FAFC] min-h-screen">
       {/* Top Sticky Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-16 sm:top-18 lg:top-20 z-30 shadow-2xs">
+      <div className="bg-white border-b border-slate-200 sticky top-14 sm:top-16 lg:top-[72px] z-30 shadow-2xs">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2 sm:py-2.5">
           {/* Main Top Header Controls */}
           <div className="flex items-center justify-between gap-2">
