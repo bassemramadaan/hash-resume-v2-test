@@ -3,6 +3,10 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from '../store/useResumeStore';
 import { getTranslation } from '../i18n/translations';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import {
+  clearDownloadCompletionFlags,
+  validateResumeLockState,
+} from '../utils/resumeFingerprint';
 
 // Mobile Components
 import { MobileResumeDashboard } from '../components/mobile/MobileResumeDashboard';
@@ -76,11 +80,11 @@ export const BuilderPage: React.FC = () => {
 
   useEffect(() => {
     const handlePageShow = () => {
-      const wasDownloaded =
-        sessionStorage.getItem("resume_download_completed") === "true";
-
-      if (wasDownloaded) {
+      const { isValid } = validateResumeLockState(activation, resumeData);
+      if (isValid) {
         lockResumeForEdits();
+      } else {
+        clearDownloadCompletionFlags();
       }
     };
 
@@ -88,7 +92,7 @@ export const BuilderPage: React.FC = () => {
     handlePageShow();
 
     return () => window.removeEventListener("pageshow", handlePageShow);
-  }, [lockResumeForEdits]);
+  }, [lockResumeForEdits, activation, resumeData]);
 
   // Mobile Bottom Sheet Preview State
   const [isMobilePreviewOpen, setIsMobilePreviewOpen] = useState(false);
@@ -690,6 +694,11 @@ export const BuilderPage: React.FC = () => {
 
       {/* Reset Confirmation Toast */}
       {renderResetToast()}
+
+      {/* App Version Tag */}
+      <div id="editor-version-flag" className="text-center py-2 text-[10px] font-mono text-slate-400 select-none pb-20 sm:pb-4">
+        UPDATE VER 3.1
+      </div>
     </main>
   );
 };

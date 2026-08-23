@@ -20,6 +20,7 @@ export const AiAssistantModal: React.FC = () => {
 
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [categorizedSkills, setCategorizedSkills] = useState<any>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -27,6 +28,7 @@ export const AiAssistantModal: React.FC = () => {
   // Body scroll locking and Escape key listener for modal accessibility
   useEffect(() => {
     if (isAiModalOpen) {
+      setErrorMessage(null);
       document.body.style.overflow = 'hidden';
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
@@ -49,6 +51,7 @@ export const AiAssistantModal: React.FC = () => {
 
   const handleGenerate = async () => {
     setIsLoading(true);
+    setErrorMessage(null);
     setSuggestions([]);
     setCategorizedSkills(null);
 
@@ -65,10 +68,13 @@ export const AiAssistantModal: React.FC = () => {
         });
 
         const data = await response.json();
-        if (data.suggestions) {
+        if (response.ok && data.suggestions) {
           setSuggestions(data.suggestions);
         } else if (data.fallbackSuggestions) {
           setSuggestions(data.fallbackSuggestions);
+          if (data.error) setErrorMessage(settings.language === 'en' ? data.errorEn || data.error : data.error);
+        } else if (data.error) {
+          setErrorMessage(settings.language === 'en' ? data.errorEn || data.error : data.error);
         }
       } else if (aiModalType === 'summary') {
         const response = await fetch('/api/ai/generate-summary', {
@@ -83,8 +89,13 @@ export const AiAssistantModal: React.FC = () => {
         });
 
         const data = await response.json();
-        if (data.summary) {
+        if (response.ok && data.summary) {
           setSuggestions([data.summary]);
+        } else if (data.summary) {
+          setSuggestions([data.summary]);
+          if (data.error) setErrorMessage(settings.language === 'en' ? data.errorEn || data.error : data.error);
+        } else if (data.error) {
+          setErrorMessage(settings.language === 'en' ? data.errorEn || data.error : data.error);
         }
       } else if (aiModalType === 'skills') {
         const response = await fetch('/api/ai/suggest-skills', {
@@ -97,15 +108,20 @@ export const AiAssistantModal: React.FC = () => {
         });
 
         const data = await response.json();
-        setCategorizedSkills(data);
+        if (data.technicalSkills || data.softSkills || data.tools) {
+          setCategorizedSkills(data);
+          if (data.error) setErrorMessage(settings.language === 'en' ? data.errorEn || data.error : data.error);
+        } else if (data.error) {
+          setErrorMessage(settings.language === 'en' ? data.errorEn || data.error : data.error);
+        }
       }
     } catch (err) {
       console.error('AI Modal error:', err);
-      setSuggestions([
+      setErrorMessage(
         settings.language === 'ar'
-          ? 'أدرت تطوير المشاريع بنجاح بأسلوب مبتكر يرفع الإنتاجية بنسبة 30%.'
-          : 'Successfully drove project execution with optimized workflows that boosted efficiency by 30%.',
-      ]);
+          ? 'تعذر الاتصال بخدمة الذكاء الاصطناعي حالياً.'
+          : 'Unable to connect to AI service at the moment.'
+      );
     } finally {
       setIsLoading(false);
     }
@@ -197,6 +213,14 @@ export const AiAssistantModal: React.FC = () => {
                 ? `اقتراح المهارات المستهدفة للمسمى: ${resumeData.personalInfo.jobTitle || 'عام'}`
                 : `Recommending high-demand skills for: ${resumeData.personalInfo.jobTitle || 'General'}`}
             </p>
+          )}
+
+          {/* Error Message Banner */}
+          {errorMessage && (
+            <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-300 text-[11px] leading-relaxed flex items-start gap-2">
+              <span className="font-bold">⚠️</span>
+              <span>{errorMessage}</span>
+            </div>
           )}
 
           {/* Action Trigger Button */}

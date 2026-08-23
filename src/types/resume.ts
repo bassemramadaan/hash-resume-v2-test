@@ -140,6 +140,8 @@ export interface ActivationState {
   planType: 'single' | 'bundle_3' | 'unlimited_dev' | 'free_preview';
   activatedAt: string | null;
   isResumeLocked?: boolean;
+  lockedResumeFingerprint?: string | null;
+  verifiedReference?: string | null;
 }
 
 export interface AtsScoreResult {

@@ -18,10 +18,25 @@ import {
   RedFlagItem,
 } from '../types/resume';
 import { sanitizeSensitiveText } from '../utils/redFlagDetector';
-
-const LOCAL_STORAGE_KEY_RESUME = 'hash_resume_data_v2';
-const LOCAL_STORAGE_KEY_SETTINGS = 'hash_resume_settings_v2';
-const LOCAL_STORAGE_KEY_ACTIVATION = 'hash_resume_activation_v2';
+import {
+  calculateResumeFingerprint,
+  validateResumeLockState,
+  isResumeBlank,
+  clearDownloadCompletionFlags,
+  STORAGE_KEY_RESUME_FINGERPRINT,
+} from '../utils/resumeFingerprint';
+import {
+  LOCAL_STORAGE_KEY_RESUME,
+  LOCAL_STORAGE_KEY_SETTINGS,
+  LOCAL_STORAGE_KEY_ACTIVATION,
+  loadSavedResume,
+  loadSavedSettings,
+  loadSavedActivation,
+  saveResumeDirectly,
+  saveSettingsDirectly,
+  saveActivationDirectly,
+  initAutosaveLifecycleListeners,
+} from '../utils/resumeStorage';
 
 const defaultSettings: ResumeSettings = {
   language: 'ar',
@@ -67,94 +82,19 @@ export const createEmptyResume = (): ResumeData => ({
   customSections: [],
 });
 
-/**
- * Checks whether the stored resume is legacy demo/sample data
- */
-const isLegacySampleResume = (data: any): boolean => {
-  if (!data || typeof data !== 'object') return false;
-  const name = (data.personalInfo?.fullName || '').trim().toLowerCase();
-  const email = (data.personalInfo?.email || '').trim().toLowerCase();
-  const summary = (data.personalInfo?.summary || '').trim().toLowerCase();
+// Initialize browser lifecycle event listeners (visibilitychange, pagehide, beforeunload)
+if (typeof window !== 'undefined') {
+  initAutosaveLifecycleListeners();
+}
 
-  return (
-    name === 'أحمد محمود الفقي' ||
-    name === 'nouran el-sayed' ||
-    name === 'أحمد محمد علي' ||
-    name === 'sarah jenkins' ||
-    name === 'ahmed elfeqy' ||
-    email === 'ahmed.elfeqy@example.com' ||
-    email === 'nouran.elsayed@example.com' ||
-    email === 'sarah.jenkins@example.com' ||
-    email === 'ahmed.ali@example.com' ||
-    email === 'ahmed@example.com' ||
-    email === 'bassem@example.com' ||
-    summary.includes('paytech egypt') ||
-    summary.includes('mena e-commerce growth agency') ||
-    summary.includes('أكثر من 5 سنوات من الخبرة المتميزة في بناء وتطوير التطبيقات السحابية')
-  );
-};
-
-// Initial state loader from LocalStorage
-const loadInitialResume = (): ResumeData => {
-  try {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      // Clean legacy v1 keys if any exist
-      try {
-        localStorage.removeItem('hash_resume_data');
-      } catch {
-        // ignore
-      }
-
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY_RESUME);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed && typeof parsed === 'object' && parsed.personalInfo) {
-          // If the stored data matches legacy demo data, replace it with blank resume
-          if (isLegacySampleResume(parsed)) {
-            const blank = createEmptyResume();
-            localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(blank));
-            return blank;
-          }
-          return parsed;
-        }
-      }
-    }
-  } catch (e) {
-    console.warn("Failed to load saved resume from localStorage", e);
-  }
-  return createEmptyResume();
-};
-
-const loadInitialSettings = (): ResumeSettings => {
-  try {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY_SETTINGS);
-      if (saved) {
-        return JSON.parse(saved);
-      }
-    }
-  } catch (e) {
-    console.warn("Failed to load saved settings from localStorage", e);
-  }
-  return defaultSettings;
-};
-
-const loadInitialActivation = (): ActivationState => {
-  try {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY_ACTIVATION);
-      if (saved) {
-        return JSON.parse(saved);
-      }
-    }
-  } catch (e) {
-    console.warn("Failed to load saved activation from localStorage", e);
-  }
-  return defaultActivation;
-};
+const initialResumeResult = loadSavedResume(createEmptyResume());
+const initialResume = initialResumeResult.data;
+const initialSettings = loadSavedSettings(defaultSettings);
+const initialActivation = loadSavedActivation(initialResume, defaultActivation);
 
 interface ResumeStoreState {
-  // Main Resume Data
+  // Main Resume Data & Readiness
+  isHydrated: boolean;
   resumeData: ResumeData;
   settings: ResumeSettings;
   activation: ActivationState;
@@ -249,16 +189,17 @@ interface ResumeStoreState {
   ) => void;
   addDownloads: (count: number) => void;
   useDownloadQuota: () => boolean;
-  lockResume: () => void;
+  lockResume: (reference?: string) => void;
   lockResumeForEdits: () => void;
   unlockResumeWithCredit: () => boolean;
   unlockResumeWithNewApproval: () => void;
 }
 
 export const useResumeStore = create<ResumeStoreState>((set, get) => ({
-  resumeData: loadInitialResume(),
-  settings: loadInitialSettings(),
-  activation: loadInitialActivation(),
+  isHydrated: true,
+  resumeData: initialResume,
+  settings: initialSettings,
+  activation: initialActivation,
 
   activeTab: 'personal',
   isAiModalOpen: false,
@@ -280,7 +221,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         ...state.resumeData,
         personalInfo: { ...state.resumeData.personalInfo, ...info },
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -292,7 +233,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         ...state.resumeData,
         experiences: [...state.resumeData.experiences, newExp],
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -303,7 +244,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         item.id === id ? { ...item, ...exp } : item
       );
       const updated = { ...state.resumeData, experiences: updatedExps };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -312,7 +253,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
     set((state) => {
       const updatedExps = state.resumeData.experiences.filter((item) => item.id !== id);
       const updated = { ...state.resumeData, experiences: updatedExps };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -324,7 +265,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
       const [moved] = items.splice(fromIndex, 1);
       items.splice(toIndex, 0, moved);
       const updated = { ...state.resumeData, experiences: items };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -336,7 +277,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         ...state.resumeData,
         education: [...state.resumeData.education, newEdu],
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -347,7 +288,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         item.id === id ? { ...item, ...edu } : item
       );
       const updated = { ...state.resumeData, education: updatedEdu };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -356,7 +297,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
     set((state) => {
       const updatedEdu = state.resumeData.education.filter((item) => item.id !== id);
       const updated = { ...state.resumeData, education: updatedEdu };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -368,7 +309,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
       const [moved] = items.splice(fromIndex, 1);
       items.splice(toIndex, 0, moved);
       const updated = { ...state.resumeData, education: items };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -380,7 +321,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         ...state.resumeData,
         skills: [...state.resumeData.skills, newSkill],
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -391,7 +332,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         item.id === id ? { ...item, ...skill } : item
       );
       const updated = { ...state.resumeData, skills: updatedSkills };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -400,7 +341,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
     set((state) => {
       const updatedSkills = state.resumeData.skills.filter((item) => item.id !== id);
       const updated = { ...state.resumeData, skills: updatedSkills };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -412,7 +353,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
       const [moved] = items.splice(fromIndex, 1);
       items.splice(toIndex, 0, moved);
       const updated = { ...state.resumeData, skills: items };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -424,7 +365,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         ...state.resumeData,
         projects: [...state.resumeData.projects, newProj],
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -435,7 +376,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         item.id === id ? { ...item, ...proj } : item
       );
       const updated = { ...state.resumeData, projects: updatedProjs };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -444,7 +385,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
     set((state) => {
       const updatedProjs = state.resumeData.projects.filter((item) => item.id !== id);
       const updated = { ...state.resumeData, projects: updatedProjs };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -456,7 +397,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
       const [moved] = items.splice(fromIndex, 1);
       items.splice(toIndex, 0, moved);
       const updated = { ...state.resumeData, projects: items };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -468,7 +409,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         ...state.resumeData,
         certifications: [...state.resumeData.certifications, newCert],
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -479,7 +420,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         item.id === id ? { ...item, ...cert } : item
       );
       const updated = { ...state.resumeData, certifications: updatedCerts };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -488,7 +429,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
     set((state) => {
       const updatedCerts = state.resumeData.certifications.filter((item) => item.id !== id);
       const updated = { ...state.resumeData, certifications: updatedCerts };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -500,7 +441,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
       const [moved] = items.splice(fromIndex, 1);
       items.splice(toIndex, 0, moved);
       const updated = { ...state.resumeData, certifications: items };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -512,7 +453,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         ...state.resumeData,
         languages: [...state.resumeData.languages, newLang],
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -523,7 +464,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         item.id === id ? { ...item, ...lang } : item
       );
       const updated = { ...state.resumeData, languages: updatedLangs };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -532,7 +473,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
     set((state) => {
       const updatedLangs = state.resumeData.languages.filter((item) => item.id !== id);
       const updated = { ...state.resumeData, languages: updatedLangs };
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(updated));
+      saveResumeDirectly(updated);
       return { resumeData: updated };
     });
   },
@@ -546,7 +487,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         language: lang,
         fontFamily: lang === 'ar' ? 'Tajawal' : 'Inter',
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
+      saveSettingsDirectly(updatedSettings);
       return { settings: updatedSettings };
     });
   },
@@ -554,7 +495,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   setTemplate: (templateId) => {
     set((state) => {
       const updatedSettings = { ...state.settings, templateId };
-      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
+      saveSettingsDirectly(updatedSettings);
       return { settings: updatedSettings };
     });
   },
@@ -562,7 +503,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   setPrimaryColor: (color) => {
     set((state) => {
       const updatedSettings = { ...state.settings, primaryColor: color };
-      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
+      saveSettingsDirectly(updatedSettings);
       return { settings: updatedSettings };
     });
   },
@@ -570,7 +511,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   setFontFamily: (fontFamily) => {
     set((state) => {
       const updatedSettings = { ...state.settings, fontFamily };
-      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
+      saveSettingsDirectly(updatedSettings);
       return { settings: updatedSettings };
     });
   },
@@ -578,7 +519,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   setFontSize: (fontSize) => {
     set((state) => {
       const updatedSettings = { ...state.settings, fontSize };
-      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
+      saveSettingsDirectly(updatedSettings);
       return { settings: updatedSettings };
     });
   },
@@ -586,7 +527,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   setSpacing: (spacing) => {
     set((state) => {
       const updatedSettings = { ...state.settings, spacing };
-      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
+      saveSettingsDirectly(updatedSettings);
       return { settings: updatedSettings };
     });
   },
@@ -594,7 +535,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   setShowPhoto: (showPhoto) => {
     set((state) => {
       const updatedSettings = { ...state.settings, showPhoto };
-      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
+      saveSettingsDirectly(updatedSettings);
       return { settings: updatedSettings };
     });
   },
@@ -602,7 +543,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   setHeaderLayout: (headerLayout) => {
     set((state) => {
       const updatedSettings = { ...state.settings, headerLayout };
-      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
+      saveSettingsDirectly(updatedSettings);
       return { settings: updatedSettings };
     });
   },
@@ -619,7 +560,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         careerFocus,
         sectionOrder: newSectionOrder,
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
+      saveSettingsDirectly(updatedSettings);
       return { settings: updatedSettings };
     });
   },
@@ -627,7 +568,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   setSectionOrder: (sectionOrder) => {
     set((state) => {
       const updatedSettings = { ...state.settings, sectionOrder };
-      localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(updatedSettings));
+      saveSettingsDirectly(updatedSettings);
       return { settings: updatedSettings };
     });
   },
@@ -650,24 +591,48 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   },
 
   setResumeData: (data) => {
-    set(() => {
-      localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(data));
-      return { resumeData: data };
+    set((state) => {
+      saveResumeDirectly(data);
+      let updatedActivation = state.activation;
+      if (state.activation.isResumeLocked) {
+        const { isValid } = validateResumeLockState(state.activation, data);
+        if (!isValid) {
+          clearDownloadCompletionFlags();
+          updatedActivation = {
+            ...state.activation,
+            isResumeLocked: false,
+            lockedResumeFingerprint: null,
+          };
+          saveActivationDirectly(updatedActivation);
+        }
+      }
+      return { resumeData: data, activation: updatedActivation };
     });
   },
 
   resetResume: () => {
     const emptyResume = createEmptyResume();
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      try {
-        localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(emptyResume));
-        // Also remove legacy key if present
+    clearDownloadCompletionFlags();
+    saveResumeDirectly(emptyResume);
+    try {
+      if (typeof localStorage !== 'undefined') {
         localStorage.removeItem('hash_resume_data');
-      } catch (e) {
-        console.warn("Failed to reset resume in localStorage", e);
       }
+    } catch {
+      // ignore
     }
-    set({ resumeData: emptyResume });
+    set((state) => {
+      const updatedActivation: ActivationState = {
+        ...state.activation,
+        isResumeLocked: false,
+        lockedResumeFingerprint: null,
+      };
+      saveActivationDirectly(updatedActivation);
+      return {
+        resumeData: emptyResume,
+        activation: updatedActivation,
+      };
+    });
   },
 
   // UI Actions
@@ -687,13 +652,14 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   activatePlan: (code, planType, downloads, keepModalOpen = false) => {
     set((state) => {
       const updatedActivation: ActivationState = {
+        ...state.activation,
         isActivated: true,
         activatedCode: code,
         remainingDownloads: downloads,
         planType: planType,
         activatedAt: new Date().toISOString(),
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(updatedActivation));
+      saveActivationDirectly(updatedActivation);
       return { activation: updatedActivation, isActivationModalOpen: keepModalOpen ? true : false };
     });
   },
@@ -702,13 +668,14 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
     set((state) => {
       const currentDownloads = state.activation.isActivated ? state.activation.remainingDownloads : 0;
       const updatedActivation: ActivationState = {
+        ...state.activation,
         isActivated: true,
         activatedCode: state.activation.activatedCode || 'PURCHASED-CREDITS',
         remainingDownloads: currentDownloads + count,
         planType: count > 1 ? 'bundle_3' : 'single',
         activatedAt: state.activation.activatedAt || new Date().toISOString(),
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(updatedActivation));
+      saveActivationDirectly(updatedActivation);
       return { activation: updatedActivation };
     });
   },
@@ -726,7 +693,7 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         ...state.activation,
         remainingDownloads: newRemaining,
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(updatedActivation));
+      saveActivationDirectly(updatedActivation);
       set({ activation: updatedActivation });
       return true;
     }
@@ -734,31 +701,77 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
     return false; // Quota reached or zero downloads left
   },
 
-  lockResume: () => {
-    set((state) => {
+  lockResume: (reference?: string) => {
+    const state = get();
+    const fingerprint = calculateResumeFingerprint(state.resumeData);
+    if (!fingerprint || isResumeBlank(state.resumeData)) {
+      clearDownloadCompletionFlags();
+      return;
+    }
+    const currentRef =
+      reference ||
+      state.activation.verifiedReference ||
+      (typeof window !== 'undefined'
+        ? sessionStorage.getItem('verified_reference') ||
+          localStorage.getItem('verified_reference') ||
+          localStorage.getItem('payment_reference')
+        : null);
+
+    set((s) => {
       const updatedActivation: ActivationState = {
-        ...state.activation,
+        ...s.activation,
         isResumeLocked: true,
+        lockedResumeFingerprint: fingerprint,
+        verifiedReference: currentRef || s.activation.verifiedReference || null,
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(updatedActivation));
+      saveActivationDirectly(updatedActivation);
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem("resume_download_completed", "true");
+        localStorage.setItem("resume_download_completed", "true");
+        sessionStorage.setItem(STORAGE_KEY_RESUME_FINGERPRINT, fingerprint);
+        localStorage.setItem(STORAGE_KEY_RESUME_FINGERPRINT, fingerprint);
+        if (currentRef) {
+          sessionStorage.setItem("verified_reference", currentRef);
+          localStorage.setItem("verified_reference", currentRef);
+        }
+      }
       return { activation: updatedActivation };
     });
   },
 
   lockResumeForEdits: () => {
-    get().lockResume();
+    const state = get();
+    const { isValid } = validateResumeLockState(state.activation, state.resumeData);
+    if (isValid) {
+      get().lockResume();
+    } else {
+      clearDownloadCompletionFlags();
+      if (state.activation.isResumeLocked) {
+        set((s) => {
+          const updatedActivation: ActivationState = {
+            ...s.activation,
+            isResumeLocked: false,
+            lockedResumeFingerprint: null,
+          };
+          saveActivationDirectly(updatedActivation);
+          return { activation: updatedActivation };
+        });
+      }
+    }
   },
 
   unlockResumeWithCredit: () => {
     const state = get();
     if (state.activation.remainingDownloads > 0) {
       const newRemaining = state.activation.remainingDownloads - 1;
+      clearDownloadCompletionFlags();
       const updatedActivation: ActivationState = {
         ...state.activation,
         remainingDownloads: newRemaining,
         isResumeLocked: false,
+        lockedResumeFingerprint: null,
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(updatedActivation));
+      saveActivationDirectly(updatedActivation);
       set({ activation: updatedActivation });
       return true;
     }
@@ -766,12 +779,14 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
   },
 
   unlockResumeWithNewApproval: () => {
+    clearDownloadCompletionFlags();
     set((state) => {
       const updatedActivation: ActivationState = {
         ...state.activation,
         isResumeLocked: false,
+        lockedResumeFingerprint: null,
       };
-      localStorage.setItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(updatedActivation));
+      saveActivationDirectly(updatedActivation);
       return { activation: updatedActivation };
     });
   },

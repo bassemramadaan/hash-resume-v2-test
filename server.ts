@@ -2,18 +2,30 @@ import express from "express";
 import path from "path";
 import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
+import {
+  getAiConfig,
+  checkRateLimit,
+  releaseConcurrencyLock,
+  sanitizeText,
+  sanitizeResumeForAts,
+  computeAiCacheKey,
+  getCachedAiResponse,
+  setCachedAiResponse,
+  getClientIp,
+  logAiMetric,
+  INPUT_LIMITS,
+} from "./server/aiSecurity";
 
 dotenv.config();
 
 const app = express();
 const PORT = 3000;
 
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
-// Initialize Gemini Client
-const getGeminiClient = () => {
-  const apiKey = process.env.GEMINI_API_KEY;
+// Single Gemini Client factory
+const getGeminiClient = (apiKey: string | null) => {
   if (!apiKey) {
     return null;
   }
@@ -33,43 +45,138 @@ const getGeminiClient = () => {
 
 // 1. Healthcheck
 app.get("/api/health", (_req, res) => {
+  const config = getAiConfig();
   res.json({
     status: "ok",
     app: "Hash Resume API",
-    hasGeminiKey: !!process.env.GEMINI_API_KEY,
+    aiEnabled: config.aiEnabled,
+    geminiConfigured: Boolean(config.geminiApiKey && config.geminiModel),
+    sharedStoreConfigured: config.hasSharedStore,
   });
 });
 
+// Helper for AI Unavailable response
+const sendAiUnavailable = (
+  res: express.Response,
+  messageAr: string = "خدمات الذكاء الاصطناعي غير مفعلة أو غير متوفرة حالياً.",
+  messageEn: string = "AI services are temporarily disabled or unavailable.",
+  status: number = 503,
+  fallbackData?: any
+) => {
+  return res.status(status).json({
+    success: false,
+    available: false,
+    error: messageAr,
+    errorEn: messageEn,
+    ...fallbackData,
+  });
+};
+
 // 2. AI: Enhance Bullet Point
 app.post("/api/ai/enhance-bullet", async (req, res) => {
-  try {
-    const { bulletText, jobTitle, language = "ar" } = req.body;
-    if (!bulletText || bulletText.trim().length === 0) {
-      return res.status(400).json({ error: "bulletText is required" });
-    }
+  const startTime = Date.now();
+  const clientIp = getClientIp(req);
+  const config = getAiConfig();
 
-    const ai = getGeminiClient();
-    if (!ai) {
-      return res.status(500).json({
-        error: "GEMINI_API_KEY is not configured",
+  // 1. Check Kill-Switch & Feature Flag
+  if (!config.aiEnabled || !config.featureFlags.assistant) {
+    return sendAiUnavailable(
+      res,
+      "ميزة تحسين الصياغة الذكية غير مفعلة حالياً.",
+      "AI Bullet Enhancer is currently disabled.",
+      503,
+      {
         fallbackSuggestions: [
-          language === "ar"
-            ? `قاد تنفيذ وتسليم المبادرات الرئيسية بنجاح، مما ساهم في تحسين كفاءة العمل بنسبة 25%.`
-            : `Successfully led and delivered key initiatives, increasing overall team efficiency by 25%.`,
-          language === "ar"
-            ? `طور وحدث العمليات التشغيلية، مما أدى لتقليل الأخطاء وتحسين الإنتاجية.`
-            : `Developed and optimized operational workflows, reducing errors and boosting productivity.`,
-          language === "ar"
-            ? `أدار الاتصالات والتعاون مع الأطراف المعنية لتحقيق أهداف المشروع في الوقت المحدد.`
-            : `Managed cross-functional stakeholder communications to achieve project milestones on schedule.`,
+          req.body.language === "en"
+            ? "Successfully spearheaded core operational initiatives, driving a 25% increase in team performance."
+            : "قاد تنفيذ وتسليم المبادرات الرئيسية بنجاح، مما ساهم في تحسين كفاءة العمل بنسبة 25%.",
+          req.body.language === "en"
+            ? "Optimized cross-functional workflows, reducing execution cycle time and elevating delivery quality."
+            : "طور وحدث العمليات التشغيلية، مما أدى لتقليل الأخطاء وتحسين جودة المخرجات.",
+          req.body.language === "en"
+            ? "Collaborated with key stakeholders to align project goals and achieve milestones on schedule."
+            : "أدار الاتصالات والتعاون مع الأطراف المعنية لتحقيق أهداف المشروع وفق الجدول الزمني.",
         ],
-      });
+      }
+    );
+  }
+
+  // 2. Check Model and API Key configuration
+  if (!config.geminiModel || !config.geminiApiKey) {
+    return sendAiUnavailable(
+      res,
+      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
+      "AI model configuration is missing on the server."
+    );
+  }
+
+  // 3. Input Validation & Restrictions
+  const rawBullet = typeof req.body.bulletText === "string" ? req.body.bulletText : "";
+  const rawJobTitle = typeof req.body.jobTitle === "string" ? req.body.jobTitle : "";
+  const language = req.body.language === "en" ? "en" : "ar";
+
+  if (!rawBullet.trim()) {
+    return res.status(400).json({ error: "نص النقطة مطلوب", errorEn: "bulletText is required" });
+  }
+
+  if (rawBullet.length > INPUT_LIMITS.bulletText) {
+    return res.status(413).json({
+      error: `تجاوز النص الحد الأقصى المسموح به (${INPUT_LIMITS.bulletText} حرف).`,
+      errorEn: `Input text exceeds the maximum limit of ${INPUT_LIMITS.bulletText} characters.`,
+    });
+  }
+
+  // 4. Sanitize inputs (Strip PII)
+  const sanitizedBullet = sanitizeText(rawBullet, INPUT_LIMITS.bulletText);
+  const sanitizedJobTitle = sanitizeText(rawJobTitle, 100);
+
+  // 5. Check Cache
+  const cacheKey = computeAiCacheKey("bullet", config.geminiModel, {
+    b: sanitizedBullet,
+    j: sanitizedJobTitle,
+    l: language,
+  });
+
+  const cached = await getCachedAiResponse(cacheKey);
+  if (cached) {
+    logAiMetric({
+      feature: "enhance-bullet",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: true,
+    });
+    return res.json(cached);
+  }
+
+  // 6. Check Rate Limit (Shared Store)
+  const rateLimit = await checkRateLimit(clientIp, "bullet");
+  if (!rateLimit.allowed) {
+    logAiMetric({
+      feature: "enhance-bullet",
+      model: config.geminiModel,
+      httpStatus: 429,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+      rateLimitBlocked: true,
+    });
+    return res.status(429).json({
+      error: rateLimit.reasonAr,
+      errorEn: rateLimit.reason,
+      retryAfterSeconds: rateLimit.retryAfterSeconds,
+    });
+  }
+
+  try {
+    const ai = getGeminiClient(config.geminiApiKey);
+    if (!ai) {
+      throw new Error("Failed to initialize AI client");
     }
 
     const isArabic = language === "ar";
     const prompt = isArabic
-      ? `أنت خبير صياغة سير ذاتية مخصص لنظام ATS. قم بتحسين هذه النقطة للخبرة العملية للوظيفة: "${jobTitle || 'المسمى الوظيفي'}"
-النقطة الحالية: "${bulletText}"
+      ? `أنت خبير صياغة سير ذاتية مخصص لنظام ATS. قم بتحسين هذه النقطة للخبرة العملية للوظيفة: "${sanitizedJobTitle || 'المسمى الوظيفي'}"
+النقطة الحالية: "${sanitizedBullet}"
 
 المطلوب: قدم 3 اقتراحات صياغة احترافية مختلفة، بصيغة أفعال مبنية للمعلوم مع إدراج أرقام وإنجازات وقابليتها للقرائية عبر أجهزة ATS.
 أعد النتيجة بتنسيق JSON فقط بالشكل التالي:
@@ -80,8 +187,8 @@ app.post("/api/ai/enhance-bullet", async (req, res) => {
     "النقطة المحسنة الثالثة..."
   ]
 }`
-      : `You are an expert ATS resume writer. Optimize this work experience bullet point for the role of "${jobTitle || 'Job Title'}".
-Current Bullet: "${bulletText}"
+      : `You are an expert ATS resume writer. Optimize this work experience bullet point for the role of "${sanitizedJobTitle || 'Job Title'}".
+Current Bullet: "${sanitizedBullet}"
 
 Requirement: Provide 3 distinct high-impact action-oriented bullet points using strong action verbs and quantified impact that pass ATS scanners easily.
 Return ONLY JSON in this format:
@@ -94,46 +201,150 @@ Return ONLY JSON in this format:
 }`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: config.geminiModel,
       contents: prompt,
       config: {
         responseMimeType: "application/json",
       },
     });
 
-    const text = response.text || "{}";
-    const parsed = JSON.parse(text);
+    const parsed = JSON.parse(response.text || "{}");
+    if (!parsed.suggestions || !Array.isArray(parsed.suggestions)) {
+      throw new Error("Invalid structure returned by AI");
+    }
+
+    // Cache successful response for 24h
+    await setCachedAiResponse(cacheKey, parsed, 86400);
+
+    logAiMetric({
+      feature: "enhance-bullet",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+    });
+
     return res.json(parsed);
   } catch (err: any) {
-    console.error("Error in /api/ai/enhance-bullet:", err);
-    return res.status(500).json({
-      error: err.message || "Failed to generate bullet enhancement",
+    logAiMetric({
+      feature: "enhance-bullet",
+      model: config.geminiModel,
+      httpStatus: 500,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+      error: err?.message,
     });
+    return res.status(500).json({
+      error: "تعذر معالجة الطلب عبر الذكاء الاصطناعي حالياً.",
+      errorEn: "Failed to process bullet enhancement via AI.",
+    });
+  } finally {
+    await releaseConcurrencyLock(clientIp);
   }
 });
 
 // 3. AI: Generate Summary
 app.post("/api/ai/generate-summary", async (req, res) => {
+  const startTime = Date.now();
+  const clientIp = getClientIp(req);
+  const config = getAiConfig();
+
+  // 1. Check Kill-Switch & Feature Flag
+  if (!config.aiEnabled || !config.featureFlags.summary) {
+    return sendAiUnavailable(
+      res,
+      "ميزة إنشاء الملخص المهني بالذكاء الاصطناعي غير مفعلة حالياً.",
+      "AI Summary Generator is currently disabled.",
+      503,
+      {
+        summary:
+          req.body.language === "en"
+            ? `Results-driven professional with a solid track record in optimizing operational workflows and delivering measurable business impact.`
+            : `محترف شغوف يمتلك خبرة متميزة في تطوير العمليات ورفع الكفاءة التشغيلية وتحقيق الأهداف المؤسسية بدقة.`,
+      }
+    );
+  }
+
+  // 2. Check Model and API Key
+  if (!config.geminiModel || !config.geminiApiKey) {
+    return sendAiUnavailable(
+      res,
+      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
+      "AI model configuration is missing on the server."
+    );
+  }
+
+  // 3. Input Validation & Restrictions
+  const { jobTitle = "", yearsOfExperience = "", keySkills = "", targetIndustry = "", language = "ar" } = req.body;
+  const lang = language === "en" ? "en" : "ar";
+
+  const totalInputLength =
+    String(jobTitle).length + String(yearsOfExperience).length + String(keySkills).length + String(targetIndustry).length;
+
+  if (totalInputLength > INPUT_LIMITS.summaryCombined) {
+    return res.status(413).json({
+      error: `تجاوزت البيانات المدخلة الحد الأقصى المسموح به (${INPUT_LIMITS.summaryCombined} حرف).`,
+      errorEn: `Summary inputs exceed the maximum allowed length of ${INPUT_LIMITS.summaryCombined} characters.`,
+    });
+  }
+
+  // 4. Sanitize inputs (Strip PII)
+  const cleanJobTitle = sanitizeText(String(jobTitle), 100);
+  const cleanExp = sanitizeText(String(yearsOfExperience), 50);
+  const cleanSkills = sanitizeText(String(keySkills), 300);
+  const cleanIndustry = sanitizeText(String(targetIndustry), 100);
+
+  // 5. Check Cache
+  const cacheKey = computeAiCacheKey("summary", config.geminiModel, {
+    t: cleanJobTitle,
+    e: cleanExp,
+    s: cleanSkills,
+    i: cleanIndustry,
+    l: lang,
+  });
+
+  const cached = await getCachedAiResponse(cacheKey);
+  if (cached) {
+    logAiMetric({
+      feature: "generate-summary",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: true,
+    });
+    return res.json(cached);
+  }
+
+  // 6. Check Rate Limit (Shared Store)
+  const rateLimit = await checkRateLimit(clientIp, "summary");
+  if (!rateLimit.allowed) {
+    logAiMetric({
+      feature: "generate-summary",
+      model: config.geminiModel,
+      httpStatus: 429,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+      rateLimitBlocked: true,
+    });
+    return res.status(429).json({
+      error: rateLimit.reasonAr,
+      errorEn: rateLimit.reason,
+      retryAfterSeconds: rateLimit.retryAfterSeconds,
+    });
+  }
+
   try {
-    const { jobTitle, yearsOfExperience, keySkills, targetIndustry, language = "ar" } = req.body;
+    const ai = getGeminiClient(config.geminiApiKey);
+    if (!ai) throw new Error("Failed to initialize AI client");
 
-    const ai = getGeminiClient();
-    if (!ai) {
-      const fallbackSummary = language === "ar"
-        ? `${jobTitle || 'محترف'} شغوف ومبتكر يملك خبرة متميزة تزيد عن ${yearsOfExperience || 'عدة'} سنوات في مجالات ${keySkills || 'تطوير الأعمال والتخطيط الإستراتيجي'}. متخصص في تحقيق النتائج بفاعلية، ورفع الكفاءة التشغيلية، وقيادة الفرق بنجاح.`
-        : `Results-driven ${jobTitle || 'Professional'} with ${yearsOfExperience || 'several'} years of proven experience in ${keySkills || 'business development and strategic planning'}. Recognized for optimizing operational efficiency and delivering strong business value.`;
-      
-      return res.json({ summary: fallbackSummary });
-    }
-
-    const isArabic = language === "ar";
+    const isArabic = lang === "ar";
     const prompt = isArabic
-      ? `أنت خبير في كتابة السير الذاتية ومجال الموارد البشرية في مصر والشرق الأوسط.
+      ? `أنت خبير في كتابة السير الذاتية ومجال الموارد البشرية.
 اكتب ملخصاً مهنياً (Professional Summary) جذاباً ومحسناً لنظام ATS في 3 أسطر قصيرة ومباشرة باللغة العربية.
-المسمى الوظيفي: ${jobTitle}
-سنوات الخبرة: ${yearsOfExperience || '1-3'} سنوات
-أبرز المهارات: ${keySkills || 'التواصل، إدارة المشاريع، حل المشكلات'}
-المجال المستهدف: ${targetIndustry || 'العام'}
+المسمى الوظيفي: ${cleanJobTitle || 'محترف'}
+سنوات الخبرة: ${cleanExp || '1-3'}
+أبرز المهارات: ${cleanSkills || 'التواصل، إدارة المشاريع، حل المشكلات'}
+المجال المستهدف: ${cleanIndustry || 'العام'}
 
 أعد النتيجة بتنسيق JSON بالشكل التالي:
 {
@@ -141,10 +352,10 @@ app.post("/api/ai/generate-summary", async (req, res) => {
 }`
       : `You are a professional resume writer and HR specialist.
 Write a compelling, ATS-optimized 3-sentence professional summary for:
-Job Title: ${jobTitle}
-Years of Experience: ${yearsOfExperience || '1-3'}
-Key Skills: ${keySkills || 'Communication, Project Management'}
-Target Industry: ${targetIndustry || 'General'}
+Job Title: ${cleanJobTitle || 'Professional'}
+Years of Experience: ${cleanExp || '1-3'}
+Key Skills: ${cleanSkills || 'Communication, Project Management'}
+Target Industry: ${cleanIndustry || 'General'}
 
 Return JSON format:
 {
@@ -152,39 +363,124 @@ Return JSON format:
 }`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: config.geminiModel,
       contents: prompt,
       config: {
         responseMimeType: "application/json",
       },
     });
 
-    const text = response.text || "{}";
-    const parsed = JSON.parse(text);
+    const parsed = JSON.parse(response.text || "{}");
+    if (!parsed.summary) {
+      throw new Error("Invalid structure returned by AI");
+    }
+
+    await setCachedAiResponse(cacheKey, parsed, 86400);
+
+    logAiMetric({
+      feature: "generate-summary",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+    });
+
     return res.json(parsed);
   } catch (err: any) {
-    console.error("Error in /api/ai/generate-summary:", err);
-    return res.status(500).json({ error: err.message || "Failed to generate summary" });
+    logAiMetric({
+      feature: "generate-summary",
+      model: config.geminiModel,
+      httpStatus: 500,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+      error: err?.message,
+    });
+    return res.status(500).json({
+      error: "تعذر توليد الملخص المهني حالياً.",
+      errorEn: "Failed to generate professional summary.",
+    });
+  } finally {
+    await releaseConcurrencyLock(clientIp);
   }
 });
 
 // 4. AI: Suggest Skills
 app.post("/api/ai/suggest-skills", async (req, res) => {
-  try {
-    const { jobTitle, language = "ar" } = req.body;
-    const ai = getGeminiClient();
+  const startTime = Date.now();
+  const clientIp = getClientIp(req);
+  const config = getAiConfig();
 
-    if (!ai) {
-      return res.json({
-        technicalSkills: language === "ar" ? ["إدارة البيانات", "التحليل الإحصائي", "حل المشكلات التقنية"] : ["Data Analysis", "Technical Troubleshooting", "Reporting"],
-        softSkills: language === "ar" ? ["التواصل الفعال", "العمل الجماعي", "إدارة الوقت"] : ["Effective Communication", "Teamwork", "Time Management"],
-        tools: language === "ar" ? ["Microsoft Excel", "Google Docs", "Slack"] : ["Microsoft Excel", "Google Suite", "Slack"],
-      });
-    }
+  // 1. Check Kill-Switch & Feature Flag
+  if (!config.aiEnabled || !config.featureFlags.skills) {
+    return sendAiUnavailable(
+      res,
+      "ميزة اقتراح المهارات الذكية غير مفعلة حالياً.",
+      "AI Skill Suggestion is currently disabled.",
+      503,
+      {
+        technicalSkills: req.body.language === "en" ? ["Data Analysis", "Reporting", "Process Improvement"] : ["إدارة البيانات", "التحليل الإحصائي", "تحسين العمليات"],
+        softSkills: req.body.language === "en" ? ["Effective Communication", "Team Leadership", "Problem Solving"] : ["التواصل الفعال", "القيادة والعمل الجماعي", "حل المشكلات"],
+        tools: req.body.language === "en" ? ["Microsoft Excel", "Google Workspace", "Slack"] : ["Microsoft Excel", "Google Suite", "Slack"],
+      }
+    );
+  }
+
+  // 2. Check Model and API Key
+  if (!config.geminiModel || !config.geminiApiKey) {
+    return sendAiUnavailable(
+      res,
+      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
+      "AI model configuration is missing on the server."
+    );
+  }
+
+  const rawJobTitle = typeof req.body.jobTitle === "string" ? req.body.jobTitle : "";
+  const language = req.body.language === "en" ? "en" : "ar";
+  const cleanJobTitle = sanitizeText(rawJobTitle, 100);
+
+  // 3. Check Cache
+  const cacheKey = computeAiCacheKey("skills", config.geminiModel, {
+    j: cleanJobTitle,
+    l: language,
+  });
+
+  const cached = await getCachedAiResponse(cacheKey);
+  if (cached) {
+    logAiMetric({
+      feature: "suggest-skills",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: true,
+    });
+    return res.json(cached);
+  }
+
+  // 4. Rate Limit Check
+  const rateLimit = await checkRateLimit(clientIp, "skills");
+  if (!rateLimit.allowed) {
+    logAiMetric({
+      feature: "suggest-skills",
+      model: config.geminiModel,
+      httpStatus: 429,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+      rateLimitBlocked: true,
+    });
+    return res.status(429).json({
+      error: rateLimit.reasonAr,
+      errorEn: rateLimit.reason,
+      retryAfterSeconds: rateLimit.retryAfterSeconds,
+    });
+  }
+
+  try {
+    const ai = getGeminiClient(config.geminiApiKey);
+    if (!ai) throw new Error("Failed to initialize AI client");
 
     const isArabic = language === "ar";
     const prompt = isArabic
-      ? `اقترح مهارات مناسبة ومطلوبة في سوق العمل المصري والعربي للمسمى الوظيفي: "${jobTitle}".
+      ? `اقترح مهارات مناسبة ومطلوبة في سوق العمل للمسمى الوظيفي: "${cleanJobTitle || 'محترف'}".
 قسم المهارات إلى 3 فئات (مهارات تقنية، مهارات شخصية، أدوات وبرامج).
 أعد النتيجة بتنسيق JSON:
 {
@@ -192,7 +488,7 @@ app.post("/api/ai/suggest-skills", async (req, res) => {
   "softSkills": ["مهارة1", "مهارة2", "مهارة3"],
   "tools": ["أداة1", "أداة2", "أداة3"]
 }`
-      : `Suggest high-demand resume skills for the job title: "${jobTitle}".
+      : `Suggest high-demand resume skills for the job title: "${cleanJobTitle || 'Professional'}".
 Categorize into technical skills, soft skills, and tools.
 Return JSON:
 {
@@ -202,7 +498,7 @@ Return JSON:
 }`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: config.geminiModel,
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -210,67 +506,149 @@ Return JSON:
     });
 
     const parsed = JSON.parse(response.text || "{}");
+    await setCachedAiResponse(cacheKey, parsed, 86400);
+
+    logAiMetric({
+      feature: "suggest-skills",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+    });
+
     return res.json(parsed);
   } catch (err: any) {
-    console.error("Error in /api/ai/suggest-skills:", err);
-    return res.status(500).json({ error: err.message || "Failed to suggest skills" });
+    logAiMetric({
+      feature: "suggest-skills",
+      model: config.geminiModel,
+      httpStatus: 500,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+      error: err?.message,
+    });
+    return res.status(500).json({
+      error: "تعذر اقتراح المهارات حالياً.",
+      errorEn: "Failed to suggest skills.",
+    });
+  } finally {
+    await releaseConcurrencyLock(clientIp);
   }
 });
 
-// 4.5. AI: Quick Inline Transform (Metrics, Polish, Translation)
+// 5. AI: Quick Inline Transform (Metrics, Polish, Translation)
 app.post("/api/ai/quick-transform", async (req, res) => {
-  try {
-    const { text, type = "polish", role = "محترف", language = "ar" } = req.body;
-    if (!text || text.trim().length === 0) {
-      return res.status(400).json({ error: "text is required" });
-    }
+  const startTime = Date.now();
+  const clientIp = getClientIp(req);
+  const config = getAiConfig();
 
-    const ai = getGeminiClient();
-    if (!ai) {
-      let fallbackText = text;
-      if (type === "metric") {
-        fallbackText = language === "ar"
-          ? `${text.trim()}، مما ساهم في تحقيق زيادة بنسبة 35% في كفاءة الأداء وخفض التكاليف التشغيلية.`
-          : `${text.trim()}, delivering a 35% increase in team throughput and operational efficiency.`;
-      } else if (type === "polish") {
-        fallbackText = language === "ar"
-          ? `قيادة وتطوير ${text.trim()} وتطبيق أفضل المعايير القياسية لضمان الجودة وتحقيق الأهداف المحددة.`
-          : `Spearheaded and executed ${text.trim()}, applying industry best practices to achieve key strategic goals.`;
-      } else if (type === "translate_en") {
-        fallbackText = `Managed and successfully delivered ${text.trim()} with high precision and measurable impact.`;
-      }
-      return res.json({ resultText: fallbackText });
-    }
+  // 1. Check Kill-Switch & Feature Flag
+  if (!config.aiEnabled || !config.featureFlags.experience) {
+    return sendAiUnavailable(
+      res,
+      "ميزة التحويل السريع غير مفعلة حالياً.",
+      "Quick Transform is currently disabled.",
+      503,
+      { resultText: req.body.text || "" }
+    );
+  }
+
+  // 2. Check Model and API Key
+  if (!config.geminiModel || !config.geminiApiKey) {
+    return sendAiUnavailable(
+      res,
+      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
+      "AI model configuration is missing on the server."
+    );
+  }
+
+  const { text = "", type = "polish", role = "محترف", language = "ar" } = req.body;
+  if (!String(text).trim()) {
+    return res.status(400).json({ error: "النص مطلوب", errorEn: "text is required" });
+  }
+
+  if (String(text).length > INPUT_LIMITS.quickTransformText) {
+    return res.status(413).json({
+      error: `تجاوز النص الحد الأقصى (${INPUT_LIMITS.quickTransformText} حرف).`,
+      errorEn: `Text exceeds maximum allowed limit of ${INPUT_LIMITS.quickTransformText} characters.`,
+    });
+  }
+
+  // 3. Sanitize inputs
+  const cleanText = sanitizeText(String(text), INPUT_LIMITS.quickTransformText);
+  const cleanRole = sanitizeText(String(role), 80);
+  const lang = language === "en" ? "en" : "ar";
+
+  // 4. Check Cache
+  const cacheKey = computeAiCacheKey("transform", config.geminiModel, {
+    t: cleanText,
+    ty: type,
+    r: cleanRole,
+    l: lang,
+  });
+
+  const cached = await getCachedAiResponse(cacheKey);
+  if (cached) {
+    logAiMetric({
+      feature: "quick-transform",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: true,
+    });
+    return res.json(cached);
+  }
+
+  // 5. Rate Limit Check
+  const rateLimit = await checkRateLimit(clientIp, "transform");
+  if (!rateLimit.allowed) {
+    logAiMetric({
+      feature: "quick-transform",
+      model: config.geminiModel,
+      httpStatus: 429,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+      rateLimitBlocked: true,
+    });
+    return res.status(429).json({
+      error: rateLimit.reasonAr,
+      errorEn: rateLimit.reason,
+      retryAfterSeconds: rateLimit.retryAfterSeconds,
+    });
+  }
+
+  try {
+    const ai = getGeminiClient(config.geminiApiKey);
+    if (!ai) throw new Error("Failed to initialize AI client");
 
     let prompt = "";
     if (type === "metric") {
-      prompt = language === "ar"
-        ? `أنت خبير صياغة سير ذاتية ATS. أعد صياغة هذه الجملة للوظيفة (${role}) مع إضافة أرقام وإنجازات ونسب مئوية واقعية (KPIs / Metrics):
-النص: "${text}"
+      prompt = lang === "ar"
+        ? `أنت خبير صياغة سير ذاتية ATS. أعد صياغة هذه الجملة للوظيفة (${cleanRole}) مع إضافة أرقام وإنجازات ونسب مئوية واقعية (KPIs / Metrics):
+النص: "${cleanText}"
 أعد النتيجة بتنسيق JSON: {"resultText": "النص المحسن مع الأرقام"}`
-        : `You are an expert ATS resume writer. Rewrite this sentence for a (${role}) to include compelling, realistic quantifiable metrics and percentages (% / KPIs):
-Input text: "${text}"
+        : `You are an expert ATS resume writer. Rewrite this sentence for a (${cleanRole}) to include compelling, realistic quantifiable metrics and percentages (% / KPIs):
+Input text: "${cleanText}"
 Return JSON: {"resultText": "Enhanced text with metrics"}`;
     } else if (type === "polish") {
-      prompt = language === "ar"
+      prompt = lang === "ar"
         ? `أنت خبير توظيف. حسّن صياغة هذه الجملة لتكون احترافية ومباشرة وتبدأ بفعل قوي مبني للمعلوم ومحسنة لـ ATS:
-النص: "${text}"
+النص: "${cleanText}"
 أعد النتيجة بتنسيق JSON: {"resultText": "النص المحسن والمهني"}`
         : `You are a recruitment specialist. Polish and enhance this sentence with strong action verbs and professional ATS phrasing:
-Input text: "${text}"
+Input text: "${cleanText}"
 Return JSON: {"resultText": "Polished text"}`;
     } else if (type === "translate_en") {
-      prompt = `Translate and professionally optimize this resume text into high-impact, ATS-friendly professional English for a (${role}):
-Input text: "${text}"
+      prompt = `Translate and professionally optimize this resume text into high-impact, ATS-friendly professional English for a (${cleanRole}):
+Input text: "${cleanText}"
 Return JSON: {"resultText": "Professional English translation"}`;
     } else if (type === "translate_ar") {
       prompt = `ترجم وحسّن هذا النص ليصبح صياغة مهنية عربية ممتازة ومناسبة للسير الذاتية:
-النص: "${text}"
-أعد النتيجة بتنسيق JSON: {"resultText": "الترجمة العربية المهنية"}`;
+النص: "${cleanText}"
+أعد النتيجة بتنسيق JSON: {"resultText": "الترجمة العربية المهنية"}` ;
     }
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: config.geminiModel,
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -278,56 +656,138 @@ Return JSON: {"resultText": "Professional English translation"}`;
     });
 
     const parsed = JSON.parse(response.text || "{}");
-    return res.json({ resultText: parsed.resultText || text });
+    const resultPayload = { resultText: parsed.resultText || cleanText };
+
+    await setCachedAiResponse(cacheKey, resultPayload, 86400);
+
+    logAiMetric({
+      feature: "quick-transform",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+    });
+
+    return res.json(resultPayload);
   } catch (err: any) {
-    console.error("Error in /api/ai/quick-transform:", err);
-    return res.status(500).json({ error: err.message || "Failed to transform text" });
+    logAiMetric({
+      feature: "quick-transform",
+      model: config.geminiModel,
+      httpStatus: 500,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+      error: err?.message,
+    });
+    return res.status(500).json({
+      error: "تعذر تحويل النص حالياً.",
+      errorEn: "Failed to transform text.",
+    });
+  } finally {
+    await releaseConcurrencyLock(clientIp);
   }
 });
 
-// 5. AI: ATS Resume Analyzer
+// 6. AI: ATS Resume Analyzer
 app.post("/api/ai/ats-analyzer", async (req, res) => {
+  const startTime = Date.now();
+  const clientIp = getClientIp(req);
+  const config = getAiConfig();
+
+  // 1. Check Kill-Switch & Feature Flag
+  if (!config.aiEnabled || !config.featureFlags.ats) {
+    return sendAiUnavailable(
+      res,
+      "خدمة فحص ATS بالذكاء الاصطناعي غير مفعلة حالياً.",
+      "AI ATS Analyzer is currently disabled.",
+      503,
+      {
+        score: 82,
+        verdict: req.body.language === "en" ? "Good ATS Compatibility" : "توافق جيد مع نظام ATS",
+        strengths: req.body.language === "en" ? ["Standard structure", "Clear sections"] : ["تنسيق قياسي منظم", "أقسام واضحة وسهلة القراءة"],
+        missingKeywords: req.body.language === "en" ? ["KPI Metrics", "Team Leadership"] : ["مؤشرات الأداء (KPIs)", "إدارة وقيادة الفرق"],
+        actionPoints: req.body.language === "en" ? ["Quantify achievements with metrics"] : ["أضف أرقاماً ومقاييس إنجاز واضحة في الخبرات"],
+      }
+    );
+  }
+
+  // 2. Check Model and API Key
+  if (!config.geminiModel || !config.geminiApiKey) {
+    return sendAiUnavailable(
+      res,
+      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
+      "AI model configuration is missing on the server."
+    );
+  }
+
+  const { resumeData, jobDescription = "", language = "ar" } = req.body;
+  const lang = language === "en" ? "en" : "ar";
+
+  if (!resumeData || typeof resumeData !== "object") {
+    return res.status(400).json({ error: "بيانات السيرة الذاتية مطلوبة", errorEn: "resumeData is required" });
+  }
+
+  // 3. Sanitize inputs (Strip PII & enforce maximum character limits)
+  const cleanResume = sanitizeResumeForAts(resumeData);
+  const cleanJd = sanitizeText(String(jobDescription), INPUT_LIMITS.jobDescription);
+
+  const resumePayloadString = JSON.stringify(cleanResume);
+  if (resumePayloadString.length > INPUT_LIMITS.atsResumePayload) {
+    return res.status(413).json({
+      error: `تجاوز حجم بيانات السيرة الذاتية الحد المسموح (${INPUT_LIMITS.atsResumePayload} حرف).`,
+      errorEn: `Resume payload exceeds maximum limit of ${INPUT_LIMITS.atsResumePayload} characters.`,
+    });
+  }
+
+  // 4. Check Cache
+  const cacheKey = computeAiCacheKey("ats", config.geminiModel, {
+    r: cleanResume,
+    jd: cleanJd,
+    l: lang,
+  });
+
+  const cached = await getCachedAiResponse(cacheKey);
+  if (cached) {
+    logAiMetric({
+      feature: "ats-analyzer",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: true,
+    });
+    return res.json(cached);
+  }
+
+  // 5. Rate Limit Check (Once every 10 min per IP unless payload changes)
+  const rateLimit = await checkRateLimit(clientIp, "ats");
+  if (!rateLimit.allowed) {
+    logAiMetric({
+      feature: "ats-analyzer",
+      model: config.geminiModel,
+      httpStatus: 429,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+      rateLimitBlocked: true,
+    });
+    return res.status(429).json({
+      error: rateLimit.reasonAr,
+      errorEn: rateLimit.reason,
+      retryAfterSeconds: rateLimit.retryAfterSeconds,
+    });
+  }
+
   try {
-    const { resumeData, jobDescription, language = "ar" } = req.body;
-    const ai = getGeminiClient();
+    const ai = getGeminiClient(config.geminiApiKey);
+    if (!ai) throw new Error("Failed to initialize AI client");
 
-    if (!ai) {
-      // Calculate local heuristic score if AI is unavailable
-      let score = 70;
-      const suggestions: string[] = [];
-      const missingKeywords: string[] = [];
-
-      if (!resumeData.personalInfo?.summary || resumeData.personalInfo.summary.length < 30) {
-        score -= 10;
-        suggestions.push(language === "ar" ? "أضف ملخصاً مهنياً يلخص أبرز نقاط قوتك في 3 أسطر." : "Add a complete professional summary highlighting your key strengths.");
-      }
-      if (!resumeData.experiences || resumeData.experiences.length === 0) {
-        score -= 20;
-        suggestions.push(language === "ar" ? "أضف خبرة عملية واحدة على الأقل مع نقاط تفصيلية للأنشطة." : "Add at least one work experience with impact bullet points.");
-      }
-      if (!resumeData.skills || resumeData.skills.length < 5) {
-        score -= 10;
-        suggestions.push(language === "ar" ? "أضف على الأقل 5 مهارات ذات صلة بالوظيفة المستهدفة." : "Include at least 5 relevant skills.");
-      }
-
-      return res.json({
-        score: Math.max(score, 50),
-        verdict: score >= 80 ? (language === "ar" ? "ممتاز وجاهز للتقديم" : "Excellent & Ready") : (language === "ar" ? "جيد ويحتاج تحسينات بسيطة" : "Good with minor improvements needed"),
-        strengths: language === "ar" ? ["تنسيق واضح وسهل القراءة ببرامج ATS", "معلومات الاتصال المباشرة موجودة"] : ["Clear ATS-friendly formatting", "Complete contact details"],
-        missingKeywords: missingKeywords.length ? missingKeywords : (language === "ar" ? ["إدارة الأداء", "التخطيط التنفيذي"] : ["Performance Management", "Strategic Execution"]),
-        actionPoints: suggestions.length ? suggestions : [language === "ar" ? "أضف أرقاماً ومقاييس إنجاز لكل نقطة خبرة." : "Add quantifiable metrics to experience bullet points."],
-      });
-    }
-
-    const isArabic = language === "ar";
+    const isArabic = lang === "ar";
     const prompt = isArabic
       ? `أنت نظام فحص سير ذاتية آلي (ATS) ومسؤول توظيف محترف. قم بتحليل السيرة الذاتية التالية مقارنة بالمتطلبات:
 
-بيانات السيرة الذاتية:
-${JSON.stringify(resumeData, null, 2)}
+بيانات السيرة الذاتية (مستخلصة ومطهرة):
+${JSON.stringify(cleanResume, null, 2)}
 
-الوصف الوظيفي المستهدف (إن وجد):
-"${jobDescription || 'غير محدد - تحليل عام لنظام ATS'}"
+الوصف الوظيفي المستهدف:
+"${cleanJd || 'تحليل قياسي لنظام ATS'}"
 
 المطلوب: أعد تقييماً شاملاً بتنسيق JSON دقيق:
 {
@@ -337,13 +797,13 @@ ${JSON.stringify(resumeData, null, 2)}
   "missingKeywords": ["كلمة مفتاحية هامة مفقودة 1", "كلمة 2"],
   "actionPoints": ["توصية عمل قابلة للتطبيق 1", "توصية 2", "توصية 3"]
 }`
-      : `You are an automated Applicant Tracking System (ATS) and professional recruiter. Analyze the following resume:
+      : `You are an automated Applicant Tracking System (ATS) and professional recruiter. Analyze the following sanitized resume:
 
 Resume Data:
-${JSON.stringify(resumeData, null, 2)}
+${JSON.stringify(cleanResume, null, 2)}
 
-Target Job Description (if any):
-"${jobDescription || 'General ATS Analysis'}"
+Target Job Description:
+"${cleanJd || 'General ATS Analysis'}"
 
 Provide a detailed evaluation JSON:
 {
@@ -355,7 +815,7 @@ Provide a detailed evaluation JSON:
 }`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
+      model: config.geminiModel,
       contents: prompt,
       config: {
         responseMimeType: "application/json",
@@ -363,181 +823,53 @@ Provide a detailed evaluation JSON:
     });
 
     const parsed = JSON.parse(response.text || "{}");
+    await setCachedAiResponse(cacheKey, parsed, 86400);
+
+    logAiMetric({
+      feature: "ats-analyzer",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+    });
+
     return res.json(parsed);
   } catch (err: any) {
-    console.error("Error in /api/ai/ats-analyzer:", err);
-    return res.status(500).json({ error: err.message || "Failed to analyze resume" });
+    logAiMetric({
+      feature: "ats-analyzer",
+      model: config.geminiModel,
+      httpStatus: 500,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+      error: err?.message,
+    });
+    return res.status(500).json({
+      error: "تعذر فحص السيرة الذاتية عبر نظام ATS حالياً.",
+      errorEn: "Failed to analyze resume via ATS.",
+    });
+  } finally {
+    await releaseConcurrencyLock(clientIp);
   }
 });
 
-// 5b. AI: Parse uploaded Resume File (PDF / JSON / Text) into structured ResumeData
+// 7. Client-Side Resume Parsing Notice (Zero Gemini Calls Consumed)
 app.post("/api/ai/parse-resume", async (req, res) => {
-  try {
-    const { base64Data, mimeType, textContent, rawJson, language = "ar" } = req.body;
-
-    // 1. If raw JSON is provided directly
-    if (rawJson && typeof rawJson === "object") {
-      return res.json({ success: true, resumeData: rawJson });
-    }
-
-    const ai = getGeminiClient();
-
-    // 2. If Gemini AI is available and base64Data or textContent is present
-    if (ai) {
-      const systemPrompt = `You are an expert AI Resume Parser. Extract all structured resume information from the attached CV document into clean JSON format matching the schema below.
-Ensure language is preserved (Arabic or English as in the document).
-
-Required JSON format:
-{
-  "personalInfo": {
-    "fullName": "Name extracted from CV",
-    "jobTitle": "Job title or headline",
-    "email": "Email address",
-    "phone": "Phone number",
-    "location": "City, Country",
-    "linkedin": "LinkedIn profile link or username",
-    "github": "GitHub link or username",
-    "summary": "Professional summary or bio paragraph"
-  },
-  "experiences": [
-    {
-      "id": "exp-1",
-      "company": "Company Name",
-      "jobTitle": "Job Title",
-      "startDate": "Start Date e.g. 2021",
-      "endDate": "End Date e.g. Present",
-      "isCurrent": false,
-      "location": "Location",
-      "description": "Short description",
-      "bullets": ["Bullet achievement 1", "Bullet achievement 2"]
-    }
-  ],
-  "education": [
-    {
-      "id": "edu-1",
-      "institution": "University / School",
-      "degree": "Degree Name e.g. Bachelor of Computer Science",
-      "fieldOfStudy": "Field of Study",
-      "startDate": "Start Year",
-      "endDate": "End Year",
-      "grade": "Grade / GPA if mentioned"
-    }
-  ],
-  "skills": [
-    { "id": "sk-1", "name": "Skill Name", "category": "Technical", "level": "Expert" }
-  ],
-  "projects": [
-    {
-      "id": "proj-1",
-      "title": "Project Name",
-      "description": "Project Description",
-      "technologies": ["Tech1", "Tech2"],
-      "link": "Link if any"
-    }
-  ],
-  "certifications": [
-    {
-      "id": "cert-1",
-      "name": "Certification Name",
-      "issuer": "Issuer",
-      "issueDate": "Year"
-    }
-  ],
-  "languages": [
-    { "id": "lang-1", "name": "Arabic", "proficiency": "Native" }
-  ]
-}`;
-
-      let contentsPayload: any[] = [];
-
-      if (base64Data && mimeType) {
-        // Strip data url prefix if present
-        const cleanBase64 = base64Data.replace(/^data:[^;]+;base64,/, "");
-        contentsPayload = [
-          {
-            inlineData: {
-              mimeType: mimeType || "application/pdf",
-              data: cleanBase64,
-            },
-          },
-          systemPrompt,
-        ];
-      } else if (textContent) {
-        contentsPayload = [
-          `Resume Raw Text Content:\n\n${textContent}\n\n${systemPrompt}`,
-        ];
-      }
-
-      if (contentsPayload.length > 0) {
-        const response = await ai.models.generateContent({
-          model: "gemini-3.6-flash",
-          contents: contentsPayload,
-          config: {
-            responseMimeType: "application/json",
-          },
-        });
-
-        const text = response.text || "{}";
-        const parsed = JSON.parse(text);
-        if (parsed.personalInfo || parsed.experiences || parsed.skills) {
-          return res.json({ success: true, resumeData: parsed });
-        }
-      }
-    }
-
-    // 3. Fallback Heuristic Extractor if Gemini is unavailable or failed
-    const textToScan = textContent || "";
-    const emailMatch = textToScan.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
-    const phoneMatch = textToScan.match(/(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4,6}/);
-
-    const fallbackData = {
-      personalInfo: {
-        fullName: textToScan.split("\n")[0]?.trim() || (language === "ar" ? "مستخدم جديد" : "New Candidate"),
-        jobTitle: language === "ar" ? "محترف متكافئ" : "Professional Candidate",
-        email: emailMatch ? emailMatch[0] : "",
-        phone: phoneMatch ? phoneMatch[0] : "",
-        location: language === "ar" ? "القاهرة، مصر" : "Cairo, Egypt",
-        linkedin: "",
-        github: "",
-        summary: textToScan.slice(0, 300) || (language === "ar" ? "تم استخراج البيانات المتاحة من الملف المرفق." : "Extracted data from uploaded document."),
-      },
-      experiences: [
-        {
-          id: `exp-${Date.now()}`,
-          company: language === "ar" ? "شركة سابقة" : "Previous Company",
-          jobTitle: language === "ar" ? "خبرة عمل مستخرجة" : "Extracted Work Role",
-          startDate: "2021",
-          endDate: "2024",
-          isCurrent: false,
-          location: "",
-          description: textToScan.slice(0, 150),
-          bullets: [
-            language === "ar" ? "تم استخراج هذه الخبرة تلقائياً من السيرة الذاتية المرفوعة." : "Extracted from uploaded resume file.",
-          ],
-        },
-      ],
-      education: [],
-      skills: [
-        { id: `sk-1`, name: "Management", category: "General", level: "Intermediate" },
-        { id: `sk-2`, name: "Communication", category: "General", level: "Expert" },
-      ],
-      projects: [],
-      certifications: [],
-      languages: [],
-    };
-
-    return res.json({ success: true, resumeData: fallbackData });
-  } catch (err: any) {
-    console.error("Error in /api/ai/parse-resume:", err);
-    return res.status(500).json({ error: err.message || "Failed to parse resume file" });
+  // Parsing is natively executed 100% in-browser on the client side via pdfjs-dist
+  const { rawJson } = req.body || {};
+  if (rawJson && typeof rawJson === "object") {
+    return res.json({ success: true, resumeData: rawJson });
   }
+
+  return res.json({
+    success: true,
+    clientSideNotice: "Resume parsing is processed client-side without API consumption.",
+    resumeData: null,
+  });
 });
 
-// 6. Activation Code Verification (Google Apps Script Integration)
+// 8. Activation Code Verification (Google Apps Script Integration - 100% Preserved)
 app.post("/api/verify-code", async (req, res) => {
   try {
-    console.log("[verify-proxy] verify-proxy reached");
-
     const { code, reference } = req.body || {};
     if (!code || typeof code !== "string") {
       return res.status(400).json({ success: false, valid: false, message: "كود التفعيل مطلوب" });
@@ -546,14 +878,12 @@ app.post("/api/verify-code", async (req, res) => {
     const cleanCode = code.trim().toUpperCase();
     const cleanReference = reference ? String(reference).trim() : "";
 
-    // Check Google Apps Script URL from environment variables
     const gasUrl =
       process.env.PAYMENT_API_URL ||
       process.env.VITE_PAYMENT_API_URL ||
       process.env.GAS_VERIFY_URL;
 
     if (!gasUrl) {
-      console.log("[verify-proxy] Error: PAYMENT_API_URL is missing in environment");
       return res.status(500).json({
         success: false,
         valid: false,
@@ -573,8 +903,6 @@ app.post("/api/verify-code", async (req, res) => {
         redirect: "follow",
       });
 
-      console.log(`[verify-proxy] GAS HTTP status: ${gasResponse.status}`);
-
       const rawText = await gasResponse.text();
       let data: any = null;
       try {
@@ -583,10 +911,6 @@ app.post("/api/verify-code", async (req, res) => {
         data = null;
       }
 
-      console.log(`[verify-proxy] GAS response success: ${data?.success}`);
-      console.log(`[verify-proxy] GAS response status: ${data?.status}`);
-
-      // Strict acceptance: accept valid states from Google Apps Script
       if (
         gasResponse.ok &&
         data &&
@@ -602,7 +926,6 @@ app.post("/api/verify-code", async (req, res) => {
         });
       }
 
-      // Return exact safe response message from Google Apps Script
       return res.status(400).json({
         success: false,
         valid: false,
@@ -610,7 +933,6 @@ app.post("/api/verify-code", async (req, res) => {
         message: data?.message || "كود التفعيل غير صالح أو لم يتم تأكيد الدفع بعد.",
       });
     } catch (gasErr: any) {
-      console.log(`[verify-proxy] GAS request failed: ${gasErr?.name || "FetchError"}`);
       return res.status(503).json({
         success: false,
         valid: false,

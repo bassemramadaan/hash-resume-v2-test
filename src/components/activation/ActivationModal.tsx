@@ -2,6 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { useExportGate } from '../../store/useExportGate';
 import {
+  clearDownloadCompletionFlags,
+  validateResumeLockState,
+  calculateResumeFingerprint,
+  isResumeBlank,
+} from '../../utils/resumeFingerprint';
+import {
   KeyRound, CheckCircle2, ShieldCheck, Zap, X, Copy, Check, ArrowLeft, ArrowRight, ExternalLink,
   AlertTriangle, Download, Sparkles, Loader2, Mail, PhoneCall, Smartphone, RefreshCw
 } from 'lucide-react';
@@ -174,16 +180,17 @@ export const ActivationModal: React.FC = () => {
     unlockResumeWithNewApproval,
     settings,
     resumeData,
+    activation,
   } = useResumeStore();
 
   useEffect(() => {
     const handlePageShow = () => {
-      const wasDownloaded =
-        sessionStorage.getItem("resume_download_completed") === "true";
-
-      if (wasDownloaded) {
+      const { isValid } = validateResumeLockState(activation, resumeData);
+      if (isValid) {
         lockResumeForEdits();
         setPaymentStep("used");
+      } else {
+        clearDownloadCompletionFlags();
       }
     };
 
@@ -191,7 +198,7 @@ export const ActivationModal: React.FC = () => {
     handlePageShow();
 
     return () => window.removeEventListener("pageshow", handlePageShow);
-  }, [lockResumeForEdits]);
+  }, [lockResumeForEdits, activation, resumeData]);
   
   const { grantAndConsumeExport, cancelExport } = useExportGate();
 
@@ -293,12 +300,12 @@ export const ActivationModal: React.FC = () => {
         setPaymentStep('submitted_pending');
       } else {
         // Clear any completion/download flags on failure to prevent false success
-        sessionStorage.removeItem("resume_download_completed");
+        clearDownloadCompletionFlags();
         setErrorMessage(res?.message || labels.errorTitle);
         setPaymentStep('error');
       }
     } catch (err: any) {
-      sessionStorage.removeItem("resume_download_completed");
+      clearDownloadCompletionFlags();
       setErrorMessage(err.message || labels.errorTitle);
       setPaymentStep('error');
     } finally {
@@ -319,16 +326,16 @@ export const ActivationModal: React.FC = () => {
         setRemainingCodes(parsed.remainingCodes);
         setPaymentStep('approved');
       } else if (res && res.status === 'pending') {
-        sessionStorage.removeItem("resume_download_completed");
+        clearDownloadCompletionFlags();
         setErrorMessage(res.message || labels.pendingTitle);
         setPaymentStep('submitted_pending');
       } else {
-        sessionStorage.removeItem("resume_download_completed");
+        clearDownloadCompletionFlags();
         setErrorMessage(res?.message || 'لم يتم العثور على المعاملة أو أنها قيد المراجعة.');
         setPaymentStep('error');
       }
     } catch (err: any) {
-      sessionStorage.removeItem("resume_download_completed");
+      clearDownloadCompletionFlags();
       setErrorMessage(err.message || labels.errorTitle);
       setPaymentStep('error');
     } finally {
@@ -354,12 +361,12 @@ export const ActivationModal: React.FC = () => {
         setActivatedCode(cleanCode);
         setPaymentStep('approved');
       } else {
-        sessionStorage.removeItem("resume_download_completed");
+        clearDownloadCompletionFlags();
         setErrorMessage(result.message || labels.errorTitle);
         setPaymentStep('error');
       }
     } catch (err: any) {
-      sessionStorage.removeItem("resume_download_completed");
+      clearDownloadCompletionFlags();
       setErrorMessage(err.message || labels.errorTitle);
       setPaymentStep('error');
     } finally {
@@ -372,9 +379,10 @@ export const ActivationModal: React.FC = () => {
     setIsVerifying(true);
     setPaymentStep('activating');
     try {
-      const currentRef = referenceInput || localStorage.getItem('payment_reference');
+      const currentRef = referenceInput || localStorage.getItem('payment_reference') || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('verified_reference') : null);
 
       if (!currentRef) {
+        clearDownloadCompletionFlags();
         throw new Error(
           isAr
             ? 'رقم المرجع غير متوفر. يرجى التحقق من حالة الدفع مرة أخرى.'
@@ -383,6 +391,7 @@ export const ActivationModal: React.FC = () => {
       }
 
       if (!activatedCode) {
+        clearDownloadCompletionFlags();
         throw new Error(
           isAr
             ? 'تعذر تجهيز التحميل. يرجى التحقق من حالة الدفع مرة أخرى.'
@@ -393,6 +402,7 @@ export const ActivationModal: React.FC = () => {
       const verifyResult: any = await verifyActivationCode(activatedCode, currentRef);
 
       if (!verifyResult.success || verifyResult.status !== 'USED') {
+        clearDownloadCompletionFlags();
         throw new Error(verifyResult.message || (isAr ? 'تعذر تأكيد الدفع وتحميل السيرة الذاتية.' : 'Unable to confirm payment and download resume.'));
       }
 
@@ -400,11 +410,19 @@ export const ActivationModal: React.FC = () => {
       unlockResumeWithNewApproval();
       await grantAndConsumeExport();
 
-      // Update store plan state and lock resume for post-download protection
-      activatePlan(activatedCode, selectedPlan, selectedPlan === 'bundle_3' ? 3 : 1, true);
-      lockResume();
-      sessionStorage.setItem("resume_download_completed", "true");
-      setPaymentStep('used');
+      const fingerprint = calculateResumeFingerprint(resumeData);
+      if (fingerprint && !isResumeBlank(resumeData)) {
+        // Update store plan state and lock resume for post-download protection
+        activatePlan(activatedCode, selectedPlan, selectedPlan === 'bundle_3' ? 3 : 1, true);
+        lockResume(currentRef);
+        sessionStorage.setItem("resume_download_completed", "true");
+        localStorage.setItem("resume_download_completed", "true");
+        sessionStorage.setItem("verified_reference", currentRef);
+        localStorage.setItem("verified_reference", currentRef);
+        setPaymentStep('used');
+      } else {
+        clearDownloadCompletionFlags();
+      }
 
       confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
 
@@ -420,6 +438,7 @@ export const ActivationModal: React.FC = () => {
       }, 1800);
 
     } catch (err: any) {
+      clearDownloadCompletionFlags();
       setErrorMessage(err.message || (isAr ? 'تعذر إتمام التحميل. يرجى التواصل معنا مع رقم المرجع.' : 'Download failed. Please contact support with your reference.'));
       setPaymentStep('error');
     } finally {

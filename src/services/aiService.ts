@@ -1,4 +1,3 @@
-import { GoogleGenAI } from '@google/genai';
 import { Language } from '../types/resume';
 
 export interface AiEnhanceRequest {
