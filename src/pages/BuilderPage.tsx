@@ -697,7 +697,7 @@ export const BuilderPage: React.FC = () => {
 
       {/* App Version Tag */}
       <div id="editor-version-flag" className="text-center py-2 text-[10px] font-mono text-slate-400 select-none pb-20 sm:pb-4">
-        UPDATE VER 3.1
+        UPDATE VER 3.2
       </div>
     </main>
   );
