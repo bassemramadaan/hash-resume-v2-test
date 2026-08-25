@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
 import { Logo } from '../ui/Logo';
+import { Language } from '../../types/resume';
 import {
   FileText,
   ShieldCheck,
@@ -17,7 +18,15 @@ import {
   Linkedin,
   Facebook,
   MessageCircle,
+  ChevronDown,
+  Check,
 } from 'lucide-react';
+
+const LANGUAGES: { code: Language; label: string; nativeName: string; flag: string }[] = [
+  { code: 'ar', label: 'العربية', nativeName: 'العربية', flag: '🇪🇬' },
+  { code: 'en', label: 'English', nativeName: 'English', flag: '🇬🇧' },
+  { code: 'fr', label: 'Français', nativeName: 'Français', flag: '🇫🇷' },
+];
 
 export const Navbar: React.FC = () => {
   const {
@@ -28,18 +37,33 @@ export const Navbar: React.FC = () => {
   const location = useLocation();
   const t = getTranslation(settings.language);
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const langDropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleLanguage = () => {
-    if (settings.language === 'ar') {
-      setLanguage('en');
-    } else if (settings.language === 'en') {
-      setLanguage('fr');
-    } else {
-      setLanguage('ar');
+  const isAr = settings.language === 'ar';
+
+  const handleSelectLanguage = (lang: Language) => {
+    setLanguage(lang);
+    setLangDropdownOpen(false);
+    try {
+      localStorage.setItem('hash_resume_language_preference', lang);
+    } catch {
+      // storage fallback
     }
   };
 
-  const isAr = settings.language === 'ar';
+  // Close language dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (langDropdownRef.current && !langDropdownRef.current.contains(e.target as Node)) {
+        setLangDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const currentLangObj = LANGUAGES.find((l) => l.code === settings.language) || LANGUAGES[0];
 
   const navLinks = [
     { path: '/', label: isAr ? 'الرئيسية' : 'Home' },
@@ -117,14 +141,48 @@ export const Navbar: React.FC = () => {
 
         {/* Right Action Controls */}
         <div className="flex items-center gap-1.5 sm:gap-3">
-          {/* Desktop Language Switch Button */}
-          <button
-            onClick={toggleLanguage}
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-[#F1F5F9] text-[#001639] text-xs font-semibold rounded-full border border-[#E2E8F0] transition cursor-pointer shadow-xs"
-          >
-            <Globe className="w-3.5 h-3.5 text-[#001639]" />
-            <span>{t.switchLang}</span>
-          </button>
+          {/* Desktop Language Switch Dropdown */}
+          <div className="relative hidden sm:block" ref={langDropdownRef}>
+            <button
+              type="button"
+              onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+              className="flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-slate-50 text-[#001639] text-xs font-bold rounded-full border border-[#E2E8F0] transition cursor-pointer shadow-xs active:scale-98"
+            >
+              <Globe className="w-3.5 h-3.5 text-[#001639]" />
+              <span className="flex items-center gap-1">
+                <span>{currentLangObj.flag}</span>
+                <span>{currentLangObj.nativeName}</span>
+              </span>
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${langDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Dropdown Menu */}
+            {langDropdownOpen && (
+              <div className="absolute end-0 mt-1.5 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-50 animate-in fade-in-50 zoom-in-95 duration-100">
+                {LANGUAGES.map((langItem) => {
+                  const isSelected = settings.language === langItem.code;
+                  return (
+                    <button
+                      key={langItem.code}
+                      type="button"
+                      onClick={() => handleSelectLanguage(langItem.code)}
+                      className={`w-full px-3 py-2 text-xs font-semibold flex items-center justify-between transition cursor-pointer ${
+                        isSelected
+                          ? 'bg-slate-100 text-[#001639] font-bold'
+                          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      }`}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span className="text-sm">{langItem.flag}</span>
+                        <span>{langItem.nativeName}</span>
+                      </span>
+                      {isSelected && <Check className="w-3.5 h-3.5 text-[#FF4D2D]" />}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
 
           {/* Mobile Menu Toggle Button (Clean & Direct) */}
           <button
@@ -140,18 +198,32 @@ export const Navbar: React.FC = () => {
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
         <div className="lg:hidden border-t border-[#E2E8F0] bg-white p-4 space-y-3 shadow-lg animate-in slide-in-from-top-2 duration-150">
-          {/* Mobile Language Switcher Row */}
-          <div className="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-xl">
-            <span className="text-xs font-bold text-slate-700 flex items-center gap-2">
+          {/* Mobile Language Switcher Segmented Control */}
+          <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+            <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
               <Globe className="w-4 h-4 text-[#001639]" />
-              <span>{isAr ? 'لغة الواجهة:' : 'Interface Language:'}</span>
-            </span>
-            <button
-              onClick={toggleLanguage}
-              className="px-3 py-1.5 bg-white hover:bg-slate-100 text-[#001639] text-xs font-bold rounded-lg border border-slate-200 shadow-2xs transition"
-            >
-              {t.switchLang}
-            </button>
+              <span>{isAr ? 'اختر لغة الواجهة:' : 'Select Language:'}</span>
+            </div>
+            <div className="grid grid-cols-3 gap-1.5">
+              {LANGUAGES.map((langItem) => {
+                const isSelected = settings.language === langItem.code;
+                return (
+                  <button
+                    key={langItem.code}
+                    type="button"
+                    onClick={() => handleSelectLanguage(langItem.code)}
+                    className={`py-2 px-2 text-xs font-bold rounded-lg border transition cursor-pointer flex items-center justify-center gap-1.5 ${
+                      isSelected
+                        ? 'bg-[#001639] text-white border-[#001639] shadow-xs'
+                        : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    <span>{langItem.flag}</span>
+                    <span>{langItem.nativeName}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="flex flex-col gap-1">

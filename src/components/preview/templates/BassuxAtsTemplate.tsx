@@ -242,7 +242,8 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
 
   return (
     <div
-      className="w-[210mm] min-h-[297mm] bg-white text-black p-8 sm:p-12 shadow-sm text-sm leading-relaxed"
+      className="w-[210mm] min-h-[297mm] bg-white text-black p-8 sm:p-12 shadow-sm text-sm leading-relaxed text-start"
+      dir={isArabic ? 'rtl' : 'ltr'}
       style={{ ...fontStyle, direction: isArabic ? 'rtl' : 'ltr' }}
     >
       {renderHeader()}

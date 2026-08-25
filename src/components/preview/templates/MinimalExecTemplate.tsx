@@ -212,7 +212,8 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
 
   return (
     <div
-      className="w-[210mm] min-h-[297mm] bg-white text-gray-900 p-8 shadow-sm text-sm leading-relaxed"
+      className="w-[210mm] min-h-[297mm] bg-white text-gray-900 p-8 shadow-sm text-sm leading-relaxed text-start"
+      dir={isArabic ? 'rtl' : 'ltr'}
       style={{
         fontFamily: settings.fontFamily === 'Tajawal' ? 'Tajawal, sans-serif' : 'Inter, sans-serif',
         direction: isArabic ? 'rtl' : 'ltr',

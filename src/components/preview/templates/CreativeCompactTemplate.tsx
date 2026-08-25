@@ -127,15 +127,15 @@ export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ da
 
   return (
     <div
-      
       className="w-[210mm] min-h-[297mm] bg-white text-gray-900 p-0 shadow-sm text-sm leading-relaxed flex"
+      dir={isArabic ? 'rtl' : 'ltr'}
       style={{
         fontFamily: settings.fontFamily === 'Tajawal' ? 'Tajawal, sans-serif' : 'Inter, sans-serif',
         direction: isArabic ? 'rtl' : 'ltr',
       }}
     >
       {/* Sidebar Accent Panel */}
-      <aside className="w-1/3 bg-slate-900 text-white p-6 flex flex-col justify-between">
+      <aside className="w-1/3 bg-slate-900 text-white p-6 flex flex-col justify-between text-start">
         <div>
           {settings.showPhoto && personalInfo.photoUrl && (
             <img

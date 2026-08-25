@@ -13,6 +13,10 @@ import {
   Wand2,
   TrendingUp,
   Target,
+  BarChart3,
+  Loader2,
+  Check,
+  X,
 } from 'lucide-react';
 
 export const ExperienceForm: React.FC = () => {
@@ -33,6 +37,64 @@ export const ExperienceForm: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(
     experiences.length > 0 ? experiences[0].id : null
   );
+
+  // Active quantify state
+  const [quantifyTarget, setQuantifyTarget] = useState<{
+    expId: string;
+    bIdx: number;
+    text: string;
+    jobTitle: string;
+  } | null>(null);
+  const [quantifyOptions, setQuantifyOptions] = useState<string[]>([]);
+  const [isQuantifying, setIsQuantifying] = useState(false);
+
+  const handleStartQuantify = async (expId: string, bIdx: number, text: string, jobTitle: string) => {
+    setQuantifyTarget({ expId, bIdx, text, jobTitle });
+    setIsQuantifying(true);
+    setQuantifyOptions([]);
+
+    try {
+      const res = await fetch('/api/ai/quantify-achievement', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: text || 'مسؤول عن تحسين وتطوير العمليات والأنظمة',
+          jobTitle: jobTitle || 'محترف',
+          language: settings.language,
+        }),
+      });
+      const data = await res.json();
+      if (data && Array.isArray(data.options)) {
+        setQuantifyOptions(data.options);
+      } else {
+        setQuantifyOptions([
+          isAr
+            ? `${text || 'طوّرت وحسّنت العمليات'}، مما حقق نمواً بنسبة 35% وزيادة في الكفاءة التشغيلية.`
+            : `${text || 'Optimized operational workflows'}, delivering a 35% increase in team performance.`
+        ]);
+      }
+    } catch {
+      setQuantifyOptions([
+        isAr
+          ? `${text || 'طوّرت وحسّنت العمليات'}، مما حقق نمواً بنسبة 35% وزيادة في الكفاءة التشغيلية.`
+          : `${text || 'Optimized operational workflows'}, delivering a 35% increase in team performance.`
+      ]);
+    } finally {
+      setIsQuantifying(false);
+    }
+  };
+
+  const handleApplyQuantified = (selectedOption: string) => {
+    if (!quantifyTarget) return;
+    const exp = experiences.find((e) => e.id === quantifyTarget.expId);
+    if (!exp) return;
+
+    const next = [...(exp.bulletPoints || [])];
+    next[quantifyTarget.bIdx] = selectedOption;
+    updateExperience(quantifyTarget.expId, { bulletPoints: next });
+    setQuantifyTarget(null);
+    setQuantifyOptions([]);
+  };
 
   const AR_ACTION_VERBS = [
     'قُدت فريقاً لـ',
@@ -420,7 +482,16 @@ export const ExperienceForm: React.FC = () => {
                           </div>
 
                           {/* Quick 1-Click Inline Enhancers */}
-                          <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500">
+                          <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500 pt-0.5">
+                            <button
+                              type="button"
+                              onClick={() => handleStartQuantify(exp.id, bIdx, bullet, exp.position)}
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-orange-50 hover:bg-orange-100 text-orange-900 border border-orange-200 transition cursor-pointer font-bold shadow-2xs active:scale-95"
+                            >
+                              <Sparkles className="w-3 h-3 text-[#FF4D2D]" />
+                              <span>{isAr ? '📊 تحويل لإنجاز كمي (أرقام ونتائج)' : '📊 Quantify with AI (KPIs)'}</span>
+                            </button>
+
                             <button
                               type="button"
                               onClick={() => handleApplyQuickTransform(exp.id, exp.bulletPoints, bIdx, 'metric')}
@@ -446,6 +517,49 @@ export const ExperienceForm: React.FC = () => {
                               <span>{isAr ? 'معايير ATS' : 'ATS Standards'}</span>
                             </button>
                           </div>
+
+                          {/* AI Quantify Options Card */}
+                          {quantifyTarget?.expId === exp.id && quantifyTarget?.bIdx === bIdx && (
+                            <div className="p-3 bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 rounded-xl space-y-2 animate-in fade-in-50 duration-150">
+                              <div className="flex items-center justify-between">
+                                <span className="text-xs font-bold text-orange-950 flex items-center gap-1.5">
+                                  <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
+                                  <span>{isAr ? 'خيارات الصياغة الرقمية القابلة للقياس (منهجية STAR):' : 'Quantified Achievement Options (STAR):'}</span>
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => setQuantifyTarget(null)}
+                                  className="p-1 text-slate-400 hover:text-slate-700 rounded-md cursor-pointer"
+                                >
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+
+                              {isQuantifying ? (
+                                <div className="flex items-center justify-center py-4 text-xs font-semibold text-orange-800 gap-2">
+                                  <Loader2 className="w-4 h-4 animate-spin text-[#FF4D2D]" />
+                                  <span>{isAr ? 'جاري تحويل المسؤولية إلى إنجاز كمي مدعوم بالأرقام...' : 'Generating high-impact quantifiable metrics...'}</span>
+                                </div>
+                              ) : (
+                                <div className="space-y-1.5">
+                                  {quantifyOptions.map((opt, oIdx) => (
+                                    <button
+                                      key={oIdx}
+                                      type="button"
+                                      onClick={() => handleApplyQuantified(opt)}
+                                      className="w-full text-start p-2 rounded-lg bg-white hover:bg-orange-100/70 border border-orange-200/80 text-xs text-slate-800 font-medium transition cursor-pointer flex items-start gap-2 group active:scale-99"
+                                    >
+                                      <span className="w-4 h-4 rounded-full bg-orange-100 group-hover:bg-[#001639] group-hover:text-white text-[#001639] text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5 transition">
+                                        {oIdx + 1}
+                                      </span>
+                                      <span className="flex-1">{opt}</span>
+                                      <Check className="w-3.5 h-3.5 text-emerald-600 opacity-0 group-hover:opacity-100 transition shrink-0 mt-0.5" />
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       ))}
                     </div>

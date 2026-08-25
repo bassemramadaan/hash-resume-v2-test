@@ -26,6 +26,7 @@ import { AtsAnalyzerPanel } from '../components/builder/AtsAnalyzerPanel';
 import { DownloadSection } from '../components/builder/DownloadSection';
 import { ResumePreview } from '../components/preview/ResumePreview';
 import { LiveAtsMeter } from '../components/builder/LiveAtsMeter';
+import { BuilderProgressBar } from '../components/builder/BuilderProgressBar';
 
 import {
   Layout,
@@ -729,6 +730,17 @@ export const BuilderPage: React.FC = () => {
             </button>
           </div>
         )}
+
+        {/* Dynamic 5-Step Visual Progress Bar */}
+        <div className="mb-5">
+          <BuilderProgressBar
+            currentSection={desktopActiveSection || activeTab}
+            onSelectSection={(sec) => {
+              setDesktopActiveSection(sec as any);
+              setActiveTab(sec as any);
+            }}
+          />
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* ========================================================= */}

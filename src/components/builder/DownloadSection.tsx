@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
 import {
@@ -17,6 +17,9 @@ import {
   FileCheck,
   Lock,
   Key,
+  FileJson,
+  Upload,
+  Check,
 } from 'lucide-react';
 import { useResumeExport } from '../../hooks/useResumeExport';
 import { ShareModal } from '../common/ShareModal';
@@ -50,6 +53,82 @@ export const DownloadSection: React.FC = () => {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [showImprovements, setShowImprovements] = useState(false);
   const [emptyWarning, setEmptyWarning] = useState<string | null>(null);
+  const [jsonSuccessMsg, setJsonSuccessMsg] = useState<string | null>(null);
+  const jsonFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleExportJson = () => {
+    try {
+      const backupPayload = {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        resumeData,
+        settings,
+      };
+      const jsonString = `data:text/json;charset=utf-8,${encodeURIComponent(
+        JSON.stringify(backupPayload, null, 2)
+      )}`;
+      const downloadAnchor = document.createElement('a');
+      const candidateName = (resumeData.personalInfo.fullName || 'resume')
+        .toLowerCase()
+        .replace(/\s+/g, '_');
+      downloadAnchor.setAttribute('href', jsonString);
+      downloadAnchor.setAttribute(
+        'download',
+        `hash_resume_backup_${candidateName}_${new Date().toISOString().slice(0, 10)}.json`
+      );
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+
+      setJsonSuccessMsg(
+        isAr ? 'تم تصدير النسخة الاحتياطية JSON بنجاح!' : 'JSON backup exported successfully!'
+      );
+      setTimeout(() => setJsonSuccessMsg(null), 4000);
+    } catch (err) {
+      console.error('Failed to export JSON:', err);
+    }
+  };
+
+  const handleImportJson = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const content = event.target?.result as string;
+        const parsed = JSON.parse(content);
+
+        const dataToSet = parsed.resumeData || parsed;
+        if (dataToSet && (dataToSet.personalInfo || dataToSet.experiences || dataToSet.skills)) {
+          useResumeStore.getState().setResumeData(dataToSet);
+          if (parsed.settings) {
+            useResumeStore.getState().setTemplate(parsed.settings.templateId || 'modern-ats');
+          }
+          setJsonSuccessMsg(
+            isAr ? 'تمت استعادة البيانات بنجاح من ملف JSON!' : 'Resume restored from JSON backup!'
+          );
+          setTimeout(() => setJsonSuccessMsg(null), 4000);
+        } else {
+          setEmptyWarning(
+            isAr
+              ? 'الملف المحدد لا يحتوي على بنية سيرة ذاتية صالحة.'
+              : 'The selected file does not match a valid resume structure.'
+          );
+          setTimeout(() => setEmptyWarning(null), 4000);
+        }
+      } catch (err) {
+        setEmptyWarning(
+          isAr
+            ? 'تعذر قراءة ملف JSON. تأكد من سلامة الملف.'
+            : 'Failed to read JSON file. Please ensure it is valid.'
+        );
+        setTimeout(() => setEmptyWarning(null), 4000);
+      }
+    };
+    reader.readAsText(file);
+    if (jsonFileInputRef.current) jsonFileInputRef.current.value = '';
+  };
 
   // Compute key checklist items and readiness score
   const { readinessScore, issues, completedCount, totalChecks } = useMemo(() => {
@@ -412,6 +491,127 @@ export const DownloadSection: React.FC = () => {
         )}
       </div>
 
+      {/* One-Time Payment Model Notice & Transparent Pricing Plans */}
+      <div className="bg-white border-2 border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <h4 className="text-sm font-black text-[#001639]">
+                {isAr ? 'نموذج الدفع: لمرة واحدة فقط عند التحميل' : 'One-Time Payment Model (No Recurring Fees)'}
+              </h4>
+              <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                {isAr ? 'بدون أي اشتراك تلقائي' : 'Zero Subscriptions'}
+              </span>
+            </div>
+            <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+              {isAr
+                ? 'التعديل وحفظ البيانات وكتابة السيرة بالذكاء الاصطناعي مجاني بالكامل 100%. تدفع لمرة واحدة فقط عند اعتماد التفعيل وتصدير الـ PDF عالي الدقة دون أي خصومات دورية متكررة.'
+                : 'Editing, local storage, and AI features are 100% free. You only pay once when activating your high-res vector PDF download, with absolutely no hidden recurring subscriptions.'}
+            </p>
+          </div>
+        </div>
+
+        {/* Pricing Plans Table / Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          {/* Plan 1: Single Download */}
+          <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/70 hover:bg-slate-50 flex flex-col justify-between transition">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-700">{isAr ? 'تحميل فردي' : 'Single Download'}</span>
+                <span className="text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
+                  {isAr ? 'سيرة واحدة' : '1 Resume'}
+                </span>
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-black text-[#001639]">50</span>
+                <span className="text-xs font-bold text-slate-600">{isAr ? 'ج.م' : 'EGP'}</span>
+                <span className="text-[10px] text-slate-500 font-medium ms-1">
+                  ({isAr ? 'دفعة لمرة واحدة' : 'one-time payment'})
+                </span>
+              </div>
+              <ul className="text-[11px] text-slate-600 space-y-1 pt-1">
+                <li className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>{isAr ? 'تحميل سيرة ذاتية واحدة PDF فائقة الدقة' : '1 HD Vector PDF download'}</span>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>{isAr ? 'بدون علامة مائية ومعتمدة لـ ATS' : 'No watermarks, ATS compliant'}</span>
+                </li>
+              </ul>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                useResumeStore.getState().setIsActivationModalOpen(true);
+              }}
+              className="mt-3 w-full py-2.5 px-3 bg-white hover:bg-slate-100 text-[#001639] border border-slate-300 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-98"
+            >
+              <span>{isAr ? 'اشترِ الآن (50 ج.م)' : 'Buy Now (50 EGP)'}</span>
+            </button>
+          </div>
+
+          {/* Plan 2: 3-Downloads Bundle */}
+          <div className="border-2 border-[#FF4D2D] rounded-xl p-4 bg-orange-50/30 hover:bg-orange-50/50 flex flex-col justify-between transition relative">
+            <span className="absolute -top-2.5 left-4 sm:left-auto sm:right-4 px-2 py-0.5 bg-[#FF4D2D] text-white text-[9px] font-black rounded-full uppercase tracking-wider">
+              {isAr ? 'الأكثر توفيراً (توفير 30 ج.م)' : 'Save 30 EGP'}
+            </span>
+            <div className="space-y-2 pt-1">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-orange-950">{isAr ? 'باقة 3 تحميلات' : '3-Downloads Pack'}</span>
+                <span className="text-[10px] font-bold text-orange-800 bg-orange-100 px-2 py-0.5 rounded border border-orange-200">
+                  {isAr ? '3 سير ذاتية' : '3 Resumes'}
+                </span>
+              </div>
+              <div className="flex items-baseline gap-1">
+                <span className="text-2xl font-black text-[#001639]">120</span>
+                <span className="text-xs font-bold text-slate-600">{isAr ? 'ج.م' : 'EGP'}</span>
+                <span className="text-[10px] text-emerald-700 font-bold ms-1">
+                  ({isAr ? '40 ج.م للتحميل فقط' : 'Only 40 EGP/CV'})
+                </span>
+              </div>
+              <ul className="text-[11px] text-slate-600 space-y-1 pt-1">
+                <li className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>{isAr ? '3 تفعيلات مستقلة لـ 3 سير ذاتية مختلفة' : '3 Independent download passes'}</span>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>{isAr ? 'أكواد تفعيل دائمة للاستخدام في أي وقت' : 'Permanent activation keys'}</span>
+                </li>
+              </ul>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                useResumeStore.getState().setIsActivationModalOpen(true);
+              }}
+              className="mt-3 w-full py-2.5 px-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
+            >
+              <span>{isAr ? 'اشترِ الآن (120 ج.م)' : 'Buy Now (120 EGP)'}</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Local Storage & Data Privacy Banner */}
+        <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-2.5 text-[11px] text-slate-600">
+          <Lock className="w-4 h-4 text-[#001639] shrink-0 mt-0.5" />
+          <div className="space-y-0.5">
+            <span className="font-bold text-slate-800">
+              {isAr ? 'خصوصية وأمان البيانات 100%:' : '100% Data Privacy & Security:'}
+            </span>
+            <p>
+              {isAr
+                ? 'بيانات سيرتك الذاتية مشفرة وتُخزن محلياً فقط على متصفح جهازك. لا يتم إرسال أي بيانات إلى الخادم إلا النصوص التي تختار تحسينها بالذكاء الاصطناعي.'
+                : 'Your resume is encrypted and stored locally in your browser. No data is sent to our server except specific text snippets you request for AI enhancement.'}
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* 3. Quick Tweaks / Next Steps */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
         {/* Customize style card */}
@@ -461,6 +661,64 @@ export const DownloadSection: React.FC = () => {
             {isAr ? '←' : '→'}
           </span>
         </button>
+      </div>
+
+      {/* 4. JSON Backup & Restore Card */}
+      <div className="bg-gradient-to-br from-slate-50 to-indigo-50/40 border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-[#001639] text-white flex items-center justify-center">
+              <FileJson className="w-4 h-4 text-[#FF4D2D]" />
+            </div>
+            <div>
+              <h4 className="text-xs sm:text-sm font-bold text-[#001639]">
+                {isAr ? 'النسخة الاحتياطية للبيانات (JSON Backup)' : 'Data Backup & Restore (JSON)'}
+              </h4>
+              <p className="text-[11px] text-slate-500">
+                {isAr
+                  ? 'احفظ نسخة من بيانات سيرتك الذاتية بصيغة JSON على جهازك أو استعدها في أي وقت.'
+                  : 'Download or upload your full resume state as a JSON file.'}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Success / Info Alert */}
+        {jsonSuccessMsg && (
+          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-emerald-800 text-xs font-bold animate-in fade-in">
+            <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span>{jsonSuccessMsg}</span>
+          </div>
+        )}
+
+        <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-1">
+          {/* Export JSON Button */}
+          <button
+            type="button"
+            onClick={handleExportJson}
+            className="w-full sm:flex-1 py-2.5 px-4 bg-white hover:bg-slate-100 text-[#001639] border border-slate-200 font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs min-h-[40px] active:scale-98"
+          >
+            <Download className="w-3.5 h-3.5 text-[#001639]" />
+            <span>{isAr ? 'تصدير نسخة احتياطية JSON' : 'Export JSON Backup'}</span>
+          </button>
+
+          {/* Import JSON Button */}
+          <input
+            type="file"
+            ref={jsonFileInputRef}
+            onChange={handleImportJson}
+            accept=".json,application/json"
+            className="hidden"
+          />
+          <button
+            type="button"
+            onClick={() => jsonFileInputRef.current?.click()}
+            className="w-full sm:flex-1 py-2.5 px-4 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs min-h-[40px] active:scale-98"
+          >
+            <Upload className="w-3.5 h-3.5 text-[#FF4D2D]" />
+            <span>{isAr ? 'استيراد نسخة احتياطية JSON' : 'Import JSON Backup'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Share Modal */}

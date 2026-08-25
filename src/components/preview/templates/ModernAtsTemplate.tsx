@@ -340,7 +340,8 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
 
   return (
     <div
-      className="w-[210mm] min-h-[297mm] bg-white text-gray-900 p-8 shadow-sm transition-all duration-200 text-sm leading-relaxed"
+      className="w-[210mm] min-h-[297mm] bg-white text-gray-900 p-8 shadow-sm transition-all duration-200 text-sm leading-relaxed text-start"
+      dir={isArabic ? 'rtl' : 'ltr'}
       style={{ ...fontStyle, direction: isArabic ? 'rtl' : 'ltr' }}
     >
       {/* Header */}

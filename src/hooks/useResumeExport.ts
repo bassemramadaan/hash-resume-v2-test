@@ -30,10 +30,9 @@ export const useResumeExport = () => {
       // Logic to actually generate PDF
       let filename = customFilename;
       if (!filename) {
-        const cleanName = (resumeData.personalInfo.fullName || 'resume')
-          .toLowerCase()
-          .replace(/[^a-z0-9]/g, '_');
-        filename = `${cleanName}_HashResume.pdf`;
+        const rawName = (resumeData.personalInfo.fullName || 'resume').trim();
+        const safeName = rawName.replace(/[/\\?%*:|"<>]+/g, '_').replace(/\s+/g, '_');
+        filename = `${safeName || 'resume'}_HashResume.pdf`;
       }
       
       try {

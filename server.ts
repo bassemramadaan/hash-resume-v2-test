@@ -852,6 +852,272 @@ Provide a detailed evaluation JSON:
   }
 });
 
+// 7. AI: Domain & Role Keywords Suggestions
+app.post("/api/ai/suggest-keywords", async (req, res) => {
+  const startTime = Date.now();
+  const clientIp = getClientIp(req);
+  const config = getAiConfig();
+
+  if (!config.aiEnabled || !config.featureFlags.skills) {
+    return sendAiUnavailable(
+      res,
+      "ميزة اقتراح الكلمات المفتاحية غير مفعلة حالياً.",
+      "Keyword suggestions are currently disabled.",
+      503,
+      {
+        technical: ["SQL", "Data Analysis", "Project Lifecycle", "Process Optimization"],
+        tools: ["Microsoft Excel", "Jira", "Google Analytics"],
+        softSkills: ["Problem Solving", "Team Leadership", "Effective Communication"]
+      }
+    );
+  }
+
+  if (!config.geminiModel || !config.geminiApiKey) {
+    return sendAiUnavailable(
+      res,
+      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
+      "AI model configuration is missing on the server."
+    );
+  }
+
+  const { jobTitle = "محترف", domain = "", language = "ar" } = req.body;
+  const cleanTitle = sanitizeText(String(jobTitle), 100);
+  const cleanDomain = sanitizeText(String(domain), 100);
+  const lang = language === "en" ? "en" : "ar";
+
+  const cacheKey = computeAiCacheKey("keywords", config.geminiModel, {
+    t: cleanTitle,
+    d: cleanDomain,
+    l: lang,
+  });
+
+  const cached = await getCachedAiResponse(cacheKey);
+  if (cached) {
+    logAiMetric({
+      feature: "suggest-keywords",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: true,
+    });
+    return res.json(cached);
+  }
+
+  const rateLimit = await checkRateLimit(clientIp, "skills");
+  if (!rateLimit.allowed) {
+    return res.status(429).json({
+      error: rateLimit.reasonAr,
+      errorEn: rateLimit.reason,
+      retryAfterSeconds: rateLimit.retryAfterSeconds,
+    });
+  }
+
+  try {
+    const ai = getGeminiClient(config.geminiApiKey);
+    if (!ai) throw new Error("Failed to initialize AI client");
+
+    const isArabic = lang === "ar";
+    const prompt = isArabic
+      ? `أنت خبير توظيف وخبير في أنظمة ATS.
+اقترح قائمة من أهم الكلمات المفتاحية الأكثر طلباً في سوق العمل لوظيفة: "${cleanTitle}" ومجال: "${cleanDomain || cleanTitle}".
+المطلوب: أعد النتيجة بتنسيق JSON دقيق يحتوي على:
+{
+  "technical": ["كلمة 1", "كلمة 2", "كلمة 3", "كلمة 4", "كلمة 5"],
+  "tools": ["أداة 1", "أداة 2", "أداة 3", "أداة 4"],
+  "softSkills": ["مهارة 1", "مهارة 2", "مهارة 3"],
+  "metricsExamples": ["مثال إنجاز 1 مع أرقام", "مثال إنجاز 2 مع نسب مئوية"]
+}`
+      : `You are an HR recruiter and ATS expert.
+Suggest top high-demand ATS keywords for the job title: "${cleanTitle}" and field: "${cleanDomain || cleanTitle}".
+Return JSON format:
+{
+  "technical": ["Keyword 1", "Keyword 2", "Keyword 3", "Keyword 4", "Keyword 5"],
+  "tools": ["Tool 1", "Tool 2", "Tool 3", "Tool 4"],
+  "softSkills": ["Skill 1", "Skill 2", "Skill 3"],
+  "metricsExamples": ["Example accomplishment with metric 1", "Example accomplishment with percentage 2"]
+}`;
+
+    const response = await ai.models.generateContent({
+      model: config.geminiModel,
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      },
+    });
+
+    const parsed = JSON.parse(response.text || "{}");
+    await setCachedAiResponse(cacheKey, parsed, 86400);
+
+    logAiMetric({
+      feature: "suggest-keywords",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+    });
+
+    return res.json(parsed);
+  } catch (err: any) {
+    logAiMetric({
+      feature: "suggest-keywords",
+      model: config.geminiModel,
+      httpStatus: 500,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+      error: err?.message,
+    });
+    return res.status(500).json({
+      error: "تعذر توليد الكلمات المفتاحية حالياً.",
+      errorEn: "Failed to generate keyword suggestions.",
+    });
+  } finally {
+    await releaseConcurrencyLock(clientIp);
+  }
+});
+
+// 8. AI: Quantify Responsibilities into Measurable Achievements (STAR Method)
+app.post("/api/ai/quantify-achievement", async (req, res) => {
+  const startTime = Date.now();
+  const clientIp = getClientIp(req);
+  const config = getAiConfig();
+
+  if (!config.aiEnabled || !config.featureFlags.experience) {
+    return sendAiUnavailable(
+      res,
+      "ميزة صياغة الإنجازات غير مفعلة حالياً.",
+      "Achievement quantification is currently disabled.",
+      503,
+      {
+        quantifiedAchievement: req.body.text
+          ? `${req.body.text}، مما حقق نمواً بنسبة 35% وزيادة الكفاءة التشغيلية.`
+          : "حسّنت كفاءة العمليات بنسبة 30% من خلال أتمتة الإجراءات اليومية."
+      }
+    );
+  }
+
+  if (!config.geminiModel || !config.geminiApiKey) {
+    return sendAiUnavailable(
+      res,
+      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
+      "AI model configuration is missing on the server."
+    );
+  }
+
+  const { text = "", jobTitle = "محترف", language = "ar" } = req.body;
+  if (!String(text).trim()) {
+    return res.status(400).json({ error: "النص مطلوب", errorEn: "text is required" });
+  }
+
+  const cleanText = sanitizeText(String(text), INPUT_LIMITS.bulletText);
+  const cleanRole = sanitizeText(String(jobTitle), 80);
+  const lang = language === "en" ? "en" : "ar";
+
+  const cacheKey = computeAiCacheKey("quantify", config.geminiModel, {
+    t: cleanText,
+    r: cleanRole,
+    l: lang,
+  });
+
+  const cached = await getCachedAiResponse(cacheKey);
+  if (cached) {
+    logAiMetric({
+      feature: "quantify-achievement",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: true,
+    });
+    return res.json(cached);
+  }
+
+  const rateLimit = await checkRateLimit(clientIp, "bullet");
+  if (!rateLimit.allowed) {
+    return res.status(429).json({
+      error: rateLimit.reasonAr,
+      errorEn: rateLimit.reason,
+      retryAfterSeconds: rateLimit.retryAfterSeconds,
+    });
+  }
+
+  try {
+    const ai = getGeminiClient(config.geminiApiKey);
+    if (!ai) throw new Error("Failed to initialize AI client");
+
+    const isArabic = lang === "ar";
+    const prompt = isArabic
+      ? `أنت خبير صياغة سير ذاتية احترافية ومسؤول توظيف.
+حول هذه المسؤولية العادية أو الوصف العام لوظيفة (${cleanRole}) إلى إنجاز قوي وقابل للقياس باستخدام منهجية STAR مع إضافة أرقام ونسب مئوية واقعية (مثل: "قللت زمن الاستجابة 35%" بدلاً من "مسؤول عن تحسين الأداء"):
+النص الأصلي: "${cleanText}"
+
+أعد 3 خيارات مختلفة الصياغة بتنسيق JSON:
+{
+  "options": [
+    "صياغة 1 قوية ومباشرة مع نسبة مئوية",
+    "صياغة 2 تركز على توفير الوقت أو التكلفة",
+    "صياغة 3 تركز على قيادة الفريق أو جودة المخرجات"
+  ]
+}`
+      : `You are an executive resume writer and ATS specialist.
+Convert this passive or task-based responsibility for a (${cleanRole}) into a high-impact quantifiable achievement using the STAR method with realistic numbers, percentages, and KPIs (e.g., "Reduced response latency by 35%" instead of "Responsible for performance tuning"):
+Input text: "${cleanText}"
+
+Return 3 high-impact options in JSON format:
+{
+  "options": [
+    "Option 1: Direct accomplishment with metric percentage",
+    "Option 2: Focus on efficiency and cost/time reduction",
+    "Option 3: Focus on leadership and quality excellence"
+  ]
+}`;
+
+    const response = await ai.models.generateContent({
+      model: config.geminiModel,
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+      },
+    });
+
+    const parsed = JSON.parse(response.text || "{}");
+    const resultPayload = {
+      options: Array.isArray(parsed.options) && parsed.options.length > 0
+        ? parsed.options
+        : [
+            isArabic
+              ? `${cleanText}، مما زاد الكفاءة التشغيلية بنسبة 35%.`
+              : `${cleanText}, improving operational efficiency by 35%.`
+          ]
+    };
+
+    await setCachedAiResponse(cacheKey, resultPayload, 86400);
+
+    logAiMetric({
+      feature: "quantify-achievement",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+    });
+
+    return res.json(resultPayload);
+  } catch (err: any) {
+    logAiMetric({
+      feature: "quantify-achievement",
+      model: config.geminiModel,
+      httpStatus: 500,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+      error: err?.message,
+    });
+    return res.status(500).json({
+      error: "تعذر صياغة الإنجاز حالياً.",
+      errorEn: "Failed to quantify achievement.",
+    });
+  } finally {
+    await releaseConcurrencyLock(clientIp);
+  }
+});
+
 // 7. Client-Side Resume Parsing Notice (Zero Gemini Calls Consumed)
 app.post("/api/ai/parse-resume", async (req, res) => {
   // Parsing is natively executed 100% in-browser on the client side via pdfjs-dist

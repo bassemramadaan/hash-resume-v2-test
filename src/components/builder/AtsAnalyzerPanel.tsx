@@ -3,6 +3,7 @@ import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
 import { detectResumeRedFlags } from '../../utils/redFlagDetector';
 import { RedFlagItem } from '../../types/resume';
+import { AtsSectionBreakdown } from './AtsSectionBreakdown';
 import {
   ShieldCheck,
   Sparkles,
@@ -373,6 +374,9 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
           </div>
         )}
       </div>
+
+      {/* Interactive Per-Section ATS Audit Breakdown */}
+      <AtsSectionBreakdown />
 
       {/* Target Job Input Form */}
       <div className="space-y-3 bg-slate-50/60 p-4 rounded-xl border border-slate-200">

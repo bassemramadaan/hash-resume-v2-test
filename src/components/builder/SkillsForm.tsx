@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
+import { KeywordSuggestionsPanel } from './KeywordSuggestionsPanel';
 import { Wrench, Plus, Sparkles, Languages as LangIcon, X } from 'lucide-react';
 
 export const SkillsForm: React.FC = () => {
@@ -159,6 +160,11 @@ export const SkillsForm: React.FC = () => {
             {isAr ? 'لم يتم إضافة مهارات بعد.' : 'No skills added yet.'}
           </p>
         )}
+
+        {/* Industry Domain Keywords Suggestions Panel */}
+        <div className="pt-2">
+          <KeywordSuggestionsPanel />
+        </div>
       </div>
 
       {/* Languages Section */}
