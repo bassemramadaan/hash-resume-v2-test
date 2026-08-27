@@ -100,29 +100,51 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ isAr }) => {
           </p>
 
           {/* Simple Direct Launcher */}
-          <div className="flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto lg:mx-0 pt-2">
-            <div className="relative w-full">
-              <Briefcase className="w-4 h-4 text-slate-400 absolute start-3.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={targetRole}
-                onChange={(e) => setTargetRole(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleStartBuilder();
-                }}
-                placeholder={isAr ? 'أدخل مسمى الوظيفة (اختياري)...' : 'Enter job title (optional)...'}
-                className="w-full ps-10 pe-4 py-3 bg-slate-50 text-slate-900 rounded-2xl text-xs font-medium placeholder:text-slate-400 border border-slate-200 focus:outline-none focus:border-[#001639] focus:bg-white transition"
-              />
+          <div className="space-y-3 max-w-lg mx-auto lg:mx-0 pt-2">
+            <div className="flex flex-col sm:flex-row items-center gap-2.5">
+              <div className="relative w-full sm:flex-1">
+                <Briefcase className="w-4 h-4 text-slate-400 absolute start-3.5 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={targetRole}
+                  onChange={(e) => setTargetRole(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleStartBuilder();
+                  }}
+                  placeholder={isAr ? 'مسمّاك الوظيفي (اختياري)...' : 'Job title (optional)...'}
+                  className="w-full ps-10 pe-4 py-3 bg-slate-50 text-slate-900 rounded-2xl text-xs font-medium placeholder:text-slate-400 border border-slate-200 focus:outline-none focus:border-[#001639] focus:bg-white transition"
+                />
+              </div>
+
+              <button
+                type="button"
+                onClick={() => handleStartBuilder()}
+                className="w-full sm:w-auto px-7 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs rounded-2xl shadow-md shadow-coral/20 hover:shadow transition flex items-center justify-center gap-2 shrink-0 cursor-pointer min-h-[44px]"
+              >
+                <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
+                <ArrowIcon className="w-4 h-4" />
+              </button>
             </div>
 
-            <button
-              type="button"
-              onClick={() => handleStartBuilder()}
-              className="w-full sm:w-auto px-7 py-3 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs rounded-2xl shadow-xs hover:shadow transition flex items-center justify-center gap-2 shrink-0 cursor-pointer min-h-[44px]"
-            >
-              <span>{isAr ? 'ابدأ الآن مجاناً' : 'Build Resume Free'}</span>
-              <ArrowIcon className="w-4 h-4" />
-            </button>
+            {/* Suggested Chips */}
+            <div className="flex flex-wrap items-center gap-1.5 justify-center lg:justify-start">
+              {[
+                { en: 'Frontend Developer', ar: 'Frontend Developer' },
+                { en: 'Accountant', ar: 'محاسب' },
+                { en: 'Customer Service', ar: 'خدمة عملاء' },
+                { en: 'Sales Representative', ar: 'مندوب مبيعات' },
+                { en: 'Fresh Graduate', ar: 'حديث تخرج' },
+              ].map((item) => (
+                <button
+                  key={item.en}
+                  type="button"
+                  onClick={() => handleStartBuilder(isAr ? item.ar : item.en)}
+                  className="px-2.5 py-1 text-[11px] font-semibold bg-white hover:bg-orange-50 text-slate-600 hover:text-[#FF4D2D] border border-slate-200 hover:border-orange-200 rounded-lg transition active:scale-95 cursor-pointer"
+                >
+                  {isAr ? item.ar : item.en}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Quiet Badges */}

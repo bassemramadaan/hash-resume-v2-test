@@ -38,7 +38,7 @@ export const FinalCtaSection: React.FC<FinalCtaSectionProps> = ({ isAr }) => {
                 to="/builder"
                 className="inline-flex items-center justify-center gap-2 px-10 py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-black text-sm rounded-full shadow-lg hover:shadow-xl transition transform active:scale-95 cursor-pointer"
               >
-                <span>{isAr ? 'ابدأ إنشاء سيرتك مجاناً الآن' : 'Start Building Free Now'}</span>
+                <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
                 <ArrowIcon className="w-5 h-5" />
               </Link>
             </div>
@@ -52,7 +52,7 @@ export const FinalCtaSection: React.FC<FinalCtaSectionProps> = ({ isAr }) => {
           <div className="text-[11px] font-extrabold text-[#001639]">Hash Resume</div>
           <div className="text-[9px] text-emerald-700 font-bold flex items-center gap-1">
             <CheckCircle2 className="w-3 h-3" />
-            <span>{isAr ? 'متوافق 100% مع ATS' : '100% ATS Compliant'}</span>
+            <span>{isAr ? 'تنسيق صديق لأنظمة ATS' : 'ATS-friendly structure'}</span>
           </div>
         </div>
 

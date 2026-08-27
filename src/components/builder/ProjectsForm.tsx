@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
 import { FolderGit2, Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { NextStepBanner } from './NextStepBanner';
 
 export const ProjectsForm: React.FC = () => {
   const { resumeData, addProject, updateProject, removeProject, settings } = useResumeStore();
@@ -52,6 +53,29 @@ export const ProjectsForm: React.FC = () => {
           <span>{isAr ? 'إضافة مشروع' : 'Add Project'}</span>
         </button>
       </div>
+
+      {/* Next Action in Section */}
+      <NextStepBanner
+        variant="section"
+        isAr={isAr}
+        stepTextAr={
+          projects.length === 0
+            ? 'أضف مشروعاً رئيسياً عملت عليه مع التقنيات المستخدمة ورابط العمل إن وُجد.'
+            : projects.some((p) => !p.title?.trim())
+            ? 'أكمل اسم المشروع ووصف التقنيات المستخدمة.'
+            : 'مشاريعك مكتملة! انتقل لاختيار القالب وفحص ATS.'
+        }
+        stepTextEn={
+          projects.length === 0
+            ? 'Add a featured project highlighting technologies used and links.'
+            : projects.some((p) => !p.title?.trim())
+            ? 'Fill in project title and tech stack.'
+            : 'Projects complete! Move to Templates and ATS scan.'
+        }
+        actionTextAr={projects.length === 0 ? 'إضافة مشروع الآن' : undefined}
+        actionTextEn={projects.length === 0 ? 'Add project now' : undefined}
+        onAction={projects.length === 0 ? handleAddProject : undefined}
+      />
 
       {/* Empty State */}
       {projects.length === 0 && (

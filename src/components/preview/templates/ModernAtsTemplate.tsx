@@ -10,6 +10,7 @@ interface TemplateProps {
 export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, settings }) => {
   const { personalInfo, experiences, education, skills, projects, certifications, languages } = data;
   const isArabic = settings.language === 'ar';
+  const docDir = settings.documentDirection || (isArabic ? 'rtl' : 'ltr');
   const primaryColor = settings.primaryColor || '#1e40af';
   const headerLayout = settings.headerLayout || 'centered';
   const careerFocus = settings.careerFocus || 'experienced';
@@ -29,7 +30,7 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
                 {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
               </h1>
               <p className="text-sm font-semibold" style={{ color: primaryColor }}>
-                {personalInfo.jobTitle || (isArabic ? 'المسمى الوظيفي المستهدف' : 'Target Job Title')}
+                {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
               </p>
             </div>
 
@@ -88,7 +89,7 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
               {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
             </h1>
             <p className="text-xs font-bold" style={{ color: primaryColor }}>
-              {personalInfo.jobTitle || (isArabic ? 'المسمى الوظيفي المستهدف' : 'Target Job Title')}
+              {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
             </p>
           </div>
 
@@ -143,7 +144,7 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
           {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
         </h1>
         <p className="text-sm font-semibold mb-2" style={{ color: primaryColor }}>
-          {personalInfo.jobTitle || (isArabic ? 'المسمى الوظيفي المستهدف' : 'Target Job Title')}
+          {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
         </p>
 
         {/* Contact Details Grid */}
@@ -341,8 +342,8 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
   return (
     <div
       className="w-[210mm] min-h-[297mm] bg-white text-gray-900 p-8 shadow-sm transition-all duration-200 text-sm leading-relaxed text-start"
-      dir={isArabic ? 'rtl' : 'ltr'}
-      style={{ ...fontStyle, direction: isArabic ? 'rtl' : 'ltr' }}
+      dir={docDir}
+      style={{ ...fontStyle, direction: docDir }}
     >
       {/* Header */}
       {renderHeader()}

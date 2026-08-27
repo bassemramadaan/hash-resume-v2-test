@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useResumeStore } from '../store/useResumeStore';
 import { CinematicHero } from '../components/landing/CinematicHero';
+import { SocialProofSection } from '../components/landing/SocialProofSection';
 import { BentoFeatures } from '../components/landing/BentoFeatures';
 import { PremiumCta } from '../components/landing/PremiumCta';
 import { Sparkles, ArrowLeft, ArrowRight } from 'lucide-react';
@@ -14,6 +15,7 @@ export const LandingPage: React.FC = () => {
   return (
     <main className="bg-white min-h-screen pb-16 lg:pb-0">
       <CinematicHero isAr={isAr} />
+      <SocialProofSection isAr={isAr} />
       <BentoFeatures isAr={isAr} />
       <PremiumCta isAr={isAr} />
 
@@ -36,7 +38,7 @@ export const LandingPage: React.FC = () => {
           className="px-5 py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs rounded-xl shadow-xs flex items-center gap-1.5 active:scale-95 transition"
         >
           <Sparkles className="w-3.5 h-3.5" />
-          <span>{isAr ? 'ابدأ الآن' : 'Start Now'}</span>
+          <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
           <ArrowIcon className="w-3.5 h-3.5" />
         </Link>
       </div>

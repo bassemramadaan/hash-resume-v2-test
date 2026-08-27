@@ -3,6 +3,7 @@ import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
 import { KeywordSuggestionsPanel } from './KeywordSuggestionsPanel';
 import { Wrench, Plus, Sparkles, Languages as LangIcon, X } from 'lucide-react';
+import { NextStepBanner } from './NextStepBanner';
 
 export const SkillsForm: React.FC = () => {
   const {
@@ -75,6 +76,26 @@ export const SkillsForm: React.FC = () => {
             <span>{t.aiSuggestSkills}</span>
           </button>
         </div>
+
+        {/* Next Action in Section */}
+        <NextStepBanner
+          variant="section"
+          isAr={isAr}
+          stepTextAr={
+            skills.length < 3
+              ? `أضف على الأقل ${3 - skills.length} مهارات تقنية أو أدوات أساسية لمجالك.`
+              : languages.length === 0
+              ? 'أضف لغاتك ومستوى إتقانك (مثل: العربية والإنجليزية).'
+              : 'مهاراتك مكتملة! يمكنك إجراء فحص توافق ATS أو مراجعة وتصدير السيرة.'
+          }
+          stepTextEn={
+            skills.length < 3
+              ? `Add at least ${3 - skills.length} key technical skills or tools.`
+              : languages.length === 0
+              ? 'Add your spoken languages and proficiency levels.'
+              : 'Skills look complete! Run an ATS scan or review and export.'
+          }
+        />
 
         {/* Add Skill Form */}
         <form onSubmit={handleAddSkillSubmit} className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">

@@ -9,6 +9,7 @@ interface TemplateProps {
 export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ data, settings }) => {
   const { personalInfo, experiences, education, skills, projects, certifications, languages } = data;
   const isArabic = settings.language === 'ar';
+  const docDir = settings.documentDirection || (isArabic ? 'rtl' : 'ltr');
   const primaryColor = settings.primaryColor || '#4f46e5';
   const headerLayout = settings.headerLayout || 'centered';
   const careerFocus = settings.careerFocus || 'experienced';
@@ -214,10 +215,10 @@ export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ dat
   return (
     <div
       className="w-[210mm] min-h-[297mm] bg-white text-gray-900 p-8 shadow-sm text-sm leading-relaxed text-start"
-      dir={isArabic ? 'rtl' : 'ltr'}
+      dir={docDir}
       style={{
         fontFamily: settings.fontFamily === 'Tajawal' ? 'Tajawal, sans-serif' : 'Inter, sans-serif',
-        direction: isArabic ? 'rtl' : 'ltr',
+        direction: docDir,
       }}
     >
       {renderHeader()}

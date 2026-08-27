@@ -117,7 +117,7 @@ export const TemplatesPage: React.FC = () => {
               <div className="p-4 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1 text-[11px] text-emerald-600 font-bold">
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>100% ATS</span>
+                  <span>ATS-Friendly</span>
                 </div>
 
                 <button

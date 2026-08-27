@@ -224,27 +224,39 @@ export const AiAssistantModal: React.FC = () => {
           )}
 
           {/* Action Trigger Button */}
-          <button
-            onClick={handleGenerate}
-            disabled={isLoading}
-            className="w-full py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>جاري المعالجة...</span>
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4" />
-                <span>{settings.language === 'ar' ? 'توليد الصياغة الآن' : 'Generate Suggestions Now'}</span>
-              </>
-            )}
-          </button>
+          <div>
+            <button
+              onClick={handleGenerate}
+              disabled={isLoading}
+              className="w-full py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>جاري المعالجة...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4" />
+                  <span>{settings.language === 'ar' ? 'توليد الصياغة الآن' : 'Generate Suggestions Now'}</span>
+                </>
+              )}
+            </button>
+            <p className="text-[11px] text-center text-slate-400 font-medium mt-2">
+              {settings.language === 'ar'
+                ? '🛡️ يعتمد على معلوماتك فقط — ولا يخترع أي خبرات وهمية.'
+                : '🛡️ Uses your information only — never invents experience.'}
+            </p>
+          </div>
 
           {/* Suggestions Output */}
           {suggestions.length > 0 && (
             <div className="space-y-2 pt-2 border-t border-slate-800">
+              <div className="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-300 text-[11.5px] font-medium leading-relaxed">
+                {settings.language === 'ar'
+                  ? '💡 راجع مسودة الذكاء الاصطناعي قبل اعتمادها. يمكنك تعديل أي نص بحرية.'
+                  : '💡 Review the AI draft before using it. You can edit anything.'}
+              </div>
               <h4 className="font-bold text-slate-300">
                 {settings.language === 'ar' ? 'الاقتراحات المحسنة:' : 'Generated Suggestions:'}
               </h4>
@@ -273,6 +285,11 @@ export const AiAssistantModal: React.FC = () => {
           {/* Categorized Skills Output */}
           {categorizedSkills && (
             <div className="space-y-3 pt-2 border-t border-slate-800">
+              <div className="p-2.5 bg-amber-500/10 border border-amber-500/20 rounded-xl text-amber-300 text-[11.5px] font-medium leading-relaxed">
+                {settings.language === 'ar'
+                  ? '💡 راجع مسودة الذكاء الاصطناعي قبل اعتمادها. يمكنك تعديل أي نص بحرية.'
+                  : '💡 Review the AI draft before using it. You can edit anything.'}
+              </div>
               {categorizedSkills.technicalSkills && (
                 <div>
                   <h4 className="font-bold text-blue-400 mb-1">{t.techSkills}</h4>

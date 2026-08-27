@@ -20,8 +20,8 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ isAr }) => {
   const faqItems = [
     {
       q: isAr
-        ? 'كيف تضمن المنصة توافق السيرة الذاتية مع نظام ATS بنسبة 100%؟'
-        : 'How does Hash Resume guarantee 100% ATS compliance?',
+        ? 'كيف تضمن المنصة توافق السيرة الذاتية مع أنظمة ATS؟'
+        : 'How does Hash Resume ensure ATS-friendly structure?',
       a: isAr
         ? 'تم بناء قوالب المنصة وتصدير PDF بدون استخدام جداول أو عناصر نصوص معقدة غير قابلة للقراءة آلياً. يضمن الهيكل الهندسي قراءة العناوين والتواريخ والمهارات بدقة متناهية عبر أنظمة الفلترة مثل Taleo, Workday, and Greenhouse.'
         : 'Our templates and vector PDF exporter eliminate unparseable tables and graphics. Headers, dates, and skills adhere to structural standards read natively by systems like Taleo, Workday, and Greenhouse.',

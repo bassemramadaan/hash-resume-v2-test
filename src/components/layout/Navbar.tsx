@@ -66,11 +66,15 @@ export const Navbar: React.FC = () => {
   const currentLangObj = LANGUAGES.find((l) => l.code === settings.language) || LANGUAGES[0];
 
   const navLinks = [
-    { path: '/', label: isAr ? 'الرئيسية' : 'Home' },
     { path: '/builder', label: isAr ? 'محرر السيرة الذاتية' : 'Resume Builder' },
     { path: '/templates', label: isAr ? 'معرض القوالب' : 'Templates' },
     { path: '/ats-checker', label: isAr ? 'فحص ATS' : 'ATS Checker' },
-    { path: '/hash-hunt', label: isAr ? 'هاش هنت 🎯' : 'Hash Hunt 🎯', isSpecial: true },
+    {
+      path: '/hash-hunt',
+      label: isAr ? 'هاش هنت — البحث عن وظيفة 🎯' : 'Hash Hunt — Find Jobs 🎯',
+      sublabel: isAr ? 'البحث الذكي عن وظيفتك القادمة' : 'Find Your Next Job',
+      isSpecial: true,
+    },
     { path: '/pricing', label: isAr ? 'التسعير' : 'Pricing' },
     { path: '/faq', label: isAr ? 'الأسئلة الشائعة' : 'FAQ' },
   ];
@@ -140,7 +144,18 @@ export const Navbar: React.FC = () => {
         </nav>
 
         {/* Right Action Controls */}
-        <div className="flex items-center gap-1.5 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Primary Action Button (Build My Resume CTA) */}
+          {location.pathname !== '/builder' && (
+            <Link
+              to="/builder"
+              className="px-3.5 sm:px-4 py-1.5 sm:py-2 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-xs sm:text-sm font-extrabold rounded-full shadow-xs hover:shadow-md transition flex items-center gap-1.5 active:scale-95 shrink-0"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
+            </Link>
+          )}
+
           {/* Desktop Language Switch Dropdown */}
           <div className="relative hidden sm:block" ref={langDropdownRef}>
             <button

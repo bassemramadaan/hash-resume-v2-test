@@ -5,6 +5,7 @@ import {
   ResumeSettings,
   ActivationState,
   Language,
+  DocumentDirection,
   TemplateId,
   WorkExperience,
   Education,
@@ -40,8 +41,9 @@ import {
 
 const defaultSettings: ResumeSettings = {
   language: 'ar',
-  templateId: 'modern-ats',
-  primaryColor: '#1e40af', // Deep Slate Blue
+  documentDirection: 'rtl',
+  templateId: 'bassux',
+  primaryColor: '#001639', // Hash Resume Primary Dark Blue
   fontFamily: 'Tajawal',
   fontSize: 'md',
   spacing: 'normal',
@@ -153,6 +155,7 @@ interface ResumeStoreState {
 
   // Settings & Load/Reset
   setLanguage: (lang: Language) => void;
+  setDocumentDirection: (dir: DocumentDirection) => void;
   setTemplate: (tpl: TemplateId) => void;
   setPrimaryColor: (color: string) => void;
   setFontFamily: (font: string) => void;
@@ -486,6 +489,19 @@ export const useResumeStore = create<ResumeStoreState>((set, get) => ({
         ...state.settings,
         language: lang,
         fontFamily: lang === 'ar' ? 'Tajawal' : 'Inter',
+        // Update default layout direction with language if not previously overridden
+        documentDirection: lang === 'ar' ? ('rtl' as DocumentDirection) : ('ltr' as DocumentDirection),
+      };
+      saveSettingsDirectly(updatedSettings);
+      return { settings: updatedSettings };
+    });
+  },
+
+  setDocumentDirection: (dir) => {
+    set((state) => {
+      const updatedSettings = {
+        ...state.settings,
+        documentDirection: dir,
       };
       saveSettingsDirectly(updatedSettings);
       return { settings: updatedSettings };

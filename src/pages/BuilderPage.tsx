@@ -27,6 +27,7 @@ import { DownloadSection } from '../components/builder/DownloadSection';
 import { ResumePreview } from '../components/preview/ResumePreview';
 import { LiveAtsMeter } from '../components/builder/LiveAtsMeter';
 import { BuilderProgressBar } from '../components/builder/BuilderProgressBar';
+import { NextStepBanner } from '../components/builder/NextStepBanner';
 
 import {
   Layout,
@@ -311,8 +312,8 @@ export const BuilderPage: React.FC = () => {
       id: 'pricing',
       titleAr: 'المراجعة والتصدير',
       titleEn: 'Review & Export',
-      descriptionAr: 'معاينة نهائية واعتماد وتنزيل ملف PDF عالي الدقة',
-      descriptionEn: 'Final review, approve & download high-res PDF',
+      descriptionAr: 'افحص محتواك وتوافق الـ ATS وحمّل سيرتك الذاتية النهائية',
+      descriptionEn: 'Check your content, ATS readiness, and download your final resume.',
       icon: Download,
       statusLabelAr: completionScore >= 40 ? 'جاهز للتحميل' : 'قيد الإنشاء',
       statusLabelEn: completionScore >= 40 ? 'Ready to Export' : 'In draft',
@@ -324,6 +325,15 @@ export const BuilderPage: React.FC = () => {
   const currentSectionIndex = desktopActiveSection
     ? DESKTOP_SECTIONS.findIndex((s) => s.id === desktopActiveSection)
     : -1;
+
+  const [isDraftSavedFeedback, setIsDraftSavedFeedback] = useState(false);
+
+  const handleSaveDraft = () => {
+    setIsDraftSavedFeedback(true);
+    setTimeout(() => {
+      setIsDraftSavedFeedback(false);
+    }, 2200);
+  };
 
   const handleOpenSection = (sectionId: typeof desktopActiveSection) => {
     if (!sectionId) return;
@@ -581,10 +591,12 @@ export const BuilderPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Middle: Progress Indicator & Score */}
+            {/* Middle: Single Unified Progress Indicator */}
             <div className="hidden sm:flex items-center gap-3 bg-slate-50 px-3.5 py-1.5 rounded-full border border-slate-200/80">
               <div className="flex items-center gap-1.5 text-xs">
-                <span className="text-slate-500 font-medium">{isAr ? 'اكتمال السيرة:' : 'Complete:'}</span>
+                <span className="text-slate-500 font-medium">
+                  {isAr ? 'اكتمال السيرة الذاتية:' : 'Resume completeness:'}
+                </span>
                 <span
                   className={`font-extrabold ${
                     completionScore >= 80
@@ -665,15 +677,15 @@ export const BuilderPage: React.FC = () => {
                 </span>
               </div>
 
-              {/* Start New Resume Action */}
+              {/* Start New Resume Action - Subtle Secondary Link */}
               <button
                 type="button"
                 id="btn-start-new-resume"
                 onClick={() => setIsResetModalOpen(true)}
-                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 text-slate-600 hover:text-rose-700 hover:bg-rose-50 rounded-full text-xs font-semibold border border-slate-200 hover:border-rose-200 transition cursor-pointer group shrink-0"
+                className="inline-flex items-center gap-1 text-slate-400 hover:text-slate-700 hover:underline text-[11px] font-medium transition cursor-pointer ms-1 shrink-0"
                 title={t.startNewResume}
               >
-                <RotateCcw className="w-3.5 h-3.5 text-slate-500 group-hover:text-rose-600 group-hover:-rotate-90 transition-transform duration-200 shrink-0" />
+                <RotateCcw className="w-3 h-3 text-slate-400 shrink-0" />
                 <span className="hidden sm:inline">{t.startNewResume}</span>
                 <span className="sm:hidden">{isAr ? 'جديد' : 'New'}</span>
               </button>
@@ -767,20 +779,10 @@ export const BuilderPage: React.FC = () => {
                   {/* Editor Panel Header */}
                   <div className="p-4 sm:p-5 border-b border-slate-200/80 bg-slate-50/70 flex items-center justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <button
-                        type="button"
-                        onClick={() => setDesktopActiveSection(null)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-700 hover:text-[#001639] hover:bg-slate-100 text-xs font-bold transition cursor-pointer shadow-2xs active:scale-98"
-                        title={isAr ? 'العودة إلى لوحة الأقسام' : 'Back to Sections Dashboard'}
-                      >
-                        <ArrowPrev className="w-4 h-4" />
-                        <span>{isAr ? 'لوحة الأقسام' : 'Dashboard'}</span>
-                      </button>
-
                       {activeSectionData && (
-                        <div className="flex items-center gap-2 min-w-0">
-                          <div className={`p-1.5 rounded-lg border shrink-0 ${activeSectionData.accentColor}`}>
-                            <activeSectionData.icon className="w-4 h-4" />
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <div className={`p-2 rounded-xl border shrink-0 ${activeSectionData.accentColor}`}>
+                            <activeSectionData.icon className="w-4 h-4 sm:w-5 sm:h-5" />
                           </div>
                           <div className="truncate">
                             <h2 className="font-extrabold text-sm sm:text-base text-[#001639] truncate">
@@ -794,34 +796,15 @@ export const BuilderPage: React.FC = () => {
                       )}
                     </div>
 
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {/* Section Quick Switcher */}
-                      <button
-                        type="button"
-                        onClick={handlePrevSection}
-                        disabled={currentSectionIndex <= 0}
-                        className="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
-                        title={isAr ? 'القسم السابق' : 'Previous section'}
-                      >
-                        <ArrowPrev className="w-4 h-4" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleNextSection}
-                        disabled={currentSectionIndex >= DESKTOP_SECTIONS.length - 1}
-                        className="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed transition cursor-pointer"
-                        title={isAr ? 'القسم التالي' : 'Next section'}
-                      >
-                        <ArrowNext className="w-4 h-4" />
-                      </button>
-
+                    <div className="flex items-center gap-2 shrink-0">
                       <button
                         type="button"
                         onClick={() => setDesktopActiveSection(null)}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer ms-1"
-                        title={isAr ? 'إغلاق (Esc)' : 'Close (Esc)'}
+                        className="p-2 rounded-xl border border-slate-200 bg-white text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition cursor-pointer shadow-2xs active:scale-95"
+                        title={isAr ? 'إغلاق والعودة للأقسام' : 'Close and return to sections'}
+                        aria-label={isAr ? 'إغلاق' : 'Close'}
                       >
-                        <X className="w-5 h-5" />
+                        <X className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
@@ -842,28 +825,46 @@ export const BuilderPage: React.FC = () => {
 
                   {/* Editor Panel Footer Actions */}
                   <div className="p-4 sm:p-5 border-t border-slate-200/80 bg-slate-50/60 flex flex-wrap items-center justify-between gap-3">
+                    {/* 1. Back to sections */}
                     <button
                       type="button"
                       onClick={() => setDesktopActiveSection(null)}
-                      className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 hover:bg-white text-xs font-bold transition cursor-pointer shadow-2xs"
+                      className="px-3.5 sm:px-4 py-2 rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-100 text-xs font-bold transition cursor-pointer shadow-2xs flex items-center gap-1.5 active:scale-98"
                     >
-                      {isAr ? '← العودة للأقسام' : '← Back to Sections'}
+                      <ArrowPrev className="w-3.5 h-3.5 text-slate-500" />
+                      <span>{isAr ? 'الرجوع للأقسام' : 'Back to sections'}</span>
                     </button>
 
                     <div className="flex items-center gap-2">
+                      {/* 2. Save draft */}
                       <button
                         type="button"
-                        onClick={() => setDesktopActiveSection(null)}
-                        className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition cursor-pointer"
+                        onClick={handleSaveDraft}
+                        className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 active:scale-98 ${
+                          isDraftSavedFeedback
+                            ? 'bg-emerald-600 text-white shadow-2xs'
+                            : 'bg-white border border-slate-300 text-slate-800 hover:bg-slate-100 shadow-2xs'
+                        }`}
                       >
-                        {isAr ? 'حفظ وإغلاق' : 'Save & Close'}
+                        {isDraftSavedFeedback ? (
+                          <>
+                            <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                            <span>{isAr ? 'تم حفظ المسودة' : 'Draft saved'}</span>
+                          </>
+                        ) : (
+                          <>
+                            <Save className="w-3.5 h-3.5 text-slate-500" />
+                            <span>{isAr ? 'حفظ المسودة' : 'Save draft'}</span>
+                          </>
+                        )}
                       </button>
 
+                      {/* 3. Next: [Section Name] */}
                       {currentSectionIndex < DESKTOP_SECTIONS.length - 1 && (
                         <button
                           type="button"
                           onClick={handleNextSection}
-                          className="px-4 py-2 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition shadow-xs cursor-pointer active:scale-98"
+                          className="px-3.5 sm:px-4 py-2 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition shadow-xs cursor-pointer active:scale-98"
                         >
                           <span>
                             {isAr
@@ -886,83 +887,209 @@ export const BuilderPage: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.12 }}
-                  className="space-y-4"
+                  className="space-y-6"
                 >
-                  {/* Dashboard Welcome & Overview Card */}
-                  <div className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/90 shadow-2xs flex items-center justify-between gap-4">
+                  {/* Dashboard Welcome & Overview Card with Next Step Guidance */}
+                  <div className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
                     <div className="space-y-1">
                       <h2 className="font-extrabold text-base sm:text-lg text-[#001639]">
-                        {isAr ? 'أقسام السيرة الذاتية' : 'Your Resume Sections'}
+                        {isAr ? 'أنشئ سيرتك الذاتية' : 'Build your resume'}
                       </h2>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-slate-500 font-medium">
                         {isAr
-                          ? 'اضغط على أي قسم لفتحه وتحريره بسهولة مع المعاينة الفورية المباشرة'
-                          : 'Select any section below to edit with live real-time preview'}
+                          ? 'أضف محتواك، حسّنه باحترافية، وصدّره عندما تصبح جاهزاً.'
+                          : 'Add your content, improve it, and export when ready.'}
                       </p>
                     </div>
 
-                    <div className="hidden sm:flex flex-col items-end shrink-0">
-                      <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                        {isAr ? 'نسبة الإنجاز' : 'Progress'}
-                      </span>
-                      <span className="text-lg font-black text-[#001639]">{completionScore}%</span>
+                    {/* What to do now / Recommended Next Step */}
+                    <NextStepBanner
+                      variant="highlight"
+                      isAr={isAr}
+                      stepTextAr={
+                        !resumeData.personalInfo.fullName?.trim()
+                          ? 'أكمل البيانات الشخصية (الاسم الكامل والمسمى الوظيفي المستهدف).'
+                          : experiencesCount === 0
+                          ? 'أضف أحدث خبرة مهنية أو وظيفة سابقة لديك.'
+                          : educationCount === 0
+                          ? 'أضف مؤهلك التعليمي أو شهادتك الجامعية.'
+                          : skillsCount < 3
+                          ? 'أضف مهاراتك الأساسية المتوافقة مع متطلبات الوظيفة.'
+                          : 'راجع سيرتك الذاتية وتأكد من توافقها مع الـ ATS قبل التصدير.'
+                      }
+                      stepTextEn={
+                        !resumeData.personalInfo.fullName?.trim()
+                          ? 'Complete Personal Information (full name & target job title).'
+                          : experiencesCount === 0
+                          ? 'Add your most recent work experience.'
+                          : educationCount === 0
+                          ? 'Add your education and qualifications.'
+                          : skillsCount < 3
+                          ? 'Add your key skills matching target job requirements.'
+                          : 'Review your resume and check ATS readiness before export.'
+                      }
+                      actionTextAr={
+                        !resumeData.personalInfo.fullName?.trim()
+                          ? 'تعديل البيانات'
+                          : experiencesCount === 0
+                          ? 'إضافة خبرة'
+                          : educationCount === 0
+                          ? 'إضافة مؤهل'
+                          : skillsCount < 3
+                          ? 'إضافة مهارات'
+                          : 'مراجعة وتصدير'
+                      }
+                      actionTextEn={
+                        !resumeData.personalInfo.fullName?.trim()
+                          ? 'Edit Info'
+                          : experiencesCount === 0
+                          ? 'Add Experience'
+                          : educationCount === 0
+                          ? 'Add Education'
+                          : skillsCount < 3
+                          ? 'Add Skills'
+                          : 'Review & Export'
+                      }
+                      onAction={() => {
+                        if (!resumeData.personalInfo.fullName?.trim()) {
+                          handleOpenSection('personal');
+                        } else if (experiencesCount === 0) {
+                          handleOpenSection('experiences');
+                        } else if (educationCount === 0) {
+                          handleOpenSection('education');
+                        } else if (skillsCount < 3) {
+                          handleOpenSection('skills');
+                        } else {
+                          handleOpenSection('pricing');
+                        }
+                      }}
+                    />
+                  </div>
+
+                  {/* Group 1: Your Content */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 px-1">
+                      <span className="w-2 h-2 rounded-full bg-[#001639]"></span>
+                      <h3 className="text-xs sm:text-sm font-extrabold text-[#001639] uppercase tracking-wider">
+                        {isAr ? 'محتوى السيرة الذاتية' : 'Your content'}
+                      </h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5" id="desktop-content-sections-grid">
+                      {DESKTOP_SECTIONS.filter((sec) =>
+                        ['personal', 'experiences', 'education', 'skills', 'certifications', 'projects'].includes(sec.id)
+                      ).map((sec) => {
+                        const Icon = sec.icon;
+
+                        return (
+                          <button
+                            key={sec.id}
+                            type="button"
+                            id={`desktop-section-card-${sec.id}`}
+                            onClick={() => handleOpenSection(sec.id)}
+                            className="w-full text-start p-4 rounded-2xl border border-slate-200/90 hover:border-slate-300 transition-all duration-180 flex flex-col justify-between gap-3 group cursor-pointer bg-white hover:bg-slate-50/90 shadow-2xs hover:shadow-xs relative overflow-hidden focus-visible:ring-2 focus-visible:ring-[#001639] focus:outline-none"
+                          >
+                            <div className="flex items-start justify-between gap-2.5 w-full">
+                              <div className="flex items-start gap-3 min-w-0 flex-1">
+                                <div
+                                  className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105 ${sec.accentColor}`}
+                                >
+                                  <Icon className="w-5 h-5" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <h3 className="font-bold text-sm text-[#001639] group-hover:text-[#FF4D2D] transition leading-snug break-words line-clamp-2">
+                                    {isAr ? sec.titleAr : sec.titleEn}
+                                  </h3>
+                                  <p className="text-[11px] text-slate-500 line-clamp-1 leading-snug mt-0.5">
+                                    {isAr ? sec.descriptionAr : sec.descriptionEn}
+                                  </p>
+                                </div>
+                              </div>
+
+                              {/* Section Status Badge */}
+                              <div className="shrink-0 flex items-center gap-1.5 mt-0.5">
+                                {sec.isComplete ? (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 whitespace-nowrap">
+                                    <Check className="w-3 h-3" />
+                                    <span>{isAr ? sec.statusLabelAr : sec.statusLabelEn}</span>
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap">
+                                    {isAr ? sec.statusLabelAr : sec.statusLabelEn}
+                                  </span>
+                                )}
+                                <ChevronIcon className="w-4 h-4 text-slate-400 group-hover:text-[#001639] group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform shrink-0" />
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
-                  {/* Section Cards Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5" id="desktop-sections-grid">
-                    {DESKTOP_SECTIONS.map((sec) => {
-                      const Icon = sec.icon;
+                  {/* Group 2: Improve & Export */}
+                  <div className="space-y-3 pt-2">
+                    <div className="flex items-center gap-2 px-1">
+                      <span className="w-2 h-2 rounded-full bg-[#FF4D2D]"></span>
+                      <h3 className="text-xs sm:text-sm font-extrabold text-[#001639] uppercase tracking-wider">
+                        {isAr ? 'التحسين والتصدير' : 'Improve & export'}
+                      </h3>
+                    </div>
 
-                      return (
-                        <button
-                          key={sec.id}
-                          type="button"
-                          id={`desktop-section-card-${sec.id}`}
-                          onClick={() => handleOpenSection(sec.id)}
-                          className={`w-full text-start p-4 rounded-2xl border transition-all duration-180 flex flex-col justify-between gap-3 group cursor-pointer bg-white hover:bg-slate-50/90 shadow-2xs hover:shadow-xs relative overflow-hidden focus-visible:ring-2 focus-visible:ring-[#001639] focus:outline-none ${
-                            sec.id === 'pricing'
-                              ? 'border-emerald-300/80 bg-emerald-50/20 sm:col-span-2'
-                              : sec.isComplete
-                              ? 'border-slate-200 hover:border-slate-300'
-                              : 'border-slate-200/80 hover:border-slate-300'
-                          }`}
-                        >
-                          <div className="flex items-start justify-between gap-2.5 w-full">
-                            <div className="flex items-start gap-3 min-w-0 flex-1">
-                              <div
-                                className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105 ${sec.accentColor}`}
-                              >
-                                <Icon className="w-5 h-5" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5" id="desktop-tools-sections-grid">
+                      {DESKTOP_SECTIONS.filter((sec) =>
+                        ['customize', 'ats', 'pricing'].includes(sec.id)
+                      ).map((sec) => {
+                        const Icon = sec.icon;
+
+                        return (
+                          <button
+                            key={sec.id}
+                            type="button"
+                            id={`desktop-section-card-${sec.id}`}
+                            onClick={() => handleOpenSection(sec.id)}
+                            className={`w-full text-start p-4 rounded-2xl border transition-all duration-180 flex flex-col justify-between gap-3 group cursor-pointer shadow-2xs hover:shadow-xs relative overflow-hidden focus-visible:ring-2 focus-visible:ring-[#001639] focus:outline-none ${
+                              sec.id === 'pricing'
+                                ? 'border-emerald-300 bg-emerald-50/40 hover:bg-emerald-50/70 sm:col-span-2'
+                                : 'border-slate-200/90 hover:border-slate-300 bg-white hover:bg-slate-50/90'
+                            }`}
+                          >
+                            <div className="flex items-start justify-between gap-2.5 w-full">
+                              <div className="flex items-start gap-3 min-w-0 flex-1">
+                                <div
+                                  className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105 ${sec.accentColor}`}
+                                >
+                                  <Icon className="w-5 h-5" />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <h3 className="font-bold text-sm text-[#001639] group-hover:text-[#FF4D2D] transition leading-snug break-words line-clamp-2">
+                                    {isAr ? sec.titleAr : sec.titleEn}
+                                  </h3>
+                                  <p className="text-[11px] text-slate-500 line-clamp-1 leading-snug mt-0.5">
+                                    {isAr ? sec.descriptionAr : sec.descriptionEn}
+                                  </p>
+                                </div>
                               </div>
-                              <div className="min-w-0 flex-1">
-                                <h3 className="font-bold text-sm text-[#001639] group-hover:text-[#FF4D2D] transition leading-snug break-words line-clamp-2">
-                                  {isAr ? sec.titleAr : sec.titleEn}
-                                </h3>
-                                <p className="text-[11px] text-slate-500 line-clamp-1 leading-snug mt-0.5">
-                                  {isAr ? sec.descriptionAr : sec.descriptionEn}
-                                </p>
+
+                              {/* Section Status Badge */}
+                              <div className="shrink-0 flex items-center gap-1.5 mt-0.5">
+                                {sec.isComplete ? (
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 whitespace-nowrap">
+                                    <Check className="w-3 h-3" />
+                                    <span>{isAr ? sec.statusLabelAr : sec.statusLabelEn}</span>
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap">
+                                    {isAr ? sec.statusLabelAr : sec.statusLabelEn}
+                                  </span>
+                                )}
+                                <ChevronIcon className="w-4 h-4 text-slate-400 group-hover:text-[#001639] group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform shrink-0" />
                               </div>
                             </div>
-
-                            {/* Section Status Badge */}
-                            <div className="shrink-0 flex items-center gap-1.5 mt-0.5">
-                              {sec.isComplete ? (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 whitespace-nowrap">
-                                  <Check className="w-3 h-3" />
-                                  <span>{isAr ? sec.statusLabelAr : sec.statusLabelEn}</span>
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap">
-                                  {isAr ? sec.statusLabelAr : sec.statusLabelEn}
-                                </span>
-                              )}
-                              <ChevronIcon className="w-4 h-4 text-slate-400 group-hover:text-[#001639] group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform shrink-0" />
-                            </div>
-                          </div>
-                        </button>
-                      );
-                    })}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </motion.div>
               )}

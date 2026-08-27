@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
 import { GraduationCap, Plus, Trash2, ArrowUp, ArrowDown, ChevronDown, ChevronUp, Edit3 } from 'lucide-react';
+import { NextStepBanner } from './NextStepBanner';
 
 export const EducationForm: React.FC = () => {
   const {
@@ -61,6 +62,29 @@ export const EducationForm: React.FC = () => {
           <span>{isAr ? 'إضافة مؤهل' : 'Add Education'}</span>
         </button>
       </div>
+
+      {/* Next Action in Section */}
+      <NextStepBanner
+        variant="section"
+        isAr={isAr}
+        stepTextAr={
+          educationList.length === 0
+            ? 'أضف أعلى درجة علمية حصلت عليها (بكالوريوس، ماجستير، أو معهد).'
+            : educationList.some((e) => !e.institution?.trim() || !e.degree?.trim())
+            ? 'أكمل اسم الجامعة أو الكلية والمؤهل الدراسي.'
+            : 'المؤهلات مكتملة! انتقل إلى قسم المهارات واللغات.'
+        }
+        stepTextEn={
+          educationList.length === 0
+            ? 'Add your highest academic degree or diploma.'
+            : educationList.some((e) => !e.institution?.trim() || !e.degree?.trim())
+            ? 'Complete university/college name and degree title.'
+            : 'Education complete! Move to Skills & Languages.'
+        }
+        actionTextAr={educationList.length === 0 ? 'إضافة مؤهل الآن' : undefined}
+        actionTextEn={educationList.length === 0 ? 'Add degree now' : undefined}
+        onAction={educationList.length === 0 ? handleAddNew : undefined}
+      />
 
       {/* Empty State */}
       {educationList.length === 0 && (

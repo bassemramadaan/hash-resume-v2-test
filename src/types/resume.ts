@@ -101,9 +101,11 @@ export interface ResumeData {
 
 export type HeaderLayout = 'centered' | 'two-column' | 'compact';
 export type CareerFocus = 'experienced' | 'fresh-grad';
+export type DocumentDirection = 'rtl' | 'ltr';
 
 export interface ResumeSettings {
   language: Language;
+  documentDirection?: DocumentDirection;
   templateId: TemplateId;
   primaryColor: string;
   fontFamily: string;

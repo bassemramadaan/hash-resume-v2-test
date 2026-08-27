@@ -21,7 +21,9 @@ import {
   Plus,
   X,
   Globe,
+  Briefcase,
 } from 'lucide-react';
+import { NextStepBanner } from './NextStepBanner';
 
 export const PersonalInfoForm: React.FC = () => {
   const { resumeData, setPersonalInfo, setResumeData, settings, openAiModal } = useResumeStore();
@@ -170,6 +172,30 @@ export const PersonalInfoForm: React.FC = () => {
         </div>
       </div>
 
+      {/* Next Action in Section */}
+      <NextStepBanner
+        variant="section"
+        isAr={isAr}
+        stepTextAr={
+          !info.fullName?.trim()
+            ? 'أدخل اسمك الكامل والمسمى الوظيفي المستهدف.'
+            : !info.email?.trim() && !info.phone?.trim()
+            ? 'أضف بريدك الإلكتروني أو رقم هاتفك للتواصل.'
+            : !info.summary?.trim()
+            ? 'اكتب ملخصاً مهنياً موجزاً أو ولّده بالذكاء الاصطناعي.'
+            : 'بياناتك الشخصية مكتملة! انتقل إلى قسم الخبرات المهنية.'
+        }
+        stepTextEn={
+          !info.fullName?.trim()
+            ? 'Enter your full name and target job title.'
+            : !info.email?.trim() && !info.phone?.trim()
+            ? 'Add your email or phone number for recruiters.'
+            : !info.summary?.trim()
+            ? 'Write a brief professional summary or generate with AI.'
+            : 'Personal info is complete! Move to Work Experience.'
+        }
+      />
+
       {/* CV File Upload & Auto-Fill Compact Card */}
       <div
         id="import-cv-section"
@@ -262,55 +288,73 @@ export const PersonalInfoForm: React.FC = () => {
       />
 
       {/* Main Core Form Fields (Single-Column on Mobile, 2-Col on Tablet/Desktop) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Full Name */}
-        <div className="space-y-1">
-          <label htmlFor="pi-fullname" className="block text-xs font-semibold text-slate-700">
-            {t.fullName} <span className="text-rose-500 font-bold">*</span>
-          </label>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4.5 sm:gap-5">
+        {/* Full Name - Required */}
+        <div className="space-y-1.5 text-start">
+          <div className="flex items-center justify-between">
+            <label htmlFor="pi-fullname" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+              <span>{isAr ? 'الاسم الكامل' : 'Full Name'}</span>
+            </label>
+            <span className="text-[10px] sm:text-[11px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
+              {isAr ? 'إجباري' : 'Required'}
+            </span>
+          </div>
           <div className="relative">
-            <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 rtl:left-auto rtl:right-3.5 pointer-events-none" />
+            <User className="w-4 h-4 text-slate-400 absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               id="pi-fullname"
               type="text"
               autoComplete="name"
               value={info.fullName}
               onChange={(e) => setPersonalInfo({ fullName: e.target.value })}
-              placeholder={isAr ? 'أحمد محمود الفقي' : 'Ahmed Mahmoud'}
-              className="w-full pl-10 rtl:pl-3.5 rtl:pr-10 pr-3.5 min-h-[44px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+              placeholder={isAr ? 'مثال: أحمد محمود الفقي' : 'e.g. Ahmed Mahmoud'}
+              className="w-full ps-10 pe-3.5 min-h-[46px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition text-start"
             />
           </div>
         </div>
 
-        {/* Target Job Title */}
-        <div className="space-y-1">
-          <label htmlFor="pi-jobtitle" className="block text-xs font-semibold text-slate-700">
-            {t.jobTitle} <span className="text-rose-500 font-bold">*</span>
-          </label>
-          <input
-            id="pi-jobtitle"
-            type="text"
-            value={info.jobTitle}
-            onChange={(e) => setPersonalInfo({ jobTitle: e.target.value })}
-            placeholder={isAr ? 'مهندس برمجيات أول' : 'Senior Software Engineer'}
-            className="w-full px-3.5 min-h-[44px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
-          />
-        </div>
-
-        {/* Email Address */}
-        <div className="space-y-1">
+        {/* Target Job Title - Required */}
+        <div className="space-y-1.5 text-start">
           <div className="flex items-center justify-between">
-            <label htmlFor="pi-email" className="block text-xs font-semibold text-slate-700">
-              {t.email} <span className="text-rose-500 font-bold">*</span>
+            <label htmlFor="pi-jobtitle" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+              <span>{isAr ? 'المسمى الوظيفي المستهدف' : 'Target Job Title'}</span>
             </label>
-            {!isEmailValid && (
-              <span className="text-[11px] font-semibold text-rose-600">
-                {isAr ? 'بريد إلكتروني غير صالح' : 'Invalid email address'}
-              </span>
-            )}
+            <span className="text-[10px] sm:text-[11px] font-bold text-rose-700 bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200">
+              {isAr ? 'إجباري' : 'Required'}
+            </span>
           </div>
           <div className="relative">
-            <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 rtl:left-auto rtl:right-3.5 pointer-events-none" />
+            <Briefcase className="w-4 h-4 text-slate-400 absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              id="pi-jobtitle"
+              type="text"
+              value={info.jobTitle}
+              onChange={(e) => setPersonalInfo({ jobTitle: e.target.value })}
+              placeholder={isAr ? 'مثال: مهندس برمجيات أول / محاسب مالي' : 'e.g. Senior Software Engineer'}
+              className="w-full ps-10 pe-3.5 min-h-[46px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition text-start"
+            />
+          </div>
+        </div>
+
+        {/* Email Address - Required Before Export */}
+        <div className="space-y-1.5 text-start">
+          <div className="flex items-center justify-between">
+            <label htmlFor="pi-email" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+              <span>{isAr ? 'البريد الإلكتروني' : 'Email Address'}</span>
+            </label>
+            <div className="flex items-center gap-1.5">
+              {!isEmailValid && (
+                <span className="text-[11px] font-semibold text-rose-600">
+                  {isAr ? 'غير صالح' : 'Invalid'}
+                </span>
+              )}
+              <span className="text-[10px] sm:text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
+                {isAr ? 'مطلوب قبل التنزيل' : 'Required before download'}
+              </span>
+            </div>
+          </div>
+          <div className="relative">
+            <Mail className="w-4 h-4 text-slate-400 absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               id="pi-email"
               type="email"
@@ -321,22 +365,27 @@ export const PersonalInfoForm: React.FC = () => {
               value={info.email}
               onChange={(e) => setPersonalInfo({ email: e.target.value })}
               placeholder="ahmed@example.com"
-              className={`w-full pl-10 rtl:pl-3.5 rtl:pr-10 pr-3.5 min-h-[44px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border ${
+              className={`w-full ps-10 pe-3.5 min-h-[46px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border ${
                 !isEmailValid
                   ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-500'
                   : 'border-slate-200 focus:border-[#001639] focus:ring-[#001639]'
-              } rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition`}
+              } rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition text-start`}
             />
           </div>
         </div>
 
-        {/* Phone Number */}
-        <div className="space-y-1">
-          <label htmlFor="pi-phone" className="block text-xs font-semibold text-slate-700">
-            {t.phone} <span className="text-rose-500 font-bold">*</span>
-          </label>
+        {/* Phone Number - Required Before Export / Optional during drafting */}
+        <div className="space-y-1.5 text-start">
+          <div className="flex items-center justify-between">
+            <label htmlFor="pi-phone" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+              <span>{isAr ? 'رقم الهاتف' : 'Phone Number'}</span>
+            </label>
+            <span className="text-[10px] sm:text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
+              {isAr ? 'مطلوب قبل التنزيل' : 'Required before download'}
+            </span>
+          </div>
           <div className="relative">
-            <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 rtl:left-auto rtl:right-3.5 pointer-events-none" />
+            <Phone className="w-4 h-4 text-slate-400 absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               id="pi-phone"
               type="tel"
@@ -345,36 +394,38 @@ export const PersonalInfoForm: React.FC = () => {
               value={info.phone}
               onChange={(e) => setPersonalInfo({ phone: e.target.value })}
               placeholder="+20 100 123 4567"
-              className="w-full pl-10 rtl:pl-3.5 rtl:pr-10 pr-3.5 min-h-[44px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition text-left rtl:text-right"
+              className="w-full ps-10 pe-3.5 min-h-[46px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition text-start"
             />
           </div>
         </div>
 
-        {/* Location */}
-        <div className="space-y-1 md:col-span-2">
-          <label htmlFor="pi-location" className="block text-xs font-semibold text-slate-700">
-            {t.location}
-          </label>
+        {/* Location - Optional */}
+        <div className="space-y-1.5 text-start md:col-span-2">
+          <div className="flex items-center justify-between">
+            <label htmlFor="pi-location" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+              <span>{isAr ? 'المدينة / الدولة' : 'Location (City, Country)'}</span>
+            </label>
+          </div>
           <div className="relative">
-            <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 rtl:left-auto rtl:right-3.5 pointer-events-none" />
+            <MapPin className="w-4 h-4 text-slate-400 absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               id="pi-location"
               type="text"
               autoComplete="address-level2"
               value={info.location}
               onChange={(e) => setPersonalInfo({ location: e.target.value })}
-              placeholder={isAr ? 'القاهرة، مصر' : 'Cairo, Egypt'}
-              className="w-full pl-10 rtl:pl-3.5 rtl:pr-10 pr-3.5 min-h-[44px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+              placeholder={isAr ? 'مثال: القاهرة، مصر / الرياض، السعودية' : 'e.g. Cairo, Egypt / Riyadh, KSA'}
+              className="w-full ps-10 pe-3.5 min-h-[46px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition text-start"
             />
           </div>
         </div>
 
         {/* Optional Fields Expanded Section */}
         {showLinkedIn && (
-          <div className="space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="space-y-1.5 text-start animate-in fade-in slide-in-from-top-1 duration-150">
             <div className="flex items-center justify-between">
-              <label htmlFor="pi-linkedin" className="block text-xs font-semibold text-slate-700">
-                {t.linkedin}
+              <label htmlFor="pi-linkedin" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                <span>{isAr ? 'رابط حساب LinkedIn' : 'LinkedIn Profile URL'}</span>
               </label>
               <button
                 type="button"
@@ -389,7 +440,7 @@ export const PersonalInfoForm: React.FC = () => {
               </button>
             </div>
             <div className="relative">
-              <Linkedin className="w-4 h-4 text-blue-600 absolute left-3.5 top-1/2 -translate-y-1/2 rtl:left-auto rtl:right-3.5 pointer-events-none" />
+              <Linkedin className="w-4 h-4 text-blue-600 absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 id="pi-linkedin"
                 type="url"
@@ -398,17 +449,17 @@ export const PersonalInfoForm: React.FC = () => {
                 value={info.linkedin}
                 onChange={(e) => setPersonalInfo({ linkedin: e.target.value })}
                 placeholder="https://linkedin.com/in/username"
-                className="w-full pl-10 rtl:pl-3.5 rtl:pr-10 pr-3.5 min-h-[44px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+                className="w-full ps-10 pe-3.5 min-h-[46px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition text-start"
               />
             </div>
           </div>
         )}
 
         {showGithub && (
-          <div className="space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="space-y-1.5 text-start animate-in fade-in slide-in-from-top-1 duration-150">
             <div className="flex items-center justify-between">
-              <label htmlFor="pi-github" className="block text-xs font-semibold text-slate-700">
-                {t.github}
+              <label htmlFor="pi-github" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                <span>{isAr ? 'رابط معرض أعمال GitHub' : 'GitHub / Portfolio URL'}</span>
               </label>
               <button
                 type="button"
@@ -423,7 +474,7 @@ export const PersonalInfoForm: React.FC = () => {
               </button>
             </div>
             <div className="relative">
-              <Github className="w-4 h-4 text-slate-800 absolute left-3.5 top-1/2 -translate-y-1/2 rtl:left-auto rtl:right-3.5 pointer-events-none" />
+              <Github className="w-4 h-4 text-slate-800 absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 id="pi-github"
                 type="url"
@@ -432,17 +483,17 @@ export const PersonalInfoForm: React.FC = () => {
                 value={info.github || ''}
                 onChange={(e) => setPersonalInfo({ github: e.target.value })}
                 placeholder="https://github.com/username"
-                className="w-full pl-10 rtl:pl-3.5 rtl:pr-10 pr-3.5 min-h-[44px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+                className="w-full ps-10 pe-3.5 min-h-[46px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition text-start"
               />
             </div>
           </div>
         )}
 
         {showPhoto && (
-          <div className="space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="space-y-1.5 text-start animate-in fade-in slide-in-from-top-1 duration-150">
             <div className="flex items-center justify-between">
-              <label htmlFor="pi-photo" className="block text-xs font-semibold text-slate-700">
-                {t.photoUrl}
+              <label htmlFor="pi-photo" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                <span>{isAr ? 'رابط الصورة الشخصية' : 'Photo URL'}</span>
               </label>
               <button
                 type="button"
@@ -457,7 +508,7 @@ export const PersonalInfoForm: React.FC = () => {
               </button>
             </div>
             <div className="relative">
-              <Image className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 rtl:left-auto rtl:right-3.5 pointer-events-none" />
+              <Image className="w-4 h-4 text-slate-400 absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 id="pi-photo"
                 type="url"
@@ -466,7 +517,7 @@ export const PersonalInfoForm: React.FC = () => {
                 value={info.photoUrl || ''}
                 onChange={(e) => setPersonalInfo({ photoUrl: e.target.value })}
                 placeholder="https://example.com/photo.jpg"
-                className="w-full pl-10 rtl:pl-3.5 rtl:pr-10 pr-3.5 min-h-[44px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+                className="w-full ps-10 pe-3.5 min-h-[46px] h-11 bg-slate-50/60 hover:bg-white focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition text-start"
               />
             </div>
           </div>
@@ -515,19 +566,31 @@ export const PersonalInfoForm: React.FC = () => {
       )}
 
       {/* Professional Summary Group */}
-      <div className="pt-2 space-y-2.5" aria-live="polite">
-        <div className="flex items-center justify-between gap-2">
-          <label htmlFor="pi-summary" className="block text-xs font-semibold text-slate-700">
-            {t.summary}
-          </label>
-          <button
-            type="button"
-            onClick={() => openAiModal('summary')}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#001639] bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition cursor-pointer shrink-0 min-h-[34px]"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
-            <span>{t.aiGenerateSummary}</span>
-          </button>
+      <div className="pt-2 space-y-2 text-start" aria-live="polite">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <label htmlFor="pi-summary" className="text-xs sm:text-sm font-bold text-slate-800">
+              {t.summary}
+            </label>
+            <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+              {isAr ? 'اختياري وموصى به' : 'Recommended'}
+            </span>
+          </div>
+          <div className="flex flex-col sm:items-end gap-1">
+            <button
+              type="button"
+              onClick={() => openAiModal('summary')}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#001639] bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition cursor-pointer shrink-0 min-h-[34px]"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
+              <span>{t.aiGenerateSummary}</span>
+            </button>
+            <p className="text-[10.5px] text-slate-500 font-medium">
+              {isAr
+                ? 'يعتمد على معلوماتك فقط — ولا يخترع أي خبرات وهمية. راجع مسودة الذكاء الاصطناعي قبل اعتمادها، ويمكنك تعديل أي نص بحرية.'
+                : 'Uses your information only — never invents experience. Review the AI draft before using it. You can edit anything.'}
+            </p>
+          </div>
         </div>
 
         {/* Quick Summary Templates */}

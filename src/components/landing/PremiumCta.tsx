@@ -44,7 +44,7 @@ export const PremiumCta: React.FC<{ isAr: boolean }> = ({ isAr }) => {
             onClick={() => navigate('/builder')}
             className="w-full sm:w-auto px-8 py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-2xl text-base font-bold shadow-lg shadow-coral/20 flex items-center justify-center gap-2 transition-all active:scale-95"
           >
-            <span>{isAr ? 'ابدأ الآن مجاناً' : 'Start for Free'}</span>
+            <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
             <ArrowIcon className="w-5 h-5" />
           </button>
           

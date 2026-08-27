@@ -18,11 +18,12 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
     customSections,
   } = data;
   const isArabic = settings.language === 'ar';
+  const docDir = settings.documentDirection || (isArabic ? 'rtl' : 'ltr');
   const careerFocus = settings.careerFocus || 'experienced';
   const isFreshGrad = careerFocus === 'fresh-grad';
 
   const fontStyle = {
-    fontFamily: isArabic
+    fontFamily: docDir === 'rtl'
       ? 'Tajawal, Arial, sans-serif'
       : 'Calibri, Arial, Helvetica, sans-serif',
   };
@@ -43,11 +44,9 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
       <h1 className="text-[22px] font-bold text-black uppercase tracking-tight mb-1">
         {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
       </h1>
-      {personalInfo.jobTitle && (
-        <p className="text-[15px] font-semibold text-black mb-2">
-          {personalInfo.jobTitle}
-        </p>
-      )}
+      <p className="text-[15px] font-semibold text-black mb-2">
+        {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
+      </p>
       {contactParts.length > 0 && (
         <p className="text-[11px] text-black leading-relaxed">
           {contactParts.join('  |  ')}
@@ -243,8 +242,8 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
   return (
     <div
       className="w-[210mm] min-h-[297mm] bg-white text-black p-8 sm:p-12 shadow-sm text-sm leading-relaxed text-start"
-      dir={isArabic ? 'rtl' : 'ltr'}
-      style={{ ...fontStyle, direction: isArabic ? 'rtl' : 'ltr' }}
+      dir={docDir}
+      style={{ ...fontStyle, direction: docDir }}
     >
       {renderHeader()}
       {renderSummary()}

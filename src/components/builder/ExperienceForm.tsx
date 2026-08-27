@@ -18,6 +18,7 @@ import {
   Check,
   X,
 } from 'lucide-react';
+import { NextStepBanner } from './NextStepBanner';
 
 export const ExperienceForm: React.FC = () => {
   const {
@@ -236,6 +237,33 @@ export const ExperienceForm: React.FC = () => {
           <span>{isAr ? 'إضافة خبرة' : 'Add Experience'}</span>
         </button>
       </div>
+
+      {/* Next Action in Section */}
+      <NextStepBanner
+        variant="section"
+        isAr={isAr}
+        stepTextAr={
+          experiences.length === 0
+            ? 'أضف أحدث خبرة عملية لديك (الشركة، المسمى، وأهم الإنجازات).'
+            : experiences.some((e) => !e.company?.trim() || !e.position?.trim())
+            ? 'أكمل اسم الشركة والمسمى الوظيفي للخبرة المضافة.'
+            : experiences.some((e) => !e.bulletPoints || e.bulletPoints.filter(b => b.trim()).length === 0)
+            ? 'أضف إنجازاً أو مسؤولية رئيسية بصيغة رقمية مدعومة بالأرقام.'
+            : 'خبراتك جاهزة! يمكنك إضافة خبرة أخرى أو الانتقال للمؤهلات التعليمية.'
+        }
+        stepTextEn={
+          experiences.length === 0
+            ? 'Add your most recent work experience.'
+            : experiences.some((e) => !e.company?.trim() || !e.position?.trim())
+            ? 'Fill in company name and job title for your roles.'
+            : experiences.some((e) => !e.bulletPoints || e.bulletPoints.filter(b => b.trim()).length === 0)
+            ? 'Add at least one measurable achievement bullet.'
+            : 'Experience complete! Add another role or move to Education.'
+        }
+        actionTextAr={experiences.length === 0 ? 'إضافة خبرة الآن' : undefined}
+        actionTextEn={experiences.length === 0 ? 'Add experience now' : undefined}
+        onAction={experiences.length === 0 ? handleAddNew : undefined}
+      />
 
       {/* Empty State */}
       {experiences.length === 0 && (

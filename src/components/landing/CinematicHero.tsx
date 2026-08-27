@@ -86,10 +86,10 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           className="text-sm sm:text-xl md:text-2xl text-[#52627A] max-w-2xl mx-auto font-medium leading-relaxed px-2"
         >
           {isFrench
-            ? 'Nous avons conçu Hash Resume pour être le seul outil de concentration dont vous avez besoin. Créez un CV que les recruteurs acceptent instantanément.'
+            ? 'Nous avons conçu Hash Resume pour être le seul outil de concentration dont vous avez besoin. Créez un CV clair, professionnel et optimisé pour les systèmes ATS.'
             : isAr
-            ? 'صممنا Hash Resume ليكون أداة التركيز الوحيدة التي تحتاجها. ابدأ ببناء سيرة ذاتية تقبلها أنظمة الشركات فوراً.'
-            : 'We designed Hash Resume to be the only focus tool you need. Build a resume that company systems accept instantly.'}
+            ? 'صممنا Hash Resume ليكون أداة التركيز الوحيدة التي تحتاجها. ابدأ ببناء سيرة ذاتية هيكليتها منظمة وتتوافق تماماً مع أنظمة الفرز الآلي (ATS).'
+            : 'We designed Hash Resume to be the only focus tool you need. Build an ATS-friendly resume with a clean structure recruiters can read.'}
         </motion.p>
 
         {/* Founder Signature (Fine-tip pen handwriting in English: Bassem Ramadan) */}
@@ -131,23 +131,55 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3, ease: 'easeOut' }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-lg mx-auto w-full pt-4 sm:pt-6"
+          className="flex flex-col items-center justify-center gap-3 sm:gap-4 max-w-xl mx-auto w-full pt-4 sm:pt-6"
         >
-          <input
-            type="text"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleStart()}
-            placeholder={isAr ? 'ما هو مسماك الوظيفي؟' : 'What is your job title?'}
-            className="w-full sm:w-72 px-4 sm:px-6 py-3.5 sm:py-4 bg-white border border-[#E2E8F0] text-[#001639] rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold placeholder:text-[#8793A6] focus:outline-none focus:ring-2 focus:ring-coral/20 focus:border-coral shadow-2xs transition-all text-center sm:text-start"
-          />
-          <button
-            onClick={handleStart}
-            className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 bg-coral hover:bg-coral-hover text-white rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold shadow-md shadow-coral/20 flex items-center justify-center gap-2 transition-all active:scale-95 shrink-0 cursor-pointer min-h-[46px]"
-          >
-            <span>{isAr ? 'ابدأ الآن' : 'Start Building'}</span>
-            <ArrowIcon className="w-4 h-4 sm:w-5 h-5" />
-          </button>
+          {/* Main Focused CTA Bar */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3 w-full">
+            <div className="relative w-full sm:flex-1">
+              <input
+                type="text"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleStart()}
+                placeholder={isAr ? 'مسمّاك الوظيفي (اختياري)...' : 'Job title (optional)...'}
+                className="w-full px-4 sm:px-5 py-3.5 sm:py-4 bg-white border border-[#E2E8F0] text-[#001639] rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold placeholder:text-[#8793A6] focus:outline-none focus:ring-2 focus:ring-coral/20 focus:border-coral shadow-2xs transition-all text-center sm:text-start"
+              />
+            </div>
+            <button
+              onClick={handleStart}
+              className="w-full sm:w-auto px-7 sm:px-9 py-3.5 sm:py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-xl sm:rounded-2xl text-sm sm:text-base font-extrabold shadow-md shadow-coral/25 flex items-center justify-center gap-2.5 transition-all active:scale-95 shrink-0 cursor-pointer min-h-[48px]"
+            >
+              <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
+              <ArrowIcon className="w-4 h-4 sm:w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Quick 1-Click Role Suggestions */}
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 pt-1">
+            <span className="text-[11px] text-slate-400 font-medium me-1 hidden sm:inline">
+              {isAr ? 'أو اختر مجالك مباشرة:' : 'Or pick a role:'}
+            </span>
+            {[
+              { en: 'Frontend Developer', ar: 'Frontend Developer' },
+              { en: 'Accountant', ar: 'محاسب (Accountant)' },
+              { en: 'Customer Service', ar: 'خدمة عملاء (Customer Service)' },
+              { en: 'Sales Representative', ar: 'مندوب مبيعات (Sales Rep)' },
+              { en: 'Fresh Graduate', ar: 'حديث تخرج (Fresh Graduate)' },
+            ].map((item) => (
+              <button
+                key={item.en}
+                type="button"
+                onClick={() => {
+                  setRole(isAr ? item.ar : item.en);
+                  setPersonalInfo({ jobTitle: isAr ? item.ar : item.en });
+                  navigate('/builder');
+                }}
+                className="px-2.5 py-1 text-[11px] sm:text-xs font-semibold bg-slate-50 hover:bg-orange-50/80 text-slate-600 hover:text-[#FF4D2D] border border-slate-200 hover:border-orange-200 rounded-lg transition active:scale-95 cursor-pointer"
+              >
+                {isAr ? item.ar : item.en}
+              </button>
+            ))}
+          </div>
         </motion.div>
 
         <motion.div
@@ -156,9 +188,18 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           transition={{ duration: 1, delay: 0.6 }}
           className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 pt-3 sm:pt-6 text-xs sm:text-sm font-semibold text-[#8793A6]"
         >
-          <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#16A36A]" /> {isAr ? 'لا يحتاج حساب' : 'No account required'}</span>
-          <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#16A36A]" /> {isAr ? 'متوافق مع ATS' : 'ATS Compliant'}</span>
-          <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#16A36A]" /> {isAr ? 'مجاني تماماً' : '100% Free'}</span>
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#16A36A]" />{' '}
+            {isAr ? 'لا يحتاج إلى حساب' : 'No account required'}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#16A36A]" />{' '}
+            {isAr ? 'قوالب مناسبة لـ ATS' : 'ATS-friendly templates'}
+          </span>
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#16A36A]" />{' '}
+            {isAr ? 'أنشئ مجاناً — ادفع مرة واحدة عند التحميل' : 'Build free — pay once to download'}
+          </span>
         </motion.div>
       </div>
     </section>

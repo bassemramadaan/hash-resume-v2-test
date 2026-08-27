@@ -91,9 +91,19 @@ body {
 [dir="rtl"],
 [dir="rtl"] body,
 html[dir="rtl"] body {
-  font-family: 'IBM Plex Sans Arabic', 'Inter', system-ui, -apple-system, sans-serif;
-  line-height: 1.6;
+  font-family: 'IBM Plex Sans Arabic', 'Tajawal', 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.75;
   font-weight: 400;
+}
+
+/* Ensure emails, phones, and URLs remain LTR even in RTL mode */
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="tel"],
+[dir="rtl"] input[type="url"],
+[dir="rtl"] .data-ltr,
+[dir="rtl"] .contact-ltr {
+  direction: ltr !important;
+  text-align: right;
 }
 
 /* English Brand Name "Hash Resume" Typography override (remains Inter 700) */

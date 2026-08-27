@@ -19,6 +19,7 @@ import {
   ChevronRight,
   Lock,
   Key,
+  Save,
 } from 'lucide-react';
 
 import { PersonalInfoForm } from '../builder/PersonalInfoForm';
@@ -59,6 +60,15 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
     useResumeStore();
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
+
+  const [isDraftSavedFeedback, setIsDraftSavedFeedback] = React.useState(false);
+
+  const handleSaveDraft = () => {
+    setIsDraftSavedFeedback(true);
+    setTimeout(() => {
+      setIsDraftSavedFeedback(false);
+    }, 2000);
+  };
 
   const sectionMeta: Record<
     MobileSectionKey,
@@ -148,6 +158,7 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
   const Icon = current?.icon || User;
   const BackIcon = isAr ? ArrowRight : ArrowLeft;
   const ArrowNext = isAr ? ChevronLeft : ChevronRight;
+  const ArrowPrev = isAr ? ChevronRight : ChevronLeft;
 
   const handleUnlockRequest = () => {
     if (activation.remainingDownloads > 0) {
@@ -305,30 +316,52 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
           </fieldset>
 
           {/* Bottom Action inside Form Card */}
-          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col gap-2.5">
-            <button
-              type="button"
-              onClick={onBack}
-              className="w-full py-3 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition min-h-[46px] shadow-xs cursor-pointer active:scale-98"
-            >
-              <CheckCircle2 className="w-4 h-4 text-[#FF4D2D]" />
-              <span>
-                {isAr ? 'حفظ والرجوع للوحة الأقسام' : 'Save & Back to Dashboard'}
-              </span>
-            </button>
+          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col gap-2">
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={onBack}
+                className="py-2.5 px-3 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition min-h-[44px] cursor-pointer active:scale-98 shadow-2xs"
+              >
+                <ArrowPrev className="w-3.5 h-3.5 text-slate-500" />
+                <span>{isAr ? 'الرجوع للأقسام' : 'Back to sections'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSaveDraft}
+                className={`py-2.5 px-3 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition min-h-[44px] cursor-pointer active:scale-98 shadow-2xs ${
+                  isDraftSavedFeedback
+                    ? 'bg-emerald-600 text-white'
+                    : 'bg-white hover:bg-slate-50 border border-slate-300 text-slate-800'
+                }`}
+              >
+                {isDraftSavedFeedback ? (
+                  <>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                    <span>{isAr ? 'تم الحفظ' : 'Draft saved'}</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-3.5 h-3.5 text-slate-500" />
+                    <span>{isAr ? 'حفظ المسودة' : 'Save draft'}</span>
+                  </>
+                )}
+              </button>
+            </div>
 
             {current?.nextSection && (
               <button
                 type="button"
                 onClick={() => onNavigateSection(current.nextSection!)}
-                className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition min-h-[44px] cursor-pointer active:scale-98"
+                className="w-full py-2.5 px-3 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition min-h-[44px] cursor-pointer active:scale-98 shadow-xs"
               >
                 <span>
                   {isAr
-                    ? `الانتقال للقسم التالي: ${sectionMeta[current.nextSection].titleAr}`
+                    ? `التالي: ${sectionMeta[current.nextSection].titleAr}`
                     : `Next: ${sectionMeta[current.nextSection].titleEn}`}
                 </span>
-                <ArrowNext className="w-3.5 h-3.5 text-slate-400" />
+                <ArrowNext className="w-3.5 h-3.5 text-white" />
               </button>
             )}
           </div>

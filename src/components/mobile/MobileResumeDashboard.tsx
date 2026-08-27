@@ -26,6 +26,7 @@ import {
   Lock,
   Key,
 } from 'lucide-react';
+import { NextStepBanner } from '../builder/NextStepBanner';
 
 interface MobileResumeDashboardProps {
   onSelectSection: (key: MobileSectionKey) => void;
@@ -82,6 +83,53 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
   const skillsCount = resumeData.skills?.length || 0;
   const certsCount = resumeData.certifications?.length || 0;
   const projectsCount = resumeData.projects?.length || 0;
+
+  // Recommended Next Step calculation
+  const recommendedNextStep = React.useMemo(() => {
+    if (!resumeData.personalInfo.fullName?.trim()) {
+      return {
+        key: 'personal' as MobileSectionKey,
+        textAr: 'أكمل البيانات الشخصية (الاسم والمسمى المستهدف).',
+        textEn: 'Complete Personal Information (name & target title).',
+        actionAr: 'تعديل البيانات الشخصية',
+        actionEn: 'Fill Personal Info',
+      };
+    }
+    if (experiencesCount === 0) {
+      return {
+        key: 'experiences' as MobileSectionKey,
+        textAr: 'أضف أحدث خبرة مهنية أو وظيفة سابقة.',
+        textEn: 'Add your most recent work experience.',
+        actionAr: 'إضافة خبرة',
+        actionEn: 'Add Experience',
+      };
+    }
+    if (educationCount === 0) {
+      return {
+        key: 'education' as MobileSectionKey,
+        textAr: 'أضف مؤهلك التعليمي أو شهادتك الجامعية.',
+        textEn: 'Add your education and qualifications.',
+        actionAr: 'إضافة مؤهل',
+        actionEn: 'Add Education',
+      };
+    }
+    if (skillsCount < 3) {
+      return {
+        key: 'skills' as MobileSectionKey,
+        textAr: 'أضف مهاراتك الأساسية المتوافقة مع الوظيفة المستهدفة.',
+        textEn: 'Add your key skills matching your target job.',
+        actionAr: 'إضافة مهارات',
+        actionEn: 'Add Skills',
+      };
+    }
+    return {
+      key: 'download' as MobileSectionKey,
+      textAr: 'راجع سيرتك الذاتية وتأكد من توافقها مع الـ ATS قبل التصدير.',
+      textEn: 'Review your resume and check ATS readiness before export.',
+      actionAr: 'مراجعة وتصدير',
+      actionEn: 'Review & Export',
+    };
+  }, [resumeData, experiencesCount, educationCount, skillsCount]);
 
   const getSectionStatus = (key: MobileSectionKey): { label: string; isComplete: boolean } => {
     switch (key) {
@@ -405,70 +453,169 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
             </span>
           </div>
         </div>
+
+        {/* Recommended Next Step Guidance */}
+        <div className="mt-3">
+          <NextStepBanner
+            variant="highlight"
+            isAr={isAr}
+            stepTextAr={recommendedNextStep.textAr}
+            stepTextEn={recommendedNextStep.textEn}
+            actionTextAr={recommendedNextStep.actionAr}
+            actionTextEn={recommendedNextStep.actionEn}
+            onAction={() => onSelectSection(recommendedNextStep.key)}
+          />
+        </div>
       </div>
 
-      {/* Section Cards List */}
-      <div className="px-3 space-y-2.5" role="list">
-        {SECTIONS.map((sec, idx) => {
-          const Icon = sec.icon;
-          const status = getSectionStatus(sec.key);
+      {/* Section Cards List Grouped */}
+      <div className="px-3 space-y-5" role="list">
+        {/* Group 1: Your Content */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 px-1">
+            <span className="w-2 h-2 rounded-full bg-[#001639]"></span>
+            <h3 className="text-xs font-extrabold text-[#001639] uppercase tracking-wider">
+              {isAr ? 'محتوى السيرة الذاتية' : 'Your content'}
+            </h3>
+          </div>
 
-          return (
-            <motion.button
-              key={sec.key}
-              type="button"
-              onClick={() => onSelectSection(sec.key)}
-              whileTap={{ scale: 0.98 }}
-              role="listitem"
-              className="w-full min-h-[58px] p-3.5 bg-white border border-slate-200 hover:border-[#001639]/40 rounded-2xl shadow-2xs flex items-center justify-between gap-3 text-start transition cursor-pointer group active:bg-slate-50"
-              aria-label={`${isAr ? sec.titleAr : sec.titleEn} - ${status.label}`}
-            >
-              {/* Left/Start: Icon & Titles */}
-              <div className="flex items-center gap-3 min-w-0 flex-1">
-                <div
-                  className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition ${
-                    status.isComplete
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80'
-                      : 'bg-slate-100 text-[#001639] group-hover:bg-[#001639] group-hover:text-white'
-                  }`}
+          <div className="space-y-2">
+            {SECTIONS.filter((sec) =>
+              ['personal', 'experiences', 'education', 'skills', 'certifications', 'projects'].includes(sec.key)
+            ).map((sec, idx) => {
+              const Icon = sec.icon;
+              const status = getSectionStatus(sec.key);
+
+              return (
+                <motion.button
+                  key={sec.key}
+                  type="button"
+                  onClick={() => onSelectSection(sec.key)}
+                  whileTap={{ scale: 0.98 }}
+                  role="listitem"
+                  className="w-full min-h-[58px] p-3.5 bg-white border border-slate-200 hover:border-[#001639]/40 rounded-2xl shadow-2xs flex items-center justify-between gap-3 text-start transition cursor-pointer group active:bg-slate-50"
+                  aria-label={`${isAr ? sec.titleAr : sec.titleEn} - ${status.label}`}
                 >
-                  <Icon className="w-5 h-5" />
-                </div>
+                  {/* Left/Start: Icon & Titles */}
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition ${
+                        status.isComplete
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80'
+                          : 'bg-slate-100 text-[#001639] group-hover:bg-[#001639] group-hover:text-white'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </div>
 
-                <div className="min-w-0 flex-1 truncate">
-                  <div className="flex items-center gap-2">
-                    <h2 className="font-bold text-xs sm:text-sm text-[#001639] truncate">
-                      {isAr ? sec.titleAr : sec.titleEn}
-                    </h2>
-                    {sec.key === 'ats' && (
-                      <span className="px-1.5 py-0.5 rounded-md bg-orange-100 text-[#FF4D2D] text-[9px] font-extrabold shrink-0">
-                        AI
+                    <div className="min-w-0 flex-1 truncate">
+                      <h4 className="font-bold text-xs sm:text-sm text-[#001639] truncate">
+                        {isAr ? sec.titleAr : sec.titleEn}
+                      </h4>
+                      <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
+                        {status.label}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right/End: Status Pill & Arrow */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    {status.isComplete ? (
+                      <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                        <Check className="w-3.5 h-3.5" />
+                      </span>
+                    ) : (
+                      <span className="text-[11px] font-bold text-slate-400 px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200/60 hidden xs:inline-block">
+                        {idx + 1}
                       </span>
                     )}
+
+                    <Arrow className="w-4 h-4 text-slate-400 group-hover:text-[#001639] group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
                   </div>
-                  <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
-                    {status.label}
-                  </p>
-                </div>
-              </div>
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
 
-              {/* Right/End: Status Pill & Arrow */}
-              <div className="flex items-center gap-2 shrink-0">
-                {status.isComplete ? (
-                  <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
-                    <Check className="w-3.5 h-3.5" />
-                  </span>
-                ) : (
-                  <span className="text-[11px] font-bold text-slate-400 px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200/60 hidden xs:inline-block">
-                    {idx + 1}
-                  </span>
-                )}
+        {/* Group 2: Improve & Export */}
+        <div className="space-y-2 pt-1">
+          <div className="flex items-center gap-2 px-1">
+            <span className="w-2 h-2 rounded-full bg-[#FF4D2D]"></span>
+            <h3 className="text-xs font-extrabold text-[#001639] uppercase tracking-wider">
+              {isAr ? 'التحسين والتصدير' : 'Improve & export'}
+            </h3>
+          </div>
 
-                <Arrow className="w-4 h-4 text-slate-400 group-hover:text-[#001639] group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
-              </div>
-            </motion.button>
-          );
-        })}
+          <div className="space-y-2">
+            {SECTIONS.filter((sec) =>
+              ['customize', 'ats', 'download'].includes(sec.key)
+            ).map((sec) => {
+              const Icon = sec.icon;
+              const status = getSectionStatus(sec.key);
+
+              return (
+                <motion.button
+                  key={sec.key}
+                  type="button"
+                  onClick={() => onSelectSection(sec.key)}
+                  whileTap={{ scale: 0.98 }}
+                  role="listitem"
+                  className={`w-full min-h-[58px] p-3.5 rounded-2xl shadow-2xs flex items-center justify-between gap-3 text-start transition cursor-pointer group active:bg-slate-50 border ${
+                    sec.key === 'download'
+                      ? 'border-emerald-300 bg-emerald-50/40 hover:bg-emerald-50/70'
+                      : 'bg-white border-slate-200 hover:border-[#001639]/40'
+                  }`}
+                  aria-label={`${isAr ? sec.titleAr : sec.titleEn} - ${status.label}`}
+                >
+                  {/* Left/Start: Icon & Titles */}
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition ${
+                        status.isComplete
+                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80'
+                          : 'bg-slate-100 text-[#001639] group-hover:bg-[#001639] group-hover:text-white'
+                      }`}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </div>
+
+                    <div className="min-w-0 flex-1 truncate">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-bold text-xs sm:text-sm text-[#001639] truncate">
+                          {isAr ? sec.titleAr : sec.titleEn}
+                        </h4>
+                        {sec.key === 'ats' && (
+                          <span className="px-1.5 py-0.5 rounded-md bg-orange-100 text-[#FF4D2D] text-[9px] font-extrabold shrink-0">
+                            AI
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
+                        {status.label}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right/End: Status Pill & Arrow */}
+                  <div className="flex items-center gap-2 shrink-0">
+                    {status.isComplete ? (
+                      <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                        <Check className="w-3.5 h-3.5" />
+                      </span>
+                    ) : (
+                      <span className="text-[11px] font-bold text-slate-400 px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200/60 hidden xs:inline-block">
+                        •
+                      </span>
+                    )}
+
+                    <Arrow className="w-4 h-4 text-slate-400 group-hover:text-[#001639] group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
+                  </div>
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );

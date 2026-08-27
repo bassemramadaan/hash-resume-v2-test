@@ -9,6 +9,7 @@ interface TemplateProps {
 export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo(({ data, settings }) => {
   const { personalInfo, experiences, education, skills, projects, certifications, languages } = data;
   const isArabic = settings.language === 'ar';
+  const docDir = settings.documentDirection || (isArabic ? 'rtl' : 'ltr');
   const primaryColor = settings.primaryColor || '#111827';
   const headerLayout = settings.headerLayout || 'centered';
   const careerFocus = settings.careerFocus || 'experienced';
@@ -24,7 +25,7 @@ export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo((
                 {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
               </h1>
               <p className="text-sm font-medium italic text-gray-700">
-                {personalInfo.jobTitle || (isArabic ? 'المسمى الوظيفي' : 'Job Title')}
+                {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
               </p>
             </div>
             <div className="text-xs text-gray-600 space-y-0.5 text-end shrink-0">
@@ -53,7 +54,7 @@ export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo((
               {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
             </h1>
             <p className="text-xs font-bold italic text-gray-700">
-              {personalInfo.jobTitle || (isArabic ? 'المسمى الوظيفي' : 'Job Title')}
+              {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-x-2 text-[11px] text-gray-600">
@@ -80,7 +81,7 @@ export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo((
           {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
         </h1>
         <p className="text-sm font-medium italic text-gray-700 mb-2">
-          {personalInfo.jobTitle || (isArabic ? 'المسمى الوظيفي' : 'Job Title')}
+          {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
         </p>
 
         <div className="flex flex-wrap justify-center items-center gap-x-3 text-xs text-gray-600">
@@ -206,10 +207,10 @@ export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo((
   return (
     <div
       className="w-[210mm] min-h-[297mm] bg-white text-gray-900 p-8 shadow-sm text-sm leading-relaxed text-start"
-      dir={isArabic ? 'rtl' : 'ltr'}
+      dir={docDir}
       style={{
         fontFamily: settings.fontFamily === 'Tajawal' ? 'Tajawal, serif' : 'Georgia, serif',
-        direction: isArabic ? 'rtl' : 'ltr',
+        direction: docDir,
       }}
     >
       {renderHeader()}

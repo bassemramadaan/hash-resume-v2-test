@@ -104,7 +104,7 @@ export const ImportResumeModal: React.FC<ImportResumeModalProps> = ({
             <p className="leading-relaxed">
               {isAr
                 ? 'يرجى مراجعة وتدقيق الحقول بعد الاستيراد للتأكد من دقة الصياغة وتوافقها التام مع محركات الفرز ATS.'
-                : 'Please review and verify all fields in the editor after importing to ensure 100% ATS accuracy.'}
+                : 'Please review and verify all fields in the editor after importing to ensure optimal ATS readability.'}
             </p>
           </div>
 

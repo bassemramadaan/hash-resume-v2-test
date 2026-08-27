@@ -22,9 +22,9 @@ export const translations = {
     // Quick Actions
     startNewResume: "بدء سيرة جديدة",
     clearData: "مسح البيانات",
-    resetConfirm: "هل أنت متأكد من تفريغ كافة الحقول والبدء بسيرة ذاتية جديدة فارغة؟",
-    startNewResumeTitle: "بدء سيرة ذاتية جديدة فارغة",
-    startNewResumeDesc: "سيتم مسح بيانات السيرة الذاتية المدخلة وتفريغ الحقول بالكامل لتتمكن من كتابة سيرة ذاتية جديدة من الصفر. رصيد التفعيل والاشتراكات سيبقى محفوظاً.",
+    resetConfirm: "البدء بسيرة ذاتية جديدة؟ مسودتك الحالية محفوظة تلقائياً.",
+    startNewResumeTitle: "بدء سيرة ذاتية جديدة؟",
+    startNewResumeDesc: "البدء بسيرة ذاتية جديدة؟ مسودتك الحالية محفوظة تلقائياً.",
     startNewResumeConfirmBtn: "نعم، ابدأ سيرة جديدة",
     startNewResumeCancelBtn: "إلغاء والتراجع",
     startNewResumeSuccessMsg: "تم تفريغ النموذج والبدء بسيرة ذاتية جديدة بنجاح.",
@@ -194,9 +194,9 @@ export const translations = {
     // Quick Actions
     startNewResume: "Start New Resume",
     clearData: "Reset Builder",
-    resetConfirm: "Are you sure you want to clear all fields and start a fresh, empty resume?",
-    startNewResumeTitle: "Start a Fresh New Resume",
-    startNewResumeDesc: "This will clear all entered resume data so you can start from a completely blank slate. Your activation credits and account status remain safe.",
+    resetConfirm: "Start a new resume? Your current draft is saved.",
+    startNewResumeTitle: "Start a new resume?",
+    startNewResumeDesc: "Start a new resume? Your current draft is saved.",
     startNewResumeConfirmBtn: "Yes, Start Fresh",
     startNewResumeCancelBtn: "Cancel",
     startNewResumeSuccessMsg: "Resume has been cleared. You are ready to start fresh.",
@@ -283,7 +283,7 @@ export const translations = {
 
     // Templates Names & Desc
     tplBassux: "ATS Classic (BASSUX)",
-    tplBassuxDesc: "True single-column plain text layout without colors or graphics for 100% ATS compatibility.",
+    tplBassuxDesc: "True single-column plain text layout without colors or graphics for maximum ATS friendliness.",
     atsSelectorNote: "Best for online applications and Applicant Tracking Systems (ATS).",
     tplModernAts: "Modern ATS (Recommended)",
     tplModernAtsDesc: "Optimized clean structure designed for high recruiter readability and scanner compliance.",

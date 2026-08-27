@@ -7,6 +7,7 @@ import {
   calculateResumeFingerprint,
   isResumeBlank,
 } from '../../utils/resumeFingerprint';
+import { validateResumeMinimumRequirements } from '../../utils/resumeValidation';
 import {
   KeyRound, CheckCircle2, ShieldCheck, Zap, X, Copy, Check, ArrowLeft, ArrowRight, ExternalLink,
   AlertTriangle, Download, Sparkles, Loader2, Mail, PhoneCall, Smartphone, RefreshCw
@@ -23,7 +24,8 @@ type PaymentStep = 'payment_details' | 'submitted_pending' | 'check_status' | 'a
 const PAYMENT_MODAL_I18N = {
   ar: {
     modalTitle: 'تفعيل السيرة الذاتية والتحميل الفوري',
-    modalSub: 'خطوات دفع فورية وسريعة بدون اشتراكات متكررة',
+    modalSub: 'دفع لمرة واحدة — بدون أي رسوم متكررة',
+    oneTimeNotice: 'دفع لمرة واحدة — بدون أي رسوم متكررة',
     prePaymentNote: 'سيصبح التحميل متاحاً فور اعتماد التحويل من الإدارة.',
     keepRefNotice: 'احتفظ برقم المرجع للتحقق من حالة الدفع في أي وقت: Keep this reference number to check your payment status.',
     downloadCompleteLocked: 'تم تنزيل الـPDF بنجاح — تم إقفال السيرة الذاتية لمنع التعديل غير المقصود.',
@@ -36,17 +38,33 @@ const PAYMENT_MODAL_I18N = {
     step2Guide: '2. أدخل رقم العملية/المرجع واسمك واضغط تسجيل',
     step3Guide: '3. يتم تفعيل السيرة فوراً وبدء تحميل PDF دون أي تأخير',
     instantHelpNotice: 'تحتاج مساعدة فورية في التفعيل؟ تواصل معنا واتساب: 011 01007965',
-    singleTitle: 'تفعيل فردي',
+    
+    // Single Plan
+    singleTitle: 'Single Download — 50 EGP',
     singlePrice: '50 ج.م',
-    singleSub: 'سيرة ذاتية واحدة • تحميل دائم',
-    singleFeature1: 'تفعيل سيرة ذاتية واحدة مكتملة',
-    singleFeature2: 'تحميل PDF عالي الجودة بدون علامة مائية',
-    bundleTitle: 'باقة 3 تفعيلات',
+    singleSub: 'تحميل فردي • دفع لمرة واحدة',
+    singleBullets: [
+      'تحميل واحد بصيغة PDF عالية الدقة',
+      'قالب واحد',
+      'النسخة الحالية للسيرة الذاتية',
+      'دفع لمرة واحدة — بدون اشتراك',
+    ],
+    buySingleBtn: 'Buy Single — 50 EGP',
+    buySingleBtnAr: 'شراء تحميل فردي — 50 ج.م',
+
+    // Bundle Plan (120 EGP)
+    bundleTitle: '3-Download Pack — 120 EGP',
     bundlePrice: '120 ج.م',
-    bundleBadge: 'الأكثر توفيراً (توفير 30 ج.م)',
-    bundleSub: '3 تفعيلات مستقلة • توفير 30 ج.م',
-    bundleFeature1: '3 تفعيلات مستقلة لسير ذاتية مختلفة',
-    bundleFeature2: 'توفير 30 جنيه مصري فوراً',
+    bundleBadge: 'Best value',
+    bundleSub: 'باقة 3 تحميلات • أنسب للباحثين عن عمل',
+    bundleBullets: [
+      '3 تحميلات PDF عالية الدقة',
+      'مثالي لتخصيص سيرتك الذاتية لوظائف متعددة',
+      'دفع لمرة واحدة — بدون اشتراك',
+    ],
+    buyBundleBtn: 'Buy Pack — 120 EGP',
+    buyBundleBtnAr: 'شراء باقة 3 تحميلات — 120 ج.م',
+
     tabInstapay: 'إنستاباي (InstaPay)',
     tabVodafone: 'فودافون كاش / المحافظ',
     tabCode: 'كود التفعيل المباشر',
@@ -83,7 +101,7 @@ const PAYMENT_MODAL_I18N = {
     additionalCodesTitle: 'أكوادك الإضافية المتبقية',
     additionalCodesNote: 'لديك تفعيلان إضافيان لاستخدامهما مستقبلاً لأي سيرة ذاتية أخرى. احفظهما جيداً.',
     saveWarning: '⚠️ يرجى حفظ هذه الأكواد في مكان آمن لاستخدامها لاحقاً.',
-    securityFooter: 'دفع آمن 100% • تفعيل فوري مع دعم مباشر عبر واتساب',
+    securityFooter: '100% Secure Checkout • One-time payment — no recurring fees',
     errorTitle: 'تنبيه التفعيل',
     backBtn: 'رجوع لتعديل البيانات',
     retryBtn: 'إعادة المحاولة',
@@ -96,7 +114,8 @@ const PAYMENT_MODAL_I18N = {
   },
   en: {
     modalTitle: 'Instant Resume Activation & Download',
-    modalSub: 'One-time clear checkout with zero recurring subscription fees',
+    modalSub: 'One-time payment — no recurring fees',
+    oneTimeNotice: 'One-time payment — no recurring fees',
     prePaymentNote: 'Download will be available immediately once the transfer is approved.',
     keepRefNotice: 'Keep this reference number to check your payment status.',
     downloadCompleteLocked: 'Download complete — your resume is locked for editing.',
@@ -109,17 +128,33 @@ const PAYMENT_MODAL_I18N = {
     step2Guide: '2. Enter sender name & transaction reference',
     step3Guide: '3. Your resume is unlocked and PDF download starts immediately',
     instantHelpNotice: 'Need immediate help with activation? Chat with us on WhatsApp: 011 01007965',
-    singleTitle: 'Single Activation',
+    
+    // Single Plan
+    singleTitle: 'Single Download — 50 EGP',
     singlePrice: '50 EGP',
-    singleSub: 'One resume activation • Lifetime download',
-    singleFeature1: '1 Complete resume activation',
-    singleFeature2: 'High-res PDF download without watermark',
-    bundleTitle: '3-Resume Pack',
+    singleSub: 'Single download credit',
+    singleBullets: [
+      'One high-res PDF download',
+      'One template',
+      'Current resume version',
+      'Pay once — no subscription',
+    ],
+    buySingleBtn: 'Buy Single — 50 EGP',
+    buySingleBtnAr: 'Buy Single — 50 EGP',
+
+    // Bundle Plan (120 EGP)
+    bundleTitle: '3-Download Pack — 120 EGP',
     bundlePrice: '120 EGP',
-    bundleBadge: 'Best Value (Save 30 EGP)',
-    bundleSub: 'Three resume activations • Save 30 EGP',
-    bundleFeature1: '3 Separate activations for different resumes',
-    bundleFeature2: 'Save 30 EGP instantly',
+    bundleBadge: 'Best value',
+    bundleSub: 'Ideal for tailoring to multiple jobs',
+    bundleBullets: [
+      '3 high-res PDF downloads',
+      'Ideal for tailoring your resume to different jobs',
+      'Pay once — no subscription',
+    ],
+    buyBundleBtn: 'Buy Pack — 120 EGP',
+    buyBundleBtnAr: 'Buy Pack — 120 EGP',
+
     tabInstapay: 'InstaPay',
     tabVodafone: 'Vodafone Cash / Wallet',
     tabCode: 'Activation Code',
@@ -156,7 +191,7 @@ const PAYMENT_MODAL_I18N = {
     additionalCodesTitle: 'Your Additional Bundle Codes',
     additionalCodesNote: 'You have additional download credits. Save them carefully.',
     saveWarning: '⚠️ Save these codes now in a safe place for future use.',
-    securityFooter: '100% Secure Checkout • Instant Direct Transfer with WhatsApp Support',
+    securityFooter: '100% Secure Checkout • One-time payment — no recurring fees',
     errorTitle: 'Notice',
     backBtn: 'Back',
     retryBtn: 'Retry',
@@ -274,6 +309,19 @@ export const ActivationModal: React.FC = () => {
 
   const handleSubmitPayment = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Minimum requirements check to prevent payment on blank/dummy resumes
+    const val = validateResumeMinimumRequirements(resumeData);
+    if (!val.isValid) {
+      setErrorMessage(
+        isAr
+          ? `أكمل الحقول المطلوبة للسيرة الذاتية قبل التفعيل: (${val.missingItemsAr.join('، ')})`
+          : `Complete required fields before activating: (${val.missingItemsEn.join(', ')})`
+      );
+      setPaymentStep('error');
+      return;
+    }
+
     if (!referenceInput || !senderInfo || !emailInput) {
       setErrorMessage(labels.fieldsRequired);
       setPaymentStep('error');
@@ -493,34 +541,111 @@ export const ActivationModal: React.FC = () => {
           {paymentStep === 'payment_details' && (
             <div className="space-y-5">
               <div className="space-y-2">
-                <label className="block text-xs font-bold text-slate-800">{labels.step1Title}</label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold text-slate-800">{labels.step1Title}</label>
+                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                    {labels.oneTimeNotice}
+                  </span>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  {/* Single Download Plan (50 EGP) */}
                   <div
                     onClick={() => setSelectedPlan('single')}
-                    className={`p-4 rounded-2xl border-2 transition cursor-pointer flex flex-col ${
-                      selectedPlan === 'single' ? 'border-[#001639] bg-[#001639]/5' : 'border-slate-200'
+                    className={`p-4 rounded-2xl border-2 transition cursor-pointer flex flex-col justify-between ${
+                      selectedPlan === 'single'
+                        ? 'border-[#001639] bg-[#001639]/5 shadow-sm'
+                        : 'border-slate-200 hover:border-slate-300 bg-white'
                     }`}
                   >
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="font-extrabold text-sm">{labels.singleTitle}</span>
-                      <span className="font-black text-[#001639] text-base">{labels.singlePrice}</span>
+                    <div>
+                      <div className="flex justify-between items-start mb-1">
+                        <div>
+                          <h4 className="font-extrabold text-xs sm:text-sm text-[#001639]">
+                            {labels.singleTitle}
+                          </h4>
+                          <p className="text-[11px] text-slate-500">{labels.singleSub}</p>
+                        </div>
+                        <span className="font-black text-[#001639] text-base shrink-0">{labels.singlePrice}</span>
+                      </div>
+
+                      <ul className="space-y-1.5 my-3 pt-2 border-t border-slate-200/80 text-[11px] text-slate-700">
+                        {labels.singleBullets.map((bullet: string, i: number) => (
+                          <li key={i} className="flex items-start gap-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                            <span className="leading-tight">{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                    <p className="text-[11px] text-slate-500 mb-3">{labels.singleSub}</p>
+
+                    <div className="pt-2">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedPlan('single');
+                        }}
+                        className={`w-full py-2 px-3 rounded-xl font-extrabold text-xs transition flex items-center justify-center gap-1 ${
+                          selectedPlan === 'single'
+                            ? 'bg-[#001639] text-white shadow-2xs'
+                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                        }`}
+                      >
+                        <span>{isAr ? labels.buySingleBtnAr : labels.buySingleBtn}</span>
+                      </button>
+                    </div>
                   </div>
+
+                  {/* 3-Download Pack Plan (120 EGP) */}
                   <div
                     onClick={() => setSelectedPlan('bundle_3')}
-                    className={`p-4 rounded-2xl border-2 transition cursor-pointer relative flex flex-col ${
-                      selectedPlan === 'bundle_3' ? 'border-[#001639] bg-[#001639]/5' : 'border-slate-200'
+                    className={`p-4 rounded-2xl border-2 transition cursor-pointer relative flex flex-col justify-between ${
+                      selectedPlan === 'bundle_3'
+                        ? 'border-[#FF4D2D] bg-orange-50/40 shadow-sm'
+                        : 'border-slate-200 hover:border-slate-300 bg-white'
                     }`}
                   >
-                    <span className="absolute -top-3 left-4 rtl:left-auto rtl:right-4 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#FF4D2D] text-white">
+                    <span className="absolute -top-3 right-4 rtl:right-auto rtl:left-4 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#FF4D2D] text-white shadow-2xs">
                       {labels.bundleBadge}
                     </span>
-                    <div className="flex justify-between items-center mb-1 pt-1">
-                      <span className="font-extrabold text-sm">{labels.bundleTitle}</span>
-                      <span className="font-black text-[#001639] text-base">{labels.bundlePrice}</span>
+
+                    <div>
+                      <div className="flex justify-between items-start mb-1 pt-1">
+                        <div>
+                          <h4 className="font-extrabold text-xs sm:text-sm text-[#001639]">
+                            {labels.bundleTitle}
+                          </h4>
+                          <p className="text-[11px] text-slate-500">{labels.bundleSub}</p>
+                        </div>
+                        <span className="font-black text-[#FF4D2D] text-base shrink-0">{labels.bundlePrice}</span>
+                      </div>
+
+                      <ul className="space-y-1.5 my-3 pt-2 border-t border-slate-200/80 text-[11px] text-slate-700">
+                        {labels.bundleBullets.map((bullet: string, i: number) => (
+                          <li key={i} className="flex items-start gap-1.5">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-[#FF4D2D] shrink-0 mt-0.5" />
+                            <span className="leading-tight font-medium">{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                    <p className="text-[11px] text-slate-500 mb-3">{labels.bundleSub}</p>
+
+                    <div className="pt-2">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedPlan('bundle_3');
+                        }}
+                        className={`w-full py-2 px-3 rounded-xl font-extrabold text-xs transition flex items-center justify-center gap-1 ${
+                          selectedPlan === 'bundle_3'
+                            ? 'bg-[#FF4D2D] text-white shadow-2xs'
+                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                        }`}
+                      >
+                        <span>{isAr ? labels.buyBundleBtnAr : labels.buyBundleBtn}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -711,7 +836,13 @@ export const ActivationModal: React.FC = () => {
                         className="w-full py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 min-h-[46px] shadow-sm active:scale-98 transition disabled:opacity-70"
                       >
                         {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
-                        <span>{isSubmitting ? labels.submittingBtn : labels.submitBtn}</span>
+                        <span>
+                          {isSubmitting
+                            ? labels.submittingBtn
+                            : selectedPlan === 'bundle_3'
+                            ? (isAr ? labels.buyBundleBtnAr : labels.buyBundleBtn)
+                            : (isAr ? labels.buySingleBtnAr : labels.buySingleBtn)}
+                        </span>
                       </button>
                     </div>
                     

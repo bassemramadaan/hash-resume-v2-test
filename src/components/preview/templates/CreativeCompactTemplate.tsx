@@ -9,6 +9,7 @@ interface TemplateProps {
 export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ data, settings }) => {
   const { personalInfo, experiences, education, skills, projects, certifications, languages } = data;
   const isArabic = settings.language === 'ar';
+  const docDir = settings.documentDirection || (isArabic ? 'rtl' : 'ltr');
   const primaryColor = settings.primaryColor || '#b91c1c';
   const careerFocus = settings.careerFocus || 'experienced';
   const isFreshGrad = careerFocus === 'fresh-grad';
@@ -128,10 +129,10 @@ export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ da
   return (
     <div
       className="w-[210mm] min-h-[297mm] bg-white text-gray-900 p-0 shadow-sm text-sm leading-relaxed flex"
-      dir={isArabic ? 'rtl' : 'ltr'}
+      dir={docDir}
       style={{
         fontFamily: settings.fontFamily === 'Tajawal' ? 'Tajawal, sans-serif' : 'Inter, sans-serif',
-        direction: isArabic ? 'rtl' : 'ltr',
+        direction: docDir,
       }}
     >
       {/* Sidebar Accent Panel */}
@@ -149,7 +150,7 @@ export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ da
             {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
           </h1>
           <p className="text-xs font-medium text-red-400 text-center mb-6">
-            {personalInfo.jobTitle || (isArabic ? 'المسمى الوظيفي' : 'Job Title')}
+            {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
           </p>
 
           <div className="space-y-2 text-xs text-slate-300 mb-6">

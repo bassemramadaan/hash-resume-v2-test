@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
 import { Award, Plus, Trash2 } from 'lucide-react';
+import { NextStepBanner } from './NextStepBanner';
 
 export const CertificationsForm: React.FC = () => {
   const { resumeData, settings, addCertification, updateCertification, removeCertification } =
@@ -44,6 +45,22 @@ export const CertificationsForm: React.FC = () => {
             : 'Add verified credentials and professional certifications'}
         </p>
       </div>
+
+      {/* Next Action in Section */}
+      <NextStepBanner
+        variant="section"
+        isAr={isAr}
+        stepTextAr={
+          certs.length === 0
+            ? 'أضف أي شهادة أو تدريب معتمد لإثبات تخصصك (اختياري لكن يُعزز التقييم).'
+            : 'شهاداتك مضافة بنجاح! انتقل للمشاريع أو قوالب السيرة الذاتية.'
+        }
+        stepTextEn={
+          certs.length === 0
+            ? 'Add professional certifications to boost credibility (optional).'
+            : 'Certifications added! Move to Projects or Templates.'
+        }
+      />
 
       {/* Add New Form */}
       <form
