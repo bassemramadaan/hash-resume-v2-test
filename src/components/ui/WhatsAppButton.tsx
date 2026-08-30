@@ -4,7 +4,7 @@ import { useResumeStore } from '../../store/useResumeStore';
 import { MessageCircle } from 'lucide-react';
 
 export const WhatsAppButton: React.FC = () => {
-  const { settings } = useResumeStore();
+  const { settings, isActivationModalOpen } = useResumeStore();
   const location = useLocation();
   const isAr = settings.language === 'ar';
   const isLandingPage = location.pathname === '/';
@@ -32,6 +32,9 @@ export const WhatsAppButton: React.FC = () => {
     window.addEventListener('scroll', checkScroll, { passive: true });
     return () => window.removeEventListener('scroll', checkScroll);
   }, [isLandingPage]);
+
+  // Don't render floating button over activation modal
+  if (isActivationModalOpen) return null;
 
   // On landing page mobile, hide initially until user scrolls past hero by 300px
   const isVisibleOnMobile = !isLandingPage || hasScrolledPastHero;

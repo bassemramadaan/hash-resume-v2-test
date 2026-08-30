@@ -291,7 +291,7 @@ export const Navbar: React.FC = () => {
                 className="w-full py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 shadow-xs min-h-[44px] active:scale-98 transition"
               >
                 <Sparkles className="w-4 h-4" />
-                <span>{isAr ? 'إنشاء سيرة ذاتية فوراً' : 'Create Resume Now'}</span>
+                <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
               </Link>
             </div>
           )}

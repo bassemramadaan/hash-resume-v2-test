@@ -39,7 +39,7 @@ export const EducationForm: React.FC = () => {
   };
 
   return (
-    <div className="space-y-5 sm:space-y-6 text-slate-800">
+    <div className="space-y-5 sm:space-y-6 text-slate-800 w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3 border-slate-100">
         <div>

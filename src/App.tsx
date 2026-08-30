@@ -20,6 +20,7 @@ import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 import { PaymentSuccessPage } from './pages/PaymentSuccessPage';
 import { PaymentFailedPage } from './pages/PaymentFailedPage';
+import { ShowcasePage } from './pages/ShowcasePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 export default function App() {
@@ -52,6 +53,7 @@ export default function App() {
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/payment/success" element={<PaymentSuccessPage />} />
           <Route path="/payment/failed" element={<PaymentFailedPage />} />
+          <Route path="/showcase" element={<ShowcasePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>

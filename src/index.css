@@ -200,6 +200,116 @@ section,
   padding-bottom: 92px;
 }
 
+/* Mobile Editor & Responsive Container Constraints (Fix Horizontal Scroll) */
+.mobile-editor-page {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.mobile-editor-content,
+.mobile-form-card,
+.mobile-section-editor {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.mobile-editor-row {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  gap: 12px;
+}
+
+.add-experience-button {
+  width: 100%;
+  min-height: 48px;
+}
+
+.next-step-banner {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.personal-info-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .personal-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+.optional-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.optional-links button {
+  min-height: 44px;
+  max-width: 100%;
+}
+
+/* Summary AI Header & Button */
+.summary-header {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .summary-header {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.generate-ai-button {
+  width: 100%;
+  min-height: 44px;
+}
+
+@media (min-width: 640px) {
+  .generate-ai-button {
+    width: auto;
+  }
+}
+
+/* Warning Cards on Review & Export */
+.warning-card {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.warning-card p,
+.warning-card h4,
+.warning-card span {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 /* Ensure mobile touch targets satisfy accessibility minimums */
 @media (max-width: 768px) {
   button:not(.inline-tag-btn),
@@ -207,6 +317,22 @@ section,
   input[type="button"],
   input[type="submit"] {
     min-height: 44px;
+  }
+
+  .form-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  /* Ensure inputs, forms, and containers never overflow viewport */
+  .mobile-editor-page input,
+  .mobile-editor-page textarea,
+  .mobile-editor-page select,
+  .mobile-editor-page button {
+    max-width: 100%;
+  }
+
+  .mobile-editor-page {
+    overflow-x: hidden !important;
   }
 }
 

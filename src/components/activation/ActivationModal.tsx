@@ -44,27 +44,29 @@ const PAYMENT_MODAL_I18N = {
     singlePrice: '50 ج.م',
     singleSub: 'تحميل فردي • دفع لمرة واحدة',
     singleBullets: [
-      'تحميل سيرة ذاتية واحدة عالية الجودة PDF',
-      'بدون أي علامة مائية',
-      'تنسيق متوافق مع أنظمة ATS',
-      'دفع لمرة واحدة — بدون اشتراك',
+      'رصيد تحميل لمرة واحدة لسيرة ذاتية',
+      'استخدمه لأي نسخة من اختيارك',
+      'بدون علامة مائية',
+      'تنسيق معتمد لأجهزة ATS',
+      'بدون أي رسوم تكرارية',
     ],
-    buySingleBtn: 'Buy Single — 50 EGP',
-    buySingleBtnAr: 'شراء تحميل فردي — 50 ج.م',
+    buySingleBtn: 'Select Single — 50 EGP',
+    buySingleBtnAr: 'اختيار باقة 50 ج.م',
 
     // Bundle Plan (120 EGP)
     bundleTitle: '3-Download Pack — 120 EGP',
     bundlePrice: '120 ج.م',
-    bundleBadge: 'Best value',
+    bundleBadge: 'الأكثر توفيراً',
     bundleSub: 'باقة 3 تحميلات • أنسب للباحثين عن عمل',
     bundleBullets: [
-      '3 تحميلات لنماذج أو نسخ سير ذاتية مختلفة',
-      'استخدم الرصيد في أي وقت تحتاجه',
-      'بدون علامة مائية ومعتمدة لـ ATS',
-      'دفع لمرة واحدة — بدون اشتراك',
+      '3 رصيد تحميل لمرة واحدة',
+      'استخدمها للتقديم على وظائف مختلفة',
+      'بدون علامة مائية',
+      'تنسيق معتمد لأجهزة ATS',
+      'بدون أي رسوم تكرارية',
     ],
-    buyBundleBtn: 'Buy Pack — 120 EGP',
-    buyBundleBtnAr: 'شراء باقة 3 تحميلات — 120 ج.م',
+    buyBundleBtn: 'Select Pack — 120 EGP',
+    buyBundleBtnAr: 'اختيار باقة 120 ج.م',
 
     tabInstapay: 'إنستاباي (InstaPay)',
     tabVodafone: 'فودافون كاش / المحافظ',
@@ -135,13 +137,14 @@ const PAYMENT_MODAL_I18N = {
     singlePrice: '50 EGP',
     singleSub: 'Single download credit',
     singleBullets: [
-      '1 high-quality PDF download',
+      '1 one-time download credit',
+      'Use for any resume version',
       'No watermark',
       'ATS-friendly layout',
-      'One-time payment',
+      'No recurring fees',
     ],
-    buySingleBtn: 'Buy Single — 50 EGP',
-    buySingleBtnAr: 'Buy Single — 50 EGP',
+    buySingleBtn: 'Select Single — 50 EGP',
+    buySingleBtnAr: 'Select Single — 50 EGP',
 
     // Bundle Plan (120 EGP)
     bundleTitle: '3-Download Pack — 120 EGP',
@@ -149,13 +152,14 @@ const PAYMENT_MODAL_I18N = {
     bundleBadge: 'Best value',
     bundleSub: 'Ideal for tailoring to multiple jobs',
     bundleBullets: [
-      '3 downloads for different resume versions',
-      'Use them whenever you need',
-      'No watermark & ATS-friendly',
-      'One-time payment',
+      '3 one-time download credits',
+      'Use them for different job applications',
+      'No watermark',
+      'ATS-friendly layout',
+      'No recurring fees',
     ],
-    buyBundleBtn: 'Buy Pack — 120 EGP',
-    buyBundleBtnAr: 'Buy Pack — 120 EGP',
+    buyBundleBtn: 'Select Pack — 120 EGP',
+    buyBundleBtnAr: 'Select Pack — 120 EGP',
 
     tabInstapay: 'InstaPay',
     tabVodafone: 'Vodafone Cash / Wallet',
@@ -557,7 +561,7 @@ export const ActivationModal: React.FC = () => {
                     onClick={() => setSelectedPlan('single')}
                     className={`p-4 rounded-2xl border-2 transition cursor-pointer flex flex-col justify-between ${
                       selectedPlan === 'single'
-                        ? 'border-[#001639] bg-[#001639]/5 shadow-sm'
+                        ? 'border-[#001639] bg-slate-50/90 shadow-sm ring-1 ring-[#001639]/20'
                         : 'border-slate-200 hover:border-slate-300 bg-white'
                     }`}
                   >
@@ -589,13 +593,18 @@ export const ActivationModal: React.FC = () => {
                           e.stopPropagation();
                           setSelectedPlan('single');
                         }}
-                        className={`w-full min-h-[44px] py-2.5 px-3 rounded-xl font-extrabold text-xs transition flex items-center justify-center gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#001639] ${
+                        className={`w-full min-h-[44px] py-2.5 px-3 rounded-xl font-extrabold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#001639] ${
                           selectedPlan === 'single'
-                            ? 'bg-[#001639] text-white shadow-2xs'
-                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            ? 'bg-[#001639] text-white shadow-sm'
+                            : 'bg-[#001639]/10 text-[#001639] hover:bg-[#001639] hover:text-white border border-[#001639]/30'
                         }`}
                       >
-                        <span>{isAr ? labels.buySingleBtnAr : labels.buySingleBtn}</span>
+                        {selectedPlan === 'single' && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+                        <span>
+                          {selectedPlan === 'single'
+                            ? (isAr ? 'الباقة المحددة (50 ج.م)' : 'Selected (50 EGP)')
+                            : (isAr ? labels.buySingleBtnAr : labels.buySingleBtn)}
+                        </span>
                       </button>
                     </div>
                   </div>
@@ -605,8 +614,8 @@ export const ActivationModal: React.FC = () => {
                     onClick={() => setSelectedPlan('bundle_3')}
                     className={`p-4 rounded-2xl border-2 transition cursor-pointer relative flex flex-col justify-between ${
                       selectedPlan === 'bundle_3'
-                        ? 'border-[#FF4D2D] bg-orange-50/40 shadow-sm'
-                        : 'border-slate-200 hover:border-slate-300 bg-white'
+                        ? 'border-[#FF4D2D] bg-orange-50/50 shadow-sm ring-1 ring-[#FF4D2D]/30'
+                        : 'border-[#FF4D2D]/40 hover:border-[#FF4D2D] bg-white'
                     }`}
                   >
                     <span className="absolute -top-3 right-4 rtl:right-auto rtl:left-4 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#FF4D2D] text-white shadow-2xs">
@@ -641,13 +650,18 @@ export const ActivationModal: React.FC = () => {
                           e.stopPropagation();
                           setSelectedPlan('bundle_3');
                         }}
-                        className={`w-full min-h-[44px] py-2.5 px-3 rounded-xl font-extrabold text-xs transition flex items-center justify-center gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#FF4D2D] ${
+                        className={`w-full min-h-[44px] py-2.5 px-3 rounded-xl font-extrabold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#FF4D2D] ${
                           selectedPlan === 'bundle_3'
-                            ? 'bg-[#FF4D2D] text-white shadow-2xs'
-                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                            ? 'bg-[#FF4D2D] text-white shadow-sm'
+                            : 'bg-[#FF4D2D]/15 text-[#D03010] hover:bg-[#FF4D2D] hover:text-white border border-[#FF4D2D]/40 font-black'
                         }`}
                       >
-                        <span>{isAr ? labels.buyBundleBtnAr : labels.buyBundleBtn}</span>
+                        {selectedPlan === 'bundle_3' && <CheckCircle2 className="w-4 h-4 text-white" />}
+                        <span>
+                          {selectedPlan === 'bundle_3'
+                            ? (isAr ? 'الباقة المحددة (120 ج.م)' : 'Selected Pack (120 EGP)')
+                            : (isAr ? labels.buyBundleBtnAr : labels.buyBundleBtn)}
+                        </span>
                       </button>
                     </div>
                   </div>

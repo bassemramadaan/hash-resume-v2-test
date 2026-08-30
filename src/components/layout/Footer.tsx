@@ -12,6 +12,20 @@ export const Footer: React.FC = () => {
 
   const socialLinks = [
     {
+      name: 'Phone',
+      href: 'tel:+201101007965',
+      icon: Phone,
+      color: 'hover:text-emerald-400 hover:border-emerald-500/40 hover:bg-emerald-500/10',
+      label: '011 01007965',
+    },
+    {
+      name: 'WhatsApp',
+      href: 'https://wa.me/201101007965',
+      icon: MessageCircle,
+      color: 'hover:text-[#25D366] hover:border-[#25D366]/40 hover:bg-[#25D366]/10',
+      label: 'WhatsApp',
+    },
+    {
       name: 'LinkedIn',
       href: 'https://www.linkedin.com/company/hashresume',
       icon: Linkedin,
@@ -25,13 +39,6 @@ export const Footer: React.FC = () => {
       color: 'hover:text-[#1877F2] hover:border-[#1877F2]/40 hover:bg-[#1877F2]/10',
       label: 'Facebook',
     },
-    {
-      name: 'WhatsApp',
-      href: 'https://wa.me/201101007965',
-      icon: MessageCircle,
-      color: 'hover:text-[#25D366] hover:border-[#25D366]/40 hover:bg-[#25D366]/10',
-      label: '011 01007965',
-    },
   ];
 
   return (
@@ -42,10 +49,10 @@ export const Footer: React.FC = () => {
           <div className="space-y-4 md:col-span-1">
             <Link to="/" className="inline-block group py-1">
               <Logo
-                variant="full"
+                variant="full font-bold"
                 size="xl"
                 onDark={true}
-                className="!h-16 sm:!h-20 w-auto !max-h-none object-contain transition-transform group-hover:scale-105"
+                className="!h-14 sm:!h-20 min-h-[52px] w-auto max-w-[240px] sm:max-w-none object-contain transition-transform group-hover:scale-105"
               />
             </Link>
             <p className="text-[11px] text-slate-400 leading-relaxed">
@@ -131,14 +138,28 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
+                <Link to="/showcase" className="hover:text-white transition text-orange-400 font-bold">
+                  {isAr ? 'معاينة شاشات الموقع 📸' : 'UI Showcase & Preview 📸'}
+                </Link>
+              </li>
+              <li>
+                <a
+                  href="tel:+201101007965"
+                  className="inline-flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 font-bold transition"
+                >
+                  <Phone className="w-3.5 h-3.5" />
+                  <span>{isAr ? 'اتصال مباشر: 011 01007965' : 'Direct Call: 011 01007965'}</span>
+                </a>
+              </li>
+              <li>
                 <a
                   href="https://wa.me/201101007965"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 transition"
+                  className="inline-flex items-center gap-1.5 text-[#25D366] hover:text-emerald-300 transition"
                 >
                   <MessageCircle className="w-3.5 h-3.5" />
-                  <span>{isAr ? 'الدعم المباشر: 011 01007965' : 'Direct Support: 011 01007965'}</span>
+                  <span>{isAr ? 'واتساب الدعم: 011 01007965' : 'WhatsApp Support: 011 01007965'}</span>
                 </a>
               </li>
               <li>
@@ -198,12 +219,19 @@ export const Footer: React.FC = () => {
             </a>
             <span>•</span>
             <a
+              href="tel:+201101007965"
+              className="hover:text-emerald-400 transition flex items-center gap-1"
+            >
+              <span>Phone: 011 01007965</span>
+            </a>
+            <span>•</span>
+            <a
               href="https://wa.me/201101007965"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-[#25D366] transition flex items-center gap-1"
             >
-              <span>WhatsApp: 011 01007965</span>
+              <span>WhatsApp</span>
             </a>
           </div>
         </div>

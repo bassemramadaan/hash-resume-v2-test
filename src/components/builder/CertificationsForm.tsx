@@ -32,7 +32,7 @@ export const CertificationsForm: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 text-slate-800" aria-live="polite">
+    <div className="space-y-6 text-slate-800 w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content" aria-live="polite">
       {/* Header */}
       <div className="border-b pb-3.5 border-slate-100">
         <h2 className="text-base font-bold text-[#001639] flex items-center gap-2">

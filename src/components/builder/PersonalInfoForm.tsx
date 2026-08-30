@@ -156,7 +156,7 @@ export const PersonalInfoForm: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-5 sm:space-y-6 text-slate-800">
+    <div className="space-y-5 sm:space-y-6 text-slate-800 w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content">
       {/* Section Header */}
       <div className="flex items-center justify-between border-b pb-3 border-slate-100">
         <div>
@@ -288,9 +288,9 @@ export const PersonalInfoForm: React.FC = () => {
       />
 
       {/* Main Core Form Fields (Single-Column on Mobile, 2-Col on Tablet/Desktop) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4.5 sm:gap-5">
+      <div className="personal-info-grid">
         {/* Full Name - Required */}
-        <div className="space-y-1.5 text-start">
+        <div className="space-y-1.5 text-start min-w-0">
           <div className="flex items-center justify-between">
             <label htmlFor="pi-fullname" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
               <span>{isAr ? 'الاسم الكامل' : 'Full Name'}</span>
@@ -314,7 +314,7 @@ export const PersonalInfoForm: React.FC = () => {
         </div>
 
         {/* Target Job Title - Required */}
-        <div className="space-y-1.5 text-start">
+        <div className="space-y-1.5 text-start min-w-0">
           <div className="flex items-center justify-between">
             <label htmlFor="pi-jobtitle" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
               <span>{isAr ? 'المسمى الوظيفي المستهدف' : 'Target Job Title'}</span>
@@ -337,7 +337,7 @@ export const PersonalInfoForm: React.FC = () => {
         </div>
 
         {/* Email Address - Required Before Export */}
-        <div className="space-y-1.5 text-start">
+        <div className="space-y-1.5 text-start min-w-0">
           <div className="flex items-center justify-between">
             <label htmlFor="pi-email" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
               <span>{isAr ? 'البريد الإلكتروني' : 'Email Address'}</span>
@@ -358,6 +358,7 @@ export const PersonalInfoForm: React.FC = () => {
             <input
               id="pi-email"
               type="email"
+              dir="ltr"
               inputMode="email"
               autoComplete="email"
               autoCapitalize="none"
@@ -375,7 +376,7 @@ export const PersonalInfoForm: React.FC = () => {
         </div>
 
         {/* Phone Number - Required Before Export / Optional during drafting */}
-        <div className="space-y-1.5 text-start">
+        <div className="space-y-1.5 text-start min-w-0">
           <div className="flex items-center justify-between">
             <label htmlFor="pi-phone" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
               <span>{isAr ? 'رقم الهاتف' : 'Phone Number'}</span>
@@ -389,6 +390,7 @@ export const PersonalInfoForm: React.FC = () => {
             <input
               id="pi-phone"
               type="tel"
+              dir="ltr"
               inputMode="tel"
               autoComplete="tel"
               value={info.phone}
@@ -400,7 +402,7 @@ export const PersonalInfoForm: React.FC = () => {
         </div>
 
         {/* Location - Optional */}
-        <div className="space-y-1.5 text-start md:col-span-2">
+        <div className="space-y-1.5 text-start min-w-0 md:col-span-2">
           <div className="flex items-center justify-between">
             <label htmlFor="pi-location" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
               <span>{isAr ? 'المدينة / الدولة' : 'Location (City, Country)'}</span>
@@ -422,7 +424,7 @@ export const PersonalInfoForm: React.FC = () => {
 
         {/* Optional Fields Expanded Section */}
         {showLinkedIn && (
-          <div className="space-y-1.5 text-start animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="space-y-1.5 text-start min-w-0 animate-in fade-in slide-in-from-top-1 duration-150">
             <div className="flex items-center justify-between">
               <label htmlFor="pi-linkedin" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
                 <span>{isAr ? 'رابط حساب LinkedIn' : 'LinkedIn Profile URL'}</span>
@@ -444,6 +446,7 @@ export const PersonalInfoForm: React.FC = () => {
               <input
                 id="pi-linkedin"
                 type="url"
+                dir="ltr"
                 inputMode="url"
                 autoCapitalize="none"
                 value={info.linkedin}
@@ -456,7 +459,7 @@ export const PersonalInfoForm: React.FC = () => {
         )}
 
         {showGithub && (
-          <div className="space-y-1.5 text-start animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="space-y-1.5 text-start min-w-0 animate-in fade-in slide-in-from-top-1 duration-150">
             <div className="flex items-center justify-between">
               <label htmlFor="pi-github" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
                 <span>{isAr ? 'رابط معرض أعمال GitHub' : 'GitHub / Portfolio URL'}</span>
@@ -478,6 +481,7 @@ export const PersonalInfoForm: React.FC = () => {
               <input
                 id="pi-github"
                 type="url"
+                dir="ltr"
                 inputMode="url"
                 autoCapitalize="none"
                 value={info.github || ''}
@@ -490,7 +494,7 @@ export const PersonalInfoForm: React.FC = () => {
         )}
 
         {showPhoto && (
-          <div className="space-y-1.5 text-start animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="space-y-1.5 text-start min-w-0 animate-in fade-in slide-in-from-top-1 duration-150">
             <div className="flex items-center justify-between">
               <label htmlFor="pi-photo" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
                 <span>{isAr ? 'رابط الصورة الشخصية' : 'Photo URL'}</span>
@@ -512,6 +516,7 @@ export const PersonalInfoForm: React.FC = () => {
               <input
                 id="pi-photo"
                 type="url"
+                dir="ltr"
                 inputMode="url"
                 autoCapitalize="none"
                 value={info.photoUrl || ''}
@@ -526,18 +531,18 @@ export const PersonalInfoForm: React.FC = () => {
 
       {/* Add Optional Fields Quick Buttons */}
       {(!showLinkedIn || !showGithub || !showPhoto) && (
-        <div className="pt-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[11px] font-semibold text-slate-400">
+        <div className="pt-1 w-full min-w-0">
+          <div className="optional-links">
+            <span className="text-[11px] font-semibold text-slate-400 shrink-0">
               {isAr ? 'روابط إضافية اختياري:' : 'Optional links:'}
             </span>
             {!showLinkedIn && (
               <button
                 type="button"
                 onClick={() => setShowLinkedIn(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#001639] text-xs font-semibold rounded-full border border-slate-200 transition cursor-pointer active:scale-95"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-[#001639] text-xs font-semibold rounded-xl border border-slate-200 transition cursor-pointer active:scale-95 min-h-[44px]"
               >
-                <Plus className="w-3 h-3 text-[#FF4D2D]" />
+                <Plus className="w-3.5 h-3.5 text-[#FF4D2D]" />
                 <span>{isAr ? '+ إضافة LinkedIn' : '+ Add LinkedIn'}</span>
               </button>
             )}
@@ -545,9 +550,9 @@ export const PersonalInfoForm: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowGithub(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#001639] text-xs font-semibold rounded-full border border-slate-200 transition cursor-pointer active:scale-95"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-[#001639] text-xs font-semibold rounded-xl border border-slate-200 transition cursor-pointer active:scale-95 min-h-[44px]"
               >
-                <Plus className="w-3 h-3 text-[#FF4D2D]" />
+                <Plus className="w-3.5 h-3.5 text-[#FF4D2D]" />
                 <span>{isAr ? '+ إضافة GitHub' : '+ Add GitHub'}</span>
               </button>
             )}
@@ -555,9 +560,9 @@ export const PersonalInfoForm: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowPhoto(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#001639] text-xs font-semibold rounded-full border border-slate-200 transition cursor-pointer active:scale-95"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-[#001639] text-xs font-semibold rounded-xl border border-slate-200 transition cursor-pointer active:scale-95 min-h-[44px]"
               >
-                <Plus className="w-3 h-3 text-[#FF4D2D]" />
+                <Plus className="w-3.5 h-3.5 text-[#FF4D2D]" />
                 <span>{isAr ? '+ إضافة صورة' : '+ Add Photo'}</span>
               </button>
             )}
@@ -567,7 +572,7 @@ export const PersonalInfoForm: React.FC = () => {
 
       {/* Professional Summary Group */}
       <div className="pt-2 space-y-2 text-start" aria-live="polite">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="summary-header">
           <div className="flex items-center gap-2">
             <label htmlFor="pi-summary" className="text-xs sm:text-sm font-bold text-slate-800">
               {t.summary}
@@ -576,16 +581,17 @@ export const PersonalInfoForm: React.FC = () => {
               {isAr ? 'اختياري وموصى به' : 'Recommended'}
             </span>
           </div>
-          <div className="flex flex-col sm:items-end gap-1">
+
+          <div className="flex flex-col sm:items-end gap-1.5 w-full sm:w-auto">
             <button
               type="button"
               onClick={() => openAiModal('summary')}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#001639] bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition cursor-pointer shrink-0 min-h-[34px]"
+              className="generate-ai-button inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-bold text-[#001639] bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 transition cursor-pointer shrink-0 min-h-[44px] active:scale-98"
             >
-              <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
+              <Sparkles className="w-4 h-4 text-[#FF4D2D]" />
               <span>{t.aiGenerateSummary}</span>
             </button>
-            <p className="text-[10.5px] text-slate-500 font-medium">
+            <p className="text-[10.5px] text-slate-500 font-medium leading-relaxed whitespace-normal break-words">
               {isAr
                 ? 'يعتمد على معلوماتك فقط — ولا يخترع أي خبرات وهمية. راجع مسودة الذكاء الاصطناعي قبل اعتمادها، ويمكنك تعديل أي نص بحرية.'
                 : 'Uses your information only — never invents experience. Review the AI draft before using it. You can edit anything.'}

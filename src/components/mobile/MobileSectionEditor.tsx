@@ -211,28 +211,28 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: isAr ? -20 : 20 }}
       transition={{ duration: 0.15 }}
-      className="space-y-4 pb-28"
+      className="space-y-4 pb-28 mobile-section-editor mobile-editor-content w-full max-w-full min-w-0 overflow-x-hidden"
     >
       {/* Top Section Navigation Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-20 px-3 py-2.5 shadow-2xs">
-        <div className="flex items-center justify-between gap-2">
+      <div className="bg-white border-b border-slate-200 sticky top-0 z-20 px-3 py-2.5 shadow-2xs w-full max-w-full min-w-0">
+        <div className="flex items-center justify-between gap-2 w-full min-w-0">
           {/* Back Button */}
           <button
             type="button"
             onClick={onBack}
-            className="flex items-center gap-1.5 px-3 py-2 text-xs font-bold text-[#001639] bg-slate-100 hover:bg-slate-200 rounded-xl transition cursor-pointer min-h-[44px] active:scale-95 shrink-0"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-bold text-[#001639] bg-slate-100 hover:bg-slate-200 rounded-xl transition cursor-pointer min-h-[44px] active:scale-95 shrink-0"
             aria-label={isAr ? 'الرجوع إلى لوحة الأقسام' : 'Back to Sections Dashboard'}
           >
             <BackIcon className="w-4 h-4 text-[#FF4D2D]" />
-            <span>{isAr ? 'الأقسام' : 'Dashboard'}</span>
+            <span className="text-xs">{isAr ? 'الأقسام' : 'Dashboard'}</span>
           </button>
 
           {/* Section Title */}
-          <div className="flex items-center gap-2 min-w-0 flex-1 justify-center px-1">
+          <div className="flex items-center gap-1.5 min-w-0 flex-1 justify-center px-1 overflow-hidden">
             <div className="w-6 h-6 rounded-lg bg-[#001639] text-white flex items-center justify-center shrink-0">
               <Icon className="w-3.5 h-3.5 text-[#FF4D2D]" />
             </div>
-            <h1 className="font-bold text-xs sm:text-sm text-[#001639] truncate text-center">
+            <h1 className="font-bold text-xs sm:text-sm text-[#001639] truncate text-center min-w-0">
               {isAr ? current?.titleAr : current?.titleEn}
             </h1>
           </div>
@@ -302,8 +302,8 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
       )}
 
       {/* Form Container */}
-      <div className="px-3">
-        <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-2xs">
+      <div className="px-3 w-full max-w-full min-w-0 overflow-x-hidden">
+        <div className="bg-white border border-slate-200 rounded-2xl p-3.5 sm:p-4 shadow-2xs w-full max-w-full min-w-0 overflow-x-hidden mobile-form-card">
           <fieldset
             disabled={activation.isResumeLocked}
             className={

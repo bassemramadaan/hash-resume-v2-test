@@ -295,7 +295,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
   };
 
   return (
-    <div className="space-y-4 pb-28">
+    <div className="space-y-4 pb-28 w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content">
       {/* Compact Top Bar */}
       <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3.5 py-2.5 shadow-2xs">
         <div className="flex items-center justify-between gap-2">

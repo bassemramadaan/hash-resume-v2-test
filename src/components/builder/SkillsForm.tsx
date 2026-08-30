@@ -51,7 +51,7 @@ export const SkillsForm: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 text-slate-800" aria-live="polite">
+    <div className="space-y-6 text-slate-800 w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content" aria-live="polite">
       {/* Skills Section */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3.5 border-slate-100">

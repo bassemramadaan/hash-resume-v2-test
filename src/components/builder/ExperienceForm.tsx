@@ -214,7 +214,7 @@ export const ExperienceForm: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 text-slate-800">
+    <div className="space-y-6 text-slate-800 w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3.5 border-slate-100">
         <div>
@@ -231,9 +231,9 @@ export const ExperienceForm: React.FC = () => {
         <button
           type="button"
           onClick={handleAddNew}
-          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-[#001639] hover:bg-[#00245E] text-white rounded-lg text-xs font-semibold shadow-xs transition cursor-pointer shrink-0 min-h-[36px]"
+          className="add-experience-button inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs transition cursor-pointer shrink-0 w-full sm:w-auto min-h-[48px] active:scale-98"
         >
-          <Plus className="w-3.5 h-3.5" />
+          <Plus className="w-4 h-4 text-[#FF4D2D]" />
           <span>{isAr ? 'إضافة خبرة' : 'Add Experience'}</span>
         </button>
       </div>

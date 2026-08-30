@@ -440,7 +440,7 @@ export const DownloadSection: React.FC = () => {
   const templateName = settings.templateId ? settings.templateId.toUpperCase() : 'MODERN';
 
   return (
-    <div className="space-y-6 max-w-3xl mx-auto" aria-label="Review & Export Section">
+    <div className="space-y-6 max-w-3xl mx-auto w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content" aria-label="Review & Export Section">
       {/* Header with Title & Subtitle */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
         <div>
@@ -567,7 +567,7 @@ export const DownloadSection: React.FC = () => {
               return (
                 <div
                   key={idx}
-                  className={`p-3 bg-white rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs shadow-2xs ${
+                  className={`warning-card p-3 bg-white rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs shadow-2xs w-full min-w-0 ${
                     isRequired
                       ? 'border-red-200 bg-red-50/20'
                       : isRecommended
@@ -575,7 +575,7 @@ export const DownloadSection: React.FC = () => {
                       : 'border-slate-200/90'
                   }`}
                 >
-                  <div className="flex items-start gap-2.5 min-w-0">
+                  <div className="flex items-start gap-2.5 min-w-0 flex-1">
                     <span
                       className={`px-2 py-0.5 rounded-md text-[10px] font-black shrink-0 mt-0.5 ${
                         isRequired
@@ -592,13 +592,13 @@ export const DownloadSection: React.FC = () => {
                         : isAr ? 'اختياري' : 'Optional'}
                     </span>
 
-                    <div className="flex flex-col">
-                      <span className="font-black text-slate-800 leading-snug">
+                    <div className="flex flex-col min-w-0 flex-1">
+                      <h4 className="font-black text-slate-800 leading-snug whitespace-normal break-words overflow-wrap-anywhere">
                         {isAr ? w.titleAr : w.titleEn}
-                      </span>
-                      <span className="text-[11px] text-slate-500 font-medium mt-0.5">
+                      </h4>
+                      <p className="text-[11px] text-slate-500 font-medium mt-0.5 whitespace-normal break-words overflow-wrap-anywhere">
                         {isAr ? w.descAr : w.descEn}
-                      </span>
+                      </p>
                     </div>
                   </div>
 

@@ -528,7 +528,7 @@ export const BuilderPage: React.FC = () => {
   // ==========================================
   if (isMobile) {
     return (
-      <main className="bg-[#F8FAFC] min-h-screen page-content" aria-label="Mobile Resume Builder">
+      <main className="bg-[#F8FAFC] min-h-screen page-content mobile-editor-page w-full max-w-full min-w-0 overflow-x-hidden" aria-label="Mobile Resume Builder">
         <AnimatePresence mode="wait">
           {mobileActiveSection ? (
             <MobileSectionEditor
