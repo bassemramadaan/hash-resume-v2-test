@@ -26,6 +26,7 @@ import {
   Lock,
   Key,
 } from 'lucide-react';
+import { validateResumeMinimumRequirements } from '../../utils/resumeValidation';
 import { NextStepBanner } from '../builder/NextStepBanner';
 
 interface MobileResumeDashboardProps {
@@ -83,6 +84,18 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
   const skillsCount = resumeData.skills?.length || 0;
   const certsCount = resumeData.certifications?.length || 0;
   const projectsCount = resumeData.projects?.length || 0;
+
+  // Completed Core Sections Count (Out of 6)
+  const completedSectionsCount = React.useMemo(() => {
+    let count = 0;
+    if (isPersonalComplete) count++;
+    if (experiencesCount > 0) count++;
+    if (educationCount > 0) count++;
+    if (skillsCount > 0) count++;
+    if (certsCount > 0) count++;
+    if (projectsCount > 0) count++;
+    return count;
+  }, [isPersonalComplete, experiencesCount, educationCount, skillsCount, certsCount, projectsCount]);
 
   // Recommended Next Step calculation
   const recommendedNextStep = React.useMemo(() => {
@@ -225,11 +238,15 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
           isComplete: isPersonalComplete && experiencesCount > 0,
         };
 
-      case 'download':
+      case 'download': {
+        const isReady = validateResumeMinimumRequirements(resumeData).isValid;
         return {
-          label: isAr ? 'تصدير PDF والطباعة' : 'Export PDF & Print',
-          isComplete: completionScore >= 40,
+          label: isReady
+            ? isAr ? 'جاهز لتحميل PDF' : 'Ready to download PDF'
+            : isAr ? 'مراجعة وتصدير' : 'Review & export',
+          isComplete: isReady,
         };
+      }
 
       default:
         return { label: '', isComplete: false };
@@ -399,7 +416,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                 {isAr ? 'ابنِ سيرتك الذاتية' : 'Build your resume'}
               </h1>
               <p className="text-xs text-slate-300">
-                {isAr ? 'أكمل ملفك التعريفي للحصول على أفضل نتيجة' : 'Complete your profile for best results'}
+                {isAr ? 'أضف بياناتك لبناء سيرتك الذاتية' : 'Add your information to build your resume'}
               </p>
             </div>
 
@@ -417,7 +434,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                 {completionScore}%
               </span>
               <span className="block text-[10px] text-slate-300 font-semibold">
-                {isAr ? 'اكتمال الملف' : 'complete'}
+                {isAr ? 'مكتمل' : 'complete'}
               </span>
             </div>
           </div>
@@ -439,10 +456,10 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
           </div>
 
           <div className="flex items-center justify-between text-[11px] text-slate-300 pt-0.5">
-            <span>
+            <span className="font-semibold text-white">
               {isAr
-                ? `${completionScore === 0 ? 'ابدأ بإضافة بياناتك' : completionScore < 100 ? 'واصل ملء الأقسام' : 'سيرتك جاهزة للتحميل!'}`
-                : `${completionScore === 0 ? 'Start adding your info' : completionScore < 100 ? 'Keep completing sections' : 'Resume is ready to export!'}`}
+                ? `اكتمل ${completedSectionsCount} من 6 أقسام`
+                : `${completedSectionsCount} of 6 sections complete`}
             </span>
             <span className="font-bold text-white">
               {completionScore >= 80

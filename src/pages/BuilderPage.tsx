@@ -28,6 +28,8 @@ import { ResumePreview } from '../components/preview/ResumePreview';
 import { LiveAtsMeter } from '../components/builder/LiveAtsMeter';
 import { BuilderProgressBar } from '../components/builder/BuilderProgressBar';
 import { NextStepBanner } from '../components/builder/NextStepBanner';
+import { ResumeValidationModal } from '../components/common/ResumeValidationModal';
+import { validateResumeMinimumRequirements, ResumeValidationResult } from '../utils/resumeValidation';
 
 import {
   Layout,
@@ -113,6 +115,10 @@ export const BuilderPage: React.FC = () => {
 
   // Mobile Bottom Sheet Preview State
   const [isMobilePreviewOpen, setIsMobilePreviewOpen] = useState(false);
+
+  // Resume Validation Modal for missing requirements
+  const [isValidationModalOpen, setIsValidationModalOpen] = useState(false);
+  const [validationResult, setValidationResult] = useState<ResumeValidationResult | null>(null);
 
   // Auto-save notification feedback state
   const [saveStatus, setSaveStatus] = useState<'saved' | 'saving'>('saved');
@@ -499,12 +505,30 @@ export const BuilderPage: React.FC = () => {
     </AnimatePresence>
   );
 
+  // Check if minimum resume requirements are completed
+  const resumeValidation = React.useMemo(() => {
+    return validateResumeMinimumRequirements(resumeData);
+  }, [resumeData]);
+
+  const isResumeReady = resumeValidation.isValid;
+
+  const handleMobileDownloadClick = () => {
+    // If not valid, show missing requirements modal immediately
+    if (!resumeValidation.isValid) {
+      setValidationResult(resumeValidation);
+      setIsValidationModalOpen(true);
+      return;
+    }
+    // If valid, navigate to download/export section
+    setMobileActiveSection('download');
+  };
+
   // ==========================================
-  // MOBILE APP DASHBOARD (< 768px) - UNCHANGED
+  // MOBILE APP DASHBOARD (< 768px)
   // ==========================================
   if (isMobile) {
     return (
-      <main className="bg-[#F8FAFC] min-h-screen" aria-label="Mobile Resume Builder">
+      <main className="bg-[#F8FAFC] min-h-screen page-content" aria-label="Mobile Resume Builder">
         <AnimatePresence mode="wait">
           {mobileActiveSection ? (
             <MobileSectionEditor
@@ -527,16 +551,30 @@ export const BuilderPage: React.FC = () => {
         {/* Mobile Sticky Bottom Navigation */}
         <MobileBottomNav
           onOpenPreview={() => setIsMobilePreviewOpen(true)}
-          onOpenDownload={() => setMobileActiveSection('download')}
+          onOpenDownload={handleMobileDownloadClick}
           isDownloadActive={mobileActiveSection === 'download'}
+          isReadyForExport={isResumeReady}
         />
 
         {/* Fullscreen Mobile Preview Bottom Sheet */}
         <MobilePreviewSheet
           isOpen={isMobilePreviewOpen}
           onClose={() => setIsMobilePreviewOpen(false)}
-          onGoToExport={() => setMobileActiveSection('download')}
+          onGoToExport={handleMobileDownloadClick}
         />
+
+        {/* Missing Requirements Validation Modal */}
+        {validationResult && (
+          <ResumeValidationModal
+            isOpen={isValidationModalOpen}
+            onClose={() => setIsValidationModalOpen(false)}
+            validationResult={validationResult}
+            onNavigateSection={(sectionKey) => {
+              setIsValidationModalOpen(false);
+              setMobileActiveSection(sectionKey);
+            }}
+          />
+        )}
 
         {/* Start New Resume Confirmation Modal */}
         {renderResetModal()}

@@ -23,12 +23,12 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
   const ArrowIcon = isAr ? ArrowLeft : ArrowRight;
 
   return (
-    <section className="relative min-h-[85vh] flex flex-col items-center justify-center pt-10 sm:pt-20 pb-12 sm:pb-16 px-3.5 sm:px-6 overflow-hidden bg-white">
+    <section className="relative min-h-[85vh] flex flex-col items-center justify-center pt-8 sm:pt-20 pb-12 sm:pb-16 px-5 sm:px-6 overflow-hidden bg-white">
       {/* Editorial Background Elements */}
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-[#F8FAFC] to-transparent"></div>
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[70vw] max-w-[800px] max-h-[800px] bg-coral-soft rounded-full blur-[120px] opacity-40 pointer-events-none"></div>
       
-      <div className="relative z-10 w-full max-w-5xl mx-auto text-center space-y-6 sm:space-y-10">
+      <div className="relative z-10 w-full max-w-5xl mx-auto text-center space-y-5 sm:space-y-8">
         
         {/* Header Badges & Slogan Flag */}
         <div className="flex flex-col items-center gap-2">
@@ -53,7 +53,7 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
             initial={{ opacity: 0, y: 12, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.5, delay: 0.08, ease: 'easeOut' }}
-            className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-gradient-to-r from-orange-50 via-amber-50 to-rose-50 border border-orange-200/90 text-[#001639] text-[11px] sm:text-sm font-extrabold shadow-xs"
+            className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-gradient-to-r from-orange-50 via-amber-50 to-rose-50 border border-orange-200/90 text-[#001639] text-xs sm:text-sm font-extrabold shadow-xs"
           >
             <Flag className="w-3.5 h-3.5 text-[#FF4D2D] fill-[#FF4D2D]/20 shrink-0" />
             <span className="tracking-tight">
@@ -66,11 +66,12 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           </motion.div>
         </div>
 
+        {/* Hero Headline */}
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
-          className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-[#001639] leading-[1.1] sm:leading-[1.05] tracking-tight font-brand"
+          className="text-[clamp(38px,10vw,52px)] sm:text-6xl md:text-7xl lg:text-8xl font-black text-[#001639] leading-[1.1] sm:leading-[1.05] tracking-tight font-brand"
         >
           {isAr ? (
             <>سيرتك الذاتية.<br />بدون <span className="text-coral">أي تعقيد.</span></>
@@ -79,11 +80,12 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           )}
         </motion.h1>
 
+        {/* Hero Body Text */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2, ease: 'easeOut' }}
-          className="text-sm sm:text-xl md:text-2xl text-[#52627A] max-w-2xl mx-auto font-medium leading-relaxed px-2"
+          className="text-[16px] sm:text-xl md:text-2xl text-[#52627A] max-w-2xl mx-auto font-medium leading-[1.6] px-1 sm:px-2"
         >
           {isFrench
             ? 'Nous avons conçu Hash Resume pour être le seul outil de concentration dont vous avez besoin. Créez un CV clair, professionnel et optimisé pour les systèmes ATS.'
@@ -97,7 +99,7 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.25, ease: 'easeOut' }}
-          className="flex flex-col items-center justify-center pt-1 select-none"
+          className="flex flex-col items-center justify-center pt-0.5 select-none"
         >
           <div className="relative inline-flex flex-col items-center">
             <span
@@ -127,14 +129,14 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           </div>
         </motion.div>
 
+        {/* Main Focused CTA Bar (Full-width on mobile, 12px gap, min 52px CTA height) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3, ease: 'easeOut' }}
-          className="flex flex-col items-center justify-center gap-3 sm:gap-4 max-w-xl mx-auto w-full pt-4 sm:pt-6"
+          className="flex flex-col items-center justify-center gap-3 max-w-xl mx-auto w-full pt-3 sm:pt-4"
         >
-          {/* Main Focused CTA Bar */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3 w-full">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
             <div className="relative w-full sm:flex-1">
               <input
                 type="text"
@@ -142,21 +144,21 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
                 onChange={(e) => setRole(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleStart()}
                 placeholder={isAr ? 'مسمّاك الوظيفي (اختياري)...' : 'Job title (optional)...'}
-                className="w-full px-4 sm:px-5 py-3.5 sm:py-4 bg-white border border-[#E2E8F0] text-[#001639] rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold placeholder:text-[#8793A6] focus:outline-none focus:ring-2 focus:ring-coral/20 focus:border-coral shadow-2xs transition-all text-center sm:text-start"
+                className="w-full px-4 sm:px-5 py-3.5 sm:py-4 bg-white border border-[#E2E8F0] text-[#001639] rounded-xl sm:rounded-2xl text-base font-semibold placeholder:text-[#8793A6] focus:outline-none focus:ring-2 focus:ring-coral/20 focus:border-coral shadow-2xs transition-all text-center sm:text-start min-h-[50px]"
               />
             </div>
             <button
               onClick={handleStart}
-              className="w-full sm:w-auto px-7 sm:px-9 py-3.5 sm:py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-xl sm:rounded-2xl text-sm sm:text-base font-extrabold shadow-md shadow-coral/25 flex items-center justify-center gap-2.5 transition-all active:scale-95 shrink-0 cursor-pointer min-h-[48px]"
+              className="w-full sm:w-auto px-7 sm:px-9 min-h-[52px] h-[52px] bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-xl sm:rounded-2xl text-base font-extrabold shadow-md shadow-coral/25 flex items-center justify-center gap-2.5 transition-all active:scale-98 shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF4D2D]"
             >
               <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
-              <ArrowIcon className="w-4 h-4 sm:w-5 h-5" />
+              <ArrowIcon className="w-5 h-5" />
             </button>
           </div>
 
-          {/* Quick 1-Click Role Suggestions */}
-          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 pt-1">
-            <span className="text-[11px] text-slate-400 font-medium me-1 hidden sm:inline">
+          {/* Quick 1-Click Role Suggestions (Desktop only to prevent mobile clutter) */}
+          <div className="hidden sm:flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 pt-1">
+            <span className="text-[11px] text-slate-400 font-medium me-1">
               {isAr ? 'أو اختر مجالك مباشرة:' : 'Or pick a role:'}
             </span>
             {[
@@ -182,24 +184,18 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           </div>
         </motion.div>
 
+        {/* Small Trust Row below CTA (No account required • ATS-friendly • Pay once to download) */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.6 }}
-          className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 pt-3 sm:pt-6 text-xs sm:text-sm font-semibold text-[#8793A6]"
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-3 gap-y-1 pt-2 sm:pt-3 text-xs sm:text-sm font-semibold text-[#8793A6]"
         >
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#16A36A]" />{' '}
-            {isAr ? 'لا يحتاج إلى حساب' : 'No account required'}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#16A36A]" />{' '}
-            {isAr ? 'قوالب مناسبة لـ ATS' : 'ATS-friendly templates'}
-          </span>
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#16A36A]" />{' '}
-            {isAr ? 'أنشئ مجاناً — ادفع مرة واحدة عند التحميل' : 'Build free — pay once to download'}
-          </span>
+          <span>{isAr ? 'بدون إنشاء حساب' : 'No account required'}</span>
+          <span className="text-slate-300 select-none">•</span>
+          <span>{isAr ? 'متوافق مع ATS' : 'ATS-friendly'}</span>
+          <span className="text-slate-300 select-none">•</span>
+          <span>{isAr ? 'دفع لمرة واحدة عند التحميل' : 'Pay once to download'}</span>
         </motion.div>
       </div>
     </section>

@@ -183,5 +183,33 @@ section,
   page-break-inside: avoid;
 }
 
+/* Mobile Technical Standards & Action Bar */
+.mobile-action-bar {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 50;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1px solid #e5e7eb;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.page-content {
+  padding-bottom: 92px;
+}
+
+/* Ensure mobile touch targets satisfy accessibility minimums */
+@media (max-width: 768px) {
+  button:not(.inline-tag-btn),
+  a[role="button"],
+  input[type="button"],
+  input[type="submit"] {
+    min-height: 44px;
+  }
+}
+
+
 
 

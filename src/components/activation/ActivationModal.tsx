@@ -44,9 +44,9 @@ const PAYMENT_MODAL_I18N = {
     singlePrice: '50 ج.م',
     singleSub: 'تحميل فردي • دفع لمرة واحدة',
     singleBullets: [
-      'تحميل واحد بصيغة PDF عالية الدقة',
-      'قالب واحد',
-      'النسخة الحالية للسيرة الذاتية',
+      'تحميل سيرة ذاتية واحدة عالية الجودة PDF',
+      'بدون أي علامة مائية',
+      'تنسيق متوافق مع أنظمة ATS',
       'دفع لمرة واحدة — بدون اشتراك',
     ],
     buySingleBtn: 'Buy Single — 50 EGP',
@@ -58,8 +58,9 @@ const PAYMENT_MODAL_I18N = {
     bundleBadge: 'Best value',
     bundleSub: 'باقة 3 تحميلات • أنسب للباحثين عن عمل',
     bundleBullets: [
-      '3 تحميلات PDF عالية الدقة',
-      'مثالي لتخصيص سيرتك الذاتية لوظائف متعددة',
+      '3 تحميلات لنماذج أو نسخ سير ذاتية مختلفة',
+      'استخدم الرصيد في أي وقت تحتاجه',
+      'بدون علامة مائية ومعتمدة لـ ATS',
       'دفع لمرة واحدة — بدون اشتراك',
     ],
     buyBundleBtn: 'Buy Pack — 120 EGP',
@@ -134,10 +135,10 @@ const PAYMENT_MODAL_I18N = {
     singlePrice: '50 EGP',
     singleSub: 'Single download credit',
     singleBullets: [
-      'One high-res PDF download',
-      'One template',
-      'Current resume version',
-      'Pay once — no subscription',
+      '1 high-quality PDF download',
+      'No watermark',
+      'ATS-friendly layout',
+      'One-time payment',
     ],
     buySingleBtn: 'Buy Single — 50 EGP',
     buySingleBtnAr: 'Buy Single — 50 EGP',
@@ -148,9 +149,10 @@ const PAYMENT_MODAL_I18N = {
     bundleBadge: 'Best value',
     bundleSub: 'Ideal for tailoring to multiple jobs',
     bundleBullets: [
-      '3 high-res PDF downloads',
-      'Ideal for tailoring your resume to different jobs',
-      'Pay once — no subscription',
+      '3 downloads for different resume versions',
+      'Use them whenever you need',
+      'No watermark & ATS-friendly',
+      'One-time payment',
     ],
     buyBundleBtn: 'Buy Pack — 120 EGP',
     buyBundleBtnAr: 'Buy Pack — 120 EGP',
@@ -516,7 +518,8 @@ export const ActivationModal: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setPaymentStep('payment_details')}
-                className="p-2 text-slate-400 hover:text-[#001639] hover:bg-slate-100 rounded-lg transition cursor-pointer"
+                className="w-11 h-11 flex items-center justify-center text-slate-400 hover:text-[#001639] hover:bg-slate-100 rounded-xl transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#001639]"
+                aria-label={isAr ? 'الرجوع لاختيار الباقة' : 'Back to plans'}
               >
                 {isAr ? <ArrowRight className="w-5 h-5" /> : <ArrowLeft className="w-5 h-5" />}
               </button>
@@ -531,7 +534,8 @@ export const ActivationModal: React.FC = () => {
             type="button"
             onClick={() => setIsActivationModalOpen(false)}
             disabled={paymentStep === 'activating'}
-            className="w-11 h-11 flex items-center justify-center text-slate-400 hover:text-[#0B1120] hover:bg-slate-100 rounded-xl transition cursor-pointer disabled:opacity-50"
+            className="w-11 h-11 flex items-center justify-center text-slate-400 hover:text-[#0B1120] hover:bg-slate-100 rounded-xl transition cursor-pointer disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[#001639]"
+            aria-label={isAr ? 'إغلاق النافذة' : 'Close modal'}
           >
             <X className="w-5 h-5" />
           </button>
@@ -585,7 +589,7 @@ export const ActivationModal: React.FC = () => {
                           e.stopPropagation();
                           setSelectedPlan('single');
                         }}
-                        className={`w-full py-2 px-3 rounded-xl font-extrabold text-xs transition flex items-center justify-center gap-1 ${
+                        className={`w-full min-h-[44px] py-2.5 px-3 rounded-xl font-extrabold text-xs transition flex items-center justify-center gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#001639] ${
                           selectedPlan === 'single'
                             ? 'bg-[#001639] text-white shadow-2xs'
                             : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -637,7 +641,7 @@ export const ActivationModal: React.FC = () => {
                           e.stopPropagation();
                           setSelectedPlan('bundle_3');
                         }}
-                        className={`w-full py-2 px-3 rounded-xl font-extrabold text-xs transition flex items-center justify-center gap-1 ${
+                        className={`w-full min-h-[44px] py-2.5 px-3 rounded-xl font-extrabold text-xs transition flex items-center justify-center gap-1 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#FF4D2D] ${
                           selectedPlan === 'bundle_3'
                             ? 'bg-[#FF4D2D] text-white shadow-2xs'
                             : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -653,9 +657,9 @@ export const ActivationModal: React.FC = () => {
               <div className="space-y-3">
                 <label className="block text-xs font-bold text-slate-800">{labels.step2Title}</label>
                 <div role="tablist" className="grid grid-cols-3 gap-1 p-1 bg-slate-100 rounded-xl text-xs">
-                  <button onClick={() => setTransferMethod('instapay')} className={`py-2 px-2 rounded-lg ${transferMethod === 'instapay' ? 'bg-white font-bold shadow-xs' : 'text-slate-600'}`}>{labels.tabInstapay}</button>
-                  <button onClick={() => setTransferMethod('vodafone')} className={`py-2 px-2 rounded-lg ${transferMethod === 'vodafone' ? 'bg-white font-bold shadow-xs' : 'text-slate-600'}`}>{labels.tabVodafone}</button>
-                  <button onClick={() => setTransferMethod('code')} className={`py-2 px-2 rounded-lg ${transferMethod === 'code' ? 'bg-white font-bold shadow-xs' : 'text-slate-600'}`}>{labels.tabCode}</button>
+                  <button onClick={() => setTransferMethod('instapay')} className={`py-2.5 px-2 rounded-lg min-h-[44px] flex items-center justify-center cursor-pointer transition ${transferMethod === 'instapay' ? 'bg-white font-bold text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabInstapay}</button>
+                  <button onClick={() => setTransferMethod('vodafone')} className={`py-2.5 px-2 rounded-lg min-h-[44px] flex items-center justify-center cursor-pointer transition ${transferMethod === 'vodafone' ? 'bg-white font-bold text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabVodafone}</button>
+                  <button onClick={() => setTransferMethod('code')} className={`py-2.5 px-2 rounded-lg min-h-[44px] flex items-center justify-center cursor-pointer transition ${transferMethod === 'code' ? 'bg-white font-bold text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabCode}</button>
                 </div>
 
                 {transferMethod === 'code' ? (
@@ -803,7 +807,7 @@ export const ActivationModal: React.FC = () => {
                         value={senderInfo}
                         onChange={(e) => setSenderInfo(e.target.value)}
                         placeholder={labels.senderPlaceholder}
-                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#001639] outline-none min-h-[42px]"
+                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#001639] outline-none min-h-[44px]"
                       />
                     </div>
                     <div className="space-y-1">
@@ -814,7 +818,7 @@ export const ActivationModal: React.FC = () => {
                         value={emailInput}
                         onChange={(e) => setEmailInput(e.target.value)}
                         placeholder={labels.emailPlaceholder}
-                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#001639] outline-none min-h-[42px]"
+                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#001639] outline-none min-h-[44px]"
                       />
                     </div>
                     <div className="space-y-1">
@@ -825,7 +829,7 @@ export const ActivationModal: React.FC = () => {
                         value={referenceInput}
                         onChange={(e) => setReferenceInput(e.target.value)}
                         placeholder={labels.refPlaceholder}
-                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#001639] outline-none min-h-[42px]"
+                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#001639] outline-none min-h-[44px]"
                       />
                     </div>
 
@@ -833,7 +837,7 @@ export const ActivationModal: React.FC = () => {
                       <button
                         disabled={isSubmitting}
                         type="submit"
-                        className="w-full py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 min-h-[46px] shadow-sm active:scale-98 transition disabled:opacity-70"
+                        className="w-full py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 min-h-[48px] shadow-sm active:scale-98 transition disabled:opacity-70 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#FF4D2D]"
                       >
                         {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
                         <span>
@@ -849,7 +853,7 @@ export const ActivationModal: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setPaymentStep('check_status')}
-                      className="w-full py-2 text-slate-500 hover:text-[#001639] text-xs font-bold transition flex items-center justify-center gap-1"
+                      className="w-full py-2.5 min-h-[44px] text-slate-500 hover:text-[#001639] text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer"
                     >
                       <span>{labels.alreadyHaveRef}</span>
                     </button>

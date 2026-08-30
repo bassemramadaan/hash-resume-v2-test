@@ -67,12 +67,12 @@ export const Navbar: React.FC = () => {
 
   const navLinks = [
     { path: '/builder', label: isAr ? 'محرر السيرة الذاتية' : 'Resume Builder' },
-    { path: '/templates', label: isAr ? 'معرض القوالب' : 'Templates' },
     { path: '/ats-checker', label: isAr ? 'فحص ATS' : 'ATS Checker' },
+    { path: '/templates', label: isAr ? 'معرض القوالب' : 'Templates' },
     {
       path: '/hash-hunt',
-      label: isAr ? 'هاش هنت — البحث عن وظيفة 🎯' : 'Hash Hunt — Find Jobs 🎯',
-      sublabel: isAr ? 'البحث الذكي عن وظيفتك القادمة' : 'Find Your Next Job',
+      label: isAr ? 'هاش هنت — البحث عن وظائف' : 'Hash Hunt — Find Jobs',
+      sublabel: isAr ? 'البحث عن وظائف' : 'Find Jobs',
       isSpecial: true,
     },
     { path: '/pricing', label: isAr ? 'التسعير' : 'Pricing' },
@@ -127,17 +127,20 @@ export const Navbar: React.FC = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`px-3.5 py-1.5 text-xs font-bold rounded-full transition flex items-center gap-1 ${
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-full transition flex items-center gap-1.5 ${
                   active
-                    ? isSpecial
-                      ? 'bg-[#FF4D2D] text-white shadow-md shadow-[#FF4D2D]/40'
-                      : 'bg-[#001639] text-white shadow-xs'
+                    ? 'bg-[#001639] text-white shadow-xs'
                     : isSpecial
-                    ? 'bg-orange-50 text-[#FF4D2D] border border-orange-300 hover:bg-orange-100 shadow-[0_2px_12px_rgba(255,77,45,0.35)] hover:shadow-[0_4px_16px_rgba(255,77,45,0.5)] active:scale-95'
+                    ? 'text-slate-700 hover:text-[#FF4D2D] hover:bg-orange-50'
                     : 'text-[#52627A] hover:text-[#001639] hover:bg-slate-200/50'
                 }`}
               >
-                {link.label}
+                <span>{link.label}</span>
+                {isSpecial && !active && (
+                  <span className="text-[10px] bg-orange-100 text-[#FF4D2D] font-extrabold px-1.5 py-0.2 rounded-full">
+                    {isAr ? 'وظائف' : 'Jobs'}
+                  </span>
+                )}
               </Link>
             );
           })}
@@ -145,11 +148,11 @@ export const Navbar: React.FC = () => {
 
         {/* Right Action Controls */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Primary Action Button (Build My Resume CTA) */}
+          {/* Primary Action Button (Build My Resume CTA) - hidden on mobile, visible on tablet/desktop */}
           {location.pathname !== '/builder' && (
             <Link
               to="/builder"
-              className="px-3.5 sm:px-4 py-1.5 sm:py-2 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-xs sm:text-sm font-extrabold rounded-full shadow-xs hover:shadow-md transition flex items-center gap-1.5 active:scale-95 shrink-0"
+              className="hidden md:inline-flex px-3.5 sm:px-4 py-1.5 sm:py-2 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-xs sm:text-sm font-extrabold rounded-full shadow-xs hover:shadow-md transition items-center gap-1.5 active:scale-95 shrink-0"
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
@@ -157,7 +160,7 @@ export const Navbar: React.FC = () => {
           )}
 
           {/* Desktop Language Switch Dropdown */}
-          <div className="relative hidden sm:block" ref={langDropdownRef}>
+          <div className="relative hidden md:block" ref={langDropdownRef}>
             <button
               type="button"
               onClick={() => setLangDropdownOpen(!langDropdownOpen)}
@@ -199,20 +202,29 @@ export const Navbar: React.FC = () => {
             )}
           </div>
 
-          {/* Mobile Menu Toggle Button (Clean & Direct) */}
+          {/* Mobile Menu Toggle Button (Strict 44x44px Touch Target) */}
           <button
+            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-[#001639] hover:bg-slate-100 rounded-xl transition min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
-            aria-label="Toggle Navigation"
+            className="md:hidden w-11 h-11 min-w-[44px] min-h-[44px] p-2.5 text-[#001639] hover:bg-slate-100 rounded-xl transition flex items-center justify-center cursor-pointer focus-visible:ring-2 focus-visible:ring-[#001639]"
+            aria-label={
+              mobileMenuOpen
+                ? isAr
+                  ? 'إغلاق قائمة التنقل'
+                  : 'Close navigation menu'
+                : isAr
+                ? 'فتح قائمة التنقل'
+                : 'Open navigation menu'
+            }
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Drawer Navigation */}
       {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-[#E2E8F0] bg-white p-4 space-y-3 shadow-lg animate-in slide-in-from-top-2 duration-150">
+        <div className="md:hidden border-t border-[#E2E8F0] bg-white p-4 space-y-3 shadow-lg animate-in slide-in-from-top-2 duration-150">
           {/* Mobile Language Switcher Segmented Control */}
           <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
@@ -252,15 +264,18 @@ export const Navbar: React.FC = () => {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`px-4 py-3 text-xs font-bold rounded-xl transition flex items-center justify-between min-h-[44px] ${
                     active
-                      ? isSpecial
-                        ? 'bg-[#FF4D2D] text-white shadow-md shadow-[#FF4D2D]/40'
-                        : 'bg-[#001639] text-white shadow-xs'
-                      : isSpecial
-                      ? 'bg-orange-50 text-[#FF4D2D] border border-orange-300 shadow-[0_2px_10px_rgba(255,77,45,0.3)]'
-                      : 'text-[#52627A] hover:bg-slate-100'
+                      ? 'bg-[#001639] text-white shadow-xs'
+                      : 'text-[#52627A] hover:bg-slate-100 hover:text-[#001639]'
                   }`}
                 >
-                  <span>{link.label}</span>
+                  <div className="flex items-center gap-2">
+                    <span>{link.label}</span>
+                    {isSpecial && (
+                      <span className="text-[10px] bg-slate-100 text-slate-600 font-bold px-1.5 py-0.5 rounded-md border border-slate-200">
+                        {isAr ? 'وظائف' : 'Jobs'}
+                      </span>
+                    )}
+                  </div>
                   {active && <span className="w-2 h-2 rounded-full bg-[#FF4D2D]" />}
                 </Link>
               );

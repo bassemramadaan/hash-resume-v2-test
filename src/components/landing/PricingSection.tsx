@@ -19,7 +19,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ isAr }) => {
           {isAr ? 'خطط التفعيل المحلية' : 'Simple Local Pricing'}
         </span>
         <h2 className="text-2xl sm:text-3xl font-black text-[#0B1120]">
-          {isAr ? 'ادفع مرة واحدة واستمتع بالتحميل الفوري HD PDF' : 'Pay Once, Download HD Vector PDF Instantly'}
+          {isAr ? 'ادفع مرة واحدة واستمتع بالتحميل الفوري لـ PDF عالي الجودة' : 'Pay Once, Download High-Quality PDF Instantly'}
         </h2>
         <p className="text-xs text-[#52627A]">
           {isAr
@@ -44,7 +44,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ isAr }) => {
             <ul className="space-y-2.5 text-xs text-[#52627A] font-medium border-t border-slate-100 pt-4">
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>{isAr ? 'تصدير سيرة ذاتية واحدة HD PDF شعاعي' : '1 High-Res Vector PDF Export'}</span>
+                <span>{isAr ? 'تصدير سيرة ذاتية واحدة PDF عالية الجودة' : '1 High-Quality PDF Export'}</span>
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />

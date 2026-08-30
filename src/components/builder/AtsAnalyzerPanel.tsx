@@ -544,8 +544,8 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                       ? 'الرجاء فك قفل السيرة للتعديل وإضافة الكلمات الناقصة تلقائياً.'
                       : 'Please unlock the resume to edit and add missing keywords.')
                   : (isAr
-                      ? 'الكلمات التالية مطلوبة في الوظيفة، اضغط على أي كلمة لإضافتها مباشرة إلى قائمة مهاراتك:'
-                      : 'Click any missing keyword below to instantly insert it into your skills list:')}
+                      ? 'الكلمات المفتاحية التالية تم رصدها كمتطلبات أساسية في إعلان الوظيفة وتفتقدها سيرتك الحالية. عدم تضمينها قد يستبعد سيرتك في الفرز الآلي. انقر على أي كلمة لإضافتها إلى قائمة مهاراتك:'
+                      : 'These keywords are critical requirements from the job description missing from your CV. Lack of these may cause ATS rejection. Click any keyword below to add it directly to your skills:')}
               </p>
 
               <div className="flex flex-wrap gap-2 pt-1">

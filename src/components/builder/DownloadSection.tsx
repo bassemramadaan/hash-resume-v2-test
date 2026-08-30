@@ -266,9 +266,10 @@ export const DownloadSection: React.FC = () => {
 
     const finalScore = Math.max(20, Math.min(100, score));
 
-    // Pre-Payment / Pre-Export Warnings List (Prioritized & Direct Actionable)
+    // Pre-Payment / Pre-Export Action Items categorized by priority level
     const warningsList: Array<{
       id: string;
+      level: 'required' | 'recommended' | 'optional';
       titleAr: string;
       titleEn: string;
       descAr: string;
@@ -278,60 +279,97 @@ export const DownloadSection: React.FC = () => {
       actionLabelEn: string;
     }> = [];
 
-    // Priority 1: Personal info (Name or email missing)
-    if (!p?.fullName?.trim() || !p?.email?.trim()) {
+    // LEVEL 1: REQUIRED (Essential for generating a valid resume)
+    const hasFullName = Boolean(p?.fullName?.trim());
+    const hasEmail = Boolean(p?.email?.trim());
+    const hasPhone = Boolean(p?.phone?.trim());
+
+    if (!hasFullName || !hasEmail || !hasPhone) {
       warningsList.push({
         id: 'personal',
-        titleAr: 'بيانات التواصل مفقودة',
-        titleEn: 'Incomplete contact details',
-        descAr: 'أضف اسمك الكامل وبريدك الإلكتروني الرئيسي.',
-        descEn: 'Add your full name and valid contact email.',
+        level: 'required',
+        titleAr: 'أضف اسمك الكامل، البريد الإلكتروني، ورقم الهاتف',
+        titleEn: 'Add your full name, email, and phone number',
+        descAr: 'الاسم والبريد ورقم الهاتف بيانات أساسية للتواصل وتصدير السيرة الذاتية.',
+        descEn: 'Full name, email, and phone number are essential for recruiters and export.',
         actionTab: 'personal',
-        actionLabelAr: 'تعديل البيانات',
-        actionLabelEn: 'Edit info',
+        actionLabelAr: 'إضافة البيانات',
+        actionLabelEn: 'Add info',
       });
     }
 
-    // Priority 2: Missing key sections (Experience / Education)
-    const missingSectionsCount = (expCount === 0 ? 1 : 0) + (eduCount === 0 ? 1 : 0);
-    if (missingSectionsCount > 0) {
+    const missingSectionsCount = (expCount === 0 ? 1 : 0) + (eduCount === 0 ? 1 : 0) + (skillsCount === 0 ? 1 : 0);
+    if (expCount === 0 && eduCount === 0 && skillsCount === 0) {
       warningsList.push({
-        id: 'sections',
-        titleAr: `${missingSectionsCount} أقسام مفقودة`,
-        titleEn: `${missingSectionsCount} missing section${missingSectionsCount > 1 ? 's' : ''}`,
-        descAr: 'أضف الخبرة العملية أو المؤهل التعليمي.',
-        descEn: 'Add work experience or education.',
-        actionTab: expCount === 0 ? 'experiences' : 'education',
+        id: 'core_sections',
+        level: 'required',
+        titleAr: 'أضف قسماً رئيسياً (الخبرة، التعليم، أو المهارات)',
+        titleEn: 'Add at least one core section',
+        descAr: 'تحتاج السيرة الذاتية إلى محتوى أساسي لتصديرها.',
+        descEn: 'Your resume needs core content to be complete.',
+        actionTab: 'experiences',
         actionLabelAr: 'إضافة قسم',
         actionLabelEn: 'Add section',
       });
     }
 
-    // Priority 3: Target Job Description for ATS
+    // LEVEL 2: RECOMMENDED (Improves hiring chances without blocking export)
     if (isJobDescMissing) {
       warningsList.push({
         id: 'job_desc',
-        titleAr: 'لم يتم إدخال الوصف الوظيفي',
-        titleEn: 'No job description added',
-        descAr: 'أدخل الوصف الوظيفي للحصول على فحص مخصص لمطابقة ATS.',
-        descEn: 'Paste a job description for a tailored ATS scan.',
+        level: 'recommended',
+        titleAr: 'أضف وصفاً وظيفياً لفحص مخصص',
+        titleEn: 'Add a job description for a tailored scan',
+        descAr: 'أدخل الوصف الوظيفي لحساب نسبة مطابقة ATS بدقة مع متطلبات الوظيفة.',
+        descEn: 'Paste the target job description to match exact keywords and recruiter filters.',
         actionTab: 'ats',
-        actionLabelAr: 'فحص ATS',
-        actionLabelEn: 'Run ATS scan',
+        actionLabelAr: 'فحص مخصص',
+        actionLabelEn: 'Tailor scan',
       });
     }
 
-    // Priority 4: Bullets without measurable metrics
     if (nonMeasurableBullets > 0) {
       warningsList.push({
         id: 'bullets',
-        titleAr: 'نقاط إنجاز بدون أرقام أو نتائج',
-        titleEn: 'Bullet points missing metrics',
-        descAr: 'أضف أرقاماً أو نسباً مئوية لتأكيد إنجازاتك.',
-        descEn: 'Add quantifiable numbers or % results.',
+        level: 'recommended',
+        titleAr: 'أضف أرقاماً أو نتائج ملموسة لنقاط إنجازاتك',
+        titleEn: 'Add quantifiable metrics to your bullet points',
+        descAr: 'إضافة نسب مئوية أو أرقام تضاعف معدل قبول مسؤولي التوظيف.',
+        descEn: 'Quantifiable metrics (% or numbers) double recruiter callback rates.',
         actionTab: 'experiences',
         actionLabelAr: 'إضافة نتائج',
         actionLabelEn: 'Add metrics',
+      });
+    }
+
+    if (skillsCount > 0 && skillsCount < 3) {
+      warningsList.push({
+        id: 'skills_count',
+        level: 'recommended',
+        titleAr: 'أضف 4–6 مهارات تخصصية أساسية',
+        titleEn: 'Add 4–6 core industry skills',
+        descAr: 'يعزز كثافة الكلمات المفتاحية لمطابقة نظام ATS.',
+        descEn: 'Boosts keyword density for recruiter screening.',
+        actionTab: 'skills',
+        actionLabelAr: 'إضافة مهارات',
+        actionLabelEn: 'Add skills',
+      });
+    }
+
+    // LEVEL 3: OPTIONAL (Enhancements for standout applicants)
+    const projectsCount = resumeData.projects?.length || 0;
+    const certsCount = resumeData.certifications?.length || 0;
+    if (projectsCount === 0 && certsCount === 0) {
+      warningsList.push({
+        id: 'projects_optional',
+        level: 'optional',
+        titleAr: 'أضف مشاريع أو شهادات لتقوية سيرتك الذاتية',
+        titleEn: 'Add projects to strengthen your resume',
+        descAr: 'إبراز المشاريع أو الشهادات التخصصية يمنحك ميزة تنافسية قوية.',
+        descEn: 'Highlights practical achievements and continuous learning.',
+        actionTab: 'projects',
+        actionLabelAr: 'إضافة مشاريع',
+        actionLabelEn: 'Add projects',
       });
     }
 
@@ -498,95 +536,199 @@ export const DownloadSection: React.FC = () => {
         </div>
       </div>
 
-      {/* Pre-Payment Warnings Banner (Gatekeeper Quality Control) */}
-      {allWarnings.length > 0 && (
-        <div className="bg-amber-50/80 border-2 border-amber-300 rounded-2xl p-4 sm:p-5 space-y-3.5">
+      {/* Action Items Before Export (Quality & Readiness Checklist) OR Ready to Export Banner */}
+      {allWarnings.length > 0 ? (
+        <div className="bg-slate-50 border-2 border-slate-300/80 rounded-2xl p-4 sm:p-5 space-y-3.5 shadow-2xs">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center shrink-0">
-                <AlertTriangle className="w-4 h-4 text-amber-700" />
+              <div className="w-8 h-8 rounded-xl bg-slate-200 text-slate-800 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-4 h-4 text-[#001639]" />
               </div>
               <div>
-                <h4 className="text-xs sm:text-sm font-black text-amber-950">
+                <h4 className="text-xs sm:text-sm font-black text-[#001639]">
                   {isAr
-                    ? `تنبيهات مهمة قبل الدفع والتصدير (${allWarnings.length})`
-                    : `Important Warnings Before Payment (${allWarnings.length})`}
+                    ? 'أصلح هذه الملاحظات قبل التصدير'
+                    : 'Fix these before exporting'}
                 </h4>
-                <p className="text-[11px] text-amber-900/80">
+                <p className="text-[11px] font-semibold text-slate-500">
                   {isAr
-                    ? 'يُنصح بمراجعة هذه الملاحظات لضمان أفضل نتيجة قبل إصدار النسخة النهائية.'
-                    : 'Review these actionable items to maximize interview callbacks before finalizing.'}
+                    ? `${allWarnings.length} عناصر تحتاج انتباهك`
+                    : `${allWarnings.length} items need your attention`}
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Specific Bullet Warnings List */}
-          <div className="space-y-2 pt-1 border-t border-amber-200/80">
-            {allWarnings.map((w, idx) => (
-              <div
-                key={idx}
-                className="p-3 bg-white/90 rounded-xl border border-amber-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs shadow-2xs"
-              >
-                <div className="flex items-start gap-2 min-w-0">
-                  <span className="w-2 h-2 rounded-full bg-amber-500 shrink-0 mt-1.5"></span>
-                  <span className="font-bold text-slate-800 leading-relaxed">
-                    {isAr ? w.textAr : w.textEn}
-                  </span>
-                </div>
+          {/* Categorized Action Items List */}
+          <div className="space-y-2 pt-1 border-t border-slate-200">
+            {allWarnings.map((w, idx) => {
+              const isRequired = w.level === 'required';
+              const isRecommended = w.level === 'recommended';
+              return (
+                <div
+                  key={idx}
+                  className={`p-3 bg-white rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs shadow-2xs ${
+                    isRequired
+                      ? 'border-red-200 bg-red-50/20'
+                      : isRecommended
+                      ? 'border-amber-200/90 bg-amber-50/20'
+                      : 'border-slate-200/90'
+                  }`}
+                >
+                  <div className="flex items-start gap-2.5 min-w-0">
+                    <span
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-black shrink-0 mt-0.5 ${
+                        isRequired
+                          ? 'bg-red-100 text-red-700 border border-red-200'
+                          : isRecommended
+                          ? 'bg-amber-100 text-amber-900 border border-amber-200'
+                          : 'bg-blue-50 text-blue-700 border border-blue-200'
+                      }`}
+                    >
+                      {isRequired
+                        ? isAr ? 'مطلوب' : 'Required'
+                        : isRecommended
+                        ? isAr ? 'موصى به' : 'Recommended'
+                        : isAr ? 'اختياري' : 'Optional'}
+                    </span>
 
-                {w.actionTab && (
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab(w.actionTab as any)}
-                    className="self-end sm:self-auto px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-950 font-bold rounded-lg text-[11px] flex items-center gap-1.5 shrink-0 transition cursor-pointer min-h-[32px]"
-                  >
-                    <Edit3 className="w-3 h-3 text-amber-800" />
-                    <span>{isAr ? w.actionLabelAr : w.actionLabelEn}</span>
-                  </button>
-                )}
-              </div>
-            ))}
+                    <div className="flex flex-col">
+                      <span className="font-black text-slate-800 leading-snug">
+                        {isAr ? w.titleAr : w.titleEn}
+                      </span>
+                      <span className="text-[11px] text-slate-500 font-medium mt-0.5">
+                        {isAr ? w.descAr : w.descEn}
+                      </span>
+                    </div>
+                  </div>
+
+                  {w.actionTab && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab(w.actionTab as any)}
+                      className={`self-end sm:self-auto px-3 py-1.5 font-bold rounded-lg text-[11px] flex items-center gap-1.5 shrink-0 transition cursor-pointer min-h-[32px] ${
+                        isRequired
+                          ? 'bg-red-600 hover:bg-red-700 text-white'
+                          : isRecommended
+                          ? 'bg-amber-100 hover:bg-amber-200 text-amber-950'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
+                      }`}
+                    >
+                      <Edit3 className="w-3 h-3" />
+                      <span>{isAr ? w.actionLabelAr : w.actionLabelEn}</span>
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <div className="bg-emerald-50/90 border-2 border-emerald-300 rounded-2xl p-4 sm:p-5 flex items-center gap-3.5 shadow-2xs">
+          <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+            <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+          </div>
+          <div>
+            <h4 className="text-sm font-black text-emerald-950">
+              {isAr ? 'سيرتك الذاتية جاهزة للتصدير' : 'Your resume is ready to export'}
+            </h4>
+            <p className="text-xs font-semibold text-emerald-800/90 mt-0.5">
+              {isAr ? 'جميع البيانات الأساسية مكتملة وجاهزة للتحميل الفوري.' : 'All required information is complete.'}
+            </p>
           </div>
         </div>
       )}
 
       {/* 1. Main Hero Download & Export Card */}
-      <div className="bg-gradient-to-br from-[#001639] to-[#00245E] text-white rounded-2xl p-5 sm:p-6 shadow-sm space-y-5">
+      <div className="bg-gradient-to-br from-[#001639] to-[#00245E] text-white rounded-2xl p-5 sm:p-6 shadow-sm space-y-4">
         {/* Candidate & Format Snapshot */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
-          <div className="space-y-1">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-slate-200 text-[10px] font-semibold tracking-wide">
-              <FileCheck className="w-3 h-3 text-[#FF4D2D]" />
-              <span>A4 PDF Document</span>
-              <span className="text-white/40">•</span>
-              <span>{templateName}</span>
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-slate-200 text-xs font-semibold tracking-wide">
+              <FileCheck className="w-3.5 h-3.5 text-[#FF4D2D]" />
+              <span>{isAr ? 'ملف PDF عالي الدقة • تنسيق متوافق مع ATS' : 'High-resolution PDF • ATS-friendly layout'}</span>
             </div>
             <h3 className="text-lg font-bold text-white tracking-tight">{candidateName}</h3>
             <p className="text-xs text-slate-300 font-medium">{targetTitle}</p>
           </div>
 
           {/* Readiness Score Chip */}
-          <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-1 bg-white/5 border border-white/10 rounded-xl px-3.5 py-2">
-            <span className="text-[10px] text-slate-300 font-medium">
-              {isAr ? 'توافق ATS' : 'ATS Score'}
-            </span>
-            <div className="flex items-center gap-1.5">
+          <div className="flex items-center justify-between sm:justify-center gap-2.5 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5">
+            <div className="flex flex-col sm:items-end">
+              <span className="text-[10px] text-slate-300 font-semibold uppercase tracking-wider">
+                {isAr ? 'توافق ATS' : 'ATS Readiness'}
+              </span>
               <span
-                className={`text-base font-black ${
+                className={`text-sm sm:text-base font-black ${
                   readinessScore >= 80
                     ? 'text-emerald-400'
-                    : readinessScore >= 50
+                    : readinessScore >= 60
                     ? 'text-amber-400'
                     : 'text-[#FF4D2D]'
                 }`}
               >
-                {readinessScore}%
+                {readinessScore}/100 — {
+                  readinessScore >= 80
+                    ? isAr ? 'جاهز للمنافسة' : 'strong match'
+                    : readinessScore >= 60
+                    ? isAr ? 'جاهزية جيدة' : 'good readiness'
+                    : isAr ? 'يحتاج تحسينات' : 'needs attention'
+                }
               </span>
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
             </div>
+            <ShieldCheck className={`w-5 h-5 shrink-0 ${
+              readinessScore >= 80 ? 'text-emerald-400' : readinessScore >= 60 ? 'text-amber-400' : 'text-[#FF4D2D]'
+            }`} />
           </div>
         </div>
+
+        {/* ATS Score Explanation & 3 Reasons when attention is needed */}
+        {allWarnings.length > 0 && (
+          <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-2.5 text-xs">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 text-amber-300 font-bold">
+                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>
+                  {isAr
+                    ? 'أسباب النتيجة ونقاط التحسين المباشرة:'
+                    : 'Reasons for this score & quick fixes:'}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  const firstTab = allWarnings[0]?.actionTab || 'personal';
+                  setActiveTab(firstTab);
+                }}
+                className="text-[11px] font-bold text-amber-300 hover:text-amber-200 underline flex items-center gap-1 cursor-pointer"
+              >
+                <span>{isAr ? 'اكتشف ما يجب إصلاحه' : 'See what to fix'}</span>
+                <ArrowRight className="w-3 h-3 rtl:rotate-180" />
+              </button>
+            </div>
+
+            {/* Up to 3 Key Reasons */}
+            <ul className="space-y-1.5 text-[11px] text-slate-200 ps-1">
+              {allWarnings.slice(0, 3).map((w, idx) => (
+                <li key={idx} className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                    <span className="truncate">{isAr ? w.titleAr : w.titleEn}</span>
+                  </div>
+                  {w.actionTab && (
+                    <button
+                      type="button"
+                      onClick={() => setActiveTab(w.actionTab)}
+                      className="text-[10px] text-slate-300 hover:text-white underline shrink-0 cursor-pointer"
+                    >
+                      {isAr ? w.actionLabelAr : w.actionLabelEn}
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Empty Resume Warning Alert */}
         {emptyWarning && (
@@ -633,7 +775,7 @@ export const DownloadSection: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 border-t border-white/10 text-[11px] text-slate-300">
           <div className="flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <span>{isAr ? 'ملف PDF متجهي فائق الدقة' : 'Vector High-Res PDF'}</span>
+            <span>{isAr ? 'ملف PDF عالي الجودة' : 'High-quality PDF'}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
@@ -734,8 +876,8 @@ export const DownloadSection: React.FC = () => {
             </div>
             <p className="text-xs text-slate-600 mt-1 leading-relaxed">
               {isAr
-                ? 'التعديل وحفظ البيانات وكتابة السيرة بالذكاء الاصطناعي مجاني بالكامل 100%. تدفع لمرة واحدة فقط عند اعتماد التفعيل وتصدير الـ PDF عالي الدقة دون أي خصومات دورية متكررة.'
-                : 'Editing, local storage, and AI features are 100% free. You only pay once when activating your high-res vector PDF download, with absolutely no hidden recurring subscriptions.'}
+                ? 'أنشئ وعاين سيرتك الذاتية مجاناً. ادفع لمرة واحدة فقط عندما تصبح جاهزاً لتحميل ملف الـ PDF عالي الجودة بدون أي اشتراكات متكررة.'
+                : 'Build and preview your resume for free. Pay once when you’re ready to download the high-quality PDF. No recurring subscriptions.'}
             </p>
           </div>
         </div>
@@ -758,14 +900,22 @@ export const DownloadSection: React.FC = () => {
                   ({isAr ? 'دفعة لمرة واحدة' : 'one-time payment'})
                 </span>
               </div>
-              <ul className="text-[11px] text-slate-600 space-y-1 pt-1">
+              <ul className="text-[11px] text-slate-600 space-y-1.5 pt-1">
                 <li className="flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>{isAr ? 'تحميل سيرة ذاتية واحدة PDF فائقة الدقة' : '1 HD Vector PDF download'}</span>
+                  <span>{isAr ? 'تحميل سيرة ذاتية واحدة عالية الجودة PDF' : '1 high-quality PDF download'}</span>
                 </li>
                 <li className="flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>{isAr ? 'بدون علامة مائية ومعتمدة لـ ATS' : 'No watermarks, ATS compliant'}</span>
+                  <span>{isAr ? 'بدون أي علامة مائية' : 'No watermark'}</span>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>{isAr ? 'تنسيق متوافق مع أنظمة ATS' : 'ATS-friendly layout'}</span>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>{isAr ? 'دفع لمرة واحدة' : 'One-time payment'}</span>
                 </li>
               </ul>
             </div>
@@ -799,14 +949,22 @@ export const DownloadSection: React.FC = () => {
                   ({isAr ? '40 ج.م للتحميل فقط' : 'Only 40 EGP/CV'})
                 </span>
               </div>
-              <ul className="text-[11px] text-slate-600 space-y-1 pt-1">
+              <ul className="text-[11px] text-slate-600 space-y-1.5 pt-1">
                 <li className="flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>{isAr ? '3 تفعيلات مستقلة لـ 3 سير ذاتية مختلفة' : '3 Independent download passes'}</span>
+                  <span>{isAr ? '3 تحميلات لنماذج أو نسخ سير ذاتية مختلفة' : '3 downloads for different resume versions'}</span>
                 </li>
                 <li className="flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                  <span>{isAr ? 'أكواد تفعيل دائمة للاستخدام في أي وقت' : 'Permanent activation keys'}</span>
+                  <span>{isAr ? 'استخدم الرصيد في أي وقت تحتاجه' : 'Use them whenever you need'}</span>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>{isAr ? 'بدون علامة مائية ومعتمدة لـ ATS' : 'No watermark & ATS-friendly'}</span>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>{isAr ? 'دفع لمرة واحدة' : 'One-time payment'}</span>
                 </li>
               </ul>
             </div>
@@ -838,112 +996,114 @@ export const DownloadSection: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Quick Tweaks / Next Steps */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-        {/* Customize style card */}
-        <button
-          type="button"
-          onClick={() => setActiveTab('customize')}
-          className="p-3.5 bg-white border border-slate-200 hover:border-[#001639]/40 rounded-2xl text-start transition flex items-center justify-between gap-3 shadow-2xs group cursor-pointer"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-slate-100 text-[#001639] group-hover:bg-[#001639] group-hover:text-white flex items-center justify-center shrink-0 transition">
-              <Palette className="w-4 h-4" />
+      {/* 3. Pre-Export Quality & Settings (Ordered by Priority: 1. ATS Keywords, 2. Template & Colors, 3. Data Backup) */}
+      <div className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          {/* 1. ATS match scan card (Top Priority before exporting) */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('ats' as any)}
+            className="p-4 bg-white border border-slate-200 hover:border-[#FF4D2D]/60 rounded-2xl text-start transition flex items-center justify-between gap-3 shadow-2xs group cursor-pointer"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#FF4D2D] group-hover:bg-[#FF4D2D] group-hover:text-white flex items-center justify-center shrink-0 transition">
+                <FileSearch className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-xs sm:text-sm font-bold text-[#001639]">
+                  {isAr ? 'فحص الكلمات المفتاحية ATS' : 'ATS Keyword Match'}
+                </h4>
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  {isAr ? 'مطابقة السيرة مع إعلان وظيفتك واكتشاف الكلمات الناقصة' : 'Scan missing keywords & match job requirements'}
+                </p>
+              </div>
             </div>
-            <div>
-              <h4 className="text-xs font-bold text-[#001639]">
-                {isAr ? 'تخصيص القالب والمظهر' : 'Template & Colors'}
-              </h4>
-              <p className="text-[11px] text-slate-500">
-                {isAr ? 'تغيير التصميم والألوان والخطوط' : 'Change theme, font, and layout'}
-              </p>
-            </div>
-          </div>
-          <span className="text-slate-400 group-hover:text-[#001639] text-xs font-bold transition">
-            {isAr ? '←' : '→'}
-          </span>
-        </button>
+            <span className="text-slate-400 group-hover:text-[#FF4D2D] text-xs font-bold transition rtl:rotate-180">
+              →
+            </span>
+          </button>
 
-        {/* ATS match scan card */}
-        <button
-          type="button"
-          onClick={() => setActiveTab('ats' as any)}
-          className="p-3.5 bg-white border border-slate-200 hover:border-[#001639]/40 rounded-2xl text-start transition flex items-center justify-between gap-3 shadow-2xs group cursor-pointer"
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-orange-50 text-[#FF4D2D] group-hover:bg-[#FF4D2D] group-hover:text-white flex items-center justify-center shrink-0 transition">
-              <FileSearch className="w-4 h-4" />
+          {/* 2. Template & Colors card */}
+          <button
+            type="button"
+            onClick={() => setActiveTab('customize')}
+            className="p-4 bg-white border border-slate-200 hover:border-[#001639]/50 rounded-2xl text-start transition flex items-center justify-between gap-3 shadow-2xs group cursor-pointer"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-slate-100 text-[#001639] group-hover:bg-[#001639] group-hover:text-white flex items-center justify-center shrink-0 transition">
+                <Palette className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-xs sm:text-sm font-bold text-[#001639]">
+                  {isAr ? 'تخصيص القالب والمظهر' : 'Template & Colors'}
+                </h4>
+                <p className="text-[11px] text-slate-500 mt-0.5">
+                  {isAr ? 'تغيير التصميم والألوان والخطوط' : 'Change theme, font, and layout'}
+                </p>
+              </div>
             </div>
-            <div>
-              <h4 className="text-xs font-bold text-[#001639]">
-                {isAr ? 'فحص الكلمات المفتاحية ATS' : 'ATS Keyword Match'}
-              </h4>
-              <p className="text-[11px] text-slate-500">
-                {isAr ? 'مطابقة السيرة مع إعلان وظيفة' : 'Match resume with job description'}
-              </p>
-            </div>
-          </div>
-          <span className="text-slate-400 group-hover:text-[#001639] text-xs font-bold transition">
-            {isAr ? '←' : '→'}
-          </span>
-        </button>
-      </div>
-
-      {/* 4. JSON Backup & Restore Card */}
-      <div className="bg-gradient-to-br from-slate-50 to-indigo-50/40 border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3">
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-[#001639] text-white flex items-center justify-center">
-              <FileJson className="w-4 h-4 text-[#FF4D2D]" />
-            </div>
-            <div>
-              <h4 className="text-xs sm:text-sm font-bold text-[#001639]">
-                {isAr ? 'النسخة الاحتياطية للبيانات (JSON Backup)' : 'Data Backup & Restore (JSON)'}
-              </h4>
-              <p className="text-[11px] text-slate-500">
-                {isAr
-                  ? 'احفظ نسخة من بيانات سيرتك الذاتية بصيغة JSON على جهازك أو استعدها في أي وقت.'
-                  : 'Download or upload your full resume state as a JSON file.'}
-              </p>
-            </div>
-          </div>
+            <span className="text-slate-400 group-hover:text-[#001639] text-xs font-bold transition rtl:rotate-180">
+              →
+            </span>
+          </button>
         </div>
 
-        {/* Success / Info Alert */}
-        {jsonSuccessMsg && (
-          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-emerald-800 text-xs font-bold animate-in fade-in">
-            <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>{jsonSuccessMsg}</span>
+        {/* 3. JSON Data Backup & Restore Card */}
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3.5">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-[#001639] text-white flex items-center justify-center shrink-0">
+                <FileJson className="w-4 h-4 text-[#FF4D2D]" />
+              </div>
+              <div>
+                <h4 className="text-xs sm:text-sm font-bold text-[#001639]">
+                  {isAr ? 'النسخة الاحتياطية للبيانات (JSON Backup)' : 'Data Backup & Restore'}
+                </h4>
+                <p className="text-[11px] text-slate-500">
+                  {isAr
+                    ? 'احفظ نسخة من بيانات سيرتك الذاتية على جهازك للخصوصية أو استعدها في أي وقت.'
+                    : 'Your backup is downloaded to your device. Keep it somewhere safe.'}
+                </p>
+              </div>
+            </div>
           </div>
-        )}
 
-        <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-1">
-          {/* Export JSON Button */}
-          <button
-            type="button"
-            onClick={handleExportJson}
-            className="w-full sm:flex-1 py-2.5 px-4 bg-white hover:bg-slate-100 text-[#001639] border border-slate-200 font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs min-h-[40px] active:scale-98"
-          >
-            <Download className="w-3.5 h-3.5 text-[#001639]" />
-            <span>{isAr ? 'تصدير نسخة احتياطية JSON' : 'Export JSON Backup'}</span>
-          </button>
+          {/* Success / Info Alert */}
+          {jsonSuccessMsg && (
+            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-emerald-800 text-xs font-bold animate-in fade-in">
+              <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>{jsonSuccessMsg}</span>
+            </div>
+          )}
 
-          {/* Import JSON Button */}
-          <input
-            type="file"
-            ref={jsonFileInputRef}
-            onChange={handleImportJson}
-            accept=".json,application/json"
-            className="hidden"
-          />
-          <button
-            type="button"
-            onClick={() => jsonFileInputRef.current?.click()}
-            className="w-full sm:flex-1 py-2.5 px-4 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs min-h-[40px] active:scale-98"
-          >
-            <Upload className="w-3.5 h-3.5 text-[#FF4D2D]" />
-            <span>{isAr ? 'استيراد نسخة احتياطية JSON' : 'Import JSON Backup'}</span>
-          </button>
+          <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-0.5">
+            {/* Export JSON Button */}
+            <button
+              type="button"
+              onClick={handleExportJson}
+              className="w-full sm:flex-1 py-2.5 px-4 bg-white hover:bg-slate-100 text-[#001639] border border-slate-200 font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs min-h-[40px] active:scale-98"
+            >
+              <Download className="w-3.5 h-3.5 text-[#001639]" />
+              <span>{isAr ? 'تصدير نسخة احتياطية' : 'Download Backup (JSON)'}</span>
+            </button>
+
+            {/* Restore from Backup Button */}
+            <input
+              type="file"
+              ref={jsonFileInputRef}
+              onChange={handleImportJson}
+              accept=".json,application/json"
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={() => jsonFileInputRef.current?.click()}
+              className="w-full sm:flex-1 py-2.5 px-4 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs min-h-[40px] active:scale-98"
+            >
+              <Upload className="w-3.5 h-3.5 text-[#FF4D2D]" />
+              <span>{isAr ? 'استعادة من نسخة احتياطية' : 'Restore from backup'}</span>
+            </button>
+          </div>
         </div>
       </div>
 
