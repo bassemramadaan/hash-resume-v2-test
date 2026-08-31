@@ -100,7 +100,7 @@ export const PostDownloadSuccessModal: React.FC = () => {
 
             {/* Content Body */}
             <div className="p-5 sm:p-6 space-y-4 text-center">
-              <div className="space-y-2 text-sm text-slate-600 leading-relaxed font-medium">
+              <div className={`space-y-2 text-sm text-slate-600 font-medium ${isAr ? 'payment-body-ar' : 'leading-relaxed'}`}>
                 <p>
                   {isAr
                     ? 'ربنا يوفقك وإن شاء الله تلاقي الفرصة المناسبة.'
@@ -133,7 +133,7 @@ export const PostDownloadSuccessModal: React.FC = () => {
 
                 <button
                   onClick={handleStayHere}
-                  className="w-full sm:w-auto py-2.5 px-4 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 font-semibold text-xs sm:text-sm transition cursor-pointer"
+                  className="w-full sm:w-auto py-2.5 px-4 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 font-bold text-xs sm:text-sm transition cursor-pointer"
                 >
                   {isAr ? 'البقاء هنا' : 'Stay here'}
                 </button>

@@ -1,6 +1,12 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@700;800&family=Manrope:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap');
 
 :root {
+  --font-ui-en: "Manrope", "Inter", system-ui, sans-serif;
+  --font-ui-ar: "Tajawal", "Segoe UI", Tahoma, sans-serif;
+  --font-display-en: "Manrope", "Inter", system-ui, sans-serif;
+  --font-display-ar: "Alexandria", "Tajawal", sans-serif;
+
   --brand-coral: #FF4D2D;
   --brand-coral-hover: #E5431F;
   --brand-coral-active: #CC3A1A;
@@ -39,8 +45,10 @@
 }
 
 @theme {
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-arabic: 'IBM Plex Sans Arabic', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: var(--font-ui-en);
+  --font-arabic: var(--font-ui-ar);
+  --font-display-en: var(--font-display-en);
+  --font-display-ar: var(--font-display-ar);
 
   --color-coral: #FF4D2D;
   --color-coral-hover: #E5431F;
@@ -92,9 +100,9 @@ body,
   box-sizing: border-box;
 }
 
-/* Base LTR (English) Typography */
+/* Base LTR (English / French) Typography */
 body {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: var(--font-ui-en);
   background-color: #F8FAFC;
   color: #0B1120;
   line-height: 1.5;
@@ -107,9 +115,10 @@ body {
 [dir="rtl"],
 [dir="rtl"] body,
 html[dir="rtl"] body {
-  font-family: 'IBM Plex Sans Arabic', 'Tajawal', 'Inter', system-ui, -apple-system, sans-serif;
-  line-height: 1.75;
+  font-family: var(--font-ui-ar);
+  line-height: 1.65;
   font-weight: 400;
+  letter-spacing: 0;
 }
 
 /* Ensure emails, phones, and URLs remain LTR even in RTL mode */
@@ -122,17 +131,39 @@ html[dir="rtl"] body {
   text-align: right;
 }
 
-/* English Brand Name "Hash Resume" Typography override (remains Inter 700) */
+/* Brand Name "Hash Resume" Typography */
 .font-brand,
 .brand-name {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  font-family: var(--font-ui-en) !important;
   font-weight: 700 !important;
+}
+
+/* Hero Typography Specifications */
+.font-display-en {
+  font-family: var(--font-display-en);
+}
+
+.font-display-ar {
+  font-family: var(--font-display-ar);
+}
+
+.hero-headline-en {
+  font-family: var(--font-display-en);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.04;
+}
+
+.hero-headline-ar {
+  font-family: var(--font-display-ar);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.25;
 }
 
 /* Heading Typography Line Heights & Refined Balanced Weights */
 h1 {
   line-height: 1.2;
-  letter-spacing: -0.015em;
   font-weight: 700;
 }
 
@@ -144,6 +175,128 @@ h2 {
 h3, h4 {
   line-height: 1.3;
   font-weight: 600;
+}
+
+/* Phase 2: Builder & Form Typography System */
+.builder-page-title-ar {
+  font-family: var(--font-display-ar);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.builder-page-title-en {
+  font-family: var(--font-display-en);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+/* Section Titles */
+.builder-section-title-en {
+  font-family: var(--font-ui-en);
+  font-weight: 700;
+}
+
+.builder-section-title-ar {
+  font-family: var(--font-ui-ar);
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+/* Global Form Elements Styling in Builder */
+label,
+.form-label {
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+[dir="rtl"] label,
+[dir="rtl"] .form-label {
+  font-family: var(--font-ui-ar);
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+select,
+textarea,
+.form-input {
+  font-size: 14.5px;
+  font-weight: 500;
+}
+
+[dir="rtl"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+[dir="rtl"] select,
+[dir="rtl"] textarea,
+[dir="rtl"] .form-input {
+  font-family: var(--font-ui-ar);
+  font-weight: 500;
+  line-height: 1.7;
+}
+
+input::placeholder,
+textarea::placeholder {
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+[dir="rtl"] input::placeholder,
+[dir="rtl"] textarea::placeholder {
+  font-family: var(--font-ui-ar);
+  font-weight: 500;
+  line-height: 1.7;
+}
+
+.form-helper,
+.helper-text {
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+[dir="rtl"] .form-helper,
+[dir="rtl"] .helper-text {
+  font-family: var(--font-ui-ar);
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* Buttons in Builder & UI */
+button,
+.btn-ui {
+  font-weight: 700;
+}
+
+[dir="rtl"] button,
+[dir="rtl"] .btn-ui {
+  font-family: var(--font-ui-ar);
+  font-weight: 700;
+}
+
+/* ATS Numeric Values & Scores */
+.ats-score-num,
+.tabular-nums {
+  font-family: var(--font-ui-en), monospace;
+  font-variant-numeric: tabular-nums;
+  direction: ltr !important;
+  display: inline-block;
+}
+
+/* Phase 3: Payment & Modal Specific Typography */
+.payment-amount,
+.payment-ref,
+.payment-tabular {
+  font-family: var(--font-ui-en), monospace;
+  font-variant-numeric: tabular-nums;
+  direction: ltr !important;
+}
+
+.payment-body-ar {
+  font-family: var(--font-ui-ar);
+  line-height: 1.75;
+}
+
+.payment-ltr-field {
+  direction: ltr !important;
+  text-align: start;
 }
 
 /* Clear, accessible focus rings for keyboard navigation */

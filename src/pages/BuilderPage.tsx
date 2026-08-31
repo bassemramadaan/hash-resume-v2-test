@@ -930,7 +930,9 @@ export const BuilderPage: React.FC = () => {
                   {/* Dashboard Welcome & Overview Card with Next Step Guidance */}
                   <div className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
                     <div className="space-y-1">
-                      <h2 className="font-extrabold text-base sm:text-lg text-[#001639]">
+                      <h2 className={`text-base sm:text-lg text-[#001639] ${
+                        isAr ? 'builder-page-title-ar' : 'builder-page-title-en'
+                      }`}>
                         {isAr ? 'أنشئ سيرتك الذاتية' : 'Build your resume'}
                       </h2>
                       <p className="text-xs text-slate-500 font-medium">

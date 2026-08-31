@@ -556,7 +556,7 @@ export const ActivationModal: React.FC = () => {
                   </span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  {/* Single Download Plan (50 EGP) */}
+                    {/* Single Download Plan (50 EGP) */}
                   <div
                     onClick={() => setSelectedPlan('single')}
                     className={`p-4 rounded-2xl border-2 transition cursor-pointer flex flex-col justify-between ${
@@ -573,7 +573,7 @@ export const ActivationModal: React.FC = () => {
                           </h4>
                           <p className="text-[11px] text-slate-500">{labels.singleSub}</p>
                         </div>
-                        <span className="font-black text-[#001639] text-base shrink-0">{labels.singlePrice}</span>
+                        <span className="font-black text-[#001639] text-base shrink-0 payment-amount">{labels.singlePrice}</span>
                       </div>
 
                       <ul className="space-y-1.5 my-3 pt-2 border-t border-slate-200/80 text-[11px] text-slate-700">
@@ -630,7 +630,7 @@ export const ActivationModal: React.FC = () => {
                           </h4>
                           <p className="text-[11px] text-slate-500">{labels.bundleSub}</p>
                         </div>
-                        <span className="font-black text-[#FF4D2D] text-base shrink-0">{labels.bundlePrice}</span>
+                        <span className="font-black text-[#FF4D2D] text-base shrink-0 payment-amount">{labels.bundlePrice}</span>
                       </div>
 
                       <ul className="space-y-1.5 my-3 pt-2 border-t border-slate-200/80 text-[11px] text-slate-700">
@@ -671,9 +671,9 @@ export const ActivationModal: React.FC = () => {
               <div className="space-y-3">
                 <label className="block text-xs font-bold text-slate-800">{labels.step2Title}</label>
                 <div role="tablist" className="grid grid-cols-3 gap-1 p-1 bg-slate-100 rounded-xl text-xs">
-                  <button onClick={() => setTransferMethod('instapay')} className={`py-2.5 px-2 rounded-lg min-h-[44px] flex items-center justify-center cursor-pointer transition ${transferMethod === 'instapay' ? 'bg-white font-bold text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabInstapay}</button>
-                  <button onClick={() => setTransferMethod('vodafone')} className={`py-2.5 px-2 rounded-lg min-h-[44px] flex items-center justify-center cursor-pointer transition ${transferMethod === 'vodafone' ? 'bg-white font-bold text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabVodafone}</button>
-                  <button onClick={() => setTransferMethod('code')} className={`py-2.5 px-2 rounded-lg min-h-[44px] flex items-center justify-center cursor-pointer transition ${transferMethod === 'code' ? 'bg-white font-bold text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabCode}</button>
+                  <button onClick={() => setTransferMethod('instapay')} className={`py-2.5 px-2 rounded-lg min-h-[44px] flex items-center justify-center cursor-pointer transition font-bold ${transferMethod === 'instapay' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabInstapay}</button>
+                  <button onClick={() => setTransferMethod('vodafone')} className={`py-2.5 px-2 rounded-lg min-h-[44px] flex items-center justify-center cursor-pointer transition font-bold ${transferMethod === 'vodafone' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabVodafone}</button>
+                  <button onClick={() => setTransferMethod('code')} className={`py-2.5 px-2 rounded-lg min-h-[44px] flex items-center justify-center cursor-pointer transition font-bold ${transferMethod === 'code' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabCode}</button>
                 </div>
 
                 {transferMethod === 'code' ? (
@@ -684,11 +684,11 @@ export const ActivationModal: React.FC = () => {
                       value={inputCode}
                       onChange={(e) => setInputCode(e.target.value)}
                       placeholder={labels.codePlaceholder}
-                      className="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-xl font-mono uppercase text-base font-bold focus:ring-2 focus:ring-[#001639] outline-none min-h-[48px]"
+                      className="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-xl font-mono uppercase text-base font-bold focus:ring-2 focus:ring-[#001639] outline-none min-h-[48px] payment-ltr-field"
                     />
                     <button
                       onClick={handleVerifyExistingCode}
-                      className="w-full py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold rounded-xl min-h-[48px] shadow-sm active:scale-98 transition flex items-center justify-center gap-2"
+                      className="w-full py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold rounded-xl min-h-[48px] shadow-sm active:scale-98 transition flex items-center justify-center gap-2"
                     >
                       <Zap className="w-4 h-4" />
                       <span>{labels.verifyBtn}</span>
@@ -726,7 +726,7 @@ export const ActivationModal: React.FC = () => {
                             <Smartphone className="w-4 h-4 text-[#FF4D2D]" />
                             {labels.instapayHeading}
                           </span>
-                          <span className="text-xs font-black text-[#FF4D2D]">
+                          <span className="text-xs font-black text-[#FF4D2D] payment-amount">
                             {selectedPlan === 'bundle_3' ? '120 ج.م' : '50 ج.م'}
                           </span>
                         </div>
@@ -736,7 +736,7 @@ export const ActivationModal: React.FC = () => {
                         
                         {/* Copy Address Row */}
                         <div className="flex items-center justify-between gap-2 p-2.5 bg-white border border-slate-200 rounded-xl">
-                          <span className="font-mono font-bold text-xs text-[#001639] truncate select-all">
+                          <span className="font-mono font-bold text-xs text-[#001639] truncate select-all payment-ltr-field">
                             {INSTAPAY_ADDRESS}
                           </span>
                           <button
@@ -779,7 +779,7 @@ export const ActivationModal: React.FC = () => {
                             <PhoneCall className="w-4 h-4 text-[#FF4D2D]" />
                             {labels.vodafoneHeading}
                           </span>
-                          <span className="text-xs font-black text-[#FF4D2D]">
+                          <span className="text-xs font-black text-[#FF4D2D] payment-amount">
                             {selectedPlan === 'bundle_3' ? '120 ج.م' : '50 ج.م'}
                           </span>
                         </div>
@@ -789,7 +789,7 @@ export const ActivationModal: React.FC = () => {
                         
                         {/* Copy Vodafone Number Row */}
                         <div className="flex items-center justify-between gap-2 p-2.5 bg-white border border-rose-200 rounded-xl">
-                          <span className="font-mono font-black text-sm text-[#001639] select-all">
+                          <span className="font-mono font-black text-sm text-[#001639] select-all payment-tabular payment-ltr-field">
                             {VODAFONE_CASH_NUMBER}
                           </span>
                           <button
@@ -832,7 +832,7 @@ export const ActivationModal: React.FC = () => {
                         value={emailInput}
                         onChange={(e) => setEmailInput(e.target.value)}
                         placeholder={labels.emailPlaceholder}
-                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#001639] outline-none min-h-[44px]"
+                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#001639] outline-none min-h-[44px] payment-ltr-field"
                       />
                     </div>
                     <div className="space-y-1">
@@ -843,7 +843,7 @@ export const ActivationModal: React.FC = () => {
                         value={referenceInput}
                         onChange={(e) => setReferenceInput(e.target.value)}
                         placeholder={labels.refPlaceholder}
-                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#001639] outline-none min-h-[44px]"
+                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#001639] outline-none min-h-[44px] payment-tabular payment-ltr-field"
                       />
                     </div>
 
@@ -851,7 +851,7 @@ export const ActivationModal: React.FC = () => {
                       <button
                         disabled={isSubmitting}
                         type="submit"
-                        className="w-full py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 min-h-[48px] shadow-sm active:scale-98 transition disabled:opacity-70 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#FF4D2D]"
+                        className="w-full py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 min-h-[48px] shadow-sm active:scale-98 transition disabled:opacity-70 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#FF4D2D]"
                       >
                         {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
                         <span>
@@ -885,7 +885,7 @@ export const ActivationModal: React.FC = () => {
               
               <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
                 <div className="text-[11px] font-bold text-slate-500">{isAr ? 'رقم مرجع التحويل الخاص بك:' : 'Your Transaction Reference Number:'}</div>
-                <div className="inline-flex items-center justify-center gap-2 text-sm font-mono font-black text-[#001639] bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs">
+                <div className="inline-flex items-center justify-center gap-2 text-sm font-mono font-black text-[#001639] bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs payment-ref payment-ltr-field">
                   <span>{referenceInput}</span>
                   <button
                     type="button"
@@ -935,7 +935,7 @@ export const ActivationModal: React.FC = () => {
                   value={referenceInput}
                   onChange={(e) => setReferenceInput(e.target.value)}
                   placeholder={labels.refPlaceholder}
-                  className="w-full px-4 py-3 bg-slate-50 border rounded-xl font-mono text-sm"
+                  className="w-full px-4 py-3 bg-slate-50 border rounded-xl font-mono text-sm payment-ltr-field payment-tabular"
                 />
                 <p className="text-[11px] text-slate-500 font-medium">{labels.keepRefNotice}</p>
               </div>

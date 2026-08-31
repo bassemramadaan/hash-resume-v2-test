@@ -71,7 +71,9 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
-          className="text-[clamp(38px,10vw,52px)] sm:text-6xl md:text-7xl lg:text-8xl font-black text-[#001639] leading-[1.1] sm:leading-[1.05] tracking-tight font-brand"
+          className={`text-[clamp(38px,10vw,52px)] sm:text-6xl md:text-7xl lg:text-8xl text-[#001639] ${
+            isAr ? 'hero-headline-ar' : 'hero-headline-en'
+          }`}
         >
           {isAr ? (
             <>سيرتك الذاتية.<br />بدون <span className="text-coral">أي تعقيد.</span></>

@@ -79,7 +79,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ isAr }) => {
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-3xl sm:text-5xl font-black text-[#001639] leading-[1.2] tracking-tight">
+          <h1
+            className={`text-3xl sm:text-5xl text-[#001639] ${
+              isAr ? 'hero-headline-ar' : 'hero-headline-en'
+            }`}
+          >
             {isAr ? (
               <>
                 سيرتك الذاتية الاحترافية{' '}

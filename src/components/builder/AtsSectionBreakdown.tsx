@@ -294,10 +294,10 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
             <span className="text-[10px] text-slate-300 block font-medium">
               {isAr ? 'مؤشر الجاهزية' : 'Resume readiness'}
             </span>
-            <span className="text-xl font-black text-white">{overallScore}/100</span>
+            <span className="text-xl font-black text-white ats-score-num">{overallScore}/100</span>
             <span className={`text-[10px] block font-semibold ${statusObj.color}`}>{statusLabel}</span>
           </div>
-          <div className="w-12 h-12 rounded-full border-4 border-emerald-400 flex items-center justify-center font-bold text-xs text-white bg-emerald-950/30 shadow-inner">
+          <div className="w-12 h-12 rounded-full border-4 border-emerald-400 flex items-center justify-center font-bold text-xs text-white bg-emerald-950/30 shadow-inner ats-score-num">
             {overallScore}%
           </div>
         </div>
@@ -344,7 +344,7 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
                           style={{ width: `${item.score}%` }}
                         />
                       </div>
-                      <span className="text-[11px] font-bold text-slate-700">{item.score}%</span>
+                      <span className="text-[11px] font-bold text-slate-700 ats-score-num">{item.score}%</span>
                     </div>
                   </div>
                 </div>

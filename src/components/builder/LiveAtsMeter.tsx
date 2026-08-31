@@ -141,7 +141,7 @@ export const LiveAtsMeter: React.FC = () => {
         title={isAr ? 'مؤشر فحص جودة ATS اللحظي' : 'Live Real-time ATS Scan Meter'}
       >
         <ShieldCheck className="w-4 h-4 shrink-0" />
-        <span className="font-mono font-bold">ATS: {metrics.score}%</span>
+        <span className="font-bold ats-score-num">ATS: {metrics.score}%</span>
         <div className="w-12 h-1.5 bg-slate-200 rounded-full overflow-hidden hidden sm:block">
           <div
             className={`h-full ${progressBg} transition-all duration-500 rounded-full`}
