@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Alexandria:wght@700;800&family=Manrope:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700;800&display=swap');
 
 :root {
   --font-ui-en: "Manrope", "Inter", system-ui, sans-serif;
@@ -42,6 +41,16 @@
   --color-warning: #D98A00;
   --color-error: #DC2626;
   --color-info: #0EA5E9;
+
+  /* Hash Motion: Quiet. Precise. Purposeful. */
+  --ease-hash: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-fast: 150ms;
+  --motion-base: 220ms;
+  --motion-slow: 320ms;
+
+  --lift-sm: translateY(-2px);
+  --lift-md: translateY(-4px);
+  --scale-tap: 0.98;
 }
 
 @theme {
@@ -299,6 +308,249 @@ button,
   text-align: start;
 }
 
+/* Hash Motion Utility Classes: Quiet. Precise. Purposeful. */
+.hash-btn-primary {
+  transition:
+    transform var(--motion-fast) var(--ease-hash),
+    box-shadow var(--motion-fast) var(--ease-hash),
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease;
+}
+
+.hash-btn-primary:hover {
+  transform: var(--lift-sm);
+  box-shadow: 0 10px 22px rgba(255, 77, 45, 0.22);
+}
+
+.hash-btn-primary:active {
+  transform: scale(var(--scale-tap));
+}
+
+.hash-btn-secondary {
+  transition:
+    transform var(--motion-fast) var(--ease-hash),
+    box-shadow var(--motion-fast) var(--ease-hash),
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease;
+}
+
+.hash-btn-secondary:hover {
+  transform: var(--lift-sm);
+  box-shadow: 0 6px 16px rgba(0, 22, 57, 0.08);
+}
+
+.hash-btn-secondary:active {
+  transform: scale(var(--scale-tap));
+}
+
+.hash-card-interactive {
+  transition:
+    transform var(--motion-base) var(--ease-hash),
+    box-shadow var(--motion-base) var(--ease-hash),
+    border-color var(--motion-base) ease;
+}
+
+.hash-card-interactive:hover {
+  transform: var(--lift-sm);
+}
+
+/* Auto-save Feedback Micro-Interaction */
+.saved-check {
+  animation: hash-check-in 220ms var(--ease-hash);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@keyframes hash-check-in {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Resume Section Completion & Progress */
+.progress-fill {
+  transition: width 320ms var(--ease-hash);
+}
+
+.section-complete {
+  animation: hash-section-complete 260ms var(--ease-hash);
+}
+
+@keyframes hash-section-complete {
+  from {
+    opacity: 0.75;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Section Editor Entrance */
+.section-enter {
+  animation: hash-enter 240ms var(--ease-hash);
+}
+
+@keyframes hash-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Preview Sheet (320ms var(--ease-hash) No Bounce) */
+.mobile-preview-sheet {
+  transition: transform 320ms var(--ease-hash);
+  transform: translateY(100%);
+  will-change: transform;
+}
+
+.mobile-preview-sheet.is-open {
+  transform: translateY(0);
+}
+
+/* ATS Score & Result Cards Stagger */
+.ats-circle-meter {
+  transition: stroke-dasharray 600ms var(--ease-hash);
+}
+
+.ats-result-card {
+  animation: hash-enter 220ms var(--ease-hash) both;
+}
+
+.ats-result-card:nth-child(1) {
+  animation-delay: 0ms;
+}
+
+.ats-result-card:nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.ats-result-card:nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.ats-result-card:nth-child(4) {
+  animation-delay: 180ms;
+}
+
+.ats-result-card:nth-child(5) {
+  animation-delay: 240ms;
+}
+
+.ats-result-card:nth-child(6) {
+  animation-delay: 300ms;
+}
+
+/* Payment Modal Micro-Interaction: Sensitive, purposeful, fade + scale from 0.98 to 1 */
+.payment-modal {
+  animation: hash-modal-in 260ms var(--ease-hash);
+}
+
+@keyframes hash-modal-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Payment Plan Selection Card */
+.payment-plan-card {
+  transition:
+    transform var(--motion-fast) var(--ease-hash),
+    border-color var(--motion-fast) ease,
+    background-color var(--motion-fast) ease,
+    box-shadow var(--motion-fast) var(--ease-hash);
+}
+
+.payment-plan-card:hover {
+  transform: translateY(-2px);
+}
+
+.payment-plan-card.is-selected {
+  transform: scale(1.01);
+}
+
+/* Keyword Chip Micro-Interaction */
+.keyword-chip {
+  transition:
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    transform var(--motion-fast) var(--ease-hash);
+}
+
+.keyword-chip:active {
+  transform: scale(0.97);
+}
+
+.keyword-chip.is-added {
+  animation: hash-chip-added 220ms var(--ease-hash);
+}
+
+@keyframes hash-chip-added {
+  0% {
+    transform: scale(0.96);
+  }
+  50% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Hero Reveal Animation (Single entry execution, 500ms var(--ease-hash)) */
+.hero-reveal {
+  animation: hash-hero-reveal 500ms var(--ease-hash) both;
+}
+
+@keyframes hash-hero-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-reveal-badge {
+  animation-delay: 0ms;
+}
+
+.hero-reveal-title {
+  animation-delay: 80ms;
+}
+
+.hero-reveal-desc {
+  animation-delay: 160ms;
+}
+
+.hero-reveal-cta {
+  animation-delay: 240ms;
+}
+
+.hero-reveal-footer {
+  animation-delay: 320ms;
+}
+
 /* Clear, accessible focus rings for keyboard navigation */
 :focus-visible {
   outline: 2px solid #FF4D2D !important;
@@ -365,7 +617,7 @@ section,
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Mobile Menu Drawer & Overlay */
+/* Mobile Menu Drawer & Overlay (Hash Motion 180ms / 320ms var(--ease-hash)) */
 .mobile-menu-overlay {
   position: fixed;
   inset: 0;
@@ -375,6 +627,7 @@ section,
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   z-index: 60;
+  transition: opacity 180ms ease;
 }
 
 .mobile-menu-drawer {
@@ -388,6 +641,20 @@ section,
   background: #ffffff;
   z-index: 61;
   box-shadow: 0 0 25px rgba(0, 22, 57, 0.18);
+  transition: transform 320ms var(--ease-hash);
+  will-change: transform;
+}
+
+html[dir="ltr"] .mobile-menu-drawer {
+  transform: translateX(100%);
+}
+
+html[dir="rtl"] .mobile-menu-drawer {
+  transform: translateX(-100%);
+}
+
+.mobile-menu-open .mobile-menu-drawer {
+  transform: translateX(0);
 }
 
 .page-content {
@@ -525,6 +792,23 @@ section,
 
   .mobile-editor-page {
     overflow-x: hidden !important;
+  }
+}
+
+/* Accessibility & Performance: Honor prefers-reduced-motion across all elements */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .mobile-menu-drawer,
+  .mobile-preview-sheet {
+    transform: none !important;
   }
 }
 

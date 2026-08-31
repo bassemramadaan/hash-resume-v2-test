@@ -50,6 +50,7 @@ import {
   Sparkles,
   CheckCircle2,
   Save,
+  Loader2,
   PanelLeftClose,
   PanelLeftOpen,
   RotateCcw,
@@ -688,7 +689,7 @@ export const BuilderPage: React.FC = () => {
               {/* Autosave Status Badge */}
               <div
                 id="desktop-autosave-badge"
-                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-all duration-300 ${
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border transition-all duration-200 ${
                   saveStatus === 'saving'
                     ? 'bg-amber-50 text-amber-800 border-amber-200'
                     : 'bg-emerald-50 text-emerald-800 border-emerald-200/80 shadow-2xs'
@@ -700,9 +701,11 @@ export const BuilderPage: React.FC = () => {
                 }
               >
                 {saveStatus === 'saving' ? (
-                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping shrink-0" />
+                  <Loader2 className="w-3.5 h-3.5 text-amber-600 animate-spin shrink-0" />
                 ) : (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span className="saved-check">
+                    <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  </span>
                 )}
                 <span className="font-semibold whitespace-nowrap text-[11px] sm:text-xs">
                   {saveStatus === 'saving'
@@ -711,7 +714,7 @@ export const BuilderPage: React.FC = () => {
                       : 'Saving...'
                     : isAr
                     ? 'محفوظ'
-                    : 'Saved ✓'}
+                    : 'Saved'}
                 </span>
               </div>
 
@@ -808,11 +811,11 @@ export const BuilderPage: React.FC = () => {
                 /* ------------------------------------------- */
                 <motion.div
                   key={`editor-panel-${desktopActiveSection}`}
-                  initial={{ opacity: 0, y: 6 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  transition={{ duration: 0.15 }}
-                  className="bg-white border border-slate-200/90 rounded-2xl shadow-xs overflow-hidden"
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                  className="bg-white border border-slate-200/90 rounded-2xl shadow-xs overflow-hidden section-enter"
                 >
                   {/* Editor Panel Header */}
                   <div className="p-4 sm:p-5 border-b border-slate-200/80 bg-slate-50/70 flex items-center justify-between gap-3">
@@ -1049,7 +1052,7 @@ export const BuilderPage: React.FC = () => {
                               {/* Section Status Badge */}
                               <div className="shrink-0 flex items-center gap-1.5 mt-0.5">
                                 {sec.isComplete ? (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 whitespace-nowrap">
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 whitespace-nowrap section-complete">
                                     <Check className="w-3 h-3" />
                                     <span>{isAr ? sec.statusLabelAr : sec.statusLabelEn}</span>
                                   </span>
@@ -1114,7 +1117,7 @@ export const BuilderPage: React.FC = () => {
                               {/* Section Status Badge */}
                               <div className="shrink-0 flex items-center gap-1.5 mt-0.5">
                                 {sec.isComplete ? (
-                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 whitespace-nowrap">
+                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200 whitespace-nowrap section-complete">
                                     <Check className="w-3 h-3" />
                                     <span>{isAr ? sec.statusLabelAr : sec.statusLabelEn}</span>
                                   </span>

@@ -15,6 +15,8 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
+  Check,
+  Loader2,
   ChevronLeft,
   ChevronRight,
   Lock,
@@ -207,11 +209,11 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: isAr ? 20 : -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: isAr ? -20 : 20 }}
-      transition={{ duration: 0.15 }}
-      className="space-y-4 pb-28 mobile-section-editor mobile-editor-content w-full max-w-full min-w-0 overflow-x-hidden"
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+      className="space-y-4 pb-28 mobile-section-editor mobile-editor-content w-full max-w-full min-w-0 overflow-x-hidden section-enter"
     >
       {/* Top Section Navigation Header */}
       <div className="bg-white border-b border-slate-200 sticky top-0 z-20 px-3 py-2.5 shadow-2xs w-full max-w-full min-w-0">
@@ -239,21 +241,23 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
 
           {/* Autosave Indicator */}
           <div
-            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold border shrink-0 transition-all ${
+            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold border shrink-0 transition-all duration-200 ${
               saveStatus === 'saving'
                 ? 'bg-amber-50 text-amber-800 border-amber-200'
                 : 'bg-emerald-50 text-emerald-800 border-emerald-200/80'
             }`}
           >
             {saveStatus === 'saving' ? (
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
+              <Loader2 className="w-3 h-3 text-amber-600 animate-spin shrink-0" />
             ) : (
-              <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+              <span className="saved-check">
+                <Check className="w-3 h-3 text-emerald-600 shrink-0" />
+              </span>
             )}
             <span>
               {saveStatus === 'saving'
                 ? isAr
-                  ? 'حفظ...'
+                  ? 'جارِ الحفظ...'
                   : 'Saving...'
                 : isAr
                 ? 'محفوظ'

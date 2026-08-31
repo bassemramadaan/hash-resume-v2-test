@@ -266,7 +266,7 @@ export const AtsCheckerPage: React.FC = () => {
               {isAnalyzing ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>{isAr ? 'جاري الفحص واستخراج المؤشرات...' : 'Analyzing Compatibility...'}</span>
+                  <span>{isAr ? 'جارِ تحليل السيرة الذاتية...' : 'Analyzing your resume...'}</span>
                 </>
               ) : (
                 <>
@@ -283,7 +283,7 @@ export const AtsCheckerPage: React.FC = () => {
           {analysisResult ? (
             <div className="bg-[#001639] text-white rounded-3xl p-6 shadow-xl border border-[#000F27] space-y-6 animate-in fade-in duration-200">
               {/* Score Badge */}
-              <div className="flex items-center justify-between border-b border-slate-700 pb-4">
+              <div className="flex items-center justify-between border-b border-slate-700 pb-4 ats-result-card">
                 <div>
                   <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
                     {isAr ? 'مؤشر الجاهزية والربط' : 'ESTIMATED COMPATIBILITY SCORE'}
@@ -304,7 +304,7 @@ export const AtsCheckerPage: React.FC = () => {
               </div>
 
               {/* Issues & Strengths */}
-              <div className="space-y-3">
+              <div className="space-y-3 ats-result-card">
                 <h4 className="font-extrabold text-xs uppercase tracking-wider text-slate-300">
                   {isAr ? 'نتائج الفحص الهيكلي:' : 'Structural Audit Results:'}
                 </h4>
@@ -312,7 +312,7 @@ export const AtsCheckerPage: React.FC = () => {
                   {(analysisResult.issues || []).map((issue) => (
                     <div
                       key={issue.id}
-                      className="p-3 bg-slate-900/80 border border-slate-700 rounded-xl space-y-1"
+                      className="p-3 bg-slate-900/80 border border-slate-700 rounded-xl space-y-1 ats-result-card"
                     >
                       <div className="flex items-center gap-2 font-bold text-xs">
                         {issue.type === 'success' && (

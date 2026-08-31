@@ -111,19 +111,19 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
             onClick={onClose}
             className="mobile-menu-overlay"
             aria-hidden="true"
           />
 
-          {/* Drawer Panel - Logical inline end anchoring */}
+          {/* Drawer Panel - Logical inline end anchoring via translateX only */}
           <motion.div
             key="mobile-drawer-content"
             initial={{ x: isAr ? '-100%' : '100%' }}
             animate={{ x: 0 }}
             exit={{ x: isAr ? '-100%' : '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+            transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
             className="mobile-menu-drawer flex flex-col"
             style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}
           >

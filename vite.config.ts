@@ -2,12 +2,28 @@ import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig, loadEnv } from 'vite';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
+  const isProduction = mode === 'production';
 
   return {
-    plugins: [react(), tailwindcss()],
+    plugins: [
+      react(),
+      tailwindcss(),
+      ...(isProduction
+        ? [
+            visualizer({
+              filename: 'dist/stats.html',
+              template: 'treemap',
+              gzipSize: true,
+              brotliSize: true,
+              open: false,
+            }),
+          ]
+        : []),
+    ],
     define: {
       'process.env.GOOGLE_MAPS_PLATFORM_KEY': JSON.stringify(env.GOOGLE_MAPS_PLATFORM_KEY || process.env.GOOGLE_MAPS_PLATFORM_KEY || ''),
     },
@@ -20,11 +36,52 @@ export default defineConfig(({ mode }) => {
       chunkSizeWarningLimit: 600,
       rollupOptions: {
         output: {
-          manualChunks: {
-            'pdf-vendor': ['jspdf', 'html2canvas', 'html2canvas-pro'],
-            'react-vendor': ['react', 'react-dom', 'react-router-dom', 'zustand'],
-            'ui-vendor': ['lucide-react', 'motion', 'canvas-confetti'],
-            'i18n-vendor': ['i18next', 'react-i18next'],
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (
+                id.includes('node_modules/react/') ||
+                id.includes('node_modules/react-dom/') ||
+                id.includes('node_modules/react-router/') ||
+                id.includes('node_modules/react-router-dom/') ||
+                id.includes('node_modules/zustand/') ||
+                id.includes('node_modules/scheduler/')
+              ) {
+                return 'react-vendor';
+              }
+              if (
+                id.includes('node_modules/i18next/') ||
+                id.includes('node_modules/react-i18next/') ||
+                id.includes('node_modules/i18next-browser-languagedetector/') ||
+                id.includes('node_modules/i18next-http-backend/')
+              ) {
+                return 'i18n-vendor';
+              }
+              if (
+                id.includes('node_modules/jspdf/') ||
+                id.includes('node_modules/html2canvas-pro/') ||
+                id.includes('node_modules/html2canvas/') ||
+                id.includes('node_modules/pdfjs-dist/') ||
+                id.includes('node_modules/fflate/')
+              ) {
+                return 'pdf-vendor';
+              }
+              if (id.includes('node_modules/@google/genai/')) {
+                return 'ai-vendor';
+              }
+              if (id.includes('node_modules/firebase/') || id.includes('node_modules/@firebase/')) {
+                return 'firebase-vendor';
+              }
+              if (id.includes('node_modules/lucide-react/')) {
+                return 'icons-vendor';
+              }
+              if (
+                id.includes('node_modules/motion/') ||
+                id.includes('node_modules/framer-motion/') ||
+                id.includes('node_modules/canvas-confetti/')
+              ) {
+                return 'motion-vendor';
+              }
+            }
           },
         },
       },

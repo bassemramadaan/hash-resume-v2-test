@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, ArrowRight, ArrowLeft, CheckCircle2, Flag } from 'lucide-react';
 import { useResumeStore } from '../../store/useResumeStore';
@@ -31,11 +30,8 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
       <div className="relative z-10 w-full max-w-5xl mx-auto text-center space-y-5 sm:space-y-8">
         
         {/* Header Badges & Slogan Flag */}
-        <div className="flex flex-col items-center gap-2">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
+        <div className="flex flex-col items-center gap-2 hero-reveal hero-reveal-badge">
+          <div
             className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-[#E2E8F0] text-[#001639] text-[11px] sm:text-xs font-bold shadow-xs hover:border-[#CBD5E1] transition"
           >
             <Sparkles className="w-3.5 h-3.5 text-coral shrink-0" />
@@ -46,13 +42,10 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
                 ? 'النسخة الجديدة 2.0 | أنقى وأسرع'
                 : 'New Version 2.0 | Cleaner & Faster'}
             </span>
-          </motion.div>
+          </div>
 
           {/* Slogan Flag Banner */}
-          <motion.div
-            initial={{ opacity: 0, y: 12, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.08, ease: 'easeOut' }}
+          <div
             className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-gradient-to-r from-orange-50 via-amber-50 to-rose-50 border border-orange-200/90 text-[#001639] text-xs sm:text-sm font-extrabold shadow-xs"
           >
             <Flag className="w-3.5 h-3.5 text-[#FF4D2D] fill-[#FF4D2D]/20 shrink-0" />
@@ -63,15 +56,12 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
                 ? 'بدون إنشاء حساب. أنشئ سيرتك. حمّلها. وقدّم بها.'
                 : 'No sign-up. Build. Download. Apply.'}
             </span>
-          </motion.div>
+          </div>
         </div>
 
         {/* Hero Headline */}
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: 'easeOut' }}
-          className={`text-[clamp(38px,10vw,52px)] sm:text-6xl md:text-7xl lg:text-8xl text-[#001639] ${
+        <h1
+          className={`text-[clamp(38px,10vw,52px)] sm:text-6xl md:text-7xl lg:text-8xl text-[#001639] hero-reveal hero-reveal-title ${
             isAr ? 'hero-headline-ar' : 'hero-headline-en'
           }`}
         >
@@ -80,28 +70,22 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           ) : (
             <>Your Resume.<br />Zero <span className="text-coral">Friction.</span></>
           )}
-        </motion.h1>
+        </h1>
 
         {/* Hero Body Text */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2, ease: 'easeOut' }}
-          className="text-[16px] sm:text-xl md:text-2xl text-[#52627A] max-w-2xl mx-auto font-medium leading-[1.6] px-1 sm:px-2"
+        <p
+          className="text-[16px] sm:text-xl md:text-2xl text-[#52627A] max-w-2xl mx-auto font-medium leading-[1.6] px-1 sm:px-2 hero-reveal hero-reveal-desc"
         >
           {isFrench
             ? 'Nous avons conçu Hash Resume pour être le seul outil de concentration dont vous avez besoin. Créez un CV clair, professionnel et optimisé pour les systèmes ATS.'
             : isAr
             ? 'صممنا Hash Resume ليكون أداة التركيز الوحيدة التي تحتاجها. ابدأ ببناء سيرة ذاتية هيكليتها منظمة وتتوافق تماماً مع أنظمة الفرز الآلي (ATS).'
             : 'We designed Hash Resume to be the only focus tool you need. Build an ATS-friendly resume with a clean structure recruiters can read.'}
-        </motion.p>
+        </p>
 
         {/* Founder Signature (Fine-tip pen handwriting in English: Bassem Ramadan) */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.25, ease: 'easeOut' }}
-          className="flex flex-col items-center justify-center pt-0.5 select-none"
+        <div
+          className="flex flex-col items-center justify-center pt-0.5 select-none hero-reveal hero-reveal-desc"
         >
           <div className="relative inline-flex flex-col items-center">
             <span
@@ -129,14 +113,11 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
               />
             </svg>
           </div>
-        </motion.div>
+        </div>
 
         {/* Main Focused CTA Bar (Full-width on mobile, 12px gap, min 52px CTA height) */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3, ease: 'easeOut' }}
-          className="flex flex-col items-center justify-center gap-3 max-w-xl mx-auto w-full pt-3 sm:pt-4"
+        <div
+          className="flex flex-col items-center justify-center gap-3 max-w-xl mx-auto w-full pt-3 sm:pt-4 hero-reveal hero-reveal-cta"
         >
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
             <div className="relative w-full sm:flex-1">
@@ -184,21 +165,18 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
               </button>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Small Trust Row below CTA (No account required • ATS-friendly • Pay once to download) */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-3 gap-y-1 pt-2 sm:pt-3 text-xs sm:text-sm font-semibold text-[#8793A6]"
+        <div
+          className="flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-3 gap-y-1 pt-2 sm:pt-3 text-xs sm:text-sm font-semibold text-[#8793A6] hero-reveal hero-reveal-footer"
         >
           <span>{isAr ? 'بدون إنشاء حساب' : 'No account required'}</span>
           <span className="text-slate-300 select-none">•</span>
           <span>{isAr ? 'متوافق مع ATS' : 'ATS-friendly'}</span>
           <span className="text-slate-300 select-none">•</span>
           <span>{isAr ? 'دفع لمرة واحدة عند التحميل' : 'Pay once to download'}</span>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

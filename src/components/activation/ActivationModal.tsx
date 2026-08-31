@@ -514,7 +514,7 @@ export const ActivationModal: React.FC = () => {
         role="dialog"
         aria-modal="true"
         dir={isAr ? 'rtl' : 'ltr'}
-        className="w-full max-w-lg bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden text-slate-800 my-auto max-h-[90vh] flex flex-col animate-in fade-in zoom-in-95 duration-200"
+        className="w-full max-w-lg bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden text-slate-800 my-auto max-h-[90vh] flex flex-col payment-modal"
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-white sticky top-0 z-10 shrink-0">
           <div className="flex items-center gap-3">
@@ -559,9 +559,9 @@ export const ActivationModal: React.FC = () => {
                     {/* Single Download Plan (50 EGP) */}
                   <div
                     onClick={() => setSelectedPlan('single')}
-                    className={`p-4 rounded-2xl border-2 transition cursor-pointer flex flex-col justify-between ${
+                    className={`p-4 rounded-2xl border-2 cursor-pointer flex flex-col justify-between payment-plan-card ${
                       selectedPlan === 'single'
-                        ? 'border-[#001639] bg-slate-50/90 shadow-sm ring-1 ring-[#001639]/20'
+                        ? 'border-[#001639] bg-slate-50/90 shadow-sm ring-1 ring-[#001639]/20 is-selected'
                         : 'border-slate-200 hover:border-slate-300 bg-white'
                     }`}
                   >
@@ -612,9 +612,9 @@ export const ActivationModal: React.FC = () => {
                   {/* 3-Download Pack Plan (120 EGP) */}
                   <div
                     onClick={() => setSelectedPlan('bundle_3')}
-                    className={`p-4 rounded-2xl border-2 transition cursor-pointer relative flex flex-col justify-between ${
+                    className={`p-4 rounded-2xl border-2 cursor-pointer relative flex flex-col justify-between payment-plan-card ${
                       selectedPlan === 'bundle_3'
-                        ? 'border-[#FF4D2D] bg-orange-50/50 shadow-sm ring-1 ring-[#FF4D2D]/30'
+                        ? 'border-[#001639] bg-orange-50/40 shadow-sm ring-1 ring-[#001639]/20 is-selected'
                         : 'border-[#FF4D2D]/40 hover:border-[#FF4D2D] bg-white'
                     }`}
                   >
@@ -948,7 +948,7 @@ export const ActivationModal: React.FC = () => {
 
           {paymentStep === 'approved' && (
             <div className="text-center space-y-6 py-6 animate-in fade-in">
-              <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto ring-8 ring-emerald-50/50">
+              <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto ring-8 ring-emerald-50/50 saved-check">
                 <CheckCircle2 className="w-10 h-10 text-emerald-500" />
               </div>
 
@@ -961,7 +961,7 @@ export const ActivationModal: React.FC = () => {
                 </p>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 section-enter">
                 <button
                   disabled={isVerifying || paymentStep === 'activating'}
                   onClick={handleVerifiedDownload}

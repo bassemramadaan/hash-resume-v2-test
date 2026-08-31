@@ -18,6 +18,7 @@ import {
   Menu,
   RotateCcw,
   CheckCircle2,
+  Loader2,
   ChevronRight,
   ChevronLeft,
   Sparkles,
@@ -316,21 +317,23 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
           <div className="flex items-center gap-1.5">
             {/* Autosave status indicator */}
             <div
-              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold border transition-all ${
+              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold border transition-all duration-200 ${
                 saveStatus === 'saving'
                   ? 'bg-amber-50 text-amber-800 border-amber-200'
                   : 'bg-emerald-50 text-emerald-800 border-emerald-200/80'
               }`}
             >
               {saveStatus === 'saving' ? (
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
+                <Loader2 className="w-3 h-3 text-amber-600 animate-spin shrink-0" />
               ) : (
-                <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                <span className="saved-check">
+                  <Check className="w-3 h-3 text-emerald-600 shrink-0" />
+                </span>
               )}
               <span>
                 {saveStatus === 'saving'
                   ? isAr
-                    ? 'حفظ...'
+                    ? 'جارِ الحفظ...'
                     : 'Saving...'
                   : isAr
                   ? 'محفوظ'
@@ -444,8 +447,8 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${completionScore}%` }}
-              transition={{ duration: 0.4, ease: 'easeOut' }}
-              className={`h-full rounded-full transition-all duration-300 ${
+              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+              className={`h-full rounded-full progress-fill ${
                 completionScore >= 80
                   ? 'bg-emerald-400'
                   : completionScore >= 40
@@ -538,7 +541,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                   {/* Right/End: Status Pill & Arrow */}
                   <div className="flex items-center gap-2 shrink-0">
                     {status.isComplete ? (
-                      <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                      <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center section-complete">
                         <Check className="w-3.5 h-3.5" />
                       </span>
                     ) : (
@@ -617,7 +620,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                   {/* Right/End: Status Pill & Arrow */}
                   <div className="flex items-center gap-2 shrink-0">
                     {status.isComplete ? (
-                      <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                      <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center section-complete">
                         <Check className="w-3.5 h-3.5" />
                       </span>
                     ) : (

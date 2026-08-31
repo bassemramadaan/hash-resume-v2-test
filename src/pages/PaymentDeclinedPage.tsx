@@ -3,7 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { XCircle, ArrowRight, ArrowLeft, RefreshCw, HelpCircle } from 'lucide-react';
 import { useResumeStore } from '../store/useResumeStore';
 
-export const PaymentFailedPage: React.FC = () => {
+export const PaymentDeclinedPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { settings } = useResumeStore();

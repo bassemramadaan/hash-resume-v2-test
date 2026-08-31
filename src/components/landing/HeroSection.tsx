@@ -69,7 +69,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ isAr }) => {
         {/* Left Column: Simple & Calm Copy */}
         <div className="lg:col-span-7 space-y-6 text-center lg:text-start">
           {/* Top Quiet Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 text-[#001639] text-xs font-semibold">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 text-[#001639] text-xs font-semibold hero-reveal hero-reveal-badge">
             <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D] shrink-0" />
             <span>
               {isAr
@@ -80,7 +80,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ isAr }) => {
 
           {/* Main Headline */}
           <h1
-            className={`text-3xl sm:text-5xl text-[#001639] ${
+            className={`text-3xl sm:text-5xl text-[#001639] hero-reveal hero-reveal-title ${
               isAr ? 'hero-headline-ar' : 'hero-headline-en'
             }`}
           >
@@ -97,14 +97,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ isAr }) => {
           </h1>
 
           {/* Subtitle */}
-          <p className="text-sm sm:text-base text-[#52627A] font-normal leading-relaxed max-w-xl mx-auto lg:mx-0">
+          <p className="text-sm sm:text-base text-[#52627A] font-normal leading-relaxed max-w-xl mx-auto lg:mx-0 hero-reveal hero-reveal-desc">
             {isAr
               ? 'صمّم سيرة ذاتية متوافقة تماماً مع أنظمة الفلترة الآلية باللغتين العربية والإنجليزية، بمساعدة الذكاء الاصطناعي وخصوصية محليّة كاملة.'
               : 'Build an ATS-compliant CV in Arabic & English with AI assistance and 100% local privacy.'}
           </p>
 
           {/* Simple Direct Launcher */}
-          <div className="space-y-3 max-w-lg mx-auto lg:mx-0 pt-2">
+          <div className="space-y-3 max-w-lg mx-auto lg:mx-0 pt-2 hero-reveal hero-reveal-cta">
             <div className="flex flex-col sm:flex-row items-center gap-2.5">
               <div className="relative w-full sm:flex-1">
                 <Briefcase className="w-4 h-4 text-slate-400 absolute start-3.5 top-1/2 -translate-y-1/2" />

@@ -25,7 +25,7 @@ export const MobilePreviewSheet: React.FC<MobilePreviewSheetProps> = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 0.18, ease: 'easeOut' }}
           className="fixed inset-0 z-50 flex flex-col justify-end bg-slate-950/80 backdrop-blur-xs md:hidden"
           role="dialog"
           aria-modal="true"
@@ -43,8 +43,8 @@ export const MobilePreviewSheet: React.FC<MobilePreviewSheetProps> = ({
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 260 }}
-            className="relative bg-white rounded-t-3xl max-h-[94vh] h-[92vh] flex flex-col overflow-hidden shadow-2xl z-10"
+            transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+            className="mobile-preview-sheet is-open relative bg-white rounded-t-3xl max-h-[94vh] h-[92vh] flex flex-col overflow-hidden shadow-2xl z-10"
           >
             {/* Header */}
             <div className="pt-2.5 pb-2 px-4 border-b border-slate-200 bg-slate-50 flex flex-col gap-1.5 shrink-0">

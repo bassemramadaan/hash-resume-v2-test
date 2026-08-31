@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
 import { parseResumeFile, ParseResult } from '../../services/resumeParser';
-import { ImportResumeModal } from './ImportResumeModal';
+const ImportResumeModal = React.lazy(() => import('./ImportResumeModal').then((m) => ({ default: m.ImportResumeModal })));
 import { ResumeData } from '../../types/resume';
 import {
   User,
@@ -275,17 +275,21 @@ export const PersonalInfoForm: React.FC = () => {
       </div>
 
       {/* Confirmation & Preview Modal */}
-      <ImportResumeModal
-        isOpen={isConfirmModalOpen}
-        onClose={() => {
-          setIsConfirmModalOpen(false);
-          setParseResult(null);
-        }}
-        parseResult={parseResult}
-        currentResume={resumeData}
-        onConfirmImport={handleConfirmImport}
-        language={settings.language}
-      />
+      {isConfirmModalOpen && (
+        <React.Suspense fallback={null}>
+          <ImportResumeModal
+            isOpen={isConfirmModalOpen}
+            onClose={() => {
+              setIsConfirmModalOpen(false);
+              setParseResult(null);
+            }}
+            parseResult={parseResult}
+            currentResume={resumeData}
+            onConfirmImport={handleConfirmImport}
+            language={settings.language}
+          />
+        </React.Suspense>
+      )}
 
       {/* Main Core Form Fields (Single-Column on Mobile, 2-Col on Tablet/Desktop) */}
       <div className="personal-info-grid">

@@ -1,5 +1,4 @@
 import { useExportGate } from '../store/useExportGate';
-import { exportResumeToPdf } from '../utils/pdfExport';
 import { useResumeStore } from '../store/useResumeStore';
 import { isResumeBlank } from '../utils/resumeFingerprint';
 
@@ -36,10 +35,12 @@ export const useResumeExport = () => {
       }
       
       try {
+        const { exportResumeToPdf } = await import('../utils/pdfExport');
         await exportResumeToPdf('resume-preview-document', filename);
         // Optional: show a success toast here if needed
       } catch (err) {
         console.error('Failed to export PDF:', err);
+        throw err;
       }
     };
 
