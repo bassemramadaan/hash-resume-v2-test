@@ -110,11 +110,11 @@ export const translations = {
     showPhotoToggle: "إظهار الصورة الشخصية",
     
     // Templates Names & Desc
-    tplBassux: "ATS Classic (BASSUX) - مناسب لأنظمة التوظيف",
-    tplBassuxDesc: "تنسيق أحادي العمود بدون ألوان أو رسومات لاجتياز كافة أنظمة الفلترة الآلية (ATS).",
-    atsSelectorNote: "الأفضل للتقديم الإلكتروني وأنظمة تتبع المتقدمين (ATS).",
-    tplModernAts: "مودرن ATS (الأكثر قبولاً)",
-    tplModernAtsDesc: "تنسيق قياسي حديث يضمن أعلى نسبة قراءة عبر أنظمة الفحص الآلي.",
+    tplBassux: "ATS Classic",
+    tplBassuxDesc: "تنسيق أحادي العمود بدون ألوان أو رسومات — الأفضل لأنظمة الفلترة الآلية (Best for ATS).",
+    atsSelectorNote: "موصى به للتقديم على الوظائف عبر الإنترنت",
+    tplModernAts: "Modern ATS",
+    tplModernAtsDesc: "تنسيق عصري نظيف وأنيق يجمع بين سهولة القراءة وتوافق الفحص الآلي.",
     tplClassicProf: "كلاسيك احترافي",
     tplClassicProfDesc: "مناسب للشركات الكبرى، المؤسسات المالية، والوظائف الإدارية.",
     tplMinimalExec: "مينيمال تنفيذي",
@@ -282,11 +282,11 @@ export const translations = {
     showPhotoToggle: "Display Photo",
 
     // Templates Names & Desc
-    tplBassux: "ATS Classic (BASSUX)",
-    tplBassuxDesc: "True single-column plain text layout without colors or graphics for maximum ATS friendliness.",
-    atsSelectorNote: "Best for online applications and Applicant Tracking Systems (ATS).",
-    tplModernAts: "Modern ATS (Recommended)",
-    tplModernAtsDesc: "Optimized clean structure designed for high recruiter readability and scanner compliance.",
+    tplBassux: "ATS Classic",
+    tplBassuxDesc: "True single-column plain text layout without colors or graphics. Best for ATS.",
+    atsSelectorNote: "Recommended for online job applications",
+    tplModernAts: "Modern ATS",
+    tplModernAtsDesc: "Clean modern layout designed for high recruiter readability and scanner compliance.",
     tplClassicProf: "Classic Professional",
     tplClassicProfDesc: "Traditional corporate layout suitable for enterprise, finance, and management roles.",
     tplMinimalExec: "Minimal Executive",

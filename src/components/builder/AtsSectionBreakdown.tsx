@@ -245,6 +245,16 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
     audits.reduce((acc, curr) => acc + curr.score, 0) / audits.length
   );
 
+  const getReadinessStatus = (score: number) => {
+    if (score >= 85) return { en: 'Ready to review', ar: 'جاهز للمراجعة', color: 'text-emerald-300' };
+    if (score >= 70) return { en: 'Strong', ar: 'قوي', color: 'text-emerald-200' };
+    if (score >= 40) return { en: 'Good foundation', ar: 'أساس جيد', color: 'text-amber-200' };
+    return { en: 'Needs work', ar: 'يحتاج إلى عمل', color: 'text-orange-200' };
+  };
+
+  const statusObj = getReadinessStatus(overallScore);
+  const statusLabel = isAr ? statusObj.ar : statusObj.en;
+
   const handleJump = (key: any) => {
     if (onNavigateToSection) {
       onNavigateToSection(key);
@@ -254,21 +264,27 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
   };
 
   return (
-    <div className="space-y-4 text-slate-800" aria-label="Interactive ATS Section Breakdown">
+    <div className="space-y-4 text-slate-800" aria-label="Resume Readiness Breakdown">
       {/* Resume Readiness Summary Header */}
       <div className="bg-gradient-to-r from-[#001639] to-[#00245E] text-white rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
-        <div className="space-y-1">
+        <div className="space-y-1.5">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-orange-200 text-xs font-semibold">
             <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
-            <span>{isAr ? 'فحص ATS تفاعلي وتفصيلي' : 'Interactive ATS Section-by-Section Scan'}</span>
+            <span>{isAr ? 'تفصيل جاهزية السيرة الذاتية' : 'Resume readiness breakdown'}</span>
           </div>
-          <h3 className="text-base font-bold text-white">
-            {isAr ? `جاهزية السيرة الذاتية: ${overallScore}/100` : `Resume readiness: ${overallScore}/100`}
+          <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2 flex-wrap">
+            <span>
+              {isAr
+                ? `جاهزية السيرة الذاتية: ${overallScore}/100`
+                : `Resume readiness: ${overallScore}/100`}
+            </span>
+            <span className="text-white/60 font-normal text-sm">—</span>
+            <span className={`text-sm font-semibold ${statusObj.color}`}>{statusLabel}</span>
           </h3>
           <p className="text-xs text-slate-300">
             {isAr
-              ? 'أكمل الأقسام الموصى بها لتحسين الجاهزية ورفع فرص القبول.'
-              : 'Complete the recommended sections to improve it.'}
+              ? 'تعرف على ما يمكنك تحسينه في كل قسم.'
+              : 'See what to improve in each section.'}
           </p>
         </div>
 
@@ -278,10 +294,11 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
             <span className="text-[10px] text-slate-300 block font-medium">
               {isAr ? 'مؤشر الجاهزية' : 'Resume readiness'}
             </span>
-            <span className="text-2xl font-black text-white">{overallScore}/100</span>
+            <span className="text-xl font-black text-white">{overallScore}/100</span>
+            <span className={`text-[10px] block font-semibold ${statusObj.color}`}>{statusLabel}</span>
           </div>
-          <div className="w-12 h-12 rounded-full border-4 border-emerald-400 flex items-center justify-center font-bold text-xs text-white bg-emerald-950/30">
-            {overallScore >= 80 ? '90+' : overallScore >= 60 ? `${overallScore}` : `${overallScore}`}
+          <div className="w-12 h-12 rounded-full border-4 border-emerald-400 flex items-center justify-center font-bold text-xs text-white bg-emerald-950/30 shadow-inner">
+            {overallScore}%
           </div>
         </div>
       </div>

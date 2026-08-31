@@ -257,7 +257,7 @@ export const CustomizeForm: React.FC = () => {
                     <span className="font-bold text-slate-900 truncate">{name}</span>
                     {isRecommended && (
                       <span className="shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">
-                        {isAr ? 'موصى به لـ ATS' : 'Recommended'}
+                        {isAr ? 'الأفضل لـ ATS' : 'Best for ATS'}
                       </span>
                     )}
                     {(tpl.id === 'classic-professional' || tpl.id === 'creative-compact') && (

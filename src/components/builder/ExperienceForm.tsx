@@ -231,10 +231,14 @@ export const ExperienceForm: React.FC = () => {
         <button
           type="button"
           onClick={handleAddNew}
-          className="add-experience-button inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white rounded-xl text-xs sm:text-sm font-bold shadow-xs transition cursor-pointer shrink-0 w-full sm:w-auto min-h-[48px] active:scale-98"
+          className={`add-experience-button inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer shrink-0 w-full sm:w-auto min-h-[44px] active:scale-98 ${
+            experiences.length > 0
+              ? 'bg-[#001639] hover:bg-[#00245E] text-white shadow-xs'
+              : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
+          }`}
         >
-          <Plus className="w-4 h-4 text-[#FF4D2D]" />
-          <span>{isAr ? 'إضافة خبرة' : 'Add Experience'}</span>
+          <Plus className={`w-4 h-4 ${experiences.length > 0 ? 'text-[#FF4D2D]' : 'text-slate-500'}`} />
+          <span>{isAr ? 'إضافة خبرة' : 'Add experience'}</span>
         </button>
       </div>
 
@@ -244,7 +248,7 @@ export const ExperienceForm: React.FC = () => {
         isAr={isAr}
         stepTextAr={
           experiences.length === 0
-            ? 'أضف أحدث خبرة عملية لديك (الشركة، المسمى، وأهم الإنجازات).'
+            ? 'أضف أول دور مهني أو تدريب عملي لإبراز إنجازاتك لمسؤولي التوظيف.'
             : experiences.some((e) => !e.company?.trim() || !e.position?.trim())
             ? 'أكمل اسم الشركة والمسمى الوظيفي للخبرة المضافة.'
             : experiences.some((e) => !e.bulletPoints || e.bulletPoints.filter(b => b.trim()).length === 0)
@@ -253,41 +257,38 @@ export const ExperienceForm: React.FC = () => {
         }
         stepTextEn={
           experiences.length === 0
-            ? 'Add your most recent work experience.'
+            ? 'Add your first role or internship to showcase your skills.'
             : experiences.some((e) => !e.company?.trim() || !e.position?.trim())
             ? 'Fill in company name and job title for your roles.'
             : experiences.some((e) => !e.bulletPoints || e.bulletPoints.filter(b => b.trim()).length === 0)
             ? 'Add at least one measurable achievement bullet.'
             : 'Experience complete! Add another role or move to Education.'
         }
-        actionTextAr={experiences.length === 0 ? 'إضافة خبرة الآن' : undefined}
-        actionTextEn={experiences.length === 0 ? 'Add experience now' : undefined}
-        onAction={experiences.length === 0 ? handleAddNew : undefined}
       />
 
       {/* Empty State */}
       {experiences.length === 0 && (
         <div className="p-7 border border-dashed border-slate-200 rounded-2xl text-center space-y-3 bg-slate-50/50">
-          <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 text-[#001639] flex items-center justify-center mx-auto shadow-2xs">
-            <Briefcase className="w-5 h-5" />
+          <div className="w-11 h-11 rounded-xl bg-white border border-slate-200 text-[#001639] flex items-center justify-center mx-auto shadow-2xs">
+            <Briefcase className="w-5 h-5 text-[#FF4D2D]" />
           </div>
-          <div className="space-y-0.5">
-            <h3 className="font-semibold text-slate-900 text-xs">
-              {isAr ? 'لا توجد خبرات مضافة حتى الآن' : 'No Work Experiences Added Yet'}
+          <div className="space-y-1">
+            <h3 className="font-bold text-slate-900 text-sm">
+              {isAr ? 'لا توجد خبرات بعد؟' : 'No experience yet?'}
             </h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+            <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
               {isAr
-                ? 'أضف خبراتك لتعزيز سيرتك الذاتية بكلمات مفتاحية متوافقة مع ATS'
-                : 'Add roles to populate ATS-friendly achievements'}
+                ? 'أضف وظيفة، أو تدريباً صيفياً (Internship)، أو عملاً حراً، أو دوراً تطوعياً.'
+                : 'Add a job, internship, freelance project, or volunteer role.'}
             </p>
           </div>
           <button
             type="button"
             onClick={handleAddNew}
-            className="px-4 py-2 bg-[#001639] hover:bg-[#00245E] text-white font-semibold text-xs rounded-lg shadow-xs transition inline-flex items-center gap-1.5 cursor-pointer min-h-[36px]"
+            className="px-5 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs rounded-xl shadow-xs transition inline-flex items-center gap-2 cursor-pointer min-h-[42px] active:scale-95"
           >
-            <Plus className="w-3.5 h-3.5" />
-            <span>{isAr ? 'إضافة أول خبرة' : 'Add First Experience'}</span>
+            <Plus className="w-4 h-4 text-[#FF4D2D]" />
+            <span>{isAr ? 'إضافة خبرة' : 'Add experience'}</span>
           </button>
         </div>
       )}

@@ -83,11 +83,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ isAr }) => {
             {isAr ? (
               <>
                 سيرتك الذاتية الاحترافية{' '}
-                <span className="text-[#FF4D2D]">ببساطة وهدوء</span>
+                <span className="text-[#FF4D2D]">بثقة واحترافية</span>
               </>
             ) : (
               <>
-                Create Your Professional Resume <span className="text-[#FF4D2D]">Effortlessly</span>
+                Create Your Professional Resume <span className="text-[#FF4D2D]">with Confidence</span>
               </>
             )}
           </h1>

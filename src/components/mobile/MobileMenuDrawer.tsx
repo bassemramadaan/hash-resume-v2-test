@@ -42,7 +42,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
     }
   };
 
-  // Prioritized Navigation: Builder -> ATS Checker -> Templates -> Hash Hunt -> Pricing -> FAQ
+  // Prioritized Navigation: Builder -> Templates -> ATS Checker -> Hash Hunt -> Pricing -> FAQ
   const navLinks = [
     {
       path: '/',
@@ -57,22 +57,21 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
       isPrimary: true,
     },
     {
-      path: '/ats-checker',
-      label: isAr ? 'فحص ATS الذكي' : 'ATS Checker',
-      subtitle: isAr ? 'فحص التوافق مع أنظمة التوظيف' : 'Score & optimize for recruiters',
-      icon: Search,
-    },
-    {
       path: '/templates',
       label: isAr ? 'معرض القوالب' : 'Templates',
       subtitle: isAr ? 'قوالب معتمدة وجاهزة' : 'Approved modern templates',
       icon: Layout,
     },
     {
+      path: '/ats-checker',
+      label: isAr ? 'فحص ATS الذكي' : 'ATS Checker',
+      subtitle: isAr ? 'فحص التوافق مع أنظمة التوظيف' : 'Score & optimize for recruiters',
+      icon: Search,
+    },
+    {
       path: '/hash-hunt',
-      label: isAr ? 'هاش هنت' : 'Hash Hunt',
-      subtitle: isAr ? 'البحث عن وظائف' : 'Find jobs',
-      badge: isAr ? 'وظائف' : 'Find jobs',
+      label: isAr ? 'هاش هنت — البحث عن وظائف' : 'Hash Hunt — Find Jobs',
+      subtitle: isAr ? 'استكشف الفرص الوظيفية' : 'Explore curated job openings',
       icon: Briefcase,
     },
     {
@@ -230,7 +229,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                       <div className="flex flex-col text-start">
                         <div className="flex items-center gap-2">
                           <span className="text-xs font-bold">{item.label}</span>
-                          {item.badge && (
+                          {(item as any).badge && (
                             <span
                               className={`text-[9px] font-black px-1.5 py-0.5 rounded-md ${
                                 active
@@ -238,7 +237,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                                   : 'bg-slate-100 text-slate-600 border border-slate-200'
                               }`}
                             >
-                              {item.badge}
+                              {(item as any).badge}
                             </span>
                           )}
                         </div>

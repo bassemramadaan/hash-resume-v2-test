@@ -234,7 +234,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
         return {
           label: isPersonalComplete && experiencesCount > 0
             ? isAr ? 'جاهز للفحص' : 'Ready to scan'
-            : isAr ? 'يتطلب البيانات والخبرة' : 'Requires info & exp',
+            : isAr ? 'يتطلب البيانات' : 'Needs info',
           isComplete: isPersonalComplete && experiencesCount > 0,
         };
 
@@ -267,7 +267,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
     { key: 'certifications', titleAr: 'الشهادات والدورات', titleEn: 'Certifications', icon: Award },
     { key: 'projects', titleAr: 'المشاريع العملية', titleEn: 'Projects', icon: FolderGit2 },
     { key: 'customize', titleAr: 'القالب والتنسيق', titleEn: 'Template & Style', icon: Layout },
-    { key: 'ats', titleAr: 'فحص ATS الذكي', titleEn: 'ATS Scanner', icon: FileText },
+    { key: 'ats', titleAr: 'فحص جودة ATS', titleEn: 'ATS Quality Scan', icon: FileText },
     { key: 'download', titleAr: 'المراجعة والتصدير', titleEn: 'Review & Export', icon: Download },
   ];
 

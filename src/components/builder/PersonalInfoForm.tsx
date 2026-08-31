@@ -375,14 +375,14 @@ export const PersonalInfoForm: React.FC = () => {
           </div>
         </div>
 
-        {/* Phone Number - Required Before Export / Optional during drafting */}
+        {/* Phone Number - Optional / Recommended */}
         <div className="space-y-1.5 text-start min-w-0">
           <div className="flex items-center justify-between">
             <label htmlFor="pi-phone" className="text-xs sm:text-sm font-bold text-slate-800 flex items-center gap-1.5">
               <span>{isAr ? 'رقم الهاتف' : 'Phone Number'}</span>
             </label>
-            <span className="text-[10px] sm:text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-200">
-              {isAr ? 'مطلوب قبل التنزيل' : 'Required before download'}
+            <span className="text-[10px] sm:text-[11px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
+              {isAr ? 'موصى به' : 'Recommended'}
             </span>
           </div>
           <div className="relative">
@@ -571,32 +571,30 @@ export const PersonalInfoForm: React.FC = () => {
       )}
 
       {/* Professional Summary Group */}
-      <div className="pt-2 space-y-2 text-start" aria-live="polite">
-        <div className="summary-header">
-          <div className="flex items-center gap-2">
+      <div className="pt-2 space-y-2.5 text-start" aria-live="polite">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div className="flex flex-wrap items-center gap-2">
             <label htmlFor="pi-summary" className="text-xs sm:text-sm font-bold text-slate-800">
               {t.summary}
             </label>
             <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200">
-              {isAr ? 'اختياري وموصى به' : 'Recommended'}
+              {isAr ? 'موصى به' : 'Recommended'}
             </span>
-          </div>
-
-          <div className="flex flex-col sm:items-end gap-1.5 w-full sm:w-auto">
             <button
               type="button"
               onClick={() => openAiModal('summary')}
-              className="generate-ai-button inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-bold text-[#001639] bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 transition cursor-pointer shrink-0 min-h-[44px] active:scale-98"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-[#001639] bg-gradient-to-r from-orange-50 to-amber-50/80 hover:from-orange-100 hover:to-amber-100/90 rounded-lg border border-orange-200/80 transition cursor-pointer active:scale-95 shadow-2xs"
             >
-              <Sparkles className="w-4 h-4 text-[#FF4D2D]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
               <span>{t.aiGenerateSummary}</span>
             </button>
-            <p className="text-[10.5px] text-slate-500 font-medium leading-relaxed whitespace-normal break-words">
-              {isAr
-                ? 'يعتمد على معلوماتك فقط — ولا يخترع أي خبرات وهمية. راجع مسودة الذكاء الاصطناعي قبل اعتمادها، ويمكنك تعديل أي نص بحرية.'
-                : 'Uses your information only — never invents experience. Review the AI draft before using it. You can edit anything.'}
-            </p>
           </div>
+
+          <p className="text-xs text-slate-500 font-normal leading-normal">
+            {isAr
+              ? 'يعتمد على بياناتك فقط — لا يخترع أي خبرات وهمية. يمكنك تعديل النص بحرية.'
+              : 'Uses your information only — never invents experience.'}
+          </p>
         </div>
 
         {/* Quick Summary Templates */}

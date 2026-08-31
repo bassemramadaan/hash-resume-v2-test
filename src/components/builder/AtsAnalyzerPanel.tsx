@@ -186,30 +186,39 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
   };
 
   const getScoreTheme = (score: number) => {
-    if (score >= 80) {
+    if (score >= 85) {
       return {
         badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
         ringColor: 'text-emerald-500',
         textColor: 'text-emerald-600',
         barBg: 'bg-emerald-500',
-        statusText: isAr ? 'توافق ممتاز' : 'Excellent Match',
+        statusText: isAr ? 'جاهز للمراجعة' : 'Ready to review',
       };
     }
-    if (score >= 60) {
+    if (score >= 70) {
+      return {
+        badgeBg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        ringColor: 'text-emerald-500',
+        textColor: 'text-emerald-600',
+        barBg: 'bg-emerald-500',
+        statusText: isAr ? 'قوي' : 'Strong',
+      };
+    }
+    if (score >= 40) {
       return {
         badgeBg: 'bg-amber-50 text-amber-700 border-amber-200',
         ringColor: 'text-amber-500',
         textColor: 'text-amber-600',
         barBg: 'bg-amber-500',
-        statusText: isAr ? 'توافق جيد - يحتاج تحسين' : 'Good - Needs Optimization',
+        statusText: isAr ? 'أساس جيد' : 'Good foundation',
       };
     }
     return {
-      badgeBg: 'bg-rose-50 text-rose-700 border-rose-200',
-      ringColor: 'text-rose-500',
-      textColor: 'text-rose-600',
-      barBg: 'bg-rose-500',
-      statusText: isAr ? 'يحتاج إعادة صياغة' : 'Needs Restructuring',
+      badgeBg: 'bg-orange-50 text-orange-700 border-orange-200',
+      ringColor: 'text-orange-500',
+      textColor: 'text-orange-600',
+      barBg: 'bg-orange-500',
+      statusText: isAr ? 'يحتاج إلى عمل' : 'Needs work',
     };
   };
 

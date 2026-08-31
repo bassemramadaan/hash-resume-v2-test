@@ -5,14 +5,7 @@ import { getTranslation } from '../../i18n/translations';
 import { Logo } from '../ui/Logo';
 import { Language } from '../../types/resume';
 import {
-  FileText,
-  ShieldCheck,
   Globe,
-  RotateCcw,
-  Sparkles,
-  Layout,
-  CreditCard,
-  HelpCircle,
   Menu,
   X,
   Linkedin,
@@ -20,6 +13,7 @@ import {
   MessageCircle,
   ChevronDown,
   Check,
+  Sparkles,
 } from 'lucide-react';
 
 const LANGUAGES: { code: Language; label: string; nativeName: string; flag: string }[] = [
@@ -41,6 +35,7 @@ export const Navbar: React.FC = () => {
   const langDropdownRef = useRef<HTMLDivElement>(null);
 
   const isAr = settings.language === 'ar';
+  const isBuilder = location.pathname.startsWith('/builder');
 
   const handleSelectLanguage = (lang: Language) => {
     setLanguage(lang);
@@ -67,13 +62,12 @@ export const Navbar: React.FC = () => {
 
   const navLinks = [
     { path: '/builder', label: isAr ? 'محرر السيرة الذاتية' : 'Resume Builder' },
-    { path: '/ats-checker', label: isAr ? 'فحص ATS' : 'ATS Checker' },
     { path: '/templates', label: isAr ? 'معرض القوالب' : 'Templates' },
+    { path: '/ats-checker', label: isAr ? 'فحص ATS' : 'ATS Checker' },
     {
       path: '/hash-hunt',
-      label: isAr ? 'هاش هنت — البحث عن وظائف' : 'Hash Hunt — Find Jobs',
-      sublabel: isAr ? 'البحث عن وظائف' : 'Find Jobs',
-      isSpecial: true,
+      label: isAr ? 'هاش هنت' : 'Hash Hunt',
+      badge: isAr ? 'وظائف' : 'Jobs',
     },
     { path: '/pricing', label: isAr ? 'التسعير' : 'Pricing' },
     { path: '/faq', label: isAr ? 'الأسئلة الشائعة' : 'FAQ' },
@@ -85,122 +79,147 @@ export const Navbar: React.FC = () => {
     return false;
   };
 
-  const isBuilderMobile = location.pathname === '/builder';
-
   return (
     <header
-      className={`${
-        isBuilderMobile ? 'hidden md:block' : ''
-      } sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0] text-[#0B1120] shadow-xs`}
+      className={`sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-[#e9edf3] text-[#001639] ${
+        isBuilder ? 'hidden md:block' : ''
+      }`}
     >
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-16 lg:h-18 flex items-center justify-between gap-2 sm:gap-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-5 lg:px-8 h-14 sm:h-16 md:h-[72px] flex items-center justify-between gap-4 lg:gap-8">
         {/* Brand Logo & Title */}
-        <Link to="/" className="flex items-center gap-2 sm:gap-2.5 group py-1 shrink-0">
+        <Link
+          to="/"
+          className="flex items-center gap-2.5 sm:gap-3 group shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#001639] rounded-lg p-0.5"
+        >
           <Logo
             variant="icon"
             size="lg"
             loading="eager"
-            className="!h-[32px] sm:!h-[38px] lg:!h-[44px] w-auto !max-w-none shrink-0 object-contain"
+            className="!h-[32px] sm:!h-[36px] md:!h-[38px] w-auto !max-w-none shrink-0 object-contain"
           />
-          <div className="flex flex-col">
-            <span className="font-brand font-extrabold text-sm sm:text-base lg:text-lg tracking-tight text-[#0B1120] leading-tight group-hover:text-[#001639] transition">
+          <div className="flex flex-col text-start">
+            <span className="font-brand font-bold text-base sm:text-lg tracking-tight text-[#001639] leading-tight">
               Hash <span className="text-[#001639]">Resume</span>
             </span>
-            <span className="text-[9px] sm:text-[10px] lg:text-[11px] font-semibold text-[#52627A] hidden xs:inline sm:inline">
-              {location.pathname === '/builder'
+            <span className="text-[10px] sm:text-[11px] font-medium text-[#536176] hidden xs:inline">
+              {isBuilder
                 ? isAr
                   ? 'محرر السيرة الذاتية'
                   : 'Resume Editor'
                 : isAr
-                ? 'احصل على وظيفتك بسهولة'
-                : 'Land the Job. Effortlessly.'}
+                ? 'أنشئ سيرتك الذاتية. قدّم بثقة.'
+                : 'Build. Match. Apply.'}
             </span>
           </div>
         </Link>
 
-        {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-1 bg-[#F8FAFC] p-1 rounded-full border border-[#E2E8F0]">
-          {navLinks.map((link) => {
-            const active = isActive(link.path);
-            const isSpecial = (link as any).isSpecial;
-            return (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`px-3.5 py-1.5 text-xs font-bold rounded-full transition flex items-center gap-1.5 ${
-                  active
-                    ? 'bg-[#001639] text-white shadow-xs'
-                    : isSpecial
-                    ? 'text-slate-700 hover:text-[#FF4D2D] hover:bg-orange-50'
-                    : 'text-[#52627A] hover:text-[#001639] hover:bg-slate-200/50'
-                }`}
-              >
-                <span>{link.label}</span>
-                {isSpecial && !active && (
-                  <span className="text-[10px] bg-orange-100 text-[#FF4D2D] font-extrabold px-1.5 py-0.2 rounded-full">
-                    {isAr ? 'وظائف' : 'Jobs'}
-                  </span>
-                )}
-              </Link>
-            );
-          })}
-        </nav>
+        {/* Desktop / Tablet Navigation Links */}
+        {!isBuilder ? (
+          <nav
+            className="hidden md:flex items-center gap-6 lg:gap-7 h-full"
+            aria-label={isAr ? 'التنقل الرئيسي' : 'Main navigation'}
+          >
+            {navLinks.map((link) => {
+              const active = isActive(link.path);
+              return (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`relative h-full flex items-center gap-1.5 text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#001639] focus-visible:ring-offset-2 ${
+                    active
+                      ? 'text-[#001639] font-bold'
+                      : 'text-[#536176] hover:text-[#001639]'
+                  }`}
+                >
+                  <span>{link.label}</span>
+                  {link.badge && (
+                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[6px] bg-[#fff2ed] border border-[#ffd7c8] text-[#b5472b] leading-none shrink-0">
+                      {link.badge}
+                    </span>
+                  )}
+                  {active && (
+                    <span
+                      className="absolute bottom-0 inset-x-0 h-[3px] bg-[#ff4d2d] rounded-full"
+                      aria-hidden="true"
+                    />
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+        ) : (
+          <div className="hidden md:flex items-center gap-2 text-sm text-[#536176]">
+            <span className="font-bold text-[#001639]">
+              {isAr ? 'محرر السيرة الذاتية' : 'Resume Builder'}
+            </span>
+          </div>
+        )}
 
         {/* Right Action Controls */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Primary Action Button (Build My Resume CTA) - hidden on mobile, visible on tablet/desktop */}
-          {location.pathname !== '/builder' && (
-            <Link
-              to="/builder"
-              className="hidden md:inline-flex px-3.5 sm:px-4 py-1.5 sm:py-2 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-xs sm:text-sm font-extrabold rounded-full shadow-xs hover:shadow-md transition items-center gap-1.5 active:scale-95 shrink-0"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
-            </Link>
-          )}
-
+        <div className="flex items-center gap-3 lg:gap-4">
           {/* Desktop Language Switch Dropdown */}
           <div className="relative hidden md:block" ref={langDropdownRef}>
             <button
               type="button"
               onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-white hover:bg-slate-50 text-[#001639] text-xs font-bold rounded-full border border-[#E2E8F0] transition cursor-pointer shadow-xs active:scale-98"
+              className="h-[38px] lg:h-[40px] px-3 bg-white hover:bg-slate-50 text-[#001639] text-xs font-semibold rounded-[10px] border border-[#e2e8f0] transition-colors flex items-center gap-2 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#001639]"
+              aria-expanded={langDropdownOpen}
+              aria-haspopup="true"
+              aria-label={isAr ? 'تغيير اللغة' : 'Change language'}
             >
-              <Globe className="w-3.5 h-3.5 text-[#001639]" />
-              <span className="flex items-center gap-1">
-                <span>{currentLangObj.flag}</span>
-                <span>{currentLangObj.nativeName}</span>
-              </span>
-              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${langDropdownOpen ? 'rotate-180' : ''}`} />
+              <Globe className="w-4 h-4 text-[#536176]" />
+              <span className="font-medium text-[#001639]">{currentLangObj.nativeName}</span>
+              <ChevronDown
+                className={`w-3.5 h-3.5 text-[#536176] transition-transform duration-200 ${
+                  langDropdownOpen ? 'rotate-180' : ''
+                }`}
+              />
             </button>
 
             {/* Dropdown Menu */}
             {langDropdownOpen && (
-              <div className="absolute end-0 mt-1.5 w-40 bg-white border border-slate-200 rounded-xl shadow-lg py-1 z-50 animate-in fade-in-50 zoom-in-95 duration-100">
+              <div
+                className="absolute end-0 mt-1.5 w-36 bg-white border border-[#e2e8f0] rounded-[10px] shadow-lg py-1 z-50 animate-in fade-in-50 zoom-in-95 duration-100"
+                role="menu"
+              >
                 {LANGUAGES.map((langItem) => {
                   const isSelected = settings.language === langItem.code;
                   return (
                     <button
                       key={langItem.code}
                       type="button"
+                      role="menuitem"
                       onClick={() => handleSelectLanguage(langItem.code)}
-                      className={`w-full px-3 py-2 text-xs font-semibold flex items-center justify-between transition cursor-pointer ${
+                      className={`w-full px-3 py-2 text-xs font-medium flex items-center justify-between transition cursor-pointer ${
                         isSelected
                           ? 'bg-slate-100 text-[#001639] font-bold'
-                          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                          : 'text-[#536176] hover:bg-slate-50 hover:text-[#001639]'
                       }`}
                     >
                       <span className="flex items-center gap-2">
-                        <span className="text-sm">{langItem.flag}</span>
+                        <span>{langItem.flag}</span>
                         <span>{langItem.nativeName}</span>
                       </span>
-                      {isSelected && <Check className="w-3.5 h-3.5 text-[#FF4D2D]" />}
+                      {isSelected && <Check className="w-3.5 h-3.5 text-[#ff4d2d]" />}
                     </button>
                   );
                 })}
               </div>
             )}
           </div>
+
+          {/* Primary Action Button (Build My Resume CTA) - hidden on mobile & builder */}
+          {!isBuilder && (
+            <Link
+              to="/builder"
+              className="hidden md:inline-flex h-[42px] px-[18px] bg-[#ff4d2d] hover:bg-[#e03e1f] text-white text-xs lg:text-sm font-bold rounded-[10px] shadow-[0_8px_18px_rgba(255,77,45,0.18)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-150 items-center gap-1.5 shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff4d2d] focus-visible:ring-offset-2"
+            >
+              <span>{isAr ? 'أنشئ سيرتك الذاتية' : 'Build My Resume'}</span>
+              <span className="inline-block transition-transform">
+                {isAr ? '←' : '→'}
+              </span>
+            </Link>
+          )}
 
           {/* Mobile Menu Toggle Button (Strict 44x44px Touch Target) */}
           <button
@@ -222,7 +241,7 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Drawer Navigation */}
+      {/* Mobile Drawer Navigation (< 768px - Unchanged) */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-[#E2E8F0] bg-white p-4 space-y-3 shadow-lg animate-in slide-in-from-top-2 duration-150">
           {/* Mobile Language Switcher Segmented Control */}
@@ -256,7 +275,6 @@ export const Navbar: React.FC = () => {
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => {
               const active = isActive(link.path);
-              const isSpecial = (link as any).isSpecial;
               return (
                 <Link
                   key={link.path}
@@ -270,9 +288,9 @@ export const Navbar: React.FC = () => {
                 >
                   <div className="flex items-center gap-2">
                     <span>{link.label}</span>
-                    {isSpecial && (
-                      <span className="text-[10px] bg-slate-100 text-slate-600 font-bold px-1.5 py-0.5 rounded-md border border-slate-200">
-                        {isAr ? 'وظائف' : 'Jobs'}
+                    {link.badge && (
+                      <span className="text-[9px] bg-slate-100 text-slate-600 font-bold px-1.5 py-0.5 rounded-md border border-slate-200">
+                        {link.badge}
                       </span>
                     )}
                   </div>
@@ -336,3 +354,4 @@ export const Navbar: React.FC = () => {
     </header>
   );
 };
+

@@ -140,8 +140,8 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
     ats: {
       titleAr: 'فحص جودة ATS',
       titleEn: 'ATS Quality Scan',
-      subtitleAr: 'تحليل السيرة واقتراحات التحسين الفوري',
-      subtitleEn: 'Score analysis and keyword enhancements',
+      subtitleAr: 'مطابقة السيرة الذاتية مع الوصف الوظيفي والتحسين',
+      subtitleEn: 'Match your resume with a job description',
       icon: FileText,
       nextSection: 'download',
     },
