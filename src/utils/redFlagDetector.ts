@@ -163,18 +163,18 @@ export function detectResumeRedFlags(data: ResumeData): RedFlagItem[] {
     });
   }
 
-  // 2. Check Missing Phone Number
+  // 2. Check Missing Phone Number (Recommended, non-blocking)
   if (!personalInfo.phone || !personalInfo.phone.trim()) {
     flags.push({
       id: 'phone_missing',
       category: 'contact',
       severity: 'warning',
-      titleAr: 'رقم الهاتف مفقود',
-      titleEn: 'Missing Phone Number',
-      descriptionAr: 'يفضل مدراء التوظيف إجراء مكالمة أولية سريعة قبل إرسال المقابلة.',
-      descriptionEn: 'Adding a phone number with country code speeds up recruiter outreach.',
-      suggestionAr: 'أضف رقم هاتفك مع رمز الدولة (+20 أو +966 إلخ).',
-      suggestionEn: 'Add your mobile number with country code.',
+      titleAr: 'موصى به: إضافة رقم هاتف',
+      titleEn: 'Recommended: Add a phone number',
+      descriptionAr: 'أضف رمز الدولة إذا كنت ترغب في تمكين مسؤولي التوظيف من الاتصال بك مباشرة.',
+      descriptionEn: 'Include a country code if you want recruiters to call you directly.',
+      suggestionAr: 'أضف رقم هاتفك مع رمز الدولة إذا كنت ترغب في تلقي مكالمات هاتفية مباشرة.',
+      suggestionEn: 'Include a country code if you want recruiters to call you directly.',
     });
   }
 

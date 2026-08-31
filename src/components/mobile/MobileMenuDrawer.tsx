@@ -100,34 +100,32 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
-          key="mobile-menu-drawer-modal"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-50 flex md:hidden"
+        <div
+          className="fixed inset-0 z-50 md:hidden overflow-hidden"
           role="dialog"
           aria-modal="true"
           aria-label={isAr ? 'القائمة الجانبية' : 'Navigation Menu'}
         >
-          {/* Backdrop */}
-          <div
+          {/* Backdrop Overlay - Full viewport coverage */}
+          <motion.div
+            key="mobile-menu-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs"
+            className="mobile-menu-overlay"
             aria-hidden="true"
           />
 
-          {/* Drawer content */}
+          {/* Drawer Panel - Logical inline end anchoring */}
           <motion.div
             key="mobile-drawer-content"
-            initial={{ x: isAr ? '100%' : '-100%' }}
+            initial={{ x: isAr ? '-100%' : '100%' }}
             animate={{ x: 0 }}
-            exit={{ x: isAr ? '100%' : '-100%' }}
-            transition={{ type: 'spring', damping: 26, stiffness: 260 }}
-            className={`relative w-[88%] max-w-sm bg-white h-full shadow-2xl flex flex-col z-10 ${
-              isAr ? 'ms-0 me-auto' : 'ms-auto me-0'
-            }`}
+            exit={{ x: isAr ? '-100%' : '100%' }}
+            transition={{ type: 'spring', damping: 28, stiffness: 280 }}
+            className="mobile-menu-drawer flex flex-col"
             style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}
           >
             {/* Header */}
@@ -290,7 +288,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               </p>
             </div>
           </motion.div>
-        </motion.div>
+        </div>
       )}
     </AnimatePresence>
   );

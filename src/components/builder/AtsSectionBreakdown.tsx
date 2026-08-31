@@ -255,7 +255,7 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
 
   return (
     <div className="space-y-4 text-slate-800" aria-label="Interactive ATS Section Breakdown">
-      {/* Overall Score Summary Header */}
+      {/* Resume Readiness Summary Header */}
       <div className="bg-gradient-to-r from-[#001639] to-[#00245E] text-white rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
         <div className="space-y-1">
           <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-orange-200 text-xs font-semibold">
@@ -263,25 +263,25 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
             <span>{isAr ? 'فحص ATS تفاعلي وتفصيلي' : 'Interactive ATS Section-by-Section Scan'}</span>
           </div>
           <h3 className="text-base font-bold text-white">
-            {isAr ? 'تحليل التوافق المفصل لكل قسم من سيرتك الذاتية' : 'Section-by-Section ATS Compatibility Breakdown'}
+            {isAr ? `جاهزية السيرة الذاتية: ${overallScore}/100` : `Resume readiness: ${overallScore}/100`}
           </h3>
           <p className="text-xs text-slate-300">
             {isAr
-              ? 'قم بمعالجة النصائح المحددة لكل قسم لرفع نسبة توافق سيرتك مع خوارزميات التوظيف الحديثة.'
-              : 'Address specific section recommendations to maximize your resume scoring.'}
+              ? 'أكمل الأقسام الموصى بها لتحسين الجاهزية ورفع فرص القبول.'
+              : 'Complete the recommended sections to improve it.'}
           </p>
         </div>
 
-        {/* Big Score Meter */}
+        {/* Big Readiness Meter */}
         <div className="flex items-center gap-3 bg-white/10 border border-white/15 px-4 py-2.5 rounded-xl self-start sm:self-auto shrink-0">
           <div className="text-end">
             <span className="text-[10px] text-slate-300 block font-medium">
-              {isAr ? 'الدرجة الإجمالية' : 'Overall Score'}
+              {isAr ? 'مؤشر الجاهزية' : 'Resume readiness'}
             </span>
-            <span className="text-2xl font-black text-white">{overallScore}%</span>
+            <span className="text-2xl font-black text-white">{overallScore}/100</span>
           </div>
           <div className="w-12 h-12 rounded-full border-4 border-emerald-400 flex items-center justify-center font-bold text-xs text-white bg-emerald-950/30">
-            {overallScore >= 80 ? 'A+' : overallScore >= 60 ? 'B' : 'C'}
+            {overallScore >= 80 ? '90+' : overallScore >= 60 ? `${overallScore}` : `${overallScore}`}
           </div>
         </div>
       </div>

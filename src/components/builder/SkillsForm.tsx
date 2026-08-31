@@ -145,15 +145,15 @@ export const SkillsForm: React.FC = () => {
 
         {/* Skill Badges List */}
         {skills.length > 0 ? (
-          <div className="flex flex-wrap gap-2 pt-1">
+          <div className="flex flex-wrap gap-2 pt-1 w-full min-w-0">
             {(skills || []).map((skill) => (
               <span
                 key={skill.id}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs max-w-full min-w-0"
               >
-                <span>{skill.name}</span>
+                <span className="truncate max-w-[200px]">{skill.name}</span>
                 {skill.level && (
-                  <span className="text-[10px] px-1 py-0.5 rounded-sm bg-slate-200 text-slate-600 font-bold uppercase scale-90">
+                  <span className="text-[10px] px-1 py-0.5 rounded-sm bg-slate-200 text-slate-600 font-bold uppercase scale-90 shrink-0">
                     {isAr
                       ? skill.level === 'beginner'
                         ? 'مبتدئ'
@@ -168,7 +168,7 @@ export const SkillsForm: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => removeSkill(skill.id)}
-                  className="text-slate-400 hover:text-rose-600 transition cursor-pointer p-0.5"
+                  className="text-slate-400 hover:text-rose-600 transition cursor-pointer p-0.5 shrink-0"
                   aria-label={isAr ? `حذف مهارة ${skill.name}` : `Remove ${skill.name}`}
                 >
                   <X className="w-3.5 h-3.5" />
@@ -232,19 +232,19 @@ export const SkillsForm: React.FC = () => {
         </form>
 
         {languages.length > 0 && (
-          <div className="flex flex-wrap gap-2 pt-1">
+          <div className="flex flex-wrap gap-2 pt-1 w-full min-w-0">
             {(languages || []).map((lang) => (
               <span
                 key={lang.id}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs max-w-full min-w-0"
               >
-                <span>
+                <span className="truncate max-w-[200px]">
                   {lang.language} ({lang.proficiency})
                 </span>
                 <button
                   type="button"
                   onClick={() => removeLanguage(lang.id)}
-                  className="text-slate-400 hover:text-rose-600 transition cursor-pointer p-0.5"
+                  className="text-slate-400 hover:text-rose-600 transition cursor-pointer p-0.5 shrink-0"
                   aria-label={isAr ? `حذف لغة ${lang.language}` : `Remove ${lang.language}`}
                 >
                   <X className="w-3.5 h-3.5" />

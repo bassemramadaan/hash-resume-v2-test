@@ -467,7 +467,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                 </div>
                 <div className="text-start">
                   <div className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">
-                    {t.atsScore}
+                    {isAr ? 'جاهزية السيرة الذاتية' : 'Resume Readiness'}
                   </div>
                   <div className="text-xs font-bold text-slate-800">
                     {atsResult.score} / 100
@@ -477,33 +477,33 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
             </div>
 
             {/* Micro Breakdown Metrics */}
-            <div className="grid grid-cols-3 gap-2 pt-1">
-              <div className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-center space-y-1">
-                <div className="text-[10px] font-semibold text-slate-500">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 w-full min-w-0">
+              <div className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-center space-y-1 min-w-0">
+                <div className="text-[10px] font-semibold text-slate-500 truncate">
                   {isAr ? 'هيكل السيرة' : 'Structure'}
                 </div>
                 <div className="text-xs font-bold text-emerald-600 flex items-center justify-center gap-1">
-                  <FileCheck className="w-3 h-3" />
+                  <FileCheck className="w-3 h-3 shrink-0" />
                   <span>95%</span>
                 </div>
               </div>
 
-              <div className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-center space-y-1">
-                <div className="text-[10px] font-semibold text-slate-500">
+              <div className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-center space-y-1 min-w-0">
+                <div className="text-[10px] font-semibold text-slate-500 truncate">
                   {isAr ? 'الكلمات المفتاحية' : 'Keywords'}
                 </div>
                 <div className="text-xs font-bold text-amber-600 flex items-center justify-center gap-1">
-                  <Zap className="w-3 h-3" />
+                  <Zap className="w-3 h-3 shrink-0" />
                   <span>{atsResult.score >= 80 ? '88%' : '72%'}</span>
                 </div>
               </div>
 
-              <div className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-center space-y-1">
-                <div className="text-[10px] font-semibold text-slate-500">
+              <div className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-center space-y-1 min-w-0">
+                <div className="text-[10px] font-semibold text-slate-500 truncate">
                   {isAr ? 'الأفعال والنتائج' : 'Impact'}
                 </div>
                 <div className="text-xs font-bold text-sky-600 flex items-center justify-center gap-1">
-                  <Target className="w-3 h-3" />
+                  <Target className="w-3 h-3 shrink-0" />
                   <span>80%</span>
                 </div>
               </div>
