@@ -16,17 +16,17 @@
   --brand-navy-light: #00214F;
   --brand-navy-soft: #E8EEF7;
 
-  --color-primary: #001639;
-  --color-primary-hover: #00214F;
-  --color-primary-active: #000F27;
-  --color-primary-soft: #E8EEF7;
+  --color-primary: var(--brand-navy);
+  --color-primary-hover: var(--brand-navy-light);
+  --color-primary-active: var(--brand-navy-dark);
+  --color-primary-soft: var(--brand-navy-soft);
   --color-primary-border: #C8D5E8;
   --color-primary-text: #FFFFFF;
 
-  --color-navy: #001639;
-  --color-navy-dark: #000F27;
-  --color-navy-light: #00214F;
-  --color-navy-soft: #E8EEF7;
+  --color-navy: var(--brand-navy);
+  --color-navy-dark: var(--brand-navy-dark);
+  --color-navy-light: var(--brand-navy-light);
+  --color-navy-soft: var(--brand-navy-soft);
 
   --color-background: #F8FAFC;
   --color-surface: #FFFFFF;
@@ -64,15 +64,15 @@
   --color-coral-active: #CC3A1A;
   --color-coral-soft: #FFF1EC;
 
-  --color-navy: #001639;
-  --color-navy-dark: #000F27;
-  --color-navy-light: #00214F;
-  --color-navy-soft: #E8EEF7;
+  --color-navy: var(--brand-navy);
+  --color-navy-dark: var(--brand-navy-dark);
+  --color-navy-light: var(--brand-navy-light);
+  --color-navy-soft: var(--brand-navy-soft);
 
-  --color-primary: #001639;
-  --color-primary-hover: #00214F;
-  --color-primary-active: #000F27;
-  --color-primary-soft: #E8EEF7;
+  --color-primary: var(--brand-navy);
+  --color-primary-hover: var(--brand-navy-light);
+  --color-primary-active: var(--brand-navy-dark);
+  --color-primary-soft: var(--brand-navy-soft);
   --color-primary-border: #C8D5E8;
 }
 

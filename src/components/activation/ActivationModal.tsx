@@ -10,7 +10,7 @@ import {
 import { validateResumeMinimumRequirements } from '../../utils/resumeValidation';
 import {
   KeyRound, CheckCircle2, ShieldCheck, Zap, X, Copy, Check, ArrowLeft, ArrowRight, ExternalLink,
-  AlertTriangle, Download, Sparkles, Loader2, Mail, PhoneCall, Smartphone, RefreshCw
+  AlertTriangle, Download, Sparkles, Loader2, Mail, PhoneCall, Smartphone, RefreshCw, HelpCircle, ChevronDown
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { QRCodeSVG } from 'qrcode.react';
@@ -664,6 +664,51 @@ export const ActivationModal: React.FC = () => {
                         </span>
                       </button>
                     </div>
+                  </div>
+                </div>
+
+                {/* Pricing Transparency FAQ Accordion */}
+                <div className="p-3.5 bg-slate-50/90 rounded-2xl border border-slate-200/90 space-y-2.5">
+                  <h5 className="font-extrabold text-xs text-[#001639] flex items-center gap-1.5">
+                    <HelpCircle className="w-4 h-4 text-[#FF4D2D]" />
+                    <span>{isAr ? 'تفاصيل التفعيل وما تشمله الباقة:' : 'Pricing & Plan Details FAQ:'}</span>
+                  </h5>
+                  <div className="space-y-2 text-[11px] text-slate-700 leading-relaxed">
+                    <details className="group cursor-pointer">
+                      <summary className="font-bold text-[#001639] hover:text-[#FF4D2D] transition flex items-center justify-between gap-2 py-0.5 select-none">
+                        <span>{isAr ? 'ماذا تشمل باقة الـ 50 ج.م الفردية؟' : 'What does the 50 EGP Single plan include?'}</span>
+                        <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-open:rotate-180 transition-transform shrink-0" />
+                      </summary>
+                      <p className="pt-1 text-slate-600 ps-2 border-s-2 border-slate-200">
+                        {isAr
+                          ? 'تشمل تحميل سيرة ذاتية واحدة بصيغة PDF متوافقة 100% مع أجهزة الـ ATS وتعديلات غير محدودة في نفس الجلسة قبل التحميل النهائي وبدون أي علامات مائية.'
+                          : 'Includes 1 high-resolution ATS-friendly vector PDF download without watermark. Unlimited session edits before final download.'}
+                      </p>
+                    </details>
+
+                    <details className="group cursor-pointer">
+                      <summary className="font-bold text-[#001639] hover:text-[#FF4D2D] transition flex items-center justify-between gap-2 py-0.5 select-none">
+                        <span>{isAr ? 'هل الدفع لمرة واحدة أم اشتراك شهري؟' : 'Is this a one-time fee or monthly subscription?'}</span>
+                        <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-open:rotate-180 transition-transform shrink-0" />
+                      </summary>
+                      <p className="pt-1 text-slate-600 ps-2 border-s-2 border-slate-200">
+                        {isAr
+                          ? 'دفع لمرة واحدة فقط لا غير. لا توجد أي اشتراكات متجددة أو رسوم مخفية إطلاقاً.'
+                          : '100% one-time payment. Zero recurring subscriptions or hidden charges.'}
+                      </p>
+                    </details>
+
+                    <details className="group cursor-pointer">
+                      <summary className="font-bold text-[#001639] hover:text-[#FF4D2D] transition flex items-center justify-between gap-2 py-0.5 select-none">
+                        <span>{isAr ? 'ماذا لو أردت التعديل مجدداً بعد التحميل؟' : 'What if I want to make changes after downloading?'}</span>
+                        <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-open:rotate-180 transition-transform shrink-0" />
+                      </summary>
+                      <p className="pt-1 text-slate-600 ps-2 border-s-2 border-slate-200">
+                        {isAr
+                          ? 'تُقفل السيرة لحماية النسخة المعتمدة وإذا أردت إجراء تعديلات جديدة يمكنك فتح الملف بشراء رصيد تفعيل إضافي أو اختيار باقة الـ 3 تحميلات الموفرة (120 ج.م).'
+                          : 'Your resume is locked post-download to protect your final copy. To make new edits, you can unlock using an extra download credit or choose the 3-download bundle.'}
+                      </p>
+                    </details>
                   </div>
                 </div>
               </div>

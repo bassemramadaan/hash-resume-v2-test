@@ -154,10 +154,10 @@ export const AiAssistantModal: React.FC = () => {
         role="dialog"
         aria-modal="true"
         aria-labelledby="ai-modal-title"
-        className="w-full max-w-lg bg-[#000F27] border border-[#001639] rounded-2xl shadow-2xl overflow-hidden text-slate-100 animate-in fade-in zoom-in duration-150"
+        className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden text-slate-100 animate-in fade-in zoom-in duration-150"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#001639] bg-[#000F27]/80">
+        <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900/90">
           <div className="flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-[#FF4D2D]/10 text-[#FF4D2D] border border-[#FF4D2D]/20">
               <Sparkles className="w-4 h-4 animate-pulse" />

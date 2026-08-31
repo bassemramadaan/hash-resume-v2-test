@@ -422,14 +422,11 @@ export const DownloadSection: React.FC = () => {
     setIsActivationModalOpen(true);
   };
 
+  const setIsUnlockModalOpen = useResumeStore((state) => state.setIsUnlockModalOpen);
+
   const handleUnlockRequest = () => {
     if (activation.remainingDownloads > 0) {
-      const confirmMsg = isAr
-        ? `لديك ${activation.remainingDownloads} تفعيل(ات) متبقية. هل ترغب في فتح السيرة للتعديل الآن؟`
-        : `You have ${activation.remainingDownloads} credit(s) remaining. Unlock editing now?`;
-      if (window.confirm(confirmMsg)) {
-        unlockResumeWithCredit();
-      }
+      setIsUnlockModalOpen(true);
     } else {
       setIsActivationModalOpen(true);
     }

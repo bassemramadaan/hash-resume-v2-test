@@ -61,8 +61,10 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
 
         {/* Hero Headline */}
         <h1
-          className={`text-[clamp(38px,10vw,52px)] sm:text-6xl md:text-7xl lg:text-8xl text-[#001639] hero-reveal hero-reveal-title ${
-            isAr ? 'hero-headline-ar' : 'hero-headline-en'
+          className={`text-[#001639] hero-reveal hero-reveal-title ${
+            isAr
+              ? 'hero-headline-ar text-[clamp(44px,11.5vw,60px)] sm:text-7xl md:text-8xl lg:text-[5.5rem] leading-[1.2]'
+              : 'hero-headline-en text-[clamp(38px,10vw,52px)] sm:text-6xl md:text-7xl lg:text-8xl'
           }`}
         >
           {isAr ? (
@@ -115,56 +117,19 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           </div>
         </div>
 
-        {/* Main Focused CTA Bar (Full-width on mobile, 12px gap, min 52px CTA height) */}
+        {/* Main Direct Hero CTA Button */}
         <div
-          className="flex flex-col items-center justify-center gap-3 max-w-xl mx-auto w-full pt-3 sm:pt-4 hero-reveal hero-reveal-cta"
+          className="flex flex-col items-center justify-center gap-3 max-w-md mx-auto w-full pt-3 sm:pt-4 hero-reveal hero-reveal-cta"
         >
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
-            <div className="relative w-full sm:flex-1">
-              <input
-                type="text"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleStart()}
-                placeholder={isAr ? 'مسمّاك الوظيفي (اختياري)...' : 'Job title (optional)...'}
-                className="w-full px-4 sm:px-5 py-3.5 sm:py-4 bg-white border border-[#E2E8F0] text-[#001639] rounded-xl sm:rounded-2xl text-base font-semibold placeholder:text-[#8793A6] focus:outline-none focus:ring-2 focus:ring-coral/20 focus:border-coral shadow-2xs transition-all text-center sm:text-start min-h-[50px]"
-              />
-            </div>
-            <button
-              onClick={handleStart}
-              className="w-full sm:w-auto px-7 sm:px-9 min-h-[52px] h-[52px] bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-xl sm:rounded-2xl text-base font-extrabold shadow-md shadow-coral/25 flex items-center justify-center gap-2.5 transition-all active:scale-98 shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF4D2D]"
-            >
-              <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
-              <ArrowIcon className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Quick 1-Click Role Suggestions (Desktop only to prevent mobile clutter) */}
-          <div className="hidden sm:flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 pt-1">
-            <span className="text-[11px] text-slate-400 font-medium me-1">
-              {isAr ? 'أو اختر مجالك مباشرة:' : 'Or pick a role:'}
-            </span>
-            {[
-              { en: 'Frontend Developer', ar: 'Frontend Developer' },
-              { en: 'Accountant', ar: 'محاسب (Accountant)' },
-              { en: 'Customer Service', ar: 'خدمة عملاء (Customer Service)' },
-              { en: 'Sales Representative', ar: 'مندوب مبيعات (Sales Rep)' },
-              { en: 'Fresh Graduate', ar: 'حديث تخرج (Fresh Graduate)' },
-            ].map((item) => (
-              <button
-                key={item.en}
-                type="button"
-                onClick={() => {
-                  setRole(isAr ? item.ar : item.en);
-                  setPersonalInfo({ jobTitle: isAr ? item.ar : item.en });
-                  navigate('/builder');
-                }}
-                className="px-2.5 py-1 text-[11px] sm:text-xs font-semibold bg-slate-50 hover:bg-orange-50/80 text-slate-600 hover:text-[#FF4D2D] border border-slate-200 hover:border-orange-200 rounded-lg transition active:scale-95 cursor-pointer"
-              >
-                {isAr ? item.ar : item.en}
-              </button>
-            ))}
-          </div>
+          <button
+            type="button"
+            onClick={() => navigate('/builder')}
+            className="w-full sm:w-auto px-8 sm:px-12 min-h-[54px] h-[54px] bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-2xl text-base sm:text-lg font-extrabold shadow-lg shadow-coral/30 flex items-center justify-center gap-3 transition-all active:scale-98 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF4D2D]"
+          >
+            <Sparkles className="w-5 h-5 fill-white/20" />
+            <span>{isAr ? 'ابدأ الآن مجاناً' : 'Build My Resume Now'}</span>
+            <ArrowIcon className="w-5 h-5" />
+          </button>
         </div>
 
         {/* Small Trust Row below CTA (No account required • ATS-friendly • Pay once to download) */}

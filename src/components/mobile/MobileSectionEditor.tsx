@@ -162,22 +162,11 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
   const ArrowNext = isAr ? ChevronLeft : ChevronRight;
   const ArrowPrev = isAr ? ChevronRight : ChevronLeft;
 
+  const setIsUnlockModalOpen = useResumeStore((state) => state.setIsUnlockModalOpen);
+
   const handleUnlockRequest = () => {
     if (activation.remainingDownloads > 0) {
-      const confirmMsg = isAr
-        ? `لديك ${activation.remainingDownloads} تفعيل(ات) متبقية. هل ترغب في استخدام 1 تفعيل لفتح السيرة الذاتية للتعديل الآن؟`
-        : `You have ${activation.remainingDownloads} credit(s) remaining. Use 1 credit to unlock editing for a new version?`;
-      if (window.confirm(confirmMsg)) {
-        const optionMsg = isAr
-          ? `هل تريد الحفاظ على البيانات الحالية وتعديلها؟\n\nاضغط "موافق" (OK) للتحرير والتعديل.\nاضغط "إلغاء الأمر" (Cancel) لمسح كافة البيانات والبدء بسيرة ذاتية جديدة.`
-          : `Do you want to keep and edit the current data?\n\nClick "OK" to keep and edit.\nClick "Cancel" to clear all data and start a fresh resume.`;
-
-        const keepData = window.confirm(optionMsg);
-        if (!keepData) {
-          resetResume();
-        }
-        unlockResumeWithCredit();
-      }
+      setIsUnlockModalOpen(true);
     } else {
       setIsActivationModalOpen(true);
     }

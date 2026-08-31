@@ -41,14 +41,14 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
   // Header Component (Plain text, no photo, no icons, single column)
   const renderHeader = () => (
     <header className="mb-6 text-center border-b border-black pb-4">
-      <h1 className="text-[22px] font-bold text-black uppercase tracking-tight mb-1">
+      <h1 className="text-[24px] font-bold text-black uppercase tracking-tight mb-1">
         {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
       </h1>
-      <p className="text-[15px] font-semibold text-black mb-2">
+      <p className="text-[16px] font-semibold text-black mb-2">
         {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
       </p>
       {contactParts.length > 0 && (
-        <p className="text-[11px] text-black leading-relaxed">
+        <p className="text-[12px] text-black leading-relaxed">
           {contactParts.join('  |  ')}
         </p>
       )}
@@ -59,10 +59,10 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
   const renderSummary = () =>
     personalInfo.summary ? (
       <section className="mb-5">
-        <h2 className="text-[13px] font-bold uppercase text-black border-b border-black pb-1 mb-2">
+        <h2 className="text-[14px] font-bold uppercase text-black border-b border-black pb-1 mb-2">
           {isArabic ? 'الملخص المهني' : 'PROFESSIONAL SUMMARY'}
         </h2>
-        <p className="text-[11px] text-black leading-relaxed">
+        <p className="text-[12px] text-black leading-relaxed">
           {personalInfo.summary}
         </p>
       </section>
@@ -72,7 +72,7 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
   const renderExperience = () =>
     experiences && experiences.length > 0 ? (
       <section className="mb-5">
-        <h2 className="text-[13px] font-bold uppercase text-black border-b border-black pb-1 mb-2.5">
+        <h2 className="text-[14px] font-bold uppercase text-black border-b border-black pb-1 mb-2.5">
           {isArabic ? 'الخبرات العملية' : 'WORK EXPERIENCE'}
         </h2>
         <div className="space-y-4">
@@ -84,11 +84,11 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
 
             return (
               <div key={exp.id}>
-                <p className="font-bold text-[12px] text-black">
+                <p className="font-bold text-[13px] text-black">
                   {lineParts.join('  |  ')}
                 </p>
                 {exp.bulletPoints && exp.bulletPoints.length > 0 && (
-                  <ul className="list-disc list-outside ms-5 mt-1 space-y-1 text-[11px] text-black">
+                  <ul className="list-disc list-outside ms-5 mt-1 space-y-1 text-[12px] text-black">
                     {exp.bulletPoints.map((bullet, idx) => (
                       <li key={idx} className="leading-relaxed">
                         {bullet}
@@ -107,7 +107,7 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
   const renderEducation = () =>
     education && education.length > 0 ? (
       <section className="mb-5">
-        <h2 className="text-[13px] font-bold uppercase text-black border-b border-black pb-1 mb-2.5">
+        <h2 className="text-[14px] font-bold uppercase text-black border-b border-black pb-1 mb-2.5">
           {isArabic ? 'التعليم والمؤهلات' : 'EDUCATION'}
         </h2>
         <div className="space-y-3">
@@ -122,11 +122,11 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
 
             return (
               <div key={edu.id}>
-                <p className="font-bold text-[12px] text-black">
+                <p className="font-bold text-[13px] text-black">
                   {eduParts.join('  |  ')}
                 </p>
                 {edu.description && (
-                  <p className="text-[11px] text-black mt-0.5">{edu.description}</p>
+                  <p className="text-[12px] text-black mt-0.5">{edu.description}</p>
                 )}
               </div>
             );
@@ -139,10 +139,10 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
   const renderSkills = () =>
     skills && skills.length > 0 ? (
       <section className="mb-5">
-        <h2 className="text-[13px] font-bold uppercase text-black border-b border-black pb-1 mb-2">
+        <h2 className="text-[14px] font-bold uppercase text-black border-b border-black pb-1 mb-2">
           {isArabic ? 'المهارات والتقنيات' : 'SKILLS & COMPETENCIES'}
         </h2>
-        <p className="text-[11px] text-black leading-relaxed">
+        <p className="text-[12px] text-black leading-relaxed">
           {skills.map((s) => s.name).join(', ')}
         </p>
       </section>
@@ -152,7 +152,7 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
   const renderProjects = () =>
     projects && projects.length > 0 ? (
       <section className="mb-5">
-        <h2 className="text-[13px] font-bold uppercase text-black border-b border-black pb-1 mb-2.5">
+        <h2 className="text-[14px] font-bold uppercase text-black border-b border-black pb-1 mb-2.5">
           {isArabic ? 'المشاريع الرئيسية' : 'KEY PROJECTS'}
         </h2>
         <div className="space-y-3">
@@ -164,16 +164,16 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
 
             return (
               <div key={proj.id}>
-                <p className="font-bold text-[12px] text-black">
+                <p className="font-bold text-[13px] text-black">
                   {projParts.join('  |  ')}
                 </p>
                 {proj.description && (
-                  <p className="text-[11px] text-black mt-0.5 leading-relaxed">
+                  <p className="text-[12px] text-black mt-0.5 leading-relaxed">
                     {proj.description}
                   </p>
                 )}
                 {proj.technologies && proj.technologies.length > 0 && (
-                  <p className="text-[11px] text-black mt-0.5">
+                  <p className="text-[12px] text-black mt-0.5">
                     <strong>{isArabic ? 'التقنيات: ' : 'Technologies: '}</strong>
                     {proj.technologies.join(', ')}
                   </p>
@@ -189,10 +189,10 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
   const renderCertifications = () =>
     certifications && certifications.length > 0 ? (
       <section className="mb-5">
-        <h2 className="text-[13px] font-bold uppercase text-black border-b border-black pb-1 mb-2">
+        <h2 className="text-[14px] font-bold uppercase text-black border-b border-black pb-1 mb-2">
           {isArabic ? 'الشهادات المعتمدة' : 'CERTIFICATIONS'}
         </h2>
-        <div className="space-y-1.5 text-[11px] text-black">
+        <div className="space-y-1.5 text-[12px] text-black">
           {certifications.map((cert) => (
             <p key={cert.id}>
               <strong>{cert.title}</strong> — {cert.issuer} {cert.date ? `(${cert.date})` : ''}
@@ -206,10 +206,10 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
   const renderLanguages = () =>
     languages && languages.length > 0 ? (
       <section className="mb-5">
-        <h2 className="text-[13px] font-bold uppercase text-black border-b border-black pb-1 mb-2">
+        <h2 className="text-[14px] font-bold uppercase text-black border-b border-black pb-1 mb-2">
           {isArabic ? 'اللغات' : 'LANGUAGES'}
         </h2>
-        <p className="text-[11px] text-black leading-relaxed">
+        <p className="text-[12px] text-black leading-relaxed">
           {languages.map((l) => `${l.language} (${l.proficiency})`).join('  |  ')}
         </p>
       </section>
@@ -220,12 +220,12 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
     customSections && customSections.length > 0
       ? customSections.map((sec) => (
           <section key={sec.id} className="mb-5">
-            <h2 className="text-[13px] font-bold uppercase text-black border-b border-black pb-1 mb-2">
+            <h2 className="text-[14px] font-bold uppercase text-black border-b border-black pb-1 mb-2">
               {sec.sectionTitle}
             </h2>
             <div className="space-y-2">
               {sec.items.map((item) => (
-                <div key={item.id} className="text-[11px] text-black">
+                <div key={item.id} className="text-[12px] text-black">
                   <p className="font-bold">
                     {[item.title, item.subtitle, item.date].filter(Boolean).join('  |  ')}
                   </p>

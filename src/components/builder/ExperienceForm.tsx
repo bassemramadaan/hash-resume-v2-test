@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
+import { generateId } from '../../utils/idGenerator';
 import {
   Briefcase,
   Plus,
@@ -178,7 +179,7 @@ export const ExperienceForm: React.FC = () => {
   };
 
   const handleAddNew = () => {
-    const newId = `exp-${Date.now()}`;
+    const newId = generateId('exp');
     addExperience({
       company: '',
       position: '',
@@ -392,7 +393,7 @@ export const ExperienceForm: React.FC = () => {
                         value={exp.position}
                         onChange={(e) => updateExperience(exp.id, { position: e.target.value })}
                         placeholder={isAr ? 'مهندس برمجيات أول' : 'Senior Software Engineer'}
-                        className="w-full px-3.5 h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+                        className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
                       />
                     </div>
 
@@ -406,7 +407,7 @@ export const ExperienceForm: React.FC = () => {
                         value={exp.company}
                         onChange={(e) => updateExperience(exp.id, { company: e.target.value })}
                         placeholder={isAr ? 'اسم الشركة' : 'Company Name'}
-                        className="w-full px-3.5 h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+                        className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
                       />
                     </div>
 
@@ -418,7 +419,7 @@ export const ExperienceForm: React.FC = () => {
                         value={exp.startDate}
                         onChange={(e) => updateExperience(exp.id, { startDate: e.target.value })}
                         placeholder="01/2021"
-                        className="w-full px-3.5 h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+                        className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
                       />
                     </div>
 
@@ -431,7 +432,7 @@ export const ExperienceForm: React.FC = () => {
                         value={exp.current ? (isAr ? 'حتى الآن' : 'Present') : exp.endDate}
                         onChange={(e) => updateExperience(exp.id, { endDate: e.target.value })}
                         placeholder="12/2023"
-                        className="w-full px-3.5 h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition disabled:opacity-50"
+                        className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition disabled:opacity-50"
                       />
                     </div>
                   </div>

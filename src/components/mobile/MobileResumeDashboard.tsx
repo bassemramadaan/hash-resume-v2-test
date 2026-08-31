@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
+import { calculateCompletionScore } from '../../utils/resumeCompletion';
 import { Logo } from '../ui/Logo';
 import { MobileMenuDrawer } from './MobileMenuDrawer';
 import { MobileSectionKey } from './MobileSectionEditor';
@@ -49,31 +50,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Overall Completion Calculation (Strict 0% on clean state)
-  const completionScore = React.useMemo(() => {
-    let score = 0;
-    if (resumeData.personalInfo.fullName?.trim()) score += 15;
-    if (resumeData.personalInfo.email?.trim() || resumeData.personalInfo.phone?.trim()) score += 15;
-    if (resumeData.personalInfo.summary?.trim()) score += 10;
-    if (
-      resumeData.experiences &&
-      resumeData.experiences.length > 0 &&
-      resumeData.experiences.some((e) => e.position?.trim())
-    )
-      score += 25;
-    if (
-      resumeData.education &&
-      resumeData.education.length > 0 &&
-      resumeData.education.some((e) => e.institution?.trim())
-    )
-      score += 15;
-    if (resumeData.skills && resumeData.skills.length >= 2) score += 10;
-    if (
-      (resumeData.projects && resumeData.projects.length > 0) ||
-      (resumeData.certifications && resumeData.certifications.length > 0)
-    )
-      score += 10;
-    return Math.min(100, score);
-  }, [resumeData]);
+  const completionScore = useResumeStore((state) => calculateCompletionScore(state.resumeData));
 
   // Section completion checks
   const isPersonalComplete = Boolean(
@@ -274,22 +251,11 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
 
   const Arrow = isAr ? ChevronLeft : ChevronRight;
 
+  const setIsUnlockModalOpen = useResumeStore((state) => state.setIsUnlockModalOpen);
+
   const handleUnlockRequest = () => {
     if (activation.remainingDownloads > 0) {
-      const confirmMsg = isAr
-        ? `لديك ${activation.remainingDownloads} تفعيل(ات) متبقية. هل ترغب في استخدام 1 تفعيل لفتح السيرة الذاتية للتعديل الآن؟`
-        : `You have ${activation.remainingDownloads} credit(s) remaining. Use 1 credit to unlock editing for a new version?`;
-      if (window.confirm(confirmMsg)) {
-        const optionMsg = isAr
-          ? `هل تريد الحفاظ على البيانات الحالية وتعديلها؟\n\nاضغط "موافق" (OK) للتحرير والتعديل.\nاضغط "إلغاء الأمر" (Cancel) لمسح كافة البيانات والبدء بسيرة ذاتية جديدة.`
-          : `Do you want to keep and edit the current data?\n\nClick "OK" to keep and edit.\nClick "Cancel" to clear all data and start a fresh resume.`;
-
-        const keepData = window.confirm(optionMsg);
-        if (!keepData) {
-          resetResume();
-        }
-        unlockResumeWithCredit();
-      }
+      setIsUnlockModalOpen(true);
     } else {
       setIsActivationModalOpen(true);
     }
@@ -545,12 +511,12 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                         <Check className="w-3.5 h-3.5" />
                       </span>
                     ) : (
-                      <span className="text-[11px] font-bold text-slate-400 px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200/60 hidden xs:inline-block">
+                      <span className="text-[11px] font-bold text-slate-600 px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 hidden xs:inline-block">
                         {idx + 1}
                       </span>
                     )}
 
-                    <Arrow className="w-4 h-4 text-slate-400 group-hover:text-[#001639] group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
+                    <Arrow className="w-4 h-4 text-slate-500 group-hover:text-[#001639] group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
                   </div>
                 </motion.button>
               );
@@ -624,12 +590,12 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                         <Check className="w-3.5 h-3.5" />
                       </span>
                     ) : (
-                      <span className="text-[11px] font-bold text-slate-400 px-2 py-0.5 rounded-md bg-slate-50 border border-slate-200/60 hidden xs:inline-block">
+                      <span className="text-[11px] font-bold text-slate-600 px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 hidden xs:inline-block">
                         •
                       </span>
                     )}
 
-                    <Arrow className="w-4 h-4 text-slate-400 group-hover:text-[#001639] group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
+                    <Arrow className="w-4 h-4 text-slate-500 group-hover:text-[#001639] group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5 transition-transform" />
                   </div>
                 </motion.button>
               );

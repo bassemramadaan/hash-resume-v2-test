@@ -39,6 +39,65 @@ const getGeminiClient = (apiKey: string | null) => {
   });
 };
 
+
+// ==========================================
+// AI MIDDLEWARE & UTILITIES
+// ==========================================
+
+import { Request, Response, NextFunction } from "express";
+
+interface AiRouteOptions {
+  featureKey: keyof ReturnType<typeof getAiConfig>["featureFlags"];
+  rateLimitFeature: "bullet" | "summary" | "skills" | "transform" | "ats";
+  unavailableMessageAr: string;
+  unavailableMessageEn: string;
+  fallbackData: (req: Request) => any;
+}
+
+const aiMiddleware = (options: AiRouteOptions) => {
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    const config = getAiConfig();
+    const clientIp = getClientIp(req);
+    
+    (req as any).aiStartTime = Date.now();
+    (req as any).aiConfig = config;
+    (req as any).clientIp = clientIp;
+
+    // 1. Check Kill-Switch & Feature Flag
+    if (!config.aiEnabled || !config.featureFlags[options.featureKey]) {
+      sendAiUnavailable(res, options.unavailableMessageAr, options.unavailableMessageEn, 503, options.fallbackData(req));
+      return;
+    }
+
+    // 2. Check Model and API Key configuration
+    if (!config.geminiModel || !config.geminiApiKey) {
+      sendAiUnavailable(res, "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.", "AI model configuration is missing on the server.");
+      return;
+    }
+
+    // 3. Rate Limit Check
+    const rateLimit = await checkRateLimit(clientIp, options.rateLimitFeature);
+    if (!rateLimit.allowed) {
+      logAiMetric({
+        feature: options.rateLimitFeature as any,
+        model: config.geminiModel,
+        httpStatus: 429,
+        latencyMs: 0,
+        cached: false,
+        rateLimitBlocked: true,
+      });
+      res.status(429).json({
+        error: rateLimit.reasonAr,
+        errorEn: rateLimit.reason,
+        retryAfterSeconds: rateLimit.retryAfterSeconds,
+      });
+      return;
+    }
+
+    next();
+  };
+};
+
 // ==========================================
 // API ROUTES
 // ==========================================
@@ -73,19 +132,12 @@ const sendAiUnavailable = (
 };
 
 // 2. AI: Enhance Bullet Point
-app.post("/api/ai/enhance-bullet", async (req, res) => {
-  const startTime = Date.now();
-  const clientIp = getClientIp(req);
-  const config = getAiConfig();
-
-  // 1. Check Kill-Switch & Feature Flag
-  if (!config.aiEnabled || !config.featureFlags.assistant) {
-    return sendAiUnavailable(
-      res,
-      "ميزة تحسين الصياغة الذكية غير مفعلة حالياً.",
-      "AI Bullet Enhancer is currently disabled.",
-      503,
-      {
+app.post("/api/ai/enhance-bullet", aiMiddleware({
+  featureKey: "assistant",
+  rateLimitFeature: "bullet",
+  unavailableMessageAr: "ميزة تحسين الصياغة الذكية غير مفعلة حالياً.",
+  unavailableMessageEn: "AI Bullet Enhancer is currently disabled.",
+  fallbackData: (req) => ({
         fallbackSuggestions: [
           req.body.language === "en"
             ? "Successfully spearheaded core operational initiatives, driving a 25% increase in team performance."
@@ -97,18 +149,13 @@ app.post("/api/ai/enhance-bullet", async (req, res) => {
             ? "Collaborated with key stakeholders to align project goals and achieve milestones on schedule."
             : "أدار الاتصالات والتعاون مع الأطراف المعنية لتحقيق أهداف المشروع وفق الجدول الزمني.",
         ],
-      }
-    );
-  }
+      })
+}), async (req, res) => {
+  const startTime = (req as any).aiStartTime || Date.now();
+  const clientIp = (req as any).clientIp || getClientIp(req);
+  const config = (req as any).aiConfig || getAiConfig();
 
-  // 2. Check Model and API Key configuration
-  if (!config.geminiModel || !config.geminiApiKey) {
-    return sendAiUnavailable(
-      res,
-      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
-      "AI model configuration is missing on the server."
-    );
-  }
+
 
   // 3. Input Validation & Restrictions
   const rawBullet = typeof req.body.bulletText === "string" ? req.body.bulletText : "";
@@ -149,23 +196,7 @@ app.post("/api/ai/enhance-bullet", async (req, res) => {
     return res.json(cached);
   }
 
-  // 6. Check Rate Limit (Shared Store)
-  const rateLimit = await checkRateLimit(clientIp, "bullet");
-  if (!rateLimit.allowed) {
-    logAiMetric({
-      feature: "enhance-bullet",
-      model: config.geminiModel,
-      httpStatus: 429,
-      latencyMs: Date.now() - startTime,
-      cached: false,
-      rateLimitBlocked: true,
-    });
-    return res.status(429).json({
-      error: rateLimit.reasonAr,
-      errorEn: rateLimit.reason,
-      retryAfterSeconds: rateLimit.retryAfterSeconds,
-    });
-  }
+
 
   try {
     const ai = getGeminiClient(config.geminiApiKey);
@@ -225,14 +256,14 @@ Return ONLY JSON in this format:
     });
 
     return res.json(parsed);
-  } catch (err: any) {
+  } catch (err: unknown) {
     logAiMetric({
       feature: "enhance-bullet",
       model: config.geminiModel,
       httpStatus: 500,
       latencyMs: Date.now() - startTime,
       cached: false,
-      error: err?.message,
+      error: err instanceof Error ? err.message : String(err),
     });
     return res.status(500).json({
       error: "تعذر معالجة الطلب عبر الذكاء الاصطناعي حالياً.",
@@ -244,35 +275,23 @@ Return ONLY JSON in this format:
 });
 
 // 3. AI: Generate Summary
-app.post("/api/ai/generate-summary", async (req, res) => {
-  const startTime = Date.now();
-  const clientIp = getClientIp(req);
-  const config = getAiConfig();
-
-  // 1. Check Kill-Switch & Feature Flag
-  if (!config.aiEnabled || !config.featureFlags.summary) {
-    return sendAiUnavailable(
-      res,
-      "ميزة إنشاء الملخص المهني بالذكاء الاصطناعي غير مفعلة حالياً.",
-      "AI Summary Generator is currently disabled.",
-      503,
-      {
+app.post("/api/ai/generate-summary", aiMiddleware({
+  featureKey: "summary",
+  rateLimitFeature: "summary",
+  unavailableMessageAr: "ميزة إنشاء الملخص المهني بالذكاء الاصطناعي غير مفعلة حالياً.",
+  unavailableMessageEn: "AI Summary Generator is currently disabled.",
+  fallbackData: (req) => ({
         summary:
           req.body.language === "en"
             ? `Results-driven professional with a solid track record in optimizing operational workflows and delivering measurable business impact.`
             : `محترف شغوف يمتلك خبرة متميزة في تطوير العمليات ورفع الكفاءة التشغيلية وتحقيق الأهداف المؤسسية بدقة.`,
-      }
-    );
-  }
+      })
+}), async (req, res) => {
+  const startTime = (req as any).aiStartTime || Date.now();
+  const clientIp = (req as any).clientIp || getClientIp(req);
+  const config = (req as any).aiConfig || getAiConfig();
 
-  // 2. Check Model and API Key
-  if (!config.geminiModel || !config.geminiApiKey) {
-    return sendAiUnavailable(
-      res,
-      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
-      "AI model configuration is missing on the server."
-    );
-  }
+
 
   // 3. Input Validation & Restrictions
   const { jobTitle = "", yearsOfExperience = "", keySkills = "", targetIndustry = "", language = "ar" } = req.body;
@@ -315,23 +334,7 @@ app.post("/api/ai/generate-summary", async (req, res) => {
     return res.json(cached);
   }
 
-  // 6. Check Rate Limit (Shared Store)
-  const rateLimit = await checkRateLimit(clientIp, "summary");
-  if (!rateLimit.allowed) {
-    logAiMetric({
-      feature: "generate-summary",
-      model: config.geminiModel,
-      httpStatus: 429,
-      latencyMs: Date.now() - startTime,
-      cached: false,
-      rateLimitBlocked: true,
-    });
-    return res.status(429).json({
-      error: rateLimit.reasonAr,
-      errorEn: rateLimit.reason,
-      retryAfterSeconds: rateLimit.retryAfterSeconds,
-    });
-  }
+
 
   try {
     const ai = getGeminiClient(config.geminiApiKey);
@@ -386,14 +389,14 @@ Return JSON format:
     });
 
     return res.json(parsed);
-  } catch (err: any) {
+  } catch (err: unknown) {
     logAiMetric({
       feature: "generate-summary",
       model: config.geminiModel,
       httpStatus: 500,
       latencyMs: Date.now() - startTime,
       cached: false,
-      error: err?.message,
+      error: err instanceof Error ? err.message : String(err),
     });
     return res.status(500).json({
       error: "تعذر توليد الملخص المهني حالياً.",
@@ -405,34 +408,22 @@ Return JSON format:
 });
 
 // 4. AI: Suggest Skills
-app.post("/api/ai/suggest-skills", async (req, res) => {
-  const startTime = Date.now();
-  const clientIp = getClientIp(req);
-  const config = getAiConfig();
-
-  // 1. Check Kill-Switch & Feature Flag
-  if (!config.aiEnabled || !config.featureFlags.skills) {
-    return sendAiUnavailable(
-      res,
-      "ميزة اقتراح المهارات الذكية غير مفعلة حالياً.",
-      "AI Skill Suggestion is currently disabled.",
-      503,
-      {
+app.post("/api/ai/suggest-skills", aiMiddleware({
+  featureKey: "skills",
+  rateLimitFeature: "skills",
+  unavailableMessageAr: "ميزة اقتراح المهارات الذكية غير مفعلة حالياً.",
+  unavailableMessageEn: "AI Skill Suggestion is currently disabled.",
+  fallbackData: (req) => ({
         technicalSkills: req.body.language === "en" ? ["Data Analysis", "Reporting", "Process Improvement"] : ["إدارة البيانات", "التحليل الإحصائي", "تحسين العمليات"],
         softSkills: req.body.language === "en" ? ["Effective Communication", "Team Leadership", "Problem Solving"] : ["التواصل الفعال", "القيادة والعمل الجماعي", "حل المشكلات"],
         tools: req.body.language === "en" ? ["Microsoft Excel", "Google Workspace", "Slack"] : ["Microsoft Excel", "Google Suite", "Slack"],
-      }
-    );
-  }
+      })
+}), async (req, res) => {
+  const startTime = (req as any).aiStartTime || Date.now();
+  const clientIp = (req as any).clientIp || getClientIp(req);
+  const config = (req as any).aiConfig || getAiConfig();
 
-  // 2. Check Model and API Key
-  if (!config.geminiModel || !config.geminiApiKey) {
-    return sendAiUnavailable(
-      res,
-      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
-      "AI model configuration is missing on the server."
-    );
-  }
+
 
   const rawJobTitle = typeof req.body.jobTitle === "string" ? req.body.jobTitle : "";
   const language = req.body.language === "en" ? "en" : "ar";
@@ -456,23 +447,7 @@ app.post("/api/ai/suggest-skills", async (req, res) => {
     return res.json(cached);
   }
 
-  // 4. Rate Limit Check
-  const rateLimit = await checkRateLimit(clientIp, "skills");
-  if (!rateLimit.allowed) {
-    logAiMetric({
-      feature: "suggest-skills",
-      model: config.geminiModel,
-      httpStatus: 429,
-      latencyMs: Date.now() - startTime,
-      cached: false,
-      rateLimitBlocked: true,
-    });
-    return res.status(429).json({
-      error: rateLimit.reasonAr,
-      errorEn: rateLimit.reason,
-      retryAfterSeconds: rateLimit.retryAfterSeconds,
-    });
-  }
+
 
   try {
     const ai = getGeminiClient(config.geminiApiKey);
@@ -517,14 +492,14 @@ Return JSON:
     });
 
     return res.json(parsed);
-  } catch (err: any) {
+  } catch (err: unknown) {
     logAiMetric({
       feature: "suggest-skills",
       model: config.geminiModel,
       httpStatus: 500,
       latencyMs: Date.now() - startTime,
       cached: false,
-      error: err?.message,
+      error: err instanceof Error ? err.message : String(err),
     });
     return res.status(500).json({
       error: "تعذر اقتراح المهارات حالياً.",
@@ -536,30 +511,18 @@ Return JSON:
 });
 
 // 5. AI: Quick Inline Transform (Metrics, Polish, Translation)
-app.post("/api/ai/quick-transform", async (req, res) => {
-  const startTime = Date.now();
-  const clientIp = getClientIp(req);
-  const config = getAiConfig();
+app.post("/api/ai/quick-transform", aiMiddleware({
+  featureKey: "experience",
+  rateLimitFeature: "transform",
+  unavailableMessageAr: "ميزة التحويل السريع غير مفعلة حالياً.",
+  unavailableMessageEn: "Quick Transform is currently disabled.",
+  fallbackData: (req) => ({ resultText: req.body.text || "" })
+}), async (req, res) => {
+  const startTime = (req as any).aiStartTime || Date.now();
+  const clientIp = (req as any).clientIp || getClientIp(req);
+  const config = (req as any).aiConfig || getAiConfig();
 
-  // 1. Check Kill-Switch & Feature Flag
-  if (!config.aiEnabled || !config.featureFlags.experience) {
-    return sendAiUnavailable(
-      res,
-      "ميزة التحويل السريع غير مفعلة حالياً.",
-      "Quick Transform is currently disabled.",
-      503,
-      { resultText: req.body.text || "" }
-    );
-  }
 
-  // 2. Check Model and API Key
-  if (!config.geminiModel || !config.geminiApiKey) {
-    return sendAiUnavailable(
-      res,
-      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
-      "AI model configuration is missing on the server."
-    );
-  }
 
   const { text = "", type = "polish", role = "محترف", language = "ar" } = req.body;
   if (!String(text).trim()) {
@@ -598,23 +561,7 @@ app.post("/api/ai/quick-transform", async (req, res) => {
     return res.json(cached);
   }
 
-  // 5. Rate Limit Check
-  const rateLimit = await checkRateLimit(clientIp, "transform");
-  if (!rateLimit.allowed) {
-    logAiMetric({
-      feature: "quick-transform",
-      model: config.geminiModel,
-      httpStatus: 429,
-      latencyMs: Date.now() - startTime,
-      cached: false,
-      rateLimitBlocked: true,
-    });
-    return res.status(429).json({
-      error: rateLimit.reasonAr,
-      errorEn: rateLimit.reason,
-      retryAfterSeconds: rateLimit.retryAfterSeconds,
-    });
-  }
+
 
   try {
     const ai = getGeminiClient(config.geminiApiKey);
@@ -669,14 +616,14 @@ Return JSON: {"resultText": "Professional English translation"}`;
     });
 
     return res.json(resultPayload);
-  } catch (err: any) {
+  } catch (err: unknown) {
     logAiMetric({
       feature: "quick-transform",
       model: config.geminiModel,
       httpStatus: 500,
       latencyMs: Date.now() - startTime,
       cached: false,
-      error: err?.message,
+      error: err instanceof Error ? err.message : String(err),
     });
     return res.status(500).json({
       error: "تعذر تحويل النص حالياً.",
@@ -688,36 +635,24 @@ Return JSON: {"resultText": "Professional English translation"}`;
 });
 
 // 6. AI: ATS Resume Analyzer
-app.post("/api/ai/ats-analyzer", async (req, res) => {
-  const startTime = Date.now();
-  const clientIp = getClientIp(req);
-  const config = getAiConfig();
-
-  // 1. Check Kill-Switch & Feature Flag
-  if (!config.aiEnabled || !config.featureFlags.ats) {
-    return sendAiUnavailable(
-      res,
-      "خدمة فحص ATS بالذكاء الاصطناعي غير مفعلة حالياً.",
-      "AI ATS Analyzer is currently disabled.",
-      503,
-      {
+app.post("/api/ai/ats-analyzer", aiMiddleware({
+  featureKey: "ats",
+  rateLimitFeature: "ats",
+  unavailableMessageAr: "خدمة فحص ATS بالذكاء الاصطناعي غير مفعلة حالياً.",
+  unavailableMessageEn: "AI ATS Analyzer is currently disabled.",
+  fallbackData: (req) => ({
         score: 82,
         verdict: req.body.language === "en" ? "Good ATS Compatibility" : "توافق جيد مع نظام ATS",
         strengths: req.body.language === "en" ? ["Standard structure", "Clear sections"] : ["تنسيق قياسي منظم", "أقسام واضحة وسهلة القراءة"],
         missingKeywords: req.body.language === "en" ? ["KPI Metrics", "Team Leadership"] : ["مؤشرات الأداء (KPIs)", "إدارة وقيادة الفرق"],
         actionPoints: req.body.language === "en" ? ["Quantify achievements with metrics"] : ["أضف أرقاماً ومقاييس إنجاز واضحة في الخبرات"],
-      }
-    );
-  }
+      })
+}), async (req, res) => {
+  const startTime = (req as any).aiStartTime || Date.now();
+  const clientIp = (req as any).clientIp || getClientIp(req);
+  const config = (req as any).aiConfig || getAiConfig();
 
-  // 2. Check Model and API Key
-  if (!config.geminiModel || !config.geminiApiKey) {
-    return sendAiUnavailable(
-      res,
-      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
-      "AI model configuration is missing on the server."
-    );
-  }
+
 
   const { resumeData, jobDescription = "", language = "ar" } = req.body;
   const lang = language === "en" ? "en" : "ar";
@@ -757,23 +692,7 @@ app.post("/api/ai/ats-analyzer", async (req, res) => {
     return res.json(cached);
   }
 
-  // 5. Rate Limit Check (Once every 10 min per IP unless payload changes)
-  const rateLimit = await checkRateLimit(clientIp, "ats");
-  if (!rateLimit.allowed) {
-    logAiMetric({
-      feature: "ats-analyzer",
-      model: config.geminiModel,
-      httpStatus: 429,
-      latencyMs: Date.now() - startTime,
-      cached: false,
-      rateLimitBlocked: true,
-    });
-    return res.status(429).json({
-      error: rateLimit.reasonAr,
-      errorEn: rateLimit.reason,
-      retryAfterSeconds: rateLimit.retryAfterSeconds,
-    });
-  }
+
 
   try {
     const ai = getGeminiClient(config.geminiApiKey);
@@ -834,14 +753,14 @@ Provide a detailed evaluation JSON:
     });
 
     return res.json(parsed);
-  } catch (err: any) {
+  } catch (err: unknown) {
     logAiMetric({
       feature: "ats-analyzer",
       model: config.geminiModel,
       httpStatus: 500,
       latencyMs: Date.now() - startTime,
       cached: false,
-      error: err?.message,
+      error: err instanceof Error ? err.message : String(err),
     });
     return res.status(500).json({
       error: "تعذر فحص السيرة الذاتية عبر نظام ATS حالياً.",
@@ -853,32 +772,22 @@ Provide a detailed evaluation JSON:
 });
 
 // 7. AI: Domain & Role Keywords Suggestions
-app.post("/api/ai/suggest-keywords", async (req, res) => {
-  const startTime = Date.now();
-  const clientIp = getClientIp(req);
-  const config = getAiConfig();
-
-  if (!config.aiEnabled || !config.featureFlags.skills) {
-    return sendAiUnavailable(
-      res,
-      "ميزة اقتراح الكلمات المفتاحية غير مفعلة حالياً.",
-      "Keyword suggestions are currently disabled.",
-      503,
-      {
+app.post("/api/ai/suggest-keywords", aiMiddleware({
+  featureKey: "skills",
+  rateLimitFeature: "skills",
+  unavailableMessageAr: "ميزة اقتراح الكلمات المفتاحية غير مفعلة حالياً.",
+  unavailableMessageEn: "Keyword suggestions are currently disabled.",
+  fallbackData: (req) => ({
         technical: ["SQL", "Data Analysis", "Project Lifecycle", "Process Optimization"],
         tools: ["Microsoft Excel", "Jira", "Google Analytics"],
         softSkills: ["Problem Solving", "Team Leadership", "Effective Communication"]
-      }
-    );
-  }
+      })
+}), async (req, res) => {
+  const startTime = (req as any).aiStartTime || Date.now();
+  const clientIp = (req as any).clientIp || getClientIp(req);
+  const config = (req as any).aiConfig || getAiConfig();
 
-  if (!config.geminiModel || !config.geminiApiKey) {
-    return sendAiUnavailable(
-      res,
-      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
-      "AI model configuration is missing on the server."
-    );
-  }
+
 
   const { jobTitle = "محترف", domain = "", language = "ar" } = req.body;
   const cleanTitle = sanitizeText(String(jobTitle), 100);
@@ -903,14 +812,7 @@ app.post("/api/ai/suggest-keywords", async (req, res) => {
     return res.json(cached);
   }
 
-  const rateLimit = await checkRateLimit(clientIp, "skills");
-  if (!rateLimit.allowed) {
-    return res.status(429).json({
-      error: rateLimit.reasonAr,
-      errorEn: rateLimit.reason,
-      retryAfterSeconds: rateLimit.retryAfterSeconds,
-    });
-  }
+
 
   try {
     const ai = getGeminiClient(config.geminiApiKey);
@@ -957,14 +859,14 @@ Return JSON format:
     });
 
     return res.json(parsed);
-  } catch (err: any) {
+  } catch (err: unknown) {
     logAiMetric({
       feature: "suggest-keywords",
       model: config.geminiModel,
       httpStatus: 500,
       latencyMs: Date.now() - startTime,
       cached: false,
-      error: err?.message,
+      error: err instanceof Error ? err.message : String(err),
     });
     return res.status(500).json({
       error: "تعذر توليد الكلمات المفتاحية حالياً.",
@@ -976,32 +878,22 @@ Return JSON format:
 });
 
 // 8. AI: Quantify Responsibilities into Measurable Achievements (STAR Method)
-app.post("/api/ai/quantify-achievement", async (req, res) => {
-  const startTime = Date.now();
-  const clientIp = getClientIp(req);
-  const config = getAiConfig();
-
-  if (!config.aiEnabled || !config.featureFlags.experience) {
-    return sendAiUnavailable(
-      res,
-      "ميزة صياغة الإنجازات غير مفعلة حالياً.",
-      "Achievement quantification is currently disabled.",
-      503,
-      {
+app.post("/api/ai/quantify-achievement", aiMiddleware({
+  featureKey: "experience",
+  rateLimitFeature: "bullet",
+  unavailableMessageAr: "ميزة صياغة الإنجازات غير مفعلة حالياً.",
+  unavailableMessageEn: "Achievement quantification is currently disabled.",
+  fallbackData: (req) => ({
         quantifiedAchievement: req.body.text
           ? `${req.body.text}، مما حقق نمواً بنسبة 35% وزيادة الكفاءة التشغيلية.`
           : "حسّنت كفاءة العمليات بنسبة 30% من خلال أتمتة الإجراءات اليومية."
-      }
-    );
-  }
+      })
+}), async (req, res) => {
+  const startTime = (req as any).aiStartTime || Date.now();
+  const clientIp = (req as any).clientIp || getClientIp(req);
+  const config = (req as any).aiConfig || getAiConfig();
 
-  if (!config.geminiModel || !config.geminiApiKey) {
-    return sendAiUnavailable(
-      res,
-      "إعدادات نموذج الذكاء الاصطناعي غير متوفرة بالخادم.",
-      "AI model configuration is missing on the server."
-    );
-  }
+
 
   const { text = "", jobTitle = "محترف", language = "ar" } = req.body;
   if (!String(text).trim()) {
@@ -1030,14 +922,7 @@ app.post("/api/ai/quantify-achievement", async (req, res) => {
     return res.json(cached);
   }
 
-  const rateLimit = await checkRateLimit(clientIp, "bullet");
-  if (!rateLimit.allowed) {
-    return res.status(429).json({
-      error: rateLimit.reasonAr,
-      errorEn: rateLimit.reason,
-      retryAfterSeconds: rateLimit.retryAfterSeconds,
-    });
-  }
+
 
   try {
     const ai = getGeminiClient(config.geminiApiKey);
@@ -1100,14 +985,14 @@ Return 3 high-impact options in JSON format:
     });
 
     return res.json(resultPayload);
-  } catch (err: any) {
+  } catch (err: unknown) {
     logAiMetric({
       feature: "quantify-achievement",
       model: config.geminiModel,
       httpStatus: 500,
       latencyMs: Date.now() - startTime,
       cached: false,
-      error: err?.message,
+      error: err instanceof Error ? err.message : String(err),
     });
     return res.status(500).json({
       error: "تعذر صياغة الإنجاز حالياً.",
@@ -1198,7 +1083,7 @@ app.post("/api/verify-code", async (req, res) => {
         status: data?.status || "INVALID",
         message: data?.message || "كود التفعيل غير صالح أو لم يتم تأكيد الدفع بعد.",
       });
-    } catch (gasErr: any) {
+    } catch (gasErr: unknown) {
       return res.status(503).json({
         success: false,
         valid: false,

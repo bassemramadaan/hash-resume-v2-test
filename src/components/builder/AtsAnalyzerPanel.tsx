@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
 import { detectResumeRedFlags } from '../../utils/redFlagDetector';
@@ -52,7 +52,11 @@ export const AtsAnalyzerPanel: React.FC = () => {
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
 
-  // Live Red Flags
+  useEffect(() => {
+    if (!atsResult && !isAnalyzingAts) {
+      handleRunAtsCheck();
+    }
+  }, []);
   const redFlags = detectResumeRedFlags(resumeData);
   const criticalFlags = redFlags.filter((f) => f.severity === 'critical');
   const warningFlags = redFlags.filter((f) => f.severity === 'warning');
@@ -166,20 +170,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
 
   const handleUnlockInAts = () => {
     if (activation.remainingDownloads > 0) {
-      const confirmMsg = isAr
-        ? `لديك ${activation.remainingDownloads} تفعيل(ات) متبقية. هل ترغب في استخدام 1 تفعيل لفتح السيرة الذاتية للتعديل؟`
-        : `You have ${activation.remainingDownloads} credit(s) remaining. Use 1 credit to unlock editing?`;
-      if (window.confirm(confirmMsg)) {
-        const optionMsg = isAr
-          ? `هل تريد الحفاظ على البيانات الحالية وتعديلها؟\n\nاضغط "موافق" (OK) للتحرير والتعديل.\nاضغط "إلغاء الأمر" (Cancel) لمسح كافة البيانات والبدء بسيرة ذاتية جديدة.`
-          : `Do you want to keep and edit the current data?\n\nClick "OK" to keep and edit.\nClick "Cancel" to clear all data and start a fresh resume.`;
-        
-        const keepData = window.confirm(optionMsg);
-        if (!keepData) {
-          useResumeStore.getState().resetResume();
-        }
-        unlockResumeWithCredit();
-      }
+      useResumeStore.getState().setIsUnlockModalOpen(true);
     } else {
       setIsActivationModalOpen(true);
     }
@@ -392,12 +383,17 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
         <div className="flex items-center justify-between">
           <label htmlFor="ats-target-jd" className="block text-xs font-semibold text-slate-800 flex items-center gap-1.5">
             <Target className="w-3.5 h-3.5 text-[#001639]" />
-            <span>{t.targetJobDescLabel}</span>
+            <span>{isAr ? 'مطابقة مع إعلان وظيفي محدد (اختياري)' : 'Match with Specific Job Description (Optional)'}</span>
           </label>
-          <span className="text-[11px] text-slate-400">
-            {isAr ? 'اختياري ولكن يُنصح به' : 'Recommended'}
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
+            {isAr ? 'ميزة إضافية' : 'Optional'}
           </span>
         </div>
+        <p className="text-[11px] text-slate-500 leading-normal">
+          {isAr
+            ? 'التحليل العام للسيرة مفعّل تلقائياً بالأعلى. إذا كانت لديك وظيفة معينة تود التقديم عليها، انسخ وصفها هنا لاستخراج الكلمات المفتاحية الناقصة بدقة.'
+            : 'General ATS analysis is enabled above automatically. If you have a specific job posting, paste its description below to identify exact target keywords.'}
+        </p>
 
         <textarea
           id="ats-target-jd"
