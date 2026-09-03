@@ -157,6 +157,10 @@ export async function exportResumeToPdf(
       },
     });
 
+    if (!canvas.width || !canvas.height || canvas.width <= 0 || canvas.height <= 0) {
+      throw new Error("فشل توليد صورة السيرة الذاتية بدقة صالحة. يرجى المحاولة مرة أخرى.");
+    }
+
     // 6. Generate an A4 portrait PDF
     const pdf = new jsPDF({
       orientation: "portrait",
@@ -180,7 +184,7 @@ export async function exportResumeToPdf(
       pdf.addImage(imgData, "PNG", margin, margin, usableWidth, imageHeight, undefined, "FAST");
     } else {
       // Multi-page export: slice without distorting or compressing text
-      const totalPages = Math.ceil((imageHeight - 2) / usableHeight);
+      const totalPages = Math.max(1, Math.ceil((imageHeight - 2) / usableHeight));
       for (let page = 0; page < totalPages; page++) {
         if (page > 0) {
           pdf.addPage();
@@ -190,7 +194,8 @@ export async function exportResumeToPdf(
       }
     }
 
-    pdf.save(filename);
+    const safeFilename = (filename || 'Hash_Resume.pdf').replace(/[/\\?%*:|"<>]/g, '_');
+    pdf.save(safeFilename);
   } finally {
     // 9. Guarantee cleanup of export node in all cases
     if (exportNode && exportNode.parentNode) {

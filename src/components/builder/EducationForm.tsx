@@ -252,6 +252,7 @@ export const EducationForm: React.FC = () => {
                       <label className="block text-xs font-semibold text-slate-700">{t.gpa}</label>
                       <input
                         type="text"
+                        inputMode="decimal"
                         value={edu.gpa || ''}
                         onChange={(e) => updateEducation(edu.id, { gpa: e.target.value })}
                         placeholder="3.8 / 4.0"
@@ -264,6 +265,7 @@ export const EducationForm: React.FC = () => {
                       <label className="block text-xs font-semibold text-slate-700">{t.startDate}</label>
                       <input
                         type="text"
+                        inputMode="numeric"
                         value={edu.startDate}
                         onChange={(e) => updateEducation(edu.id, { startDate: e.target.value })}
                         placeholder="09/2016"
@@ -276,6 +278,7 @@ export const EducationForm: React.FC = () => {
                       <label className="block text-xs font-semibold text-slate-700">{t.endDate}</label>
                       <input
                         type="text"
+                        inputMode="numeric"
                         value={edu.endDate}
                         onChange={(e) => updateEducation(edu.id, { endDate: e.target.value })}
                         placeholder="06/2020"

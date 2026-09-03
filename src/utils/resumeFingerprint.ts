@@ -123,10 +123,14 @@ export function validateResumeLockState(
   // Stored reference check (either on activation object or in storage)
   let verifiedRef = activation.verifiedReference;
   if (!verifiedRef && typeof window !== 'undefined') {
-    verifiedRef =
-      sessionStorage.getItem('verified_reference') ||
-      localStorage.getItem('verified_reference') ||
-      localStorage.getItem('payment_reference');
+    try {
+      verifiedRef =
+        (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('verified_reference') : null) ||
+        (typeof localStorage !== 'undefined' ? localStorage.getItem('verified_reference') : null) ||
+        (typeof localStorage !== 'undefined' ? localStorage.getItem('payment_reference') : null);
+    } catch {
+      // Storage access blocked or restricted
+    }
   }
 
   if (!verifiedRef) {
@@ -136,19 +140,27 @@ export function validateResumeLockState(
   // Download completion check
   let wasDownloaded = false;
   if (typeof window !== 'undefined') {
-    wasDownloaded =
-      sessionStorage.getItem('resume_download_completed') === 'true' ||
-      localStorage.getItem('resume_download_completed') === 'true' ||
-      sessionStorage.getItem('download_completed') === 'true';
+    try {
+      wasDownloaded =
+        (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('resume_download_completed') === 'true') ||
+        (typeof localStorage !== 'undefined' && localStorage.getItem('resume_download_completed') === 'true') ||
+        (typeof sessionStorage !== 'undefined' && sessionStorage.getItem('download_completed') === 'true');
+    } catch {
+      // Storage access blocked or restricted
+    }
   }
 
   // Check fingerprint match
-  const storedFingerprint =
-    activation.lockedResumeFingerprint ||
-    (typeof window !== 'undefined'
-      ? sessionStorage.getItem(STORAGE_KEY_RESUME_FINGERPRINT) ||
-        localStorage.getItem(STORAGE_KEY_RESUME_FINGERPRINT)
-      : null);
+  let storedFingerprint = activation.lockedResumeFingerprint;
+  if (!storedFingerprint && typeof window !== 'undefined') {
+    try {
+      storedFingerprint =
+        (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(STORAGE_KEY_RESUME_FINGERPRINT) : null) ||
+        (typeof localStorage !== 'undefined' ? localStorage.getItem(STORAGE_KEY_RESUME_FINGERPRINT) : null);
+    } catch {
+      // Storage access blocked or restricted
+    }
+  }
 
   if (!storedFingerprint || storedFingerprint !== currentFingerprint) {
     return { isValid: false, fingerprint: currentFingerprint };

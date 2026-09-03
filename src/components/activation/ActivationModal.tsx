@@ -285,10 +285,14 @@ export const ActivationModal: React.FC = () => {
   useEffect(() => {
     if (isActivationModalOpen) {
       document.body.style.overflow = 'hidden';
-      const savedRef = localStorage.getItem('payment_reference');
-      const savedEmail = localStorage.getItem('payment_email');
-      if (savedRef) setReferenceInput(savedRef);
-      if (savedEmail) setEmailInput(savedEmail);
+      try {
+        const savedRef = localStorage.getItem('payment_reference');
+        const savedEmail = localStorage.getItem('payment_email');
+        if (savedRef) setReferenceInput(savedRef);
+        if (savedEmail) setEmailInput(savedEmail);
+      } catch {
+        // Storage restricted
+      }
       
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === 'Escape' && paymentStep !== 'activating') {
@@ -349,8 +353,12 @@ export const ActivationModal: React.FC = () => {
       });
       
       if (res && res.success === true) {
-        localStorage.setItem('payment_reference', cleanRef);
-        localStorage.setItem('payment_email', cleanEmail);
+        try {
+          localStorage.setItem('payment_reference', cleanRef);
+          localStorage.setItem('payment_email', cleanEmail);
+        } catch {
+          // Storage restricted
+        }
         setPaymentStep('submitted_pending');
       } else {
         // Clear any completion/download flags on failure to prevent false success
@@ -408,7 +416,15 @@ export const ActivationModal: React.FC = () => {
     setIsVerifying(true);
     setErrorMessage('');
     try {
-      const currentRef = referenceInput || localStorage.getItem('payment_reference') || 'EXISTING_CODE_CHECK';
+      let currentRef = referenceInput;
+      if (!currentRef) {
+        try {
+          currentRef = localStorage.getItem('payment_reference') || '';
+        } catch {
+          // ignore
+        }
+      }
+      if (!currentRef) currentRef = 'EXISTING_CODE_CHECK';
       const result = await verifyActivationCode(cleanCode, currentRef);
 
       if (result.success && result.status === 'USED') {
@@ -433,7 +449,17 @@ export const ActivationModal: React.FC = () => {
     setIsVerifying(true);
     setPaymentStep('activating');
     try {
-      const currentRef = referenceInput || localStorage.getItem('payment_reference') || (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('verified_reference') : null);
+      let currentRef = referenceInput;
+      if (!currentRef) {
+        try {
+          currentRef =
+            (typeof localStorage !== 'undefined' ? localStorage.getItem('payment_reference') : null) ||
+            (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('verified_reference') : null) ||
+            '';
+        } catch {
+          // ignore
+        }
+      }
 
       if (!currentRef) {
         clearDownloadCompletionFlags();
@@ -469,10 +495,18 @@ export const ActivationModal: React.FC = () => {
         // Update store plan state and lock resume for post-download protection
         activatePlan(activatedCode, selectedPlan, selectedPlan === 'bundle_3' ? 3 : 1, true);
         lockResume(currentRef);
-        sessionStorage.setItem("resume_download_completed", "true");
-        localStorage.setItem("resume_download_completed", "true");
-        sessionStorage.setItem("verified_reference", currentRef);
-        localStorage.setItem("verified_reference", currentRef);
+        try {
+          if (typeof sessionStorage !== 'undefined') {
+            sessionStorage.setItem("resume_download_completed", "true");
+            sessionStorage.setItem("verified_reference", currentRef);
+          }
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem("resume_download_completed", "true");
+            localStorage.setItem("verified_reference", currentRef);
+          }
+        } catch {
+          // Storage restricted
+        }
         setPaymentStep('used');
       } else {
         clearDownloadCompletionFlags();

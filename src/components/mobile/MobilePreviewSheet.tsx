@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ResumePreview } from '../preview/ResumePreview';
-import { Eye, X } from 'lucide-react';
+import { Eye, X, Download } from 'lucide-react';
 import { useResumeStore } from '../../store/useResumeStore';
 
 interface MobilePreviewSheetProps {
@@ -13,6 +13,7 @@ interface MobilePreviewSheetProps {
 export const MobilePreviewSheet: React.FC<MobilePreviewSheetProps> = ({
   isOpen,
   onClose,
+  onGoToExport,
 }) => {
   const { settings } = useResumeStore();
   const isAr = settings.language === 'ar';
@@ -78,6 +79,31 @@ export const MobilePreviewSheet: React.FC<MobilePreviewSheetProps> = ({
             {/* Scrollable Preview Canvas */}
             <div className="flex-1 overflow-auto p-2 sm:p-4 bg-slate-100 touch-pan-y">
               <ResumePreview />
+            </div>
+
+            {/* Sticky Bottom Action Bar */}
+            <div className="p-3 border-t border-slate-200 bg-white flex items-center justify-between gap-3 shrink-0 shadow-lg">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition cursor-pointer min-h-[44px] active:scale-98"
+              >
+                {isAr ? 'إغلاق المعاينة' : 'Close Preview'}
+              </button>
+
+              {onGoToExport && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onGoToExport();
+                  }}
+                  className="flex-1 py-2.5 px-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition cursor-pointer min-h-[44px] shadow-sm active:scale-98"
+                >
+                  <Download className="w-4 h-4 text-white" />
+                  <span>{isAr ? 'تصدير وتحميل الـ PDF' : 'Export & Download PDF'}</span>
+                </button>
+              )}
             </div>
           </motion.div>
         </motion.div>

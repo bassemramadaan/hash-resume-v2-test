@@ -39,6 +39,33 @@ const getGeminiClient = (apiKey: string | null) => {
   });
 };
 
+/**
+ * Resilient JSON extractor that strips markdown fences (```json ... ```)
+ * or captures embedded JSON objects/arrays if the LLM adds text.
+ */
+function safeParseGeminiJson(text: string | undefined | null, fallback: any = {}): any {
+  if (!text || typeof text !== 'string') return fallback;
+  try {
+    let clean = text.trim();
+    if (clean.startsWith('```json')) {
+      clean = clean.replace(/^```json\s*/i, '').replace(/\s*```$/, '');
+    } else if (clean.startsWith('```')) {
+      clean = clean.replace(/^```\s*/, '').replace(/\s*```$/, '');
+    }
+    return JSON.parse(clean);
+  } catch {
+    try {
+      const match = text.match(/\{[\s\S]*\}|\[[\s\S]*\]/);
+      if (match) {
+        return JSON.parse(match[0]);
+      }
+    } catch {
+      // ignore
+    }
+    return fallback;
+  }
+}
+
 
 // ==========================================
 // AI MIDDLEWARE & UTILITIES
@@ -239,7 +266,7 @@ Return ONLY JSON in this format:
       },
     });
 
-    const parsed = JSON.parse(response.text || "{}");
+    const parsed = safeParseGeminiJson(response.text, {});
     if (!parsed.suggestions || !Array.isArray(parsed.suggestions)) {
       throw new Error("Invalid structure returned by AI");
     }
@@ -373,7 +400,7 @@ Return JSON format:
       },
     });
 
-    const parsed = JSON.parse(response.text || "{}");
+    const parsed = safeParseGeminiJson(response.text, {});
     if (!parsed.summary) {
       throw new Error("Invalid structure returned by AI");
     }
@@ -480,7 +507,7 @@ Return JSON:
       },
     });
 
-    const parsed = JSON.parse(response.text || "{}");
+    const parsed = safeParseGeminiJson(response.text, {});
     await setCachedAiResponse(cacheKey, parsed, 86400);
 
     logAiMetric({
@@ -602,7 +629,7 @@ Return JSON: {"resultText": "Professional English translation"}`;
       },
     });
 
-    const parsed = JSON.parse(response.text || "{}");
+    const parsed = safeParseGeminiJson(response.text, {});
     const resultPayload = { resultText: parsed.resultText || cleanText };
 
     await setCachedAiResponse(cacheKey, resultPayload, 86400);
@@ -741,7 +768,7 @@ Provide a detailed evaluation JSON:
       },
     });
 
-    const parsed = JSON.parse(response.text || "{}");
+    const parsed = safeParseGeminiJson(response.text, {});
     await setCachedAiResponse(cacheKey, parsed, 86400);
 
     logAiMetric({
@@ -847,7 +874,7 @@ Return JSON format:
       },
     });
 
-    const parsed = JSON.parse(response.text || "{}");
+    const parsed = safeParseGeminiJson(response.text, {});
     await setCachedAiResponse(cacheKey, parsed, 86400);
 
     logAiMetric({
@@ -963,7 +990,7 @@ Return 3 high-impact options in JSON format:
       },
     });
 
-    const parsed = JSON.parse(response.text || "{}");
+    const parsed = safeParseGeminiJson(response.text, {});
     const resultPayload = {
       options: Array.isArray(parsed.options) && parsed.options.length > 0
         ? parsed.options

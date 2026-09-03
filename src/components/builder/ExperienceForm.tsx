@@ -416,6 +416,7 @@ export const ExperienceForm: React.FC = () => {
                       <label className="block text-xs font-semibold text-slate-700 mb-1.5">{t.startDate}</label>
                       <input
                         type="text"
+                        inputMode="numeric"
                         value={exp.startDate}
                         onChange={(e) => updateExperience(exp.id, { startDate: e.target.value })}
                         placeholder="01/2021"
@@ -428,6 +429,7 @@ export const ExperienceForm: React.FC = () => {
                       <label className="block text-xs font-semibold text-slate-700 mb-1.5">{t.endDate}</label>
                       <input
                         type="text"
+                        inputMode="numeric"
                         disabled={exp.current}
                         value={exp.current ? (isAr ? 'حتى الآن' : 'Present') : exp.endDate}
                         onChange={(e) => updateExperience(exp.id, { endDate: e.target.value })}

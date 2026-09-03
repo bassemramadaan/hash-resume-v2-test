@@ -521,6 +521,7 @@ export const BuilderPage: React.FC = () => {
               sectionKey={mobileActiveSection}
               onBack={() => setMobileActiveSection(null)}
               onNavigateSection={(nextKey) => setMobileActiveSection(nextKey)}
+              onOpenPreview={() => setIsMobilePreviewOpen(true)}
               saveStatus={saveStatus}
             />
           ) : (

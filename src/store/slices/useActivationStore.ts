@@ -103,14 +103,17 @@ export const createActivationSlice = (set: any, get: any): ActivationStoreState 
       clearDownloadCompletionFlags();
       return;
     }
-    const currentRef =
-      reference ||
-      state.activation.verifiedReference ||
-      (typeof window !== 'undefined'
-        ? sessionStorage.getItem('verified_reference') ||
-          localStorage.getItem('verified_reference') ||
-          localStorage.getItem('payment_reference')
-        : null);
+    let currentRef = reference || state.activation.verifiedReference || null;
+    if (!currentRef && typeof window !== 'undefined') {
+      try {
+        currentRef =
+          (typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('verified_reference') : null) ||
+          (typeof localStorage !== 'undefined' ? localStorage.getItem('verified_reference') : null) ||
+          (typeof localStorage !== 'undefined' ? localStorage.getItem('payment_reference') : null);
+      } catch {
+        // Storage restricted
+      }
+    }
 
     set((s: any) => {
       const updatedActivation: ActivationState = {
@@ -121,13 +124,19 @@ export const createActivationSlice = (set: any, get: any): ActivationStoreState 
       };
       saveActivationDirectly(updatedActivation);
       if (typeof window !== 'undefined') {
-        sessionStorage.setItem("resume_download_completed", "true");
-        localStorage.setItem("resume_download_completed", "true");
-        sessionStorage.setItem(STORAGE_KEY_RESUME_FINGERPRINT, fingerprint);
-        localStorage.setItem(STORAGE_KEY_RESUME_FINGERPRINT, fingerprint);
-        if (currentRef) {
-          sessionStorage.setItem("verified_reference", currentRef);
-          localStorage.setItem("verified_reference", currentRef);
+        try {
+          if (typeof sessionStorage !== 'undefined') {
+            sessionStorage.setItem("resume_download_completed", "true");
+            sessionStorage.setItem(STORAGE_KEY_RESUME_FINGERPRINT, fingerprint);
+            if (currentRef) sessionStorage.setItem("verified_reference", currentRef);
+          }
+          if (typeof localStorage !== 'undefined') {
+            localStorage.setItem("resume_download_completed", "true");
+            localStorage.setItem(STORAGE_KEY_RESUME_FINGERPRINT, fingerprint);
+            if (currentRef) localStorage.setItem("verified_reference", currentRef);
+          }
+        } catch {
+          // Storage restricted
         }
       }
       return { activation: updatedActivation };

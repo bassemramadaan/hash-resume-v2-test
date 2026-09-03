@@ -22,6 +22,7 @@ import {
   Lock,
   Key,
   Save,
+  Eye,
 } from 'lucide-react';
 
 import { PersonalInfoForm } from '../builder/PersonalInfoForm';
@@ -49,6 +50,7 @@ interface MobileSectionEditorProps {
   sectionKey: MobileSectionKey;
   onBack: () => void;
   onNavigateSection: (nextKey: MobileSectionKey) => void;
+  onOpenPreview?: () => void;
   saveStatus: 'saved' | 'saving';
 }
 
@@ -56,6 +58,7 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
   sectionKey,
   onBack,
   onNavigateSection,
+  onOpenPreview,
   saveStatus,
 }) => {
   const { settings, activation, unlockResumeWithCredit, resetResume, setIsActivationModalOpen } =
@@ -228,30 +231,47 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
             </h1>
           </div>
 
-          {/* Autosave Indicator */}
-          <div
-            className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold border shrink-0 transition-all duration-200 ${
-              saveStatus === 'saving'
-                ? 'bg-amber-50 text-amber-800 border-amber-200'
-                : 'bg-emerald-50 text-emerald-800 border-emerald-200/80'
-            }`}
-          >
-            {saveStatus === 'saving' ? (
-              <Loader2 className="w-3 h-3 text-amber-600 animate-spin shrink-0" />
-            ) : (
-              <span className="saved-check">
-                <Check className="w-3 h-3 text-emerald-600 shrink-0" />
-              </span>
+          {/* Actions: Autosave & Quick Preview */}
+          <div className="flex items-center gap-1.5 shrink-0">
+            {/* Quick Preview Button */}
+            {onOpenPreview && (
+              <button
+                type="button"
+                onClick={onOpenPreview}
+                className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-[#001639] bg-slate-100 hover:bg-slate-200 border border-slate-200/80 rounded-full transition cursor-pointer min-h-[34px] active:scale-95 shadow-2xs"
+                title={isAr ? 'معاينة سريعة' : 'Quick Preview'}
+                aria-label={isAr ? 'معاينة سريعة' : 'Quick Preview'}
+              >
+                <Eye className="w-3.5 h-3.5 text-[#FF4D2D]" />
+                <span className="text-[11px] hidden xs:inline">{isAr ? 'معاينة' : 'Preview'}</span>
+              </button>
             )}
-            <span>
-              {saveStatus === 'saving'
-                ? isAr
-                  ? 'جارِ الحفظ...'
-                  : 'Saving...'
-                : isAr
-                ? 'محفوظ'
-                : 'Saved'}
-            </span>
+
+            {/* Autosave Indicator */}
+            <div
+              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold border transition-all duration-200 ${
+                saveStatus === 'saving'
+                  ? 'bg-amber-50 text-amber-800 border-amber-200'
+                  : 'bg-emerald-50 text-emerald-800 border-emerald-200/80'
+              }`}
+            >
+              {saveStatus === 'saving' ? (
+                <Loader2 className="w-3 h-3 text-amber-600 animate-spin shrink-0" />
+              ) : (
+                <span className="saved-check">
+                  <Check className="w-3 h-3 text-emerald-600 shrink-0" />
+                </span>
+              )}
+              <span className="hidden xxs:inline">
+                {saveStatus === 'saving'
+                  ? isAr
+                    ? 'جارِ الحفظ...'
+                    : 'Saving...'
+                  : isAr
+                  ? 'محفوظ'
+                  : 'Saved'}
+              </span>
+            </div>
           </div>
         </div>
       </div>
