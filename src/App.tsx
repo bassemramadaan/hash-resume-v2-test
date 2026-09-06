@@ -4,6 +4,7 @@ import { useResumeStore } from './store/useResumeStore';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { WhatsAppButton } from './components/ui/WhatsAppButton';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 // Eagerly load LandingPage for fastest initial paint on root route
 import { LandingPage } from './pages/LandingPage';
@@ -60,68 +61,70 @@ export default function App() {
   }, [settings.language]);
 
   return (
-    <div
-      className="min-h-screen bg-[#F8FAFC] text-slate-800 flex flex-col font-sans"
-      dir={settings.language === 'ar' ? 'rtl' : 'ltr'}
-    >
-      <Navbar />
+    <ErrorBoundary>
+      <div
+        className="min-h-screen bg-[#F8FAFC] text-slate-800 flex flex-col font-sans"
+        dir={settings.language === 'ar' ? 'rtl' : 'ltr'}
+      >
+        <Navbar />
 
-      {/* Main App Routes Container */}
-      <main className="flex-1 w-full">
-        <React.Suspense fallback={<PageFallback />}>
-          <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/builder" element={<BuilderPage />} />
-            <Route path="/templates" element={<TemplatesPage />} />
-            <Route path="/ats-checker" element={<AtsCheckerPage />} />
-            <Route path="/hash-hunt" element={<HashHuntPage />} />
-            <Route path="/pricing" element={<PricingPage />} />
-            <Route path="/faq" element={<FaqPage />} />
-            <Route path="/privacy" element={<PrivacyPage />} />
-            <Route path="/terms" element={<TermsPage />} />
-            <Route path="/payment/success" element={<PaymentSuccessPage />} />
-            <Route path="/payment/failed" element={<PaymentDeclinedPage />} />
-            <Route path="/showcase" element={<ShowcasePage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-        </React.Suspense>
-      </main>
+        {/* Main App Routes Container */}
+        <main className="flex-1 w-full">
+          <React.Suspense fallback={<PageFallback />}>
+            <Routes>
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/builder" element={<BuilderPage />} />
+              <Route path="/templates" element={<TemplatesPage />} />
+              <Route path="/ats-checker" element={<AtsCheckerPage />} />
+              <Route path="/hash-hunt" element={<HashHuntPage />} />
+              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/faq" element={<FaqPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/payment/success" element={<PaymentSuccessPage />} />
+              <Route path="/payment/failed" element={<PaymentDeclinedPage />} />
+              <Route path="/showcase" element={<ShowcasePage />} />
+              <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+          </React.Suspense>
+        </main>
 
-      {/* Global AI, Activation Modals & Headless PDF Exporter */}
-      {isAiModalOpen && (
-        <React.Suspense fallback={null}>
-          <AiAssistantModal />
-        </React.Suspense>
-      )}
+        {/* Global AI, Activation Modals & Headless PDF Exporter */}
+        {isAiModalOpen && (
+          <React.Suspense fallback={null}>
+            <AiAssistantModal />
+          </React.Suspense>
+        )}
 
-      {isActivationModalOpen && (
-        <React.Suspense fallback={null}>
-          <ActivationModal />
-        </React.Suspense>
-      )}
+        {isActivationModalOpen && (
+          <React.Suspense fallback={null}>
+            <ActivationModal />
+          </React.Suspense>
+        )}
 
-      {isPostDownloadModalOpen && (
-        <React.Suspense fallback={null}>
-          <PostDownloadSuccessModal />
-        </React.Suspense>
-      )}
+        {isPostDownloadModalOpen && (
+          <React.Suspense fallback={null}>
+            <PostDownloadSuccessModal />
+          </React.Suspense>
+        )}
 
-      {isUnlockModalOpen && (
-        <React.Suspense fallback={null}>
-          <UnlockConfirmModal />
-        </React.Suspense>
-      )}
+        {isUnlockModalOpen && (
+          <React.Suspense fallback={null}>
+            <UnlockConfirmModal />
+          </React.Suspense>
+        )}
 
-      <WhatsAppButton />
+        <WhatsAppButton />
 
-      {shouldRenderOffscreen && (
-        <React.Suspense fallback={null}>
-          <ResumeOffscreenRenderer />
-        </React.Suspense>
-      )}
+        {shouldRenderOffscreen && (
+          <React.Suspense fallback={null}>
+            <ResumeOffscreenRenderer />
+          </React.Suspense>
+        )}
 
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </ErrorBoundary>
   );
 }
 

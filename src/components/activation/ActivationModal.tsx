@@ -1081,7 +1081,7 @@ export const ActivationModal: React.FC = () => {
 
               <div className="pt-2 section-enter">
                 <button
-                  disabled={isVerifying || paymentStep === 'activating'}
+                  disabled={isVerifying}
                   onClick={handleVerifiedDownload}
                   className="w-full py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-sm sm:text-base rounded-xl shadow-lg hover:shadow-xl flex items-center justify-center gap-2.5 transform transition active:scale-98 disabled:opacity-75 disabled:pointer-events-none cursor-pointer"
                 >
