@@ -90,7 +90,8 @@ function handleRequest(e) {
     return jsonResponse(checkStatus(ref));
   } else if (action === 'verify') {
     var code = params.code || postData.code;
-    return jsonResponse(verify(code));
+    var ref = params.reference || postData.reference || '';
+    return jsonResponse(verify(code, ref));
   } else if (action === 'approve_edit' || action === 'approveEdit') {
     return jsonResponse(approveEdit(
       postData.reference || params.reference,
@@ -170,6 +171,20 @@ function jsonResponse(data) {
 }
 
 /**
+ * Helper to clean and normalize payment references (convert Arabic numerals, strip prefixes & spaces)
+ */
+function cleanRef(ref) {
+  if (!ref) return '';
+  var str = String(ref).trim();
+  var arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+  for (var i = 0; i < 10; i++) {
+    str = str.split(arabicDigits[i]).join(String(i));
+  }
+  str = str.replace(/^(ref|tx|reference|transaction|رقم المعاملة|رقم المرجع|المرجع|عملية)\s*[:#-]?\s*/i, '');
+  return str.trim();
+}
+
+/**
  * 1. submitPayment: Records new payment submission in Manual sheet.
  */
 function submitPayment(reference, senderInfo, email, amount) {
@@ -177,6 +192,7 @@ function submitPayment(reference, senderInfo, email, amount) {
     return { success: false, error: 'Reference is required' };
   }
 
+  var cleanInputRef = cleanRef(reference);
   var ss = getSpreadsheet();
   var sheet = ss.getSheetByName('Manual');
   var data = sheet.getDataRange().getValues();
@@ -185,7 +201,8 @@ function submitPayment(reference, senderInfo, email, amount) {
 
   // Avoid duplicates if already submitted
   for (var i = 1; i < data.length; i++) {
-    if (String(data[i][refIdx]).trim() === String(reference).trim()) {
+    var existingRef = String(data[i][refIdx] || '').trim();
+    if (existingRef === String(reference).trim() || cleanRef(existingRef) === cleanInputRef) {
       return {
         success: true,
         message: 'Payment reference already recorded',
@@ -196,7 +213,7 @@ function submitPayment(reference, senderInfo, email, amount) {
 
   var row = [];
   headers.forEach(function(h) {
-    if (h === 'Reference') row.push(reference);
+    if (h === 'Reference') row.push(cleanInputRef || reference);
     else if (h === 'Sender Info') row.push(senderInfo || '');
     else if (h === 'Email') row.push(email || '');
     else if (h === 'Amount') row.push(amount || '');
@@ -215,9 +232,10 @@ function submitPayment(reference, senderInfo, email, amount) {
  */
 function checkStatus(reference) {
   if (!reference) {
-    return { status: 'error', message: 'Reference is required' };
+    return { success: false, status: 'error', message: 'Reference is required' };
   }
 
+  var cleanInputRef = cleanRef(reference);
   var ss = getSpreadsheet();
   var manualSheet = ss.getSheetByName('Manual');
   var codesSheet = ss.getSheetByName('Codes');
@@ -236,7 +254,8 @@ function checkStatus(reference) {
   var rowIndex = -1;
   var rowData = null;
   for (var i = 1; i < manualData.length; i++) {
-    if (String(manualData[i][refIdx]).trim() === String(reference).trim()) {
+    var currentRef = String(manualData[i][refIdx] || '').trim();
+    if (currentRef === String(reference).trim() || cleanRef(currentRef) === cleanInputRef) {
       rowIndex = i + 1; // 1-based index in Sheet
       rowData = manualData[i];
       break;
@@ -244,17 +263,21 @@ function checkStatus(reference) {
   }
 
   if (rowIndex === -1) {
-    return { status: 'not_found', message: 'Payment reference not found' };
+    return {
+      success: false,
+      status: 'not_found',
+      message: 'لم يتم العثور على رقم المعاملة في السجلات. يرجى التأكد من تسجيل بيانات التحويل أولاً.'
+    };
   }
 
   var status = String(rowData[statusIdx] || '').trim().toLowerCase();
 
   // 2. Return pending or non-approved status directly
   if (status === 'pending') {
-    return { status: 'pending', message: 'Payment is pending manual verification' };
+    return { success: true, status: 'pending', message: 'Payment is pending manual verification' };
   }
   if (status !== 'approved') {
-    return { status: status, message: 'Payment status: ' + status };
+    return { success: false, status: status, message: 'Payment status: ' + status };
   }
 
   var email = String(rowData[emailIdx] || '').trim();
@@ -271,6 +294,7 @@ function checkStatus(reference) {
     var existingCodes = existingAssignedStr.split(',').map(function(c) { return c.trim(); });
     if (isBundle && existingCodes.length >= 3) {
       return {
+        success: true,
         status: 'approved',
         activatedCode: existingCodes[0],
         remainingCodes: [existingCodes[1], existingCodes[2]],
@@ -278,6 +302,7 @@ function checkStatus(reference) {
       };
     } else {
       return {
+        success: true,
         status: 'approved',
         activatedCode: existingCodes[0],
         codes: [existingCodes[0]]
@@ -290,7 +315,7 @@ function checkStatus(reference) {
   try {
     lock.waitLock(10000); // Wait up to 10 seconds
   } catch (err) {
-    return { status: 'error', message: 'Server busy, please try again' };
+    return { success: false, status: 'error', message: 'Server busy, please try again' };
   }
 
   try {
@@ -304,6 +329,7 @@ function checkStatus(reference) {
       lock.releaseLock();
       if (isBundle && reExistingCodes.length >= 3) {
         return {
+          success: true,
           status: 'approved',
           activatedCode: reExistingCodes[0],
           remainingCodes: [reExistingCodes[1], reExistingCodes[2]],
@@ -311,6 +337,7 @@ function checkStatus(reference) {
         };
       } else {
         return {
+          success: true,
           status: 'approved',
           activatedCode: reExistingCodes[0],
           codes: [reExistingCodes[0]]
@@ -346,6 +373,7 @@ function checkStatus(reference) {
     if (availableCodes.length < requiredCount) {
       lock.releaseLock();
       return {
+        success: false,
         status: 'approved',
         error: 'تمت الموافقة على الدفع، لكن الأكواد غير متاحة حالياً.',
         message: 'Payment approved, but activation codes are currently out of stock.'
@@ -360,7 +388,7 @@ function checkStatus(reference) {
       codesSheet.getRange(sheetRow, codeStatusColIdx + 1).setValue('ASSIGNED');
       codesSheet.getRange(sheetRow, codeUserEmailColIdx + 1).setValue(email);
       codesSheet.getRange(sheetRow, codeAssignedAtColIdx + 1).setValue(now);
-      codesSheet.getRange(sheetRow, codeRefColIdx + 1).setValue(reference);
+      codesSheet.getRange(sheetRow, codeRefColIdx + 1).setValue(cleanInputRef || reference);
     }
 
     // Save assigned codes in Manual.AssignedCodes
@@ -395,6 +423,7 @@ function checkStatus(reference) {
     // Prepare response
     if (isBundle && availableCodes.length >= 3) {
       return {
+        success: true,
         status: 'approved',
         activatedCode: availableCodes[0],
         remainingCodes: [availableCodes[1], availableCodes[2]],
@@ -402,6 +431,7 @@ function checkStatus(reference) {
       };
     } else {
       return {
+        success: true,
         status: 'approved',
         activatedCode: availableCodes[0],
         codes: [availableCodes[0]]
@@ -409,19 +439,20 @@ function checkStatus(reference) {
     }
   } catch (err) {
     lock.releaseLock();
-    return { status: 'error', message: err.toString() };
+    return { success: false, status: 'error', message: err.toString() };
   }
 }
 
 /**
  * 3. verify: Validates activation code when used for PDF export, converting ASSIGNED to USED.
  */
-function verify(code) {
+function verify(code, reference) {
   if (!code) {
     return { success: false, valid: false, message: 'Code is required' };
   }
 
   var cleanCode = String(code).trim();
+  var cleanInputRef = cleanRef(reference);
   var ss = getSpreadsheet();
   var codesSheet = ss.getSheetByName('Codes');
   var codesData = codesSheet.getDataRange().getValues();
@@ -430,6 +461,7 @@ function verify(code) {
   var codeColIdx = headers.indexOf('Code');
   var statusColIdx = headers.indexOf('Status');
   var usedAtColIdx = headers.indexOf('UsedAt');
+  var codeRefColIdx = headers.indexOf('Reference');
 
   // Thread locking during state change from ASSIGNED to USED
   var lock = LockService.getScriptLock();
@@ -457,8 +489,21 @@ function verify(code) {
 
     var currentStatus = String(codesData[codeRow - 1][statusColIdx] || '').trim().toUpperCase();
 
-    // Reject if already USED
+    // Allow re-download if already USED and belongs to the same reference
     if (currentStatus === 'USED') {
+      if (cleanInputRef && codeRefColIdx !== -1) {
+        var existingRef = String(codesData[codeRow - 1][codeRefColIdx] || '').trim();
+        if (existingRef === String(reference).trim() || cleanRef(existingRef) === cleanInputRef) {
+          lock.releaseLock();
+          return {
+            success: true,
+            valid: true,
+            status: 'USED',
+            downloadsAdded: 1,
+            message: 'تم تفعيل الكود بنجاح واستخدامه'
+          };
+        }
+      }
       lock.releaseLock();
       return { success: false, valid: false, message: 'تم استخدام هذا الكود سابقاً' };
     }

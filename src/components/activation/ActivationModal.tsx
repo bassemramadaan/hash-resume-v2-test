@@ -15,7 +15,7 @@ import {
 import confetti from 'canvas-confetti';
 import { QRCodeSVG } from 'qrcode.react';
 import { INSTAPAY_LINK, INSTAPAY_ADDRESS, VODAFONE_CASH_NUMBER } from '../../lib/constants/payment';
-import { submitPayment, checkPaymentStatus, verifyActivationCode } from '../../services/paymentService';
+import { submitPayment, checkPaymentStatus, verifyActivationCode, normalizeReference } from '../../services/paymentService';
 import { parsePaymentCodes } from '../../types/payment';
 
 type TransferMethod = 'instapay' | 'vodafone' | 'code';
@@ -258,6 +258,7 @@ export const ActivationModal: React.FC = () => {
   const [activatedCode, setActivatedCode] = useState('');
   const [remainingCodes, setRemainingCodes] = useState<string[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
+  const [errorType, setErrorType] = useState<'general' | 'not_found' | 'validation'>('general');
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
@@ -341,7 +342,7 @@ export const ActivationModal: React.FC = () => {
     setIsSubmitting(true);
     try {
       const amountValue: '50' | '120' = selectedPlan === 'bundle_3' ? '120' : '50';
-      const cleanRef = referenceInput.trim();
+      const cleanRef = normalizeReference(referenceInput);
       const cleanEmail = emailInput.trim();
       const cleanSender = senderInfo.trim() || 'InstaPay';
 
@@ -363,11 +364,13 @@ export const ActivationModal: React.FC = () => {
       } else {
         // Clear any completion/download flags on failure to prevent false success
         clearDownloadCompletionFlags();
+        setErrorType('general');
         setErrorMessage(res?.message || labels.errorTitle);
         setPaymentStep('error');
       }
     } catch (err: any) {
       clearDownloadCompletionFlags();
+      setErrorType('general');
       setErrorMessage(err.message || labels.errorTitle);
       setPaymentStep('error');
     } finally {
@@ -378,9 +381,19 @@ export const ActivationModal: React.FC = () => {
   const handleCheckStatus = async (ref: string) => {
     if (!ref) return;
     setIsVerifying(true);
+    setErrorType('general');
     try {
-      const res: any = await checkPaymentStatus(ref.trim());
-      if (res && res.success === true && (res.status === 'approved' || res.approved === true)) {
+      const cleanRef = normalizeReference(ref);
+      const res: any = await checkPaymentStatus(cleanRef);
+      const isApproved =
+        res &&
+        (res.status === 'approved' ||
+          res.approved === true ||
+          (res.success === true && (res.status === 'approved' || res.approved === true)) ||
+          (Array.isArray(res.codes) && res.codes.length > 0) ||
+          Boolean(res.activatedCode || res.activationCode || res.code));
+
+      if (isApproved) {
         const codes = res.codes || [];
         const code = res.code || res.activationCode || res.activatedCode || (codes.length > 0 ? codes[0] : '');
         setActivatedCode(code);
@@ -391,13 +404,31 @@ export const ActivationModal: React.FC = () => {
         clearDownloadCompletionFlags();
         setErrorMessage(res.message || labels.pendingTitle);
         setPaymentStep('submitted_pending');
+      } else if (
+        res &&
+        (res.status === 'not_found' ||
+          String(res.message || '').toLowerCase().includes('not found') ||
+          String(res.message || '').includes('غير موجود') ||
+          String(res.message || '').includes('لم يتم العثور'))
+      ) {
+        clearDownloadCompletionFlags();
+        setErrorType('not_found');
+        setErrorMessage(
+          res.message ||
+            (isAr
+              ? 'لم يتم العثور على رقم المعاملة في سجلات الدفع بعد.'
+              : 'Payment reference was not found in our records yet.')
+        );
+        setPaymentStep('error');
       } else {
         clearDownloadCompletionFlags();
-        setErrorMessage(res?.message || 'لم يتم العثور على المعاملة أو أنها قيد المراجعة.');
+        setErrorType('general');
+        setErrorMessage(res?.message || (isAr ? 'لم يتم العثور على المعاملة أو أنها قيد المراجعة.' : 'Transaction not found or pending review.'));
         setPaymentStep('error');
       }
     } catch (err: any) {
       clearDownloadCompletionFlags();
+      setErrorType('general');
       setErrorMessage(err.message || labels.errorTitle);
       setPaymentStep('error');
     } finally {
@@ -481,9 +512,17 @@ export const ActivationModal: React.FC = () => {
 
       const verifyResult: any = await verifyActivationCode(activatedCode, currentRef);
 
-      if (!verifyResult.success || verifyResult.status !== 'USED') {
+      const isVerifySuccess =
+        verifyResult &&
+        (verifyResult.success === true ||
+          verifyResult.valid === true ||
+          verifyResult.status === 'USED' ||
+          verifyResult.status === 'APPROVED' ||
+          verifyResult.status === 'ACTIVE');
+
+      if (!isVerifySuccess) {
         clearDownloadCompletionFlags();
-        throw new Error(verifyResult.message || (isAr ? 'تعذر تأكيد الدفع وتحميل السيرة الذاتية.' : 'Unable to confirm payment and download resume.'));
+        throw new Error(verifyResult?.message || (isAr ? 'تعذر تأكيد الدفع وتحميل السيرة الذاتية.' : 'Unable to confirm payment and download resume.'));
       }
 
       // Unlock temporarily for export, then grant export and consume intent
@@ -1100,27 +1139,84 @@ export const ActivationModal: React.FC = () => {
           )}
 
           {paymentStep === 'error' && (
-            <div className="text-center space-y-5 py-6 animate-in fade-in">
-              <AlertTriangle className="w-14 h-14 text-rose-500 mx-auto" />
-              <h4 className="text-lg font-black text-rose-700">{labels.errorTitle}</h4>
-              <p className="text-sm text-slate-700 bg-rose-50 p-4 rounded-xl border border-rose-100">{errorMessage}</p>
-              
-              {/* WhatsApp Support Button with Auto Reference Link */}
+            <div className="text-center space-y-4 py-4 animate-in fade-in">
+              <div className="w-14 h-14 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mx-auto ring-8 ring-rose-50/50">
+                <AlertTriangle className="w-8 h-8 text-rose-500" />
+              </div>
+
+              <div className="space-y-1">
+                <h4 className="text-lg font-black text-slate-800">
+                  {errorType === 'not_found'
+                    ? (isAr ? 'لم يتم العثور على رقم المعاملة بعد' : 'Reference Not Found Yet')
+                    : labels.errorTitle}
+                </h4>
+                <p className="text-xs sm:text-sm text-slate-600 bg-rose-50/70 p-3.5 rounded-xl border border-rose-200/80 leading-relaxed text-start">
+                  {errorType === 'not_found'
+                    ? (isAr
+                      ? 'إذا قمت بالتحويل للتو عبر إنستاباي أو فودافون كاش، يرجى تسجيل بيانات التحويل الخاصة بك لتأكيد الدفع فوراً، أو إدخال كود تفعيل إذا كان لديك كود مسبق.'
+                      : 'If you recently transferred, please submit your transfer details to register payment, or enter an activation code directly.')
+                    : errorMessage}
+                </p>
+              </div>
+
+              {/* Action 1: Register Transfer Details (If Reference Not Recorded Yet) */}
+              <button
+                type="button"
+                onClick={() => {
+                  setPaymentStep('payment_details');
+                }}
+                className="w-full py-3.5 px-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 shadow-sm transition active:scale-98 cursor-pointer"
+              >
+                <Zap className="w-4 h-4" />
+                <span>{isAr ? 'سجّل بيانات التحويل الآن لتأكيد الدفع والتفعيل' : 'Submit Transfer Details to Confirm Payment'}</span>
+              </button>
+
+              {/* Action 2: Enter Direct Code */}
+              <button
+                type="button"
+                onClick={() => {
+                  setTransferMethod('code');
+                  setPaymentStep('payment_details');
+                }}
+                className="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition cursor-pointer"
+              >
+                <KeyRound className="w-4 h-4 text-amber-600" />
+                <span>{isAr ? 'هل لديك كود تفعيل مباشر؟ اضغط هنا لإدخاله' : 'Have an activation code? Enter it here'}</span>
+              </button>
+
+              {/* Action 3: Direct WhatsApp Support with Pre-filled reference */}
               <a
                 href={`https://wa.me/201101007965?text=${encodeURIComponent(
-                  `Hi, I need help with my resume payment. Reference: ${referenceInput || 'N/A'}`
+                  isAr
+                    ? `السلام عليكم، قمت بالتحويل لخدمة هاش ريزومي ولم أتمكن من التحميل بعد الدفع. رقم المعاملة/المرجع هو: ${referenceInput || '---'}. أرجو المساعدة في التفعيل والتحميل فوراً.`
+                    : `Hi, I paid for Hash Resume and need help downloading. Reference: ${referenceInput || 'N/A'}`
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 shadow-sm transition"
+                className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 shadow-sm transition"
               >
                 <PhoneCall className="w-4 h-4" />
-                <span>{labels.whatsappSupportBtn}</span>
+                <span>{isAr ? 'تأكيد فوري عبر واتساب (دعم حي)' : labels.whatsappSupportBtn}</span>
               </a>
 
-              <div className="flex gap-3 pt-2">
-                <button onClick={() => setPaymentStep('payment_details')} className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs sm:text-sm transition">{labels.backBtn}</button>
-                <button onClick={() => setPaymentStep('check_status')} className="flex-1 py-3 bg-[#001639] hover:bg-[#00245E] text-white font-bold rounded-xl text-xs sm:text-sm transition">{labels.retryBtn}</button>
+              {/* Bottom Row: Retry status check & Change reference */}
+              <div className="flex gap-2.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setPaymentStep('check_status')}
+                  className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition"
+                >
+                  {isAr ? 'تعديل رقم المعاملة' : labels.backBtn}
+                </button>
+                <button
+                  type="button"
+                  disabled={isVerifying}
+                  onClick={() => handleCheckStatus(referenceInput)}
+                  className="flex-1 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5"
+                >
+                  {isVerifying ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
+                  <span>{labels.retryBtn}</span>
+                </button>
               </div>
             </div>
           )}

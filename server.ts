@@ -1092,7 +1092,7 @@ app.post("/api/verify-code", async (req, res) => {
       if (
         gasResponse.ok &&
         data &&
-        data.success === true &&
+        (data.success === true || data.valid === true) &&
         (data.status === "USED" || data.status === "APPROVED" || data.status === "ACTIVE" || data.valid === true)
       ) {
         return res.json({

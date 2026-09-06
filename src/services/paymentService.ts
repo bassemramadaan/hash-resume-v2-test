@@ -70,6 +70,18 @@ export async function callPaymentApi(
   return result;
 }
 
+export function normalizeReference(ref: string): string {
+  if (!ref) return '';
+  const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+  let normalized = String(ref).trim();
+  for (let i = 0; i < 10; i++) {
+    normalized = normalized.replace(new RegExp(arabicDigits[i], 'g'), String(i));
+  }
+  // Strip common noisy prefixes e.g. "Ref:", "Tx:", "رقم المعاملة:", "رقم المرجع:", "#"
+  normalized = normalized.replace(/^(ref|tx|reference|transaction|رقم المعاملة|رقم المرجع|المرجع|عملية)\s*[:#-]?\s*/i, '');
+  return normalized.trim();
+}
+
 export interface SubmitPaymentRequest {
   reference: string;
   senderInfo?: string;
@@ -78,7 +90,7 @@ export interface SubmitPaymentRequest {
 }
 
 export async function submitPayment(req: SubmitPaymentRequest) {
-  const cleanRef = (req.reference || '').trim();
+  const cleanRef = normalizeReference(req.reference || '');
   const cleanEmail = (req.email || '').trim();
   const cleanSender = (req.senderInfo || '').trim() || 'InstaPay';
   const cleanAmount = req.amount === '120' ? '120' : '50';
@@ -103,10 +115,29 @@ export async function submitPayment(req: SubmitPaymentRequest) {
 }
 
 export async function checkPaymentStatus(reference: string) {
-  return await callPaymentApi({
+  const cleanRef = normalizeReference(reference || '');
+  const result: any = await callPaymentApi({
     action: 'checkStatus',
-    reference: reference,
+    reference: cleanRef,
   });
+
+  // Ensure result has standard structure even if GAS omits success boolean on approved
+  if (result) {
+    const isApproved =
+      result.status === 'approved' ||
+      result.approved === true ||
+      (Array.isArray(result.codes) && result.codes.length > 0) ||
+      Boolean(result.activatedCode || result.activationCode || result.code);
+
+    if (isApproved) {
+      result.success = true;
+      result.status = 'approved';
+    } else if (result.status === 'pending') {
+      result.success = true;
+    }
+  }
+
+  return result;
 }
 
 export async function verifyActivationCode(code: string, reference: string) {
