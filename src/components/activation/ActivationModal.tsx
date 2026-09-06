@@ -226,9 +226,11 @@ export const ActivationModal: React.FC = () => {
 
   useEffect(() => {
     const handlePageShow = () => {
-      const { isValid } = validateResumeLockState(activation, resumeData);
+      const currentActivation = useResumeStore.getState().activation;
+      const currentResumeData = useResumeStore.getState().resumeData;
+      const { isValid } = validateResumeLockState(currentActivation, currentResumeData);
       if (isValid) {
-        lockResumeForEdits();
+        useResumeStore.getState().lockResumeForEdits();
         setPaymentStep("used");
       } else {
         clearDownloadCompletionFlags();
@@ -239,7 +241,7 @@ export const ActivationModal: React.FC = () => {
     handlePageShow();
 
     return () => window.removeEventListener("pageshow", handlePageShow);
-  }, [lockResumeForEdits, activation, resumeData]);
+  }, []);
   
   const { grantAndConsumeExport, cancelExport } = useExportGate();
 
@@ -551,9 +553,13 @@ export const ActivationModal: React.FC = () => {
         clearDownloadCompletionFlags();
       }
 
-      confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+      try {
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+      } catch {
+        // Safe fallback if confetti fails
+      }
 
-      // Clear form inputs so reopening doesn't carry stale state
+      // Clear form inputs and close modal smoothly so user remains in builder
       setTimeout(() => {
         setSenderInfo('');
         setReferenceInput('');
@@ -561,7 +567,7 @@ export const ActivationModal: React.FC = () => {
         setErrorMessage('');
         setActivatedCode('');
         setIsActivationModalOpen(false);
-        setIsPostDownloadModalOpen(true);
+        setIsPostDownloadModalOpen(false);
       }, 1800);
 
     } catch (err: any) {

@@ -29,9 +29,6 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
   private handleReset = () => {
     this.setState({ hasError: false, error: null });
-    if (typeof window !== 'undefined') {
-      window.location.href = '/builder';
-    }
   };
 
   public override render() {

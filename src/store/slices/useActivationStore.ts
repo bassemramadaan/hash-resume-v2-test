@@ -115,7 +115,23 @@ export const createActivationSlice = (set: any, get: any): ActivationStoreState 
       }
     }
 
+    // Idempotency guard: prevent creating new object and triggering store listeners if already locked with same state
+    if (
+      state.activation.isResumeLocked === true &&
+      state.activation.lockedResumeFingerprint === fingerprint &&
+      (currentRef ? state.activation.verifiedReference === currentRef : true)
+    ) {
+      return;
+    }
+
     set((s: any) => {
+      if (
+        s.activation.isResumeLocked === true &&
+        s.activation.lockedResumeFingerprint === fingerprint &&
+        (currentRef ? s.activation.verifiedReference === currentRef : true)
+      ) {
+        return {};
+      }
       const updatedActivation: ActivationState = {
         ...s.activation,
         isResumeLocked: true,
@@ -149,7 +165,13 @@ export const createActivationSlice = (set: any, get: any): ActivationStoreState 
     if (!resumeData) return;
     const { isValid } = validateResumeLockState(state.activation, resumeData);
     if (isValid) {
-      get().lockResume();
+      const fingerprint = calculateResumeFingerprint(resumeData);
+      if (
+        !state.activation.isResumeLocked ||
+        state.activation.lockedResumeFingerprint !== fingerprint
+      ) {
+        get().lockResume();
+      }
     } else {
       clearDownloadCompletionFlags();
       if (state.activation.isResumeLocked) {

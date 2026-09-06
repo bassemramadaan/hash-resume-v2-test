@@ -104,9 +104,11 @@ export const BuilderPage: React.FC = () => {
 
   useEffect(() => {
     const handlePageShow = () => {
-      const { isValid } = validateResumeLockState(activation, resumeData);
+      const currentActivation = useResumeStore.getState().activation;
+      const currentResumeData = useResumeStore.getState().resumeData;
+      const { isValid } = validateResumeLockState(currentActivation, currentResumeData);
       if (isValid) {
-        lockResumeForEdits();
+        useResumeStore.getState().lockResumeForEdits();
       } else {
         clearDownloadCompletionFlags();
       }
@@ -116,7 +118,7 @@ export const BuilderPage: React.FC = () => {
     handlePageShow();
 
     return () => window.removeEventListener("pageshow", handlePageShow);
-  }, [lockResumeForEdits, activation, resumeData]);
+  }, []);
 
   // Mobile Bottom Sheet Preview State
   const [isMobilePreviewOpen, setIsMobilePreviewOpen] = useState(false);
