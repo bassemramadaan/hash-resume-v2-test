@@ -1,5 +1,6 @@
 import React from 'react';
 import { ResumeData, ResumeSettings } from '../../../types/resume';
+import { getTemplateFontFamily } from '../../../utils/resumeFonts';
 
 interface TemplateProps {
   data: ResumeData;
@@ -23,9 +24,7 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
   const isFreshGrad = careerFocus === 'fresh-grad';
 
   const fontStyle = {
-    fontFamily: docDir === 'rtl'
-      ? 'Tajawal, Arial, sans-serif'
-      : 'Calibri, Arial, Helvetica, sans-serif',
+    fontFamily: getTemplateFontFamily(settings.fontFamily, settings.language),
   };
 
   // Plain text contact info (no icons, no links with graphics)

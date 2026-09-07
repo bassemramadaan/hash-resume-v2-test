@@ -1,5 +1,6 @@
 import React from 'react';
 import { ResumeData, ResumeSettings } from '../../../types/resume';
+import { getTemplateFontFamily } from '../../../utils/resumeFonts';
 
 interface TemplateProps {
   data: ResumeData;
@@ -131,7 +132,7 @@ export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ da
       className="w-[210mm] min-h-[297mm] bg-white text-gray-900 p-0 shadow-sm text-sm leading-relaxed flex"
       dir={docDir}
       style={{
-        fontFamily: settings.fontFamily === 'Tajawal' ? 'Tajawal, sans-serif' : 'Inter, sans-serif',
+        fontFamily: getTemplateFontFamily(settings.fontFamily, settings.language),
         direction: docDir,
       }}
     >

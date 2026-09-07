@@ -28,6 +28,7 @@ import { getTranslation } from '../../i18n/translations';
 import { TemplateId } from '../../types/resume';
 import { isResumeBlank } from '../../utils/resumeFingerprint';
 import { motion, AnimatePresence } from 'motion/react';
+import { getTemplateFontFamily, ARABIC_FONTS, ENGLISH_FONTS } from '../../utils/resumeFonts';
 
 const QUICK_COLORS = [
   '#001639', // Navy
@@ -63,7 +64,7 @@ const ResumeSkeletonPreview: React.FC<ResumeSkeletonPreviewProps> = ({
     <div
       className="p-8 sm:p-12 text-slate-800 space-y-6 select-none animate-in fade-in duration-200"
       style={{
-        fontFamily: fontFamily === 'Tajawal' ? 'Tajawal, sans-serif' : 'Inter, sans-serif',
+        fontFamily: getTemplateFontFamily(fontFamily, isAr ? 'ar' : 'en'),
       }}
     >
       {/* Header Skeleton */}
@@ -478,14 +479,21 @@ export const ResumePreview: React.FC = () => {
                 <select
                   value={settings.fontFamily}
                   onChange={(e) => setFontFamily(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-lg px-2 py-0.5 text-[11px] text-slate-800 outline-none"
+                  className="bg-white border border-slate-200 rounded-lg px-2 py-0.5 text-[11px] font-medium text-slate-800 outline-none cursor-pointer"
                 >
-                  <option value="Tajawal">Tajawal (تجوال)</option>
-                  <option value="Cairo">Cairo (كايرو)</option>
-                  <option value="Almarai">Almarai (المراعي)</option>
-                  <option value="Inter">Inter</option>
-                  <option value="Roboto">Roboto</option>
-                  <option value="Playfair Display">Playfair Display</option>
+                  {isAr ? (
+                    ARABIC_FONTS.map((font) => (
+                      <option key={font.id} value={font.id}>
+                        {font.nameAr}
+                      </option>
+                    ))
+                  ) : (
+                    ENGLISH_FONTS.map((font) => (
+                      <option key={font.id} value={font.id}>
+                        {font.nameEn}
+                      </option>
+                    ))
+                  )}
                 </select>
               </div>
             </div>

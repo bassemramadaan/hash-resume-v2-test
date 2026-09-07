@@ -1,6 +1,7 @@
 import React from 'react';
 import { ResumeData, ResumeSettings } from '../../../types/resume';
 import { Mail, Phone, MapPin, Linkedin, Github, Globe } from 'lucide-react';
+import { getTemplateFontFamily } from '../../../utils/resumeFonts';
 
 interface TemplateProps {
   data: ResumeData;
@@ -16,7 +17,7 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
   const careerFocus = settings.careerFocus || 'experienced';
 
   const fontStyle = {
-    fontFamily: settings.fontFamily === 'Tajawal' ? 'Tajawal, sans-serif' : 'Inter, sans-serif',
+    fontFamily: getTemplateFontFamily(settings.fontFamily, settings.language),
   };
 
   // Render Header by selected layout

@@ -6,6 +6,7 @@ import {
   Sliders, ChevronDown, ChevronUp, Image as ImageIcon
 } from 'lucide-react';
 import { TemplateId, HeaderLayout, CareerFocus, DocumentDirection } from '../../types/resume';
+import { ARABIC_FONTS, ENGLISH_FONTS } from '../../utils/resumeFonts';
 
 const TEMPLATE_OPTIONS: { id: TemplateId; nameKey: string; descKey: string }[] = [
   { id: 'bassux', nameKey: 'tplBassux', descKey: 'tplBassuxDesc' },
@@ -330,17 +331,17 @@ export const CustomizeForm: React.FC = () => {
                   className="w-full px-3.5 h-10 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-medium text-slate-800 outline-none transition cursor-pointer"
                 >
                   {settings.language === 'ar' ? (
-                    <>
-                      <option value="IBM Plex Sans Arabic">IBM Plex Sans Arabic (رسمي وممتاز لـ ATS)</option>
-                      <option value="Cairo">Cairo (واضح وعصري)</option>
-                      <option value="Tajawal">Tajawal (أنيق ومقروء)</option>
-                    </>
+                    ARABIC_FONTS.map((font) => (
+                      <option key={font.id} value={font.id}>
+                        {font.nameAr} — {font.descriptionAr.split('—')[0].trim()}
+                      </option>
+                    ))
                   ) : (
-                    <>
-                      <option value="Inter">Inter (Standard Modern Sans)</option>
-                      <option value="Georgia">Georgia (Executive Serif)</option>
-                      <option value="Roboto">Roboto (Technical Clean)</option>
-                    </>
+                    ENGLISH_FONTS.map((font) => (
+                      <option key={font.id} value={font.id}>
+                        {font.nameEn}
+                      </option>
+                    ))
                   )}
                 </select>
               </div>

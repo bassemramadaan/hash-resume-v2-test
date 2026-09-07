@@ -790,9 +790,37 @@ html[dir="rtl"] .mobile-menu-drawer {
     max-width: 100%;
   }
 
+  /* Prevent iOS Safari from zooming into form fields on focus when font-size < 16px */
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"],
+  input[type="url"],
+  input[type="number"],
+  input[type="search"],
+  input[type="password"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+
   .mobile-editor-page {
     overflow-x: hidden !important;
   }
+}
+
+/* Ensure Arabic cursive script maintains connected letterforms without artificial letter-spacing */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6,
+[dir="rtl"] p,
+[dir="rtl"] span,
+[dir="rtl"] button,
+[dir="rtl"] input,
+[dir="rtl"] textarea {
+  letter-spacing: normal;
 }
 
 /* Accessibility & Performance: Honor prefers-reduced-motion across all elements */
