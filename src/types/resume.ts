@@ -109,6 +109,7 @@ export interface ResumeSettings {
   templateId: TemplateId;
   primaryColor: string;
   fontFamily: string;
+  headingFontFamily?: string;
   fontSize: 'sm' | 'md' | 'lg';
   spacing: 'compact' | 'normal' | 'spacious';
   showPhoto: boolean;

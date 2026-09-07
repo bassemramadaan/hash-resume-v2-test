@@ -33,6 +33,7 @@ export const CustomizeForm: React.FC = () => {
     setTemplate,
     setPrimaryColor,
     setFontFamily,
+    setHeadingFontFamily,
     setShowPhoto,
     setLanguage,
     setDocumentDirection,
@@ -318,35 +319,90 @@ export const CustomizeForm: React.FC = () => {
               </div>
             </div>
 
-            {/* Typography Font & Display Photo */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1 border-t border-slate-200/70">
-              <div>
-                <label className="block text-xs font-bold text-slate-800 mb-1.5 flex items-center gap-1.5">
+            {/* Typography Fonts: Body vs Heading Fonts */}
+            <div className="space-y-3 pt-1 border-t border-slate-200/70">
+              <div className="flex items-center justify-between">
+                <h4 className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
                   <Type className="w-4 h-4 text-[#001639]" />
-                  <span>{isAr ? 'نوع الخط (Typography Font)' : 'Typography Font'}</span>
-                </label>
-                <select
-                  value={settings.fontFamily}
-                  onChange={(e) => setFontFamily(e.target.value)}
-                  className="w-full px-3.5 h-10 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-medium text-slate-800 outline-none transition cursor-pointer"
-                >
-                  {settings.language === 'ar' ? (
-                    ARABIC_FONTS.map((font) => (
-                      <option key={font.id} value={font.id}>
-                        {font.nameAr} — {font.descriptionAr.split('—')[0].trim()}
-                      </option>
-                    ))
-                  ) : (
-                    ENGLISH_FONTS.map((font) => (
-                      <option key={font.id} value={font.id}>
-                        {font.nameEn}
-                      </option>
-                    ))
-                  )}
-                </select>
+                  <span>{isAr ? 'منظومة الخطوط (Heading & Body Fonts)' : 'Typography System'}</span>
+                </h4>
+                <span className="text-[10px] text-slate-400 font-medium hidden sm:inline">
+                  {isAr ? 'فصل خط العناوين عن الفقرات' : 'Distinct Heading & Body'}
+                </span>
               </div>
 
-              <div className="flex items-center gap-2 sm:pt-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {/* 1. Body Font */}
+                <div className="space-y-1.5">
+                  <label className="block text-[11px] font-bold text-slate-700 flex items-center justify-between">
+                    <span>{isAr ? 'خط النصوص والفقرات (Body Font)' : 'Body Font (Paragraphs & Bullets)'}</span>
+                  </label>
+                  <select
+                    value={settings.fontFamily}
+                    onChange={(e) => setFontFamily(e.target.value)}
+                    className="w-full px-3 h-9 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-medium text-slate-800 outline-none transition cursor-pointer"
+                  >
+                    {settings.language === 'ar' ? (
+                      ARABIC_FONTS.map((font) => (
+                        <option key={font.id} value={font.id}>
+                          {font.nameAr}
+                        </option>
+                      ))
+                    ) : (
+                      ENGLISH_FONTS.map((font) => (
+                        <option key={font.id} value={font.id}>
+                          {font.nameEn}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                  <p className="text-[10px] text-slate-400 leading-tight">
+                    {isAr ? 'يُطبق على تفاصيل الخبرات والملخص والنقاط' : 'Applied to descriptions, bullets, and details'}
+                  </p>
+                </div>
+
+                {/* 2. Heading Font */}
+                <div className="space-y-1.5">
+                  <label className="block text-[11px] font-bold text-slate-700 flex items-center justify-between">
+                    <span>{isAr ? 'خط العناوين الرئيسية (Heading Font)' : 'Heading Font (Titles & Sections)'}</span>
+                  </label>
+                  <select
+                    value={settings.headingFontFamily || settings.fontFamily}
+                    onChange={(e) => setHeadingFontFamily(e.target.value)}
+                    className="w-full px-3 h-9 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-medium text-slate-800 outline-none transition cursor-pointer"
+                  >
+                    {settings.language === 'ar' ? (
+                      <>
+                        <option value={settings.fontFamily}>
+                          {isAr ? `مطابق لخط النصوص (${settings.fontFamily})` : `Same as Body (${settings.fontFamily})`}
+                        </option>
+                        {ARABIC_FONTS.filter((f) => f.id !== settings.fontFamily).map((font) => (
+                          <option key={font.id} value={font.id}>
+                            {font.nameAr}
+                          </option>
+                        ))}
+                      </>
+                    ) : (
+                      <>
+                        <option value={settings.fontFamily}>
+                          {isAr ? `مطابق لخط النصوص (${settings.fontFamily})` : `Same as Body (${settings.fontFamily})`}
+                        </option>
+                        {ENGLISH_FONTS.filter((f) => f.id !== settings.fontFamily).map((font) => (
+                          <option key={font.id} value={font.id}>
+                            {font.nameEn}
+                          </option>
+                        ))}
+                      </>
+                    )}
+                  </select>
+                  <p className="text-[10px] text-slate-400 leading-tight">
+                    {isAr ? 'يُطبق على الاسم وعناوين الأقسام الرئيسية' : 'Applied to your name and section titles'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Display Photo Toggle */}
+              <div className="pt-1.5 flex items-center gap-2">
                 <input
                   type="checkbox"
                   id="photoToggle"

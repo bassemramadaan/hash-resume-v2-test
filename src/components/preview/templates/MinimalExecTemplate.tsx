@@ -1,6 +1,6 @@
 import React from 'react';
 import { ResumeData, ResumeSettings } from '../../../types/resume';
-import { getTemplateFontFamily } from '../../../utils/resumeFonts';
+import { getTemplateFontFamily, getHeadingFontFamily } from '../../../utils/resumeFonts';
 
 interface TemplateProps {
   data: ResumeData;
@@ -15,6 +15,9 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
   const headerLayout = settings.headerLayout || 'centered';
   const careerFocus = settings.careerFocus || 'experienced';
   const isFreshGrad = careerFocus === 'fresh-grad';
+
+  const bodyFont = getTemplateFontFamily(settings.fontFamily, settings.language);
+  const headingFont = getHeadingFontFamily(settings.headingFontFamily, settings.fontFamily, settings.language);
 
   const renderHeader = () => {
     if (headerLayout === 'two-column') {
@@ -214,10 +217,11 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
 
   return (
     <div
-      className="w-[210mm] min-h-[297mm] bg-white text-gray-900 p-8 shadow-sm text-sm leading-relaxed text-start"
+      className="resume-template-container w-[210mm] min-h-[297mm] bg-white text-gray-900 p-8 shadow-sm text-sm leading-relaxed text-start"
       dir={docDir}
       style={{
-        fontFamily: getTemplateFontFamily(settings.fontFamily, settings.language),
+        fontFamily: bodyFont,
+        ['--heading-font' as any]: headingFont,
         direction: docDir,
       }}
     >

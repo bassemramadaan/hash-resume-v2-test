@@ -30,7 +30,7 @@ export interface UIState {
   setFocusedSection: (section: string | null) => void;
 }
 
-export const createUISlice = (set: any): UIState => ({
+export const createUISlice = (set: any, get?: any): UIState => ({
   activeTab: 'personal',
   isAiModalOpen: false,
   aiModalType: null,

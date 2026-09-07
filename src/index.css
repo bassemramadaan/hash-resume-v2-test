@@ -840,6 +840,16 @@ html[dir="rtl"] .mobile-menu-drawer {
   }
 }
 
+/* Typography: Distinct Heading Font vs Body Font */
+.resume-template-container h1,
+.resume-template-container h2,
+.resume-template-container h3,
+.resume-template-container .template-heading {
+  font-family: var(--heading-font, inherit) !important;
+}
+
+
+
 
 
 

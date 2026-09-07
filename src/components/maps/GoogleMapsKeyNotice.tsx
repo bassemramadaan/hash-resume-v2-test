@@ -9,13 +9,13 @@ export const GoogleMapsKeyNotice: React.FC<{ compact?: boolean }> = ({ compact =
   if (compact) {
     return (
       <div className="p-6 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center">
-        <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto mb-3">
+        <div className="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-600 flex items-center justify-center mx-auto mb-3">
           <KeyRound className="w-6 h-6" />
         </div>
-        <h4 className="font-bold text-gray-900 dark:text-white text-base mb-1">
+        <h4 className="font-bold text-gray-900 text-base mb-1">
           {isAr ? 'مطلوب مفتاح Google Maps Platform' : 'Google Maps API Key Required'}
         </h4>
-        <p className="text-xs text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-4">
+        <p className="text-xs text-gray-600 max-w-md mx-auto mb-4">
           {isAr
             ? 'لعرض الخريطة التفاعلية ومواقع الوظائف، أضف مفتاح GOOGLE_MAPS_PLATFORM_KEY في إعدادات التطبيق.'
             : 'To view the interactive job map and locations, add GOOGLE_MAPS_PLATFORM_KEY in app secrets.'}
@@ -36,32 +36,32 @@ export const GoogleMapsKeyNotice: React.FC<{ compact?: boolean }> = ({ compact =
   }
 
   return (
-    <div className="flex items-center justify-center min-h-[420px] p-8 bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-dashed border-gray-300 dark:border-gray-800 text-center">
+    <div className="flex items-center justify-center min-h-[420px] p-8 bg-gray-50 rounded-2xl border border-dashed border-gray-300 text-center">
       <div className="max-w-lg mx-auto">
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/20">
           <MapPin className="w-8 h-8" />
         </div>
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+        <h3 className="text-xl font-bold text-gray-900 mb-2">
           {isAr ? 'تفعيل خرائط Google Maps Platform' : 'Google Maps API Key Required'}
         </h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">
+        <p className="text-sm text-gray-600 mb-6 leading-relaxed">
           {isAr
             ? 'استكشف الوظائف جغرافياً في القاهرة والإسكندرية والخليج على خريطة Google التفاعلية.'
             : 'Explore job vacancies geographically across Cairo, Alexandria, and MENA on interactive Google Maps.'}
         </p>
 
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-200 dark:border-gray-700 text-right space-y-3 mb-6 shadow-sm">
+        <div className="bg-white p-5 rounded-xl border border-gray-200 text-right space-y-3 mb-6 shadow-sm">
           <div className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+            <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
               1
             </div>
-            <div className="text-xs text-gray-700 dark:text-gray-300 text-start flex-1">
+            <div className="text-xs text-gray-700 text-start flex-1">
               <strong>{isAr ? 'الخطوة 1: ' : 'Step 1: '}</strong>
               <a
                 href="https://console.cloud.google.com/google/maps-apis/start?utm_campaign=gmp-code-assist-ais"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 dark:text-blue-400 hover:underline font-semibold inline-flex items-center gap-1 mx-1"
+                className="text-blue-600 hover:underline font-semibold inline-flex items-center gap-1 mx-1"
               >
                 <span>{isAr ? 'احصل على مفتاح Google Maps' : 'Get an API Key'}</span>
                 <ExternalLink className="w-3 h-3 inline" />
@@ -70,10 +70,10 @@ export const GoogleMapsKeyNotice: React.FC<{ compact?: boolean }> = ({ compact =
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+            <div className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
               2
             </div>
-            <div className="text-xs text-gray-700 dark:text-gray-300 text-start flex-1">
+            <div className="text-xs text-gray-700 text-start flex-1">
               <strong>{isAr ? 'الخطوة 2: ' : 'Step 2: '}</strong>
               {isAr
                 ? 'افتح الإعدادات (أيقونة الترس ⚙️ في أعلى اليمين) ← Secrets ← اكتب GOOGLE_MAPS_PLATFORM_KEY ← الصق المفتاح.'
@@ -82,10 +82,10 @@ export const GoogleMapsKeyNotice: React.FC<{ compact?: boolean }> = ({ compact =
           </div>
 
           <div className="flex items-start gap-3">
-            <div className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+            <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
               ✓
             </div>
-            <div className="text-xs text-emerald-700 dark:text-emerald-300 text-start flex-1">
+            <div className="text-xs text-emerald-700 text-start flex-1">
               {isAr
                 ? 'سيعاد بناء التطبيق تلقائياً وتعمل الخريطة التفاعلية فوراً.'
                 : 'The app rebuilds automatically after adding the secret.'}

@@ -44,8 +44,14 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
   onOpenResetModal,
   saveStatus,
 }) => {
-  const { resumeData, settings, activation, unlockResumeWithCredit, resetResume, setIsActivationModalOpen } =
-    useResumeStore();
+  const {
+    resumeData,
+    settings,
+    activation,
+    unlockResumeWithCredit,
+    resetResume,
+    setIsActivationModalOpen,
+  } = useResumeStore();
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
 

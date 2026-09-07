@@ -135,3 +135,20 @@ export function getTemplateFontFamily(
   }
   return "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
 }
+
+/**
+ * Returns the exact CSS fontFamily string for Headings and Titles (h1, h2, h3, job titles).
+ * If headingFontFamily is specified and differs from body, it resolves it.
+ * Otherwise, falls back to the resolved body fontFamily so styling remains harmonious by default.
+ */
+export function getHeadingFontFamily(
+  headingFontFamily?: string,
+  bodyFontFamily?: string,
+  language: 'ar' | 'en' | 'fr' | string = 'ar',
+  preferredCategory?: 'sans' | 'serif'
+): string {
+  if (headingFontFamily && headingFontFamily.trim() !== '' && headingFontFamily !== 'same') {
+    return getTemplateFontFamily(headingFontFamily, language, preferredCategory);
+  }
+  return getTemplateFontFamily(bodyFontFamily, language, preferredCategory);
+}

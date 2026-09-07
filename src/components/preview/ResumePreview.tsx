@@ -167,10 +167,46 @@ export const ResumePreview: React.FC = () => {
     setPrimaryColor,
     setSpacing,
     setFontFamily,
+    setHeadingFontFamily,
   } = useResumeStore();
 
   // High-Performance deferred data binding to prevent typing latency
   const deferredResumeData = useDeferredValue(resumeData);
+
+  const documentRef = React.useRef<HTMLDivElement>(null);
+  const [renderedHeight, setRenderedHeight] = useState<number>(1050);
+
+  // Measure exact template content height to calculate accurate page fill percentage
+  React.useEffect(() => {
+    const el = documentRef.current;
+    if (!el) return;
+
+    const measureHeight = () => {
+      const child = el.querySelector('.resume-template-container') as HTMLElement | null;
+      const h = child ? child.offsetHeight : el.scrollHeight;
+      if (h > 0) {
+        setRenderedHeight(h);
+      }
+    };
+
+    measureHeight();
+
+    const observer = new ResizeObserver(() => {
+      measureHeight();
+    });
+
+    observer.observe(el);
+    const child = el.querySelector('.resume-template-container');
+    if (child) {
+      observer.observe(child);
+    }
+
+    return () => observer.disconnect();
+  }, [deferredResumeData, settings]);
+
+  // Standard A4 boundary is 1050px in 96 DPI CSS canvas
+  const fillPercent = Math.min(Math.round((renderedHeight / 1050) * 100), 200);
+  const isMultiPage = fillPercent > 104;
 
   const [zoom, setZoom] = useState<number>(() => {
     if (typeof window !== 'undefined' && window.innerWidth < 640) {
@@ -267,16 +303,6 @@ export const ResumePreview: React.FC = () => {
     }
   };
 
-  const isMultiPage = React.useMemo(() => {
-    const expCount = deferredResumeData.experiences?.length || 0;
-    const eduCount = deferredResumeData.education?.length || 0;
-    const projCount = deferredResumeData.projects?.length || 0;
-    const certCount = deferredResumeData.certifications?.length || 0;
-    const hasSummary = Boolean(deferredResumeData.personalInfo.summary?.trim());
-    const totalEntries = expCount + eduCount + projCount + certCount;
-    return totalEntries >= 5 || (totalEntries >= 4 && hasSummary);
-  }, [deferredResumeData]);
-
   return (
     <div className="flex flex-col h-full bg-slate-100 text-slate-800 rounded-3xl overflow-hidden border border-[#CBD5E1] shadow-xs">
       {/* Top Controls Bar */}
@@ -300,6 +326,39 @@ export const ResumePreview: React.FC = () => {
             <Palette className="w-3 h-3 text-[#FF4D2D]" />
             <span>{isAr ? 'تنسيق سريع' : 'Quick Style'}</span>
           </button>
+
+          {/* Page Fill Gauge */}
+          <div
+            className={`hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all ${
+              fillPercent > 104
+                ? 'bg-amber-50 text-amber-900 border-amber-200'
+                : fillPercent >= 70
+                ? 'bg-emerald-50 text-emerald-900 border-emerald-200'
+                : 'bg-slate-50 text-slate-700 border-slate-200'
+            }`}
+            title={
+              isAr
+                ? `نسبة امتلاء الصفحة: ${fillPercent}% (الحد الأقصى لصفحة A4 واحدة هو 100%)`
+                : `Page Fill: ${fillPercent}% (Single A4 page limit is 100%)`
+            }
+          >
+            <span className="font-medium text-[10px] text-slate-500">
+              {isAr ? 'امتلاء الصفحة:' : 'Page Fill:'}
+            </span>
+            <span className="font-bold font-mono text-[11px]">{fillPercent}%</span>
+            <div className="w-10 sm:w-14 h-1.5 bg-slate-200/90 rounded-full overflow-hidden shrink-0">
+              <div
+                className={`h-full rounded-full transition-all duration-300 ${
+                  fillPercent > 104
+                    ? 'bg-amber-500'
+                    : fillPercent >= 70
+                    ? 'bg-emerald-500'
+                    : 'bg-sky-500'
+                }`}
+                style={{ width: `${Math.min(fillPercent, 100)}%` }}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Zoom & Fullscreen controls */}
@@ -472,29 +531,61 @@ export const ResumePreview: React.FC = () => {
                 ))}
               </div>
 
-              <div className="flex items-center gap-2">
-                <span className="text-[11px] font-medium text-slate-500">
-                  {isAr ? 'الخط:' : 'Font:'}
-                </span>
-                <select
-                  value={settings.fontFamily}
-                  onChange={(e) => setFontFamily(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-lg px-2 py-0.5 text-[11px] font-medium text-slate-800 outline-none cursor-pointer"
-                >
-                  {isAr ? (
-                    ARABIC_FONTS.map((font) => (
-                      <option key={font.id} value={font.id}>
-                        {font.nameAr}
-                      </option>
-                    ))
-                  ) : (
-                    ENGLISH_FONTS.map((font) => (
-                      <option key={font.id} value={font.id}>
-                        {font.nameEn}
-                      </option>
-                    ))
-                  )}
-                </select>
+              <div className="flex items-center gap-3 flex-wrap">
+                {/* Body Font */}
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] font-medium text-slate-500">
+                    {isAr ? 'خط النصوص:' : 'Body Font:'}
+                  </span>
+                  <select
+                    value={settings.fontFamily}
+                    onChange={(e) => setFontFamily(e.target.value)}
+                    className="bg-white border border-slate-200 rounded-lg px-2 py-0.5 text-[11px] font-medium text-slate-800 outline-none cursor-pointer"
+                  >
+                    {isAr ? (
+                      ARABIC_FONTS.map((font) => (
+                        <option key={font.id} value={font.id}>
+                          {font.nameAr}
+                        </option>
+                      ))
+                    ) : (
+                      ENGLISH_FONTS.map((font) => (
+                        <option key={font.id} value={font.id}>
+                          {font.nameEn}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </div>
+
+                {/* Heading Font */}
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[11px] font-medium text-slate-500">
+                    {isAr ? 'خط العناوين:' : 'Heading Font:'}
+                  </span>
+                  <select
+                    value={settings.headingFontFamily || settings.fontFamily}
+                    onChange={(e) => setHeadingFontFamily(e.target.value)}
+                    className="bg-white border border-slate-200 rounded-lg px-2 py-0.5 text-[11px] font-medium text-slate-800 outline-none cursor-pointer"
+                  >
+                    <option value={settings.fontFamily}>
+                      {isAr ? `مطابق للنصوص (${settings.fontFamily})` : `Same as Body (${settings.fontFamily})`}
+                    </option>
+                    {isAr ? (
+                      ARABIC_FONTS.filter((f) => f.id !== settings.fontFamily).map((font) => (
+                        <option key={font.id} value={font.id}>
+                          {font.nameAr}
+                        </option>
+                      ))
+                    ) : (
+                      ENGLISH_FONTS.filter((f) => f.id !== settings.fontFamily).map((font) => (
+                        <option key={font.id} value={font.id}>
+                          {font.nameEn}
+                        </option>
+                      ))
+                    )}
+                  </select>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -502,7 +593,7 @@ export const ResumePreview: React.FC = () => {
       </AnimatePresence>
 
       {/* Canvas Scroll Container with Visual Page Break Line */}
-      <div className="flex-1 overflow-x-auto overflow-y-auto p-2 sm:p-6 flex justify-center items-start bg-slate-200/70 custom-scrollbar relative">
+      <div className="preview-desk-canvas flex-1 overflow-x-auto overflow-y-auto p-2 sm:p-6 flex justify-center items-start bg-slate-200/70 custom-scrollbar relative">
         <div
           className="flex justify-center items-start relative shrink-0 transition-all duration-150 mx-auto"
           style={{
@@ -519,7 +610,7 @@ export const ResumePreview: React.FC = () => {
             }}
           >
             {/* Render Active Template Document or Live Skeleton Preview */}
-            <div id="resume-preview-document" className="relative min-h-[1050px]">
+            <div id="resume-preview-document" ref={documentRef} className="relative min-h-[1050px]">
               {isCurrentResumeBlank ? (
                 <ResumeSkeletonPreview
                   isAr={isAr}
@@ -548,15 +639,22 @@ export const ResumePreview: React.FC = () => {
 
       {/* Bottom Page Status & Count Bar */}
       <div className="bg-white border-t border-slate-200 px-4 py-2 flex items-center justify-between text-xs text-slate-600 no-print">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           {isMultiPage ? (
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-[11px] font-bold border border-amber-200">
               <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-              <span>{isAr ? 'المحتوى قد يستدعي صفحة ثانية' : 'Content may require a second page'}</span>
+              <span>{isAr ? `المحتوى يتجاوز صفحة واحدة (${fillPercent}%)` : `Content exceeds 1 page (${fillPercent}%)`}</span>
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-[11px] font-semibold border border-slate-200">
-              <span>{isAr ? 'صفحة 1 من 1' : 'Page 1 of 1'}</span>
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-semibold border border-emerald-200">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <span>{isAr ? `صفحة 1 من 1 (${fillPercent}% ممتلئة)` : `Page 1 of 1 (${fillPercent}% filled)`}</span>
+            </span>
+          )}
+
+          {fillPercent > 104 && (
+            <span className="text-[10px] text-amber-700 hidden lg:inline">
+              {isAr ? '💡 نصيحة: اختر مسافات ضيقة (Compact) لضغط السيرة في صفحة واحدة' : '💡 Tip: Select Compact density to fit on one page'}
             </span>
           )}
         </div>

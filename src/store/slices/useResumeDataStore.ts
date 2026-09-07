@@ -118,6 +118,7 @@ export interface ResumeDataState {
   setTemplate: (tpl: TemplateId) => void;
   setPrimaryColor: (color: string) => void;
   setFontFamily: (font: string) => void;
+  setHeadingFontFamily: (font: string) => void;
   setFontSize: (size: 'sm' | 'md' | 'lg') => void;
   setSpacing: (spacing: 'compact' | 'normal' | 'spacious') => void;
   setShowPhoto: (show: boolean) => void;
@@ -442,6 +443,14 @@ export const createResumeDataSlice = (set: any, get: any): ResumeDataState => ({
   setFontFamily: (fontFamily) => {
     set((state: any) => {
       const updatedSettings = { ...state.settings, fontFamily };
+      saveSettingsDirectly(updatedSettings);
+      return { settings: updatedSettings };
+    });
+  },
+
+  setHeadingFontFamily: (headingFontFamily) => {
+    set((state: any) => {
+      const updatedSettings = { ...state.settings, headingFontFamily };
       saveSettingsDirectly(updatedSettings);
       return { settings: updatedSettings };
     });

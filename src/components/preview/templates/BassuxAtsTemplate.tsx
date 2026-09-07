@@ -1,6 +1,6 @@
 import React from 'react';
 import { ResumeData, ResumeSettings } from '../../../types/resume';
-import { getTemplateFontFamily } from '../../../utils/resumeFonts';
+import { getTemplateFontFamily, getHeadingFontFamily } from '../../../utils/resumeFonts';
 
 interface TemplateProps {
   data: ResumeData;
@@ -23,8 +23,12 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
   const careerFocus = settings.careerFocus || 'experienced';
   const isFreshGrad = careerFocus === 'fresh-grad';
 
+  const bodyFont = getTemplateFontFamily(settings.fontFamily, settings.language);
+  const headingFont = getHeadingFontFamily(settings.headingFontFamily, settings.fontFamily, settings.language);
+
   const fontStyle = {
-    fontFamily: getTemplateFontFamily(settings.fontFamily, settings.language),
+    fontFamily: bodyFont,
+    ['--heading-font' as any]: headingFont,
   };
 
   // Plain text contact info (no icons, no links with graphics)
@@ -240,7 +244,7 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
 
   return (
     <div
-      className="w-[210mm] min-h-[297mm] bg-white text-black p-8 sm:p-12 shadow-sm text-sm leading-relaxed text-start"
+      className="resume-template-container w-[210mm] min-h-[297mm] bg-white text-black p-8 sm:p-12 shadow-sm text-sm leading-relaxed text-start"
       dir={docDir}
       style={{ ...fontStyle, direction: docDir }}
     >
