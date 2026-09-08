@@ -43,13 +43,13 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
             <div className="text-xs text-gray-600 space-y-1 text-end shrink-0">
               {personalInfo.email && (
                 <div className="flex items-center justify-end gap-1.5">
-                  <span>{personalInfo.email}</span>
+                  <bdi className="font-sans">{personalInfo.email}</bdi>
                   <Mail className="w-3.5 h-3.5 text-gray-400" />
                 </div>
               )}
               {personalInfo.phone && (
                 <div className="flex items-center justify-end gap-1.5">
-                  <span>{personalInfo.phone}</span>
+                  <bdi className="font-sans">{personalInfo.phone}</bdi>
                   <Phone className="w-3.5 h-3.5 text-gray-400" />
                 </div>
               )}
@@ -61,13 +61,13 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
               )}
               {personalInfo.linkedin && (
                 <div className="flex items-center justify-end gap-1.5">
-                  <span>{personalInfo.linkedin}</span>
+                  <bdi className="font-sans">{personalInfo.linkedin}</bdi>
                   <Linkedin className="w-3.5 h-3.5 text-gray-400" />
                 </div>
               )}
               {personalInfo.github && (
                 <div className="flex items-center justify-end gap-1.5">
-                  <span>{personalInfo.github}</span>
+                  <bdi className="font-sans">{personalInfo.github}</bdi>
                   <Github className="w-3.5 h-3.5 text-gray-400" />
                 </div>
               )}
@@ -102,13 +102,13 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
             {personalInfo.email && (
               <div className="flex items-center gap-1">
                 <Mail className="w-3 h-3 text-gray-400" />
-                <span>{personalInfo.email}</span>
+                <bdi className="font-sans">{personalInfo.email}</bdi>
               </div>
             )}
             {personalInfo.phone && (
               <div className="flex items-center gap-1">
                 <Phone className="w-3 h-3 text-gray-400" />
-                <span>{personalInfo.phone}</span>
+                <bdi className="font-sans">{personalInfo.phone}</bdi>
               </div>
             )}
             {personalInfo.location && (
@@ -120,13 +120,13 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
             {personalInfo.linkedin && (
               <div className="flex items-center gap-1">
                 <Linkedin className="w-3 h-3 text-gray-400" />
-                <span>{personalInfo.linkedin}</span>
+                <bdi className="font-sans">{personalInfo.linkedin}</bdi>
               </div>
             )}
             {personalInfo.github && (
               <div className="flex items-center gap-1">
                 <Github className="w-3 h-3 text-gray-400" />
-                <span>{personalInfo.github}</span>
+                <bdi className="font-sans">{personalInfo.github}</bdi>
               </div>
             )}
           </div>
@@ -157,13 +157,13 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
           {personalInfo.email && (
             <div className="flex items-center gap-1">
               <Mail className="w-3.5 h-3.5 text-gray-400" />
-              <span>{personalInfo.email}</span>
+              <bdi className="font-sans">{personalInfo.email}</bdi>
             </div>
           )}
           {personalInfo.phone && (
             <div className="flex items-center gap-1">
               <Phone className="w-3.5 h-3.5 text-gray-400" />
-              <span>{personalInfo.phone}</span>
+              <bdi className="font-sans">{personalInfo.phone}</bdi>
             </div>
           )}
           {personalInfo.location && (
@@ -175,19 +175,19 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
           {personalInfo.linkedin && (
             <div className="flex items-center gap-1">
               <Linkedin className="w-3.5 h-3.5 text-gray-400" />
-              <span>{personalInfo.linkedin}</span>
+              <bdi className="font-sans">{personalInfo.linkedin}</bdi>
             </div>
           )}
           {personalInfo.github && (
             <div className="flex items-center gap-1">
               <Github className="w-3.5 h-3.5 text-gray-400" />
-              <span>{personalInfo.github}</span>
+              <bdi className="font-sans">{personalInfo.github}</bdi>
             </div>
           )}
           {personalInfo.website && (
             <div className="flex items-center gap-1">
               <Globe className="w-3.5 h-3.5 text-gray-400" />
-              <span>{personalInfo.website}</span>
+              <bdi className="font-sans">{personalInfo.website}</bdi>
             </div>
           )}
         </div>
@@ -226,9 +226,9 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
                   {exp.position}{' '}
                   <span className="font-semibold text-gray-600">| {exp.company}</span>
                 </h3>
-                <span className="text-[11px] font-medium text-gray-500">
+                <bdi className="date-range text-[11px] font-medium text-gray-500 font-sans">
                   {exp.startDate} - {exp.current ? (isArabic ? 'حتى الآن' : 'Present') : exp.endDate}
-                </span>
+                </bdi>
               </div>
               {exp.location && (
                 <p className="text-[11px] text-gray-500 mb-1">{exp.location}</p>
@@ -265,11 +265,11 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
                   {edu.degree} - {edu.fieldOfStudy}
                 </h3>
                 <p className="text-xs text-gray-600">{edu.institution}</p>
-                {edu.gpa && <p className="text-[11px] text-gray-500">{edu.gpa}</p>}
+                {edu.gpa && <p className="text-[11px] text-gray-500"><bdi>GPA: {edu.gpa}</bdi></p>}
               </div>
-              <span className="text-[11px] text-gray-500">
+              <bdi className="date-range text-[11px] text-gray-500 font-sans">
                 {edu.startDate} - {edu.endDate}
-              </span>
+              </bdi>
             </div>
           ))}
         </div>
@@ -293,7 +293,10 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
             >
               <span>{skill.name}</span>
               {skill.level && (
-                <span className="text-[9px] font-bold text-indigo-600 bg-indigo-50 px-1 py-0.2 rounded-xs uppercase leading-none scale-90">
+                <span
+                  className="text-[9px] font-bold px-1.5 py-0.5 rounded-xs uppercase leading-none"
+                  style={{ color: primaryColor, backgroundColor: `${primaryColor}15` }}
+                >
                   {skill.level}
                 </span>
               )}
@@ -319,13 +322,13 @@ export const ModernAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
                 <div className="flex items-center gap-2">
                   <h3 className="font-bold text-gray-900 text-xs">{proj.title}</h3>
                   {proj.link && (
-                    <span className="text-[10px] text-blue-600 underline">{proj.link}</span>
+                    <span className="text-[10px] text-blue-600 underline font-sans" dir="ltr">{proj.link}</span>
                   )}
                 </div>
                 {(proj.startDate || proj.endDate) && (
-                  <span className="text-[10px] text-gray-500 font-medium">
+                  <bdi className="date-range text-[10px] text-gray-500 font-medium font-sans">
                     {proj.startDate} {proj.endDate ? `– ${proj.endDate}` : ''}
-                  </span>
+                  </bdi>
                 )}
               </div>
               <p className="text-xs text-gray-700">{proj.description}</p>

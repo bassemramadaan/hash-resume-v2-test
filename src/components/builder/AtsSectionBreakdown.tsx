@@ -291,11 +291,11 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
         {/* Big Readiness Meter */}
         <div className="flex items-center gap-3 bg-white/10 border border-white/15 px-4 py-2.5 rounded-xl self-start sm:self-auto shrink-0">
           <div className="text-end">
-            <span className="text-[10px] text-slate-300 block font-medium">
+            <span className="text-xs text-slate-200 block font-semibold">
               {isAr ? 'مؤشر الجاهزية' : 'Resume readiness'}
             </span>
             <span className="text-xl font-black text-white ats-score-num">{overallScore}/100</span>
-            <span className={`text-[10px] block font-semibold ${statusObj.color}`}>{statusLabel}</span>
+            <span className={`text-xs block font-bold ${statusObj.color}`}>{statusLabel}</span>
           </div>
           <div className="w-12 h-12 rounded-full border-4 border-emerald-400 flex items-center justify-center font-bold text-xs text-white bg-emerald-950/30 shadow-inner ats-score-num">
             {overallScore}%
@@ -344,7 +344,7 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
                           style={{ width: `${item.score}%` }}
                         />
                       </div>
-                      <span className="text-[11px] font-bold text-slate-700 ats-score-num">{item.score}%</span>
+                      <span className="text-xs font-bold text-slate-800 ats-score-num">{item.score}%</span>
                     </div>
                   </div>
                 </div>
@@ -374,11 +374,11 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
                 {/* Strengths */}
                 {item.strengths.length > 0 && (
                   <div className="p-3 bg-emerald-50/70 border border-emerald-100 rounded-xl space-y-1.5">
-                    <span className="font-bold text-emerald-900 flex items-center gap-1.5 text-[11px]">
+                    <span className="font-bold text-emerald-900 flex items-center gap-1.5 text-xs">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                       <span>{isAr ? 'نقاط القوة المحققة:' : 'Strengths Met:'}</span>
                     </span>
-                    <ul className="space-y-1 text-[11px] text-emerald-950/80">
+                    <ul className="space-y-1 text-xs text-emerald-950/90">
                       {item.strengths.map((str, sIdx) => (
                         <li key={sIdx} className="flex items-start gap-1.5">
                           <span className="text-emerald-600 font-bold">•</span>
@@ -392,11 +392,11 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
                 {/* Actionable Fix Tips */}
                 {item.fixTips.length > 0 && (
                   <div className="p-3 bg-orange-50/70 border border-orange-200/80 rounded-xl space-y-1.5">
-                    <span className="font-bold text-orange-900 flex items-center gap-1.5 text-[11px]">
+                    <span className="font-bold text-orange-900 flex items-center gap-1.5 text-xs">
                       <Target className="w-3.5 h-3.5 text-[#FF4D2D]" />
                       <span>{isAr ? 'نصائح محددة للإصلاح الفوري:' : 'Specific Actionable Fixes:'}</span>
                     </span>
-                    <ul className="space-y-1 text-[11px] text-orange-950/90">
+                    <ul className="space-y-1 text-xs text-orange-950 font-medium">
                       {item.fixTips.map((tip, tIdx) => (
                         <li key={tIdx} className="flex items-start gap-1.5">
                           <span className="text-[#FF4D2D] font-bold">→</span>

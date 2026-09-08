@@ -223,7 +223,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
           <ShieldCheck className="w-4 h-4 text-[#FF4D2D]" />
           <span>{t.atsAnalyzerTitle}</span>
         </h2>
-        <p className="text-xs text-slate-500 mt-0.5">{t.atsAnalyzerSub}</p>
+        <p className="text-xs text-slate-600 mt-0.5">{t.atsAnalyzerSub}</p>
       </div>
 
       {/* Red Flags Detector Section */}
@@ -246,10 +246,10 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
               )}
             </div>
             <div>
-              <h3 className="font-bold text-xs text-slate-900 flex items-center gap-1.5">
+              <h3 className="font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
                 <span>{isAr ? 'كاشف الأخطاء المانعة للتوظيف (Red Flags Detector)' : 'Resume Red Flags Detector'}</span>
               </h3>
-              <p className="text-[11px] text-slate-500">
+              <p className="text-xs text-slate-600">
                 {isAr
                   ? 'فحص استباقي للبريد غير الرسمي، فجوات العمل، والمعلومات الحساسة المخالفة للـ ATS'
                   : 'Proactive scan for unprofessional email, work gaps, and discriminatory fields'}
@@ -259,17 +259,17 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
 
           <div className="flex items-center gap-1.5 self-start sm:self-center">
             {criticalFlags.length > 0 ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
                 <AlertCircle className="w-3 h-3" />
                 <span>{isAr ? `${criticalFlags.length} تنبيه حرج` : `${criticalFlags.length} Critical`}</span>
               </span>
             ) : warningFlags.length > 0 ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
                 <AlertTriangle className="w-3 h-3" />
                 <span>{isAr ? `${warningFlags.length} ملاحظة` : `${warningFlags.length} Warning`}</span>
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
                 <Check className="w-3 h-3" />
                 <span>{isAr ? 'سيرتك نظيفة 100%' : '0 Red Flags Detected'}</span>
               </span>
@@ -287,7 +287,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
               <p className="font-bold">
                 {isAr ? 'لا توجد أي أخطاء مانعة للتوظيف في سيرتك الذاتية!' : 'No critical red flags detected!'}
               </p>
-              <p className="text-[11px] text-emerald-800 mt-0.5">
+              <p className="text-xs text-emerald-900 mt-0.5">
                 {isAr
                   ? 'بيانات الاتصال مهنية ونظيفة وخالية من المعلومات الحساسة ومطابقة لقواعد الـ ATS.'
                   : 'Your contact information, dates, and format adhere strictly to international ATS benchmarks.'}
@@ -312,7 +312,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded-md ${
+                        <span className={`text-xs font-extrabold uppercase px-1.5 py-0.5 rounded-md ${
                           flag.severity === 'critical'
                             ? 'bg-rose-600 text-white'
                             : flag.severity === 'warning'
@@ -325,16 +325,16 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                             ? isAr ? 'تحذير' : 'Warning'
                             : isAr ? 'نصيحة' : 'Tip'}
                         </span>
-                        <h4 className="font-bold text-xs text-slate-900">
+                        <h4 className="font-bold text-xs sm:text-sm text-slate-900">
                           {isAr ? flag.titleAr : flag.titleEn}
                         </h4>
                       </div>
 
-                      <p className="text-[11px] text-slate-600 leading-relaxed">
+                      <p className="text-xs text-slate-700 leading-relaxed">
                         {isAr ? flag.descriptionAr : flag.descriptionEn}
                       </p>
 
-                      <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-800 bg-white/80 p-2 rounded-lg border border-slate-200/70 mt-1">
+                      <div className="flex items-center gap-1.5 text-xs font-medium text-slate-800 bg-white/80 p-2 rounded-lg border border-slate-200/70 mt-1">
                         <Sparkles className="w-3.5 h-3.5 text-orange-500 shrink-0" />
                         <span>
                           <strong>{isAr ? 'الحل الموصى به: ' : 'Fix: '}</strong>
@@ -385,11 +385,11 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
             <Target className="w-3.5 h-3.5 text-[#001639]" />
             <span>{isAr ? 'مطابقة مع إعلان وظيفي محدد (اختياري)' : 'Match with Specific Job Description (Optional)'}</span>
           </label>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">
+          <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-800">
             {isAr ? 'ميزة إضافية' : 'Optional'}
           </span>
         </div>
-        <p className="text-[11px] text-slate-500 leading-normal">
+        <p className="text-xs text-slate-600 leading-normal">
           {isAr
             ? 'التحليل العام للسيرة مفعّل تلقائياً بالأعلى. إذا كانت لديك وظيفة معينة تود التقديم عليها، انسخ وصفها هنا لاستخراج الكلمات المفتاحية الناقصة بدقة.'
             : 'General ATS analysis is enabled above automatically. If you have a specific job posting, paste its description below to identify exact target keywords.'}
@@ -401,7 +401,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
           value={targetJobDescription}
           onChange={(e) => setTargetJobDescription(e.target.value)}
           placeholder={t.jobDescPlaceholder}
-          className="w-full p-3 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs text-slate-900 placeholder:text-slate-400 outline-none leading-relaxed transition"
+          className="w-full p-3 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs text-slate-900 placeholder:text-slate-500 outline-none leading-relaxed transition"
         />
 
         <button
@@ -433,10 +433,10 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
               <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
-                  <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${scoreTheme.badgeBg}`}>
+                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${scoreTheme.badgeBg}`}>
                     {scoreTheme.statusText}
                   </span>
-                  <span className="text-[11px] text-slate-400 font-medium">
+                  <span className="text-xs text-slate-600 font-semibold">
                     {isAr ? 'معيار ATS القياسي' : 'Standard ATS Protocol'}
                   </span>
                 </div>
@@ -471,7 +471,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                   </span>
                 </div>
                 <div className="text-start">
-                  <div className="text-[10px] font-bold uppercase text-slate-400 tracking-wider">
+                  <div className="text-xs font-bold uppercase text-slate-600 tracking-wider">
                     {isAr ? 'جاهزية السيرة الذاتية' : 'Resume Readiness'}
                   </div>
                   <div className="text-xs font-bold text-slate-800">
@@ -484,7 +484,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
             {/* Micro Breakdown Metrics */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 w-full min-w-0">
               <div className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-center space-y-1 min-w-0">
-                <div className="text-[10px] font-semibold text-slate-500 truncate">
+                <div className="text-xs font-semibold text-slate-600 truncate">
                   {isAr ? 'هيكل السيرة' : 'Structure'}
                 </div>
                 <div className="text-xs font-bold text-emerald-600 flex items-center justify-center gap-1">
@@ -494,7 +494,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
               </div>
 
               <div className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-center space-y-1 min-w-0">
-                <div className="text-[10px] font-semibold text-slate-500 truncate">
+                <div className="text-xs font-semibold text-slate-600 truncate">
                   {isAr ? 'الكلمات المفتاحية' : 'Keywords'}
                 </div>
                 <div className="text-xs font-bold text-amber-600 flex items-center justify-center gap-1">
@@ -504,7 +504,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
               </div>
 
               <div className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-center space-y-1 min-w-0">
-                <div className="text-[10px] font-semibold text-slate-500 truncate">
+                <div className="text-xs font-semibold text-slate-600 truncate">
                   {isAr ? 'الأفعال والنتائج' : 'Impact'}
                 </div>
                 <div className="text-xs font-bold text-sky-600 flex items-center justify-center gap-1">
@@ -527,7 +527,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                   type="button"
                   onClick={handleAddAllKeywords}
                   disabled={activation.isResumeLocked}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-[11px] font-semibold transition cursor-pointer self-start sm:self-auto shadow-2xs disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer self-start sm:self-auto shadow-2xs disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {addedAllSuccess ? (
                     <>
@@ -543,7 +543,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                 </button>
               </div>
 
-              <p className="text-[11px] text-amber-800 leading-relaxed">
+              <p className="text-xs text-amber-900 leading-relaxed">
                 {activation.isResumeLocked
                   ? (isAr
                       ? 'الرجاء فك قفل السيرة للتعديل وإضافة الكلمات الناقصة تلقائياً.'
@@ -579,7 +579,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                       )}
                       <span>{kw}</span>
                       {isAdded ? (
-                        <span className="text-[10px] text-emerald-700 font-bold ml-0.5 rtl:mr-0.5">
+                        <span className="text-xs text-emerald-800 font-bold ml-0.5 rtl:mr-0.5">
                           ({isAr ? 'تمت الإضافة' : 'Added'})
                         </span>
                       ) : null}
@@ -615,7 +615,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
               <div className="space-y-2">
                 {atsResult.actionPoints.map((action, idx) => (
                   <div key={idx} className="flex items-start gap-2 text-xs text-slate-700 bg-white/70 p-2.5 rounded-lg border border-sky-100">
-                    <span className="w-5 h-5 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5">
+                    <span className="w-5 h-5 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
                       {idx + 1}
                     </span>
                     <span className="leading-relaxed">{action}</span>
@@ -627,8 +627,8 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
 
           {/* Quick Actions Footer */}
           <div className="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100">
-            <div className="flex items-center gap-1.5 text-[11px] text-slate-500">
-              <Info className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <div className="flex items-center gap-1.5 text-xs text-slate-600">
+              <Info className="w-3.5 h-3.5 text-slate-500 shrink-0" />
               <span>
                 {isAr
                   ? 'مؤشر استرشادي خاضع لقواعد خوارزميات التوظيف الحديثة'

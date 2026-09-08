@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
 import { Sparkles, X, Check, Loader2, Copy } from 'lucide-react';
+import { parseApiError } from '../../utils/apiErrorHelper';
 
 export const AiAssistantModal: React.FC = () => {
   const {
@@ -117,11 +118,7 @@ export const AiAssistantModal: React.FC = () => {
       }
     } catch (err) {
       console.error('AI Modal error:', err);
-      setErrorMessage(
-        settings.language === 'ar'
-          ? 'تعذر الاتصال بخدمة الذكاء الاصطناعي حالياً.'
-          : 'Unable to connect to AI service at the moment.'
-      );
+      setErrorMessage(parseApiError(err, settings.language === 'ar'));
     } finally {
       setIsLoading(false);
     }
@@ -194,7 +191,7 @@ export const AiAssistantModal: React.FC = () => {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder={settings.language === 'ar' ? 'مثال: كنت مسئول عن تصميم المواقع وإدارة قاعدة البيانات' : 'e.g. Responsible for web design and database administration'}
-                className="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 outline-none focus:ring-2 focus:ring-indigo-500 leading-relaxed"
+                className="w-full p-3 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 outline-none focus:ring-2 focus:ring-[#FF4D2D] leading-relaxed"
               />
             </div>
           )}

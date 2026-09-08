@@ -323,7 +323,7 @@ export async function checkRateLimit(
     return {
       allowed: false,
       reason: 'A previous AI request is already in progress. Please wait a moment.',
-      reasonAr: 'هناك طلب ذكي قيد المعالجة حالياً. يرجى الانتظار بضع ثوانٍ.',
+      reasonAr: 'هناك طلب ذكي قيد المعالجة حالياً. يرجى الانتظار بضع ثوانٍ قبل إرسال طلب جديد.',
       retryAfterSeconds: 5,
     };
   }
@@ -335,7 +335,7 @@ export async function checkRateLimit(
     return {
       allowed: false,
       reason: 'Hourly AI request limit reached (5 requests/hour). Please try again later.',
-      reasonAr: 'تم بلوغ الحد الأقصى للطلبات في الساعة (5 طلبات). يرجى المحاولة لاحقاً.',
+      reasonAr: 'لقد وصلت للحد الأقصى المسموح به من طلبات الذكاء الاصطناعي لهذه الساعة (5 طلبات). يرجى المحاولة بعد قليل أو الاستمرار بالتحرير اليدوي.',
       retryAfterSeconds: 3600,
     };
   }
@@ -347,7 +347,7 @@ export async function checkRateLimit(
     return {
       allowed: false,
       reason: 'Daily AI request limit reached (15 requests/day).',
-      reasonAr: 'تم بلوغ الحد الأقصى اليومي لطلبات الذكاء الاصطناعي (15 طلباً).',
+      reasonAr: 'تم استهلاك رصيد الطلبات اليومي المتاح (15 طلباً). يتجدد الرصيد تلقائياً غداً، ويمكنك إكمال وتعديل سيرتك الذاتية يدوياً في أي وقت.',
       retryAfterSeconds: 86400,
     };
   }
@@ -369,7 +369,7 @@ export async function checkRateLimit(
       return {
         allowed: false,
         reason: `Limit reached for ${limitConfig.nameEn} (${limitConfig.max} per interval).`,
-        reasonAr: `تم استهلاك الحد المسموح به لميزة ${limitConfig.nameAr} (${limitConfig.max} مرات).`,
+        reasonAr: `تم استهلاك الرصيد المتاح لميزة "${limitConfig.nameAr}" (${limitConfig.max} مرات). يمكنك المتابعة يدوياً أو المحاولة في الجلسة القادمة.`,
         retryAfterSeconds: limitConfig.ttl,
       };
     }

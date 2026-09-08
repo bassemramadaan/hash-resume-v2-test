@@ -141,6 +141,49 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
+// Helper for formatting human-friendly AI errors
+function formatAiServerError(err: unknown, defaultAr: string, defaultEn: string) {
+  const msg = (err instanceof Error ? err.message : String(err)).toLowerCase();
+
+  if (msg.includes("resource_exhausted") || msg.includes("429") || msg.includes("quota")) {
+    return {
+      status: 429,
+      error: "نعتذر، تم استهلاك الحد الأقصى لطلبات الذكاء الاصطناعي مؤقتاً على الخادم. يمكنك المتابعة بالتحرير اليدوي أو المحاولة بعد قليل.",
+      errorEn: "AI service quota temporarily reached. Please continue editing manually or try again in a few moments.",
+    };
+  }
+
+  if (msg.includes("deadline_exceeded") || msg.includes("timeout") || msg.includes("timed out") || msg.includes("etimedout")) {
+    return {
+      status: 504,
+      error: "استغرقت معالجة الطلب وقتاً أطول من المتوقع بسبب ضغط الشبكة. يرجى إعادة المحاولة.",
+      errorEn: "The AI request timed out due to network latency. Please try again.",
+    };
+  }
+
+  if (msg.includes("enotfound") || msg.includes("fetch failed") || msg.includes("network") || msg.includes("econnrefused")) {
+    return {
+      status: 503,
+      error: "تعذر الاتصال بخوادم الذكاء الاصطناعي حالياً. يرجى التحقق من اتصال الإنترنت وإعادة المحاولة.",
+      errorEn: "Unable to connect to AI servers. Please verify your internet connection and try again.",
+    };
+  }
+
+  if (msg.includes("safety") || msg.includes("blocked") || msg.includes("filter") || msg.includes("policy")) {
+    return {
+      status: 422,
+      error: "تعذر توليد المحتوى نظراً لوجود نصوص غير متوافقة مع معايير الأمان والخصوصية.",
+      errorEn: "Content generation could not proceed due to safety criteria.",
+    };
+  }
+
+  return {
+    status: 500,
+    error: defaultAr || "نعتذر، واجهنا صعوبة مؤقتة في معالجة طلبك عبر الذكاء الاصطناعي. يرجى المحاولة بعد ثوانٍ.",
+    errorEn: defaultEn || "A temporary issue occurred while processing your AI request. Please try again in a few seconds.",
+  };
+}
+
 // Helper for AI Unavailable response
 const sendAiUnavailable = (
   res: express.Response,
@@ -284,17 +327,18 @@ Return ONLY JSON in this format:
 
     return res.json(parsed);
   } catch (err: unknown) {
+    const errorInfo = formatAiServerError(err, "تعذر تحسين صياغة النقطة حالياً.", "Failed to process bullet enhancement via AI.");
     logAiMetric({
       feature: "enhance-bullet",
       model: config.geminiModel,
-      httpStatus: 500,
+      httpStatus: errorInfo.status,
       latencyMs: Date.now() - startTime,
       cached: false,
       error: err instanceof Error ? err.message : String(err),
     });
-    return res.status(500).json({
-      error: "تعذر معالجة الطلب عبر الذكاء الاصطناعي حالياً.",
-      errorEn: "Failed to process bullet enhancement via AI.",
+    return res.status(errorInfo.status).json({
+      error: errorInfo.error,
+      errorEn: errorInfo.errorEn,
     });
   } finally {
     await releaseConcurrencyLock(clientIp);
@@ -417,17 +461,18 @@ Return JSON format:
 
     return res.json(parsed);
   } catch (err: unknown) {
+    const errorInfo = formatAiServerError(err, "تعذر توليد الملخص المهني حالياً.", "Failed to generate professional summary.");
     logAiMetric({
       feature: "generate-summary",
       model: config.geminiModel,
-      httpStatus: 500,
+      httpStatus: errorInfo.status,
       latencyMs: Date.now() - startTime,
       cached: false,
       error: err instanceof Error ? err.message : String(err),
     });
-    return res.status(500).json({
-      error: "تعذر توليد الملخص المهني حالياً.",
-      errorEn: "Failed to generate professional summary.",
+    return res.status(errorInfo.status).json({
+      error: errorInfo.error,
+      errorEn: errorInfo.errorEn,
     });
   } finally {
     await releaseConcurrencyLock(clientIp);
@@ -520,17 +565,18 @@ Return JSON:
 
     return res.json(parsed);
   } catch (err: unknown) {
+    const errorInfo = formatAiServerError(err, "تعذر اقتراح المهارات حالياً.", "Failed to suggest skills.");
     logAiMetric({
       feature: "suggest-skills",
       model: config.geminiModel,
-      httpStatus: 500,
+      httpStatus: errorInfo.status,
       latencyMs: Date.now() - startTime,
       cached: false,
       error: err instanceof Error ? err.message : String(err),
     });
-    return res.status(500).json({
-      error: "تعذر اقتراح المهارات حالياً.",
-      errorEn: "Failed to suggest skills.",
+    return res.status(errorInfo.status).json({
+      error: errorInfo.error,
+      errorEn: errorInfo.errorEn,
     });
   } finally {
     await releaseConcurrencyLock(clientIp);
@@ -644,17 +690,18 @@ Return JSON: {"resultText": "Professional English translation"}`;
 
     return res.json(resultPayload);
   } catch (err: unknown) {
+    const errorInfo = formatAiServerError(err, "تعذر تحويل النص حالياً.", "Failed to transform text.");
     logAiMetric({
       feature: "quick-transform",
       model: config.geminiModel,
-      httpStatus: 500,
+      httpStatus: errorInfo.status,
       latencyMs: Date.now() - startTime,
       cached: false,
       error: err instanceof Error ? err.message : String(err),
     });
-    return res.status(500).json({
-      error: "تعذر تحويل النص حالياً.",
-      errorEn: "Failed to transform text.",
+    return res.status(errorInfo.status).json({
+      error: errorInfo.error,
+      errorEn: errorInfo.errorEn,
     });
   } finally {
     await releaseConcurrencyLock(clientIp);
@@ -781,17 +828,18 @@ Provide a detailed evaluation JSON:
 
     return res.json(parsed);
   } catch (err: unknown) {
+    const errorInfo = formatAiServerError(err, "تعذر فحص السيرة الذاتية عبر نظام ATS حالياً.", "Failed to analyze resume via ATS.");
     logAiMetric({
       feature: "ats-analyzer",
       model: config.geminiModel,
-      httpStatus: 500,
+      httpStatus: errorInfo.status,
       latencyMs: Date.now() - startTime,
       cached: false,
       error: err instanceof Error ? err.message : String(err),
     });
-    return res.status(500).json({
-      error: "تعذر فحص السيرة الذاتية عبر نظام ATS حالياً.",
-      errorEn: "Failed to analyze resume via ATS.",
+    return res.status(errorInfo.status).json({
+      error: errorInfo.error,
+      errorEn: errorInfo.errorEn,
     });
   } finally {
     await releaseConcurrencyLock(clientIp);
@@ -887,17 +935,18 @@ Return JSON format:
 
     return res.json(parsed);
   } catch (err: unknown) {
+    const errorInfo = formatAiServerError(err, "تعذر توليد الكلمات المفتاحية حالياً.", "Failed to generate keyword suggestions.");
     logAiMetric({
       feature: "suggest-keywords",
       model: config.geminiModel,
-      httpStatus: 500,
+      httpStatus: errorInfo.status,
       latencyMs: Date.now() - startTime,
       cached: false,
       error: err instanceof Error ? err.message : String(err),
     });
-    return res.status(500).json({
-      error: "تعذر توليد الكلمات المفتاحية حالياً.",
-      errorEn: "Failed to generate keyword suggestions.",
+    return res.status(errorInfo.status).json({
+      error: errorInfo.error,
+      errorEn: errorInfo.errorEn,
     });
   } finally {
     await releaseConcurrencyLock(clientIp);
@@ -1013,17 +1062,18 @@ Return 3 high-impact options in JSON format:
 
     return res.json(resultPayload);
   } catch (err: unknown) {
+    const errorInfo = formatAiServerError(err, "تعذر صياغة الإنجاز حالياً.", "Failed to quantify achievement.");
     logAiMetric({
       feature: "quantify-achievement",
       model: config.geminiModel,
-      httpStatus: 500,
+      httpStatus: errorInfo.status,
       latencyMs: Date.now() - startTime,
       cached: false,
       error: err instanceof Error ? err.message : String(err),
     });
-    return res.status(500).json({
-      error: "تعذر صياغة الإنجاز حالياً.",
-      errorEn: "Failed to quantify achievement.",
+    return res.status(errorInfo.status).json({
+      error: errorInfo.error,
+      errorEn: errorInfo.errorEn,
     });
   } finally {
     await releaseConcurrencyLock(clientIp);

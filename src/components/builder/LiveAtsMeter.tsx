@@ -171,7 +171,7 @@ export const LiveAtsMeter: React.FC = () => {
                   {isAr ? 'تحليل جودة السيرة لـ ATS' : 'Real-time ATS Readiness'}
                 </span>
               </div>
-              <span className={`px-2 py-0.5 rounded-full font-bold text-[11px] ${scoreColor}`}>
+              <span className={`px-2 py-0.5 rounded-full font-bold text-xs ${scoreColor}`}>
                 {metrics.score}% {isAr ? 'جاهزية' : 'Ready'}
               </span>
             </div>
@@ -184,7 +184,7 @@ export const LiveAtsMeter: React.FC = () => {
                   style={{ width: `${metrics.score}%` }}
                 />
               </div>
-              <p className="text-[10px] text-[#52627A]">
+              <p className="text-xs text-slate-600 font-medium">
                 {metrics.score >= 85
                   ? isAr
                     ? '🎉 سيرتك الذاتية مطابقة لمعايير الفرز الآلي بنسبة ممتازة!'
@@ -215,7 +215,7 @@ export const LiveAtsMeter: React.FC = () => {
                         {isAr ? item.titleAr : item.titleEn}
                       </div>
                       {!item.passed && (
-                        <div className="text-[10px] text-slate-600 leading-snug">
+                        <div className="text-xs text-slate-600 leading-normal font-normal">
                           {isAr ? item.tipAr : item.tipEn}
                         </div>
                       )}
@@ -229,7 +229,7 @@ export const LiveAtsMeter: React.FC = () => {
                         setActiveTab(item.id as any);
                         setIsOpen(false);
                       }}
-                      className="px-2 py-1 bg-white hover:bg-slate-100 text-[#001639] border border-slate-300 rounded-lg text-[10px] font-semibold shrink-0 cursor-pointer shadow-2xs"
+                      className="px-2.5 py-1 bg-white hover:bg-slate-100 text-[#001639] border border-slate-300 rounded-lg text-xs font-semibold shrink-0 cursor-pointer shadow-2xs"
                     >
                       {isAr ? 'تحسين' : 'Fix'}
                     </button>
@@ -239,7 +239,7 @@ export const LiveAtsMeter: React.FC = () => {
             </div>
 
             {/* Footer quick action */}
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
               <button
                 type="button"
                 onClick={() => {
@@ -254,7 +254,7 @@ export const LiveAtsMeter: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="text-slate-500 hover:text-slate-800 text-[10px] font-medium"
+                className="text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer"
               >
                 {isAr ? 'إغلاق' : 'Close'}
               </button>

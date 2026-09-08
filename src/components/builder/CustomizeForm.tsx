@@ -58,7 +58,7 @@ export const CustomizeForm: React.FC = () => {
           <Palette className="w-4 h-4 text-[#FF4D2D]" />
           <span>{t.customizeTitle}</span>
         </h2>
-        <p className="text-xs text-slate-500 mt-0.5">
+        <p className="text-xs text-slate-600 mt-0.5">
           {isAr
             ? 'اختر مستوى الخبرة، لغة السيرة، اتجاه التخطيط والقالب المناسب.'
             : 'Select career level, resume language, layout direction, and template.'}
@@ -66,15 +66,15 @@ export const CustomizeForm: React.FC = () => {
       </div>
 
       {/* 1. Career level */}
-      <div className="bg-gradient-to-r from-orange-50/70 via-amber-50/40 to-orange-50/70 p-4 rounded-xl border border-orange-200/80 space-y-2.5 shadow-2xs">
+      <div className="bg-slate-50/70 p-4 rounded-xl border border-slate-200 space-y-2.5 shadow-2xs">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <GraduationCap className="w-4 h-4 text-orange-600" />
-            <h3 className="font-bold text-xs text-orange-950">
+            <GraduationCap className="w-4 h-4 text-[#001639]" />
+            <h3 className="font-bold text-xs text-slate-900">
               {isAr ? 'مستوى الخبرة ونمط الأقسام (Career Level)' : 'Career Level & Section Order'}
             </h3>
           </div>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-200 text-orange-900">
+          <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-200 text-slate-800">
             {currentCareerFocus === 'fresh-grad'
               ? isAr ? 'نمط حديثي التخرج نشط' : 'Fresh Grad Active'
               : isAr ? 'النمط المهني للخبرات' : 'Experienced Mode'}
@@ -88,7 +88,7 @@ export const CustomizeForm: React.FC = () => {
             className={`p-3 rounded-lg border text-start transition cursor-pointer flex items-center gap-2.5 ${
               currentCareerFocus === 'experienced'
                 ? 'bg-white border-[#001639] ring-2 ring-[#001639]/15 shadow-xs'
-                : 'bg-white/70 border-orange-200 hover:bg-white'
+                : 'bg-white/70 border-slate-200 hover:bg-white'
             }`}
           >
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
@@ -101,7 +101,7 @@ export const CustomizeForm: React.FC = () => {
                 <span>{isAr ? 'ذوي الخبرة' : 'Experienced Professional'}</span>
                 {currentCareerFocus === 'experienced' && <Check className="w-3.5 h-3.5 text-[#001639]" />}
               </div>
-              <p className="text-[10px] text-slate-500 truncate">
+              <p className="text-xs text-slate-600 truncate">
                 {isAr ? 'الخبرات العملية أولاً ثم التعليم' : 'Experience first, then Education'}
               </p>
             </div>
@@ -112,21 +112,21 @@ export const CustomizeForm: React.FC = () => {
             onClick={() => setCareerFocus('fresh-grad')}
             className={`p-3 rounded-lg border text-start transition cursor-pointer flex items-center gap-2.5 ${
               currentCareerFocus === 'fresh-grad'
-                ? 'bg-white border-orange-600 ring-2 ring-orange-600/20 shadow-xs'
-                : 'bg-white/70 border-orange-200 hover:bg-white'
+                ? 'bg-white border-[#001639] ring-2 ring-[#001639]/15 shadow-xs'
+                : 'bg-white/70 border-slate-200 hover:bg-white'
             }`}
           >
             <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
-              currentCareerFocus === 'fresh-grad' ? 'bg-orange-600 text-white' : 'bg-orange-100 text-orange-700'
+              currentCareerFocus === 'fresh-grad' ? 'bg-[#001639] text-white' : 'bg-slate-100 text-slate-600'
             }`}>
               <GraduationCap className="w-4 h-4" />
             </div>
             <div className="min-w-0 flex-1">
               <div className="font-bold text-xs text-slate-900 flex items-center justify-between">
                 <span>{isAr ? 'حديثو التخرج والطلاب' : 'Fresh Graduate'}</span>
-                {currentCareerFocus === 'fresh-grad' && <Check className="w-3.5 h-3.5 text-orange-600" />}
+                {currentCareerFocus === 'fresh-grad' && <Check className="w-3.5 h-3.5 text-[#001639]" />}
               </div>
-              <p className="text-[10px] text-slate-500 truncate">
+              <p className="text-xs text-slate-600 truncate">
                 {isAr ? 'التعليم ومشاريع التخرج أولاً' : 'Education & Projects first'}
               </p>
             </div>
@@ -143,7 +143,7 @@ export const CustomizeForm: React.FC = () => {
               <Globe className="w-4 h-4 text-[#001639]" />
               <span>{isAr ? 'لغة السيرة الذاتية (Resume Language)' : 'Resume Language'}</span>
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-600 mt-0.5">
               {isAr ? 'لغة العناوين والنصوص الرسمية' : 'Content language for headers & labels'}
             </p>
           </div>
@@ -191,7 +191,7 @@ export const CustomizeForm: React.FC = () => {
               <ArrowLeftRight className="w-4 h-4 text-[#FF4D2D]" />
               <span>{isAr ? 'اتجاه التخطيط (Layout Direction)' : 'Layout Direction'}</span>
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">
+            <p className="text-xs text-slate-600 mt-0.5">
               {isAr ? 'اختر اتجاه الصفحات المستقل عن الواجهة' : 'Select layout flow (RTL or LTR)'}
             </p>
           </div>
@@ -231,7 +231,7 @@ export const CustomizeForm: React.FC = () => {
             <Layout className="w-4 h-4 text-[#001639]" />
             <span>{t.templateSelect}</span>
           </h3>
-          <span className="text-[11px] font-medium text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+          <span className="text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
             {(t as any).atsSelectorNote || 'Best for online applications and Applicant Tracking Systems (ATS).'}
           </span>
         </div>
@@ -258,19 +258,19 @@ export const CustomizeForm: React.FC = () => {
                   <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
                     <span className="font-bold text-slate-900 truncate">{name}</span>
                     {isRecommended && (
-                      <span className="shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">
+                      <span className="shrink-0 text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">
                         {isAr ? 'الأفضل لـ ATS' : 'Best for ATS'}
                       </span>
                     )}
                     {(tpl.id === 'classic-professional' || tpl.id === 'creative-compact') && (
-                      <span className="shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs">
+                      <span className="shrink-0 text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs">
                         {isAr ? 'أفضل للمراجعة البشرية والبورتفوليو' : 'Human Review & Portfolio'}
                       </span>
                     )}
                   </div>
                   {isSelected && <Check className="w-4 h-4 text-[#001639] shrink-0" />}
                 </div>
-                <p className="text-[11px] text-slate-500 leading-relaxed">{desc}</p>
+                <p className="text-xs text-slate-600 leading-relaxed">{desc}</p>
               </button>
             );
           })}
@@ -288,7 +288,7 @@ export const CustomizeForm: React.FC = () => {
             <Sliders className="w-4 h-4 text-[#FF4D2D]" />
             <span>{isAr ? 'إعدادات المظهر المتقدمة (Advanced styling)' : 'Advanced styling'}</span>
           </div>
-          <div className="flex items-center gap-1.5 text-slate-500 font-normal text-[11px]">
+          <div className="flex items-center gap-1.5 text-slate-600 font-semibold text-xs">
             <span>{showAdvanced ? (isAr ? 'إخفاء' : 'Hide') : (isAr ? 'عرض الإعدادات' : 'Show options')}</span>
             {showAdvanced ? <ChevronUp className="w-4 h-4 text-[#001639]" /> : <ChevronDown className="w-4 h-4 text-[#001639]" />}
           </div>
@@ -326,7 +326,7 @@ export const CustomizeForm: React.FC = () => {
                   <Type className="w-4 h-4 text-[#001639]" />
                   <span>{isAr ? 'منظومة الخطوط (Heading & Body Fonts)' : 'Typography System'}</span>
                 </h4>
-                <span className="text-[10px] text-slate-400 font-medium hidden sm:inline">
+                <span className="text-xs text-slate-600 font-medium hidden sm:inline">
                   {isAr ? 'فصل خط العناوين عن الفقرات' : 'Distinct Heading & Body'}
                 </span>
               </div>
@@ -334,7 +334,7 @@ export const CustomizeForm: React.FC = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 {/* 1. Body Font */}
                 <div className="space-y-1.5">
-                  <label className="block text-[11px] font-bold text-slate-700 flex items-center justify-between">
+                  <label className="block text-xs font-bold text-slate-800 flex items-center justify-between">
                     <span>{isAr ? 'خط النصوص والفقرات (Body Font)' : 'Body Font (Paragraphs & Bullets)'}</span>
                   </label>
                   <select
@@ -356,14 +356,14 @@ export const CustomizeForm: React.FC = () => {
                       ))
                     )}
                   </select>
-                  <p className="text-[10px] text-slate-400 leading-tight">
+                  <p className="text-xs text-slate-600 leading-tight">
                     {isAr ? 'يُطبق على تفاصيل الخبرات والملخص والنقاط' : 'Applied to descriptions, bullets, and details'}
                   </p>
                 </div>
 
                 {/* 2. Heading Font */}
                 <div className="space-y-1.5">
-                  <label className="block text-[11px] font-bold text-slate-700 flex items-center justify-between">
+                  <label className="block text-xs font-bold text-slate-800 flex items-center justify-between">
                     <span>{isAr ? 'خط العناوين الرئيسية (Heading Font)' : 'Heading Font (Titles & Sections)'}</span>
                   </label>
                   <select
@@ -395,7 +395,7 @@ export const CustomizeForm: React.FC = () => {
                       </>
                     )}
                   </select>
-                  <p className="text-[10px] text-slate-400 leading-tight">
+                  <p className="text-xs text-slate-600 leading-tight">
                     {isAr ? 'يُطبق على الاسم وعناوين الأقسام الرئيسية' : 'Applied to your name and section titles'}
                   </p>
                 </div>
@@ -444,7 +444,7 @@ export const CustomizeForm: React.FC = () => {
                     </div>
                     {currentHeaderLayout === 'centered' && <Check className="w-3.5 h-3.5 text-[#001639]" />}
                   </div>
-                  <p className="text-[10px] text-slate-500 leading-normal">
+                  <p className="text-xs text-slate-600 leading-normal">
                     {isAr ? 'الاسم واللقب في الوسط' : 'Centered name & title'}
                   </p>
                 </button>
@@ -466,7 +466,7 @@ export const CustomizeForm: React.FC = () => {
                     </div>
                     {currentHeaderLayout === 'two-column' && <Check className="w-3.5 h-3.5 text-[#001639]" />}
                   </div>
-                  <p className="text-[10px] text-amber-700 font-medium leading-normal">
+                  <p className="text-xs text-slate-600 leading-normal">
                     {isAr ? 'أفضل للمراجعة البشرية ومشاركة البورتفوليو' : 'Best for human review & portfolio sharing'}
                   </p>
                 </button>
@@ -488,7 +488,7 @@ export const CustomizeForm: React.FC = () => {
                     </div>
                     {currentHeaderLayout === 'compact' && <Check className="w-3.5 h-3.5 text-[#001639]" />}
                   </div>
-                  <p className="text-[10px] text-slate-500 leading-normal">
+                  <p className="text-xs text-slate-600 leading-normal">
                     {isAr ? 'توفير المساحة وتكثيف الهيدر' : 'Space saving header'}
                   </p>
                 </button>

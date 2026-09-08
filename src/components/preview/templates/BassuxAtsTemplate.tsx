@@ -51,9 +51,14 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
         {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
       </p>
       {contactParts.length > 0 && (
-        <p className="text-[12px] text-black leading-relaxed">
-          {contactParts.join('  |  ')}
-        </p>
+        <div className="text-[12px] text-black leading-relaxed flex flex-wrap justify-center items-center gap-x-2">
+          {contactParts.map((part, index) => (
+            <React.Fragment key={index}>
+              {index > 0 && <span className="text-gray-400 select-none">|</span>}
+              <bdi className="font-sans">{part}</bdi>
+            </React.Fragment>
+          ))}
+        </div>
       )}
     </header>
   );
@@ -80,16 +85,21 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
         </h2>
         <div className="space-y-4">
           {experiences.map((exp) => {
-            const dateStr = `${exp.startDate || ''} – ${
-              exp.current ? (isArabic ? 'حتى الآن' : 'Present') : exp.endDate || ''
-            }`;
-            const lineParts = [exp.position, exp.company, exp.location, dateStr].filter(Boolean);
-
             return (
               <div key={exp.id}>
-                <p className="font-bold text-[13px] text-black">
-                  {lineParts.join('  |  ')}
-                </p>
+                <div className="font-bold text-[13px] text-black flex flex-wrap items-baseline gap-x-2">
+                  <span>{exp.position}</span>
+                  {exp.company && <span className="text-gray-500">|</span>}
+                  {exp.company && <span>{exp.company}</span>}
+                  {exp.location && <span className="text-gray-500">|</span>}
+                  {exp.location && <span>{exp.location}</span>}
+                  {(exp.startDate || exp.endDate) && <span className="text-gray-500">|</span>}
+                  {(exp.startDate || exp.endDate) && (
+                    <bdi className="date-range font-sans">
+                      {exp.startDate || ''} – {exp.current ? (isArabic ? 'حتى الآن' : 'Present') : exp.endDate || ''}
+                    </bdi>
+                  )}
+                </div>
                 {exp.bulletPoints && exp.bulletPoints.length > 0 && (
                   <ul className="list-disc list-outside ms-5 mt-1 space-y-1 text-[12px] text-black">
                     {exp.bulletPoints.map((bullet, idx) => (
@@ -115,19 +125,21 @@ export const BassuxAtsTemplate: React.FC<TemplateProps> = React.memo(({ data, se
         </h2>
         <div className="space-y-3">
           {education.map((edu) => {
-            const dateStr = `${edu.startDate || ''} – ${edu.endDate || ''}`;
-            const eduParts = [
-              `${edu.degree || ''}${edu.fieldOfStudy ? ` - ${edu.fieldOfStudy}` : ''}`,
-              edu.institution,
-              edu.gpa ? `GPA: ${edu.gpa}` : '',
-              dateStr,
-            ].filter(Boolean);
-
             return (
               <div key={edu.id}>
-                <p className="font-bold text-[13px] text-black">
-                  {eduParts.join('  |  ')}
-                </p>
+                <div className="font-bold text-[13px] text-black flex flex-wrap items-baseline gap-x-2">
+                  <span>{`${edu.degree || ''}${edu.fieldOfStudy ? ` - ${edu.fieldOfStudy}` : ''}`}</span>
+                  {edu.institution && <span className="text-gray-500">|</span>}
+                  {edu.institution && <span>{edu.institution}</span>}
+                  {edu.gpa && <span className="text-gray-500">|</span>}
+                  {edu.gpa && <bdi>GPA: {edu.gpa}</bdi>}
+                  {(edu.startDate || edu.endDate) && <span className="text-gray-500">|</span>}
+                  {(edu.startDate || edu.endDate) && (
+                    <bdi className="date-range font-sans">
+                      {edu.startDate || ''} – {edu.endDate || ''}
+                    </bdi>
+                  )}
+                </div>
                 {edu.description && (
                   <p className="text-[12px] text-black mt-0.5">{edu.description}</p>
                 )}

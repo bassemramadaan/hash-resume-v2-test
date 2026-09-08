@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
+import { useUndoToastStore } from '../../store/useUndoToastStore';
 import { getTranslation } from '../../i18n/translations';
 import { GraduationCap, Plus, Trash2, ArrowUp, ArrowDown, ChevronDown, ChevronUp, Edit3 } from 'lucide-react';
 import { NextStepBanner } from './NextStepBanner';
@@ -10,9 +11,11 @@ export const EducationForm: React.FC = () => {
     addEducation,
     updateEducation,
     removeEducation,
+    insertEducationAtIndex,
     reorderEducation,
     settings,
   } = useResumeStore();
+  const { showUndoToast } = useUndoToastStore();
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
   const educationList = resumeData.education || [];
@@ -20,6 +23,18 @@ export const EducationForm: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(
     educationList.length > 0 ? educationList[0].id : null
   );
+
+  const handleDeleteEducation = (edu: any, idx: number) => {
+    removeEducation(edu.id);
+    showUndoToast({
+      messageAr: edu.degree ? `تم حذف مؤهل "${edu.degree}"` : 'تم حذف المؤهل التعليمي',
+      messageEn: edu.degree ? `Deleted "${edu.degree}"` : 'Education entry deleted',
+      onUndo: () => {
+        insertEducationAtIndex(idx, edu);
+        setExpandedId(edu.id);
+      },
+    });
+  };
 
   const handleAddNew = () => {
     addEducation({
@@ -140,7 +155,7 @@ export const EducationForm: React.FC = () => {
                     <h3 className="font-semibold text-xs text-slate-900 truncate">
                       {edu.degree || (isAr ? 'درجة علمية جديدة' : 'New Degree')}
                     </h3>
-                    <p className="text-[11px] text-slate-500 font-normal truncate">
+                    <p className="text-xs text-slate-600 font-medium truncate">
                       {edu.institution || (isAr ? 'اسم الجامعة' : 'Institution / University')}
                       {edu.startDate || edu.endDate ? ` • ${edu.startDate || ''} - ${edu.endDate || ''}` : ''}
                     </p>
@@ -148,7 +163,7 @@ export const EducationForm: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-1 shrink-0">
-                  <span className="hidden xs:inline-flex text-[11px] font-semibold text-slate-500 px-2 py-1 bg-slate-100 rounded-md mr-1">
+                  <span className="hidden xs:inline-flex text-xs font-semibold text-slate-700 px-2 py-1 bg-slate-100 rounded-md mr-1">
                     {isExpanded ? (isAr ? 'إغلاق' : 'Close') : (isAr ? 'تعديل' : 'Edit')}
                   </span>
 
@@ -160,7 +175,7 @@ export const EducationForm: React.FC = () => {
                       e.stopPropagation();
                       reorderEducation(idx, idx - 1);
                     }}
-                    className="p-1.5 text-slate-400 hover:text-slate-700 disabled:opacity-20 hover:bg-slate-100 rounded-lg transition cursor-pointer min-w-[32px] min-h-[32px] flex items-center justify-center"
+                    className="p-1.5 text-slate-500 hover:text-slate-800 disabled:opacity-20 hover:bg-slate-100 rounded-lg transition cursor-pointer min-w-[32px] min-h-[32px] flex items-center justify-center"
                     title={isAr ? 'تحريك للأعلى' : 'Move Up'}
                     aria-label={isAr ? 'تحريك للأعلى' : 'Move Up'}
                   >
@@ -173,7 +188,7 @@ export const EducationForm: React.FC = () => {
                       e.stopPropagation();
                       reorderEducation(idx, idx + 1);
                     }}
-                    className="p-1.5 text-slate-400 hover:text-slate-700 disabled:opacity-20 hover:bg-slate-100 rounded-lg transition cursor-pointer min-w-[32px] min-h-[32px] flex items-center justify-center"
+                    className="p-1.5 text-slate-500 hover:text-slate-800 disabled:opacity-20 hover:bg-slate-100 rounded-lg transition cursor-pointer min-w-[32px] min-h-[32px] flex items-center justify-center"
                     title={isAr ? 'تحريك للأسفل' : 'Move Down'}
                     aria-label={isAr ? 'تحريك للأسفل' : 'Move Down'}
                   >
@@ -184,16 +199,16 @@ export const EducationForm: React.FC = () => {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      removeEducation(edu.id);
+                      handleDeleteEducation(edu, idx);
                     }}
-                    className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer min-w-[32px] min-h-[32px] flex items-center justify-center"
+                    className="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer min-w-[32px] min-h-[32px] flex items-center justify-center"
                     title={isAr ? 'حذف المؤهل' : 'Delete entry'}
                     aria-label={isAr ? 'حذف المؤهل' : 'Delete entry'}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
 
-                  <div className="p-1 text-slate-400">
+                  <div className="p-1 text-slate-500">
                     {isExpanded ? (
                       <ChevronUp className="w-4 h-4" />
                     ) : (

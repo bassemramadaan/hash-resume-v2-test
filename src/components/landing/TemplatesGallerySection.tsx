@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useResumeStore } from '../../store/useResumeStore';
 import { TEMPLATES, TemplateInfo } from '../../data/templates';
 import { TemplateId } from '../../types/resume';
+import { TemplateMiniLayout } from '../templates/TemplateMiniLayout';
 import { Star, ArrowRight, ArrowLeft, Check, Sparkles } from 'lucide-react';
 
 interface TemplatesGallerySectionProps {
@@ -92,22 +93,28 @@ export const TemplatesGallerySection: React.FC<TemplatesGallerySectionProps> = (
               </div>
 
               {/* Miniature Live Layout Preview Card */}
-              <div className="h-44 bg-slate-50 rounded-2xl border border-slate-200 p-4 space-y-2.5 overflow-hidden relative group-hover:border-blue-300 transition">
-                <div
-                  className="h-3 rounded.w-1/2"
-                  style={{ backgroundColor: tpl.previewColor || '#001639' }}
-                ></div>
-                <div className="h-2 bg-slate-300 rounded w-1/3"></div>
-                <div className="space-y-1.5 pt-2">
-                  <div className="h-1.5 bg-slate-200 rounded w-full"></div>
-                  <div className="h-1.5 bg-slate-200 rounded w-5/6"></div>
-                  <div className="h-1.5 bg-slate-200 rounded w-4/6"></div>
-                </div>
+              <div className="h-56 bg-slate-100/70 p-2 rounded-2xl border border-slate-200/90 overflow-hidden relative group-hover:border-slate-300 transition shadow-2xs">
+                <TemplateMiniLayout
+                  templateId={tpl.id}
+                  previewColor={tpl.previewColor}
+                  isAr={isAr}
+                />
 
-                {/* Overlaid ATS tag */}
-                <div className="absolute bottom-3 end-3 px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-md text-[9px] font-black border border-emerald-200 flex items-center gap-1 shadow-xs">
-                  <Sparkles className="w-2.5 h-2.5 text-emerald-600" />
-                  <span>ATS 98%</span>
+                {/* Overlaid Layout tag */}
+                <div className="absolute bottom-3 end-3 px-2 py-0.5 bg-white/95 backdrop-blur-xs text-slate-800 rounded-md text-[9px] font-bold border border-slate-200/90 shadow-xs flex items-center gap-1">
+                  {tpl.id === 'creative-compact' ? (
+                    <span>{isAr ? 'تخطيط عمودين جانبي' : '2-Column Sidebar'}</span>
+                  ) : tpl.id === 'bassux' ? (
+                    <span>{isAr ? 'عمود نقي بدون رسوم' : 'Single Column ATS'}</span>
+                  ) : tpl.id === 'technical-clean' ? (
+                    <span>{isAr ? 'صيغة برمجية Monospace' : 'Code Monospace'}</span>
+                  ) : tpl.id === 'minimal-exec' ? (
+                    <span>{isAr ? 'اقتباس تنفيذي رأسي' : 'Executive Quote Bar'}</span>
+                  ) : tpl.id === 'classic-professional' ? (
+                    <span>{isAr ? 'تنسيق رسمي Serif' : 'Classic Serif'}</span>
+                  ) : (
+                    <span>{isAr ? 'عمود عصري موحد' : 'Modern Clean'}</span>
+                  )}
                 </div>
               </div>
 

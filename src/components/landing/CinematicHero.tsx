@@ -46,7 +46,7 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
 
           {/* Slogan Flag Banner */}
           <div
-            className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-gradient-to-r from-orange-50 via-amber-50 to-rose-50 border border-orange-200/90 text-[#001639] text-xs sm:text-sm font-extrabold shadow-xs"
+            className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 sm:px-4 py-1 sm:py-1.5 rounded-full bg-orange-50/80 border border-orange-200/80 text-[#001639] text-xs sm:text-sm font-extrabold shadow-xs"
           >
             <Flag className="w-3.5 h-3.5 text-[#FF4D2D] fill-[#FF4D2D]/20 shrink-0" />
             <span className="tracking-tight">
@@ -93,7 +93,7 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
             <span
               className="text-xl sm:text-3xl text-slate-700 block leading-none font-normal"
               style={{
-                fontFamily: "'Caveat', 'Alex Brush', cursive, sans-serif",
+                fontFamily: "'Caveat', cursive, sans-serif",
                 transform: 'rotate(-2.5deg)',
                 letterSpacing: '0.02em',
               }}

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useResumeStore } from '../store/useResumeStore';
 import { getTranslation } from '../i18n/translations';
 import { TEMPLATES, TemplateInfo } from '../data/templates';
+import { TemplateMiniLayout } from '../components/templates/TemplateMiniLayout';
 import { Layout, Check, Sparkles, ArrowRight, ArrowLeft, ShieldCheck, Filter } from 'lucide-react';
 
 export const TemplatesPage: React.FC = () => {
@@ -100,24 +101,50 @@ export const TemplatesPage: React.FC = () => {
                 </div>
 
                 {/* Description */}
-                <p className="text-xs text-[#52627A] leading-relaxed">
+                <p className="text-xs text-[#52627A] leading-relaxed line-clamp-2 min-h-[32px]">
                   {isAr ? tpl.descAr : tpl.descEn}
                 </p>
 
-                {/* Skeleton Visual Box */}
-                <div className="p-4 bg-[#F8FAFC] rounded-xl border border-slate-200 space-y-2 text-start">
-                  <div className="h-3 bg-slate-300 rounded w-1/2" style={{ backgroundColor: tpl.previewColor }}></div>
-                  <div className="h-2 bg-slate-200 rounded w-3/4"></div>
-                  <div className="h-1.5 bg-slate-100 rounded w-full"></div>
-                  <div className="h-1.5 bg-slate-100 rounded w-5/6"></div>
+                {/* Mini-Layout Authentic Representation */}
+                <div className="h-60 bg-slate-100/70 p-2 rounded-xl border border-slate-200/90 overflow-hidden relative group-hover:border-slate-300 transition shadow-2xs">
+                  <TemplateMiniLayout
+                    templateId={tpl.id}
+                    previewColor={tpl.previewColor}
+                    isAr={isAr}
+                  />
+
+                  {/* Layout Architecture Badge Overlay */}
+                  <div className="absolute bottom-3 end-3 px-2 py-0.5 bg-white/95 backdrop-blur-xs text-slate-800 rounded-md text-[9px] font-bold border border-slate-200/90 shadow-xs flex items-center gap-1">
+                    {tpl.id === 'creative-compact' ? (
+                      <span>{isAr ? 'تخطيط عمودين جانبي' : '2-Column Sidebar'}</span>
+                    ) : tpl.id === 'bassux' ? (
+                      <span>{isAr ? 'عمود نقي بدون رسوم' : 'Single Column ATS'}</span>
+                    ) : tpl.id === 'technical-clean' ? (
+                      <span>{isAr ? 'صيغة برمجية Monospace' : 'Code Monospace'}</span>
+                    ) : tpl.id === 'minimal-exec' ? (
+                      <span>{isAr ? 'اقتباس تنفيذي رأسي' : 'Executive Quote Bar'}</span>
+                    ) : tpl.id === 'classic-professional' ? (
+                      <span>{isAr ? 'خط رسمي وتنسيق Serif' : 'Classic Serif Format'}</span>
+                    ) : (
+                      <span>{isAr ? 'عمود عصري موحد' : 'Modern Clean Layout'}</span>
+                    )}
+                  </div>
                 </div>
               </div>
 
               {/* Action Footer */}
               <div className="p-4 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between gap-2">
-                <div className="flex items-center gap-1 text-[11px] text-emerald-600 font-bold">
+                <div className={`flex items-center gap-1 text-[11px] font-bold ${
+                  tpl.category === 'ats'
+                    ? 'text-emerald-700'
+                    : 'text-slate-600'
+                }`}>
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>ATS-Friendly</span>
+                  <span>
+                    {tpl.category === 'ats'
+                      ? (isAr ? 'توافق ATS عالي 100%' : '100% ATS Compliant')
+                      : (isAr ? 'مراجعة بشرية وبورتفوليو' : 'Human Review & Portfolio')}
+                  </span>
                 </div>
 
                 <button

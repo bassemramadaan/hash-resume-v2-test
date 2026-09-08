@@ -101,7 +101,7 @@ export const Navbar: React.FC = () => {
             <span className="font-brand font-bold text-base sm:text-lg tracking-tight text-[#001639] leading-tight">
               Hash <span className="text-[#001639]">Resume</span>
             </span>
-            <span className="text-[10px] sm:text-[11px] font-medium text-[#536176] hidden xs:inline">
+            <span className="text-xs font-medium text-[#536176] hidden xs:inline">
               {isBuilder
                 ? isAr
                   ? 'محرر السيرة الذاتية'
@@ -133,7 +133,7 @@ export const Navbar: React.FC = () => {
                 >
                   <span>{link.label}</span>
                   {link.badge && (
-                    <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[6px] bg-[#fff2ed] border border-[#ffd7c8] text-[#b5472b] leading-none shrink-0">
+                    <span className="text-xs font-bold px-1.5 py-0.5 rounded-[6px] bg-[#fff2ed] border border-[#ffd7c8] text-[#b5472b] leading-none shrink-0">
                       {link.badge}
                     </span>
                   )}
@@ -316,7 +316,7 @@ export const Navbar: React.FC = () => {
 
           {/* Social Links inside Mobile Drawer */}
           <div className="pt-3 border-t border-slate-100 space-y-2">
-            <span className="text-[11px] font-bold text-slate-400 block px-1">
+            <span className="text-xs font-bold text-slate-600 block px-1">
               {isAr ? 'تواصل معنا مباشرة:' : 'Connect with Us:'}
             </span>
             <div className="grid grid-cols-3 gap-2">
@@ -324,27 +324,27 @@ export const Navbar: React.FC = () => {
                 href="https://wa.me/201101007965"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-emerald-50 text-emerald-700 text-[11px] font-bold border border-emerald-200"
+                className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-slate-100 hover:bg-[#001639] text-slate-700 hover:text-white text-xs font-bold border border-slate-200 transition"
               >
-                <MessageCircle className="w-3.5 h-3.5" />
+                <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
                 <span>واتساب</span>
               </a>
               <a
                 href="https://www.linkedin.com/company/hashresume"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-blue-50 text-blue-700 text-[11px] font-bold border border-blue-200"
+                className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-slate-100 hover:bg-[#001639] text-slate-700 hover:text-white text-xs font-bold border border-slate-200 transition"
               >
-                <Linkedin className="w-3.5 h-3.5" />
+                <Linkedin className="w-3.5 h-3.5 text-[#0A66C2]" />
                 <span>LinkedIn</span>
               </a>
               <a
                 href="https://www.facebook.com/hashresume"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-indigo-50 text-indigo-700 text-[11px] font-bold border border-indigo-200"
+                className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-slate-100 hover:bg-[#001639] text-slate-700 hover:text-white text-xs font-bold border border-slate-200 transition"
               >
-                <Facebook className="w-3.5 h-3.5" />
+                <Facebook className="w-3.5 h-3.5 text-[#1877F2]" />
                 <span>Facebook</span>
               </a>
             </div>

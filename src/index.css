@@ -1,11 +1,16 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   1. Design Tokens & CSS Custom Properties
+   ========================================================================== */
 :root {
+  /* Typography Tokens */
   --font-ui-en: "Manrope", "Inter", system-ui, sans-serif;
   --font-ui-ar: "Tajawal", "Segoe UI", Tahoma, sans-serif;
   --font-display-en: "Manrope", "Inter", system-ui, sans-serif;
   --font-display-ar: "Alexandria", "Tajawal", sans-serif;
 
+  /* Brand Colors */
   --brand-coral: #FF4D2D;
   --brand-coral-hover: #E5431F;
   --brand-coral-active: #CC3A1A;
@@ -16,17 +21,13 @@
   --brand-navy-light: #00214F;
   --brand-navy-soft: #E8EEF7;
 
+  /* Semantic UI Tokens */
   --color-primary: var(--brand-navy);
   --color-primary-hover: var(--brand-navy-light);
   --color-primary-active: var(--brand-navy-dark);
   --color-primary-soft: var(--brand-navy-soft);
   --color-primary-border: #C8D5E8;
   --color-primary-text: #FFFFFF;
-
-  --color-navy: var(--brand-navy);
-  --color-navy-dark: var(--brand-navy-dark);
-  --color-navy-light: var(--brand-navy-light);
-  --color-navy-soft: var(--brand-navy-soft);
 
   --color-background: #F8FAFC;
   --color-surface: #FFFFFF;
@@ -42,7 +43,7 @@
   --color-error: #DC2626;
   --color-info: #0EA5E9;
 
-  /* Hash Motion: Quiet. Precise. Purposeful. */
+  /* Hash Motion Tokens: Quiet. Precise. Purposeful. */
   --ease-hash: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-fast: 150ms;
   --motion-base: 220ms;
@@ -53,6 +54,9 @@
   --scale-tap: 0.98;
 }
 
+/* ==========================================================================
+   2. Tailwind v4 Theme Configuration
+   ========================================================================== */
 @theme {
   --font-sans: var(--font-ui-en);
   --font-arabic: var(--font-ui-ar);
@@ -76,6 +80,144 @@
   --color-primary-border: #C8D5E8;
 }
 
+/* ==========================================================================
+   3. Base Layout & Reset
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-ui-en);
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  line-height: 1.5;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================================
+   4. RTL & Arabic Typography System
+   ========================================================================== */
+[dir="rtl"],
+[dir="rtl"] body,
+html[dir="rtl"] body {
+  font-family: var(--font-ui-ar);
+  line-height: 1.68;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+
+/* Arabic Headings: 1.48 line-height to protect ascenders and descenders (خ، غ، ي، ج) */
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6,
+[dir="rtl"] .font-display-ar,
+[dir="rtl"] .hero-headline-ar,
+[dir="rtl"] .builder-page-title-ar,
+[dir="rtl"] .builder-section-title-ar {
+  line-height: 1.48 !important;
+  letter-spacing: normal;
+}
+
+[dir="rtl"] p,
+[dir="rtl"] li {
+  line-height: 1.68;
+  letter-spacing: normal;
+}
+
+/* Prevent clipping when compact leading utilities are applied in RTL */
+[dir="rtl"] .leading-none { line-height: 1.38 !important; }
+[dir="rtl"] .leading-tight { line-height: 1.48 !important; }
+[dir="rtl"] .leading-snug { line-height: 1.55 !important; }
+
+/* Resume Template Typography */
+.resume-template-container {
+  line-height: 1.6;
+}
+
+[dir="rtl"] .resume-template-container,
+.resume-template-container[dir="rtl"] {
+  line-height: 1.65;
+}
+
+.resume-template-container h1,
+.resume-template-container h2,
+.resume-template-container h3,
+.resume-template-container .template-heading {
+  font-family: var(--heading-font, inherit) !important;
+  line-height: 1.45;
+}
+
+[dir="rtl"] .resume-template-container h1,
+[dir="rtl"] .resume-template-container h2,
+[dir="rtl"] .resume-template-container h3,
+.resume-template-container[dir="rtl"] h1,
+.resume-template-container[dir="rtl"] h2,
+.resume-template-container[dir="rtl"] h3 {
+  line-height: 1.48 !important;
+}
+
+/* ==========================================================================
+   5. RTL Isolation & BiDi Guard (Numbers, Dates, Phone, Email, ATS Scores)
+   ========================================================================== */
+bdi,
+.bidi-isolate,
+.ltr-isolate,
+.isolate-ltr,
+.rtl-num-isolate,
+.date-range,
+.phone-number,
+.tabular-nums-ltr,
+.payment-amount,
+.payment-ref,
+.payment-tabular,
+.ats-score-num,
+.tabular-nums,
+[dir="rtl"] .data-ltr,
+[dir="rtl"] .contact-ltr,
+[dir="rtl"] .isolate-ltr,
+[dir="rtl"] .phone-number-field,
+[dir="rtl"] .date-range-field {
+  direction: ltr !important;
+  unicode-bidi: isolate !important;
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="tel"],
+[dir="rtl"] input[type="url"],
+[dir="rtl"] input[type="date"],
+[dir="rtl"] input[type="number"],
+[dir="rtl"] input[inputmode="tel"],
+[dir="rtl"] input[inputmode="numeric"],
+[dir="rtl"] input[inputmode="decimal"],
+[dir="rtl"] input[inputmode="email"] {
+  direction: ltr !important;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  unicode-bidi: isolate;
+}
+
+/* ==========================================================================
+   6. Custom Scrollbar & Interactive Utilities
+   ========================================================================== */
 @layer utilities {
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
@@ -93,68 +235,15 @@
   }
 }
 
-/* Global Horizontal Scroll Guard */
-html,
-body,
-#root {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
-  box-sizing: border-box;
-}
-
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-/* Base LTR (English / French) Typography */
-body {
-  font-family: var(--font-ui-en);
-  background-color: #F8FAFC;
-  color: #0B1120;
-  line-height: 1.5;
-  font-weight: 400;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Automatic Arabic Typography rule when dir="rtl" */
-[dir="rtl"],
-[dir="rtl"] body,
-html[dir="rtl"] body {
-  font-family: var(--font-ui-ar);
-  line-height: 1.65;
-  font-weight: 400;
-  letter-spacing: 0;
-}
-
-/* Ensure emails, phones, and URLs remain LTR even in RTL mode */
-[dir="rtl"] input[type="email"],
-[dir="rtl"] input[type="tel"],
-[dir="rtl"] input[type="url"],
-[dir="rtl"] .data-ltr,
-[dir="rtl"] .contact-ltr {
-  direction: ltr !important;
-  text-align: right;
-}
-
-/* Brand Name "Hash Resume" Typography */
+/* Brand & Typography Utility Classes */
 .font-brand,
 .brand-name {
   font-family: var(--font-ui-en) !important;
   font-weight: 700 !important;
 }
 
-/* Hero Typography Specifications */
-.font-display-en {
-  font-family: var(--font-display-en);
-}
-
-.font-display-ar {
-  font-family: var(--font-display-ar);
-}
+.font-display-en { font-family: var(--font-display-en); }
+.font-display-ar { font-family: var(--font-display-ar); }
 
 .hero-headline-en {
   font-family: var(--font-display-en);
@@ -170,23 +259,6 @@ html[dir="rtl"] body {
   line-height: 1.25;
 }
 
-/* Heading Typography Line Heights & Refined Balanced Weights */
-h1 {
-  line-height: 1.2;
-  font-weight: 700;
-}
-
-h2 {
-  line-height: 1.25;
-  font-weight: 600;
-}
-
-h3, h4 {
-  line-height: 1.3;
-  font-weight: 600;
-}
-
-/* Phase 2: Builder & Form Typography System */
 .builder-page-title-ar {
   font-family: var(--font-display-ar);
   font-weight: 700;
@@ -199,7 +271,6 @@ h3, h4 {
   line-height: 1.2;
 }
 
-/* Section Titles */
 .builder-section-title-en {
   font-family: var(--font-ui-en);
   font-weight: 700;
@@ -211,104 +282,9 @@ h3, h4 {
   line-height: 1.45;
 }
 
-/* Global Form Elements Styling in Builder */
-label,
-.form-label {
-  font-size: 13.5px;
-  font-weight: 700;
-}
-
-[dir="rtl"] label,
-[dir="rtl"] .form-label {
-  font-family: var(--font-ui-ar);
-  font-weight: 700;
-  line-height: 1.6;
-}
-
-input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-select,
-textarea,
-.form-input {
-  font-size: 14.5px;
-  font-weight: 500;
-}
-
-[dir="rtl"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-[dir="rtl"] select,
-[dir="rtl"] textarea,
-[dir="rtl"] .form-input {
-  font-family: var(--font-ui-ar);
-  font-weight: 500;
-  line-height: 1.7;
-}
-
-input::placeholder,
-textarea::placeholder {
-  font-weight: 500;
-  opacity: 0.7;
-}
-
-[dir="rtl"] input::placeholder,
-[dir="rtl"] textarea::placeholder {
-  font-family: var(--font-ui-ar);
-  font-weight: 500;
-  line-height: 1.7;
-}
-
-.form-helper,
-.helper-text {
-  font-size: 12.5px;
-  font-weight: 500;
-}
-
-[dir="rtl"] .form-helper,
-[dir="rtl"] .helper-text {
-  font-family: var(--font-ui-ar);
-  font-weight: 500;
-  line-height: 1.6;
-}
-
-/* Buttons in Builder & UI */
-button,
-.btn-ui {
-  font-weight: 700;
-}
-
-[dir="rtl"] button,
-[dir="rtl"] .btn-ui {
-  font-family: var(--font-ui-ar);
-  font-weight: 700;
-}
-
-/* ATS Numeric Values & Scores */
-.ats-score-num,
-.tabular-nums {
-  font-family: var(--font-ui-en), monospace;
-  font-variant-numeric: tabular-nums;
-  direction: ltr !important;
-  display: inline-block;
-}
-
-/* Phase 3: Payment & Modal Specific Typography */
-.payment-amount,
-.payment-ref,
-.payment-tabular {
-  font-family: var(--font-ui-en), monospace;
-  font-variant-numeric: tabular-nums;
-  direction: ltr !important;
-}
-
-.payment-body-ar {
-  font-family: var(--font-ui-ar);
-  line-height: 1.75;
-}
-
-.payment-ltr-field {
-  direction: ltr !important;
-  text-align: start;
-}
-
-/* Hash Motion Utility Classes: Quiet. Precise. Purposeful. */
+/* ==========================================================================
+   7. Hash Motion Micro-Interactions & Animation Keyframes
+   ========================================================================== */
 .hash-btn-primary {
   transition:
     transform var(--motion-fast) var(--ease-hash),
@@ -354,7 +330,7 @@ button,
   transform: var(--lift-sm);
 }
 
-/* Auto-save Feedback Micro-Interaction */
+/* Micro-Interaction Classes */
 .saved-check {
   animation: hash-check-in 220ms var(--ease-hash);
   display: inline-flex;
@@ -362,18 +338,6 @@ button,
   justify-content: center;
 }
 
-@keyframes hash-check-in {
-  from {
-    opacity: 0;
-    transform: scale(0.72);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Resume Section Completion & Progress */
 .progress-fill {
   transition: width 320ms var(--ease-hash);
 }
@@ -382,34 +346,10 @@ button,
   animation: hash-section-complete 260ms var(--ease-hash);
 }
 
-@keyframes hash-section-complete {
-  from {
-    opacity: 0.75;
-    transform: translateY(4px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Section Editor Entrance */
 .section-enter {
   animation: hash-enter 240ms var(--ease-hash);
 }
 
-@keyframes hash-enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Mobile Preview Sheet (320ms var(--ease-hash) No Bounce) */
 .mobile-preview-sheet {
   transition: transform 320ms var(--ease-hash);
   transform: translateY(100%);
@@ -420,7 +360,6 @@ button,
   transform: translateY(0);
 }
 
-/* ATS Score & Result Cards Stagger */
 .ats-circle-meter {
   transition: stroke-dasharray 600ms var(--ease-hash);
 }
@@ -429,47 +368,17 @@ button,
   animation: hash-enter 220ms var(--ease-hash) both;
 }
 
-.ats-result-card:nth-child(1) {
-  animation-delay: 0ms;
-}
+.ats-result-card:nth-child(1) { animation-delay: 0ms; }
+.ats-result-card:nth-child(2) { animation-delay: 60ms; }
+.ats-result-card:nth-child(3) { animation-delay: 120ms; }
+.ats-result-card:nth-child(4) { animation-delay: 180ms; }
+.ats-result-card:nth-child(5) { animation-delay: 240ms; }
+.ats-result-card:nth-child(6) { animation-delay: 300ms; }
 
-.ats-result-card:nth-child(2) {
-  animation-delay: 60ms;
-}
-
-.ats-result-card:nth-child(3) {
-  animation-delay: 120ms;
-}
-
-.ats-result-card:nth-child(4) {
-  animation-delay: 180ms;
-}
-
-.ats-result-card:nth-child(5) {
-  animation-delay: 240ms;
-}
-
-.ats-result-card:nth-child(6) {
-  animation-delay: 300ms;
-}
-
-/* Payment Modal Micro-Interaction: Sensitive, purposeful, fade + scale from 0.98 to 1 */
 .payment-modal {
   animation: hash-modal-in 260ms var(--ease-hash);
 }
 
-@keyframes hash-modal-in {
-  from {
-    opacity: 0;
-    transform: scale(0.98) translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-/* Payment Plan Selection Card */
 .payment-plan-card {
   transition:
     transform var(--motion-fast) var(--ease-hash),
@@ -478,15 +387,9 @@ button,
     box-shadow var(--motion-fast) var(--ease-hash);
 }
 
-.payment-plan-card:hover {
-  transform: translateY(-2px);
-}
+.payment-plan-card:hover { transform: translateY(-2px); }
+.payment-plan-card.is-selected { transform: scale(1.01); }
 
-.payment-plan-card.is-selected {
-  transform: scale(1.01);
-}
-
-/* Keyword Chip Micro-Interaction */
 .keyword-chip {
   transition:
     background-color var(--motion-fast) ease,
@@ -495,116 +398,50 @@ button,
     transform var(--motion-fast) var(--ease-hash);
 }
 
-.keyword-chip:active {
-  transform: scale(0.97);
+.keyword-chip:active { transform: scale(0.97); }
+.keyword-chip.is-added { animation: hash-chip-added 220ms var(--ease-hash); }
+
+.hero-reveal { animation: hash-hero-reveal 500ms var(--ease-hash) both; }
+.hero-reveal-badge { animation-delay: 0ms; }
+.hero-reveal-title { animation-delay: 80ms; }
+.hero-reveal-desc { animation-delay: 160ms; }
+.hero-reveal-cta { animation-delay: 240ms; }
+.hero-reveal-footer { animation-delay: 320ms; }
+
+@keyframes hash-check-in {
+  from { opacity: 0; transform: scale(0.72); }
+  to { opacity: 1; transform: scale(1); }
 }
 
-.keyword-chip.is-added {
-  animation: hash-chip-added 220ms var(--ease-hash);
+@keyframes hash-section-complete {
+  from { opacity: 0.75; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hash-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hash-modal-in {
+  from { opacity: 0; transform: scale(0.98) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 @keyframes hash-chip-added {
-  0% {
-    transform: scale(0.96);
-  }
-  50% {
-    transform: scale(1.03);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-/* Hero Reveal Animation (Single entry execution, 500ms var(--ease-hash)) */
-.hero-reveal {
-  animation: hash-hero-reveal 500ms var(--ease-hash) both;
+  0% { transform: scale(0.96); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
 }
 
 @keyframes hash-hero-reveal {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.hero-reveal-badge {
-  animation-delay: 0ms;
-}
-
-.hero-reveal-title {
-  animation-delay: 80ms;
-}
-
-.hero-reveal-desc {
-  animation-delay: 160ms;
-}
-
-.hero-reveal-cta {
-  animation-delay: 240ms;
-}
-
-.hero-reveal-footer {
-  animation-delay: 320ms;
-}
-
-/* Clear, accessible focus rings for keyboard navigation */
-:focus-visible {
-  outline: 2px solid #FF4D2D !important;
-  outline-offset: 2px !important;
-}
-
-button:focus-visible,
-a:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible,
-[tabindex]:focus-visible {
-  outline: 2px solid #001639 !important;
-  outline-offset: 2px !important;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *, ::before, ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Dedicated PDF Export Container & Layout */
-.pdf-export-container {
-  width: 210mm;
-  min-height: 297mm;
-  box-sizing: border-box;
-  background: #ffffff;
-  overflow: visible !important;
-  position: absolute;
-  left: -100000px;
-  top: 0;
-}
-
-.pdf-export-container .resume-page {
-  width: 210mm;
-  min-height: 297mm;
-  box-sizing: border-box;
-  overflow: visible !important;
-}
-
-.resume-section,
-section,
-.experience-item,
-.education-item,
-.project-item {
-  break-inside: avoid;
-  page-break-inside: avoid;
-}
-
-/* Mobile Technical Standards & Action Bar */
+/* ==========================================================================
+   8. Navigation, Action Bar & Mobile Drawers
+   ========================================================================== */
 .mobile-action-bar {
   position: fixed;
   inset-inline: 0;
@@ -617,7 +454,6 @@ section,
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Mobile Menu Drawer & Overlay (Hash Motion 180ms / 320ms var(--ease-hash)) */
 .mobile-menu-overlay {
   position: fixed;
   inset: 0;
@@ -645,131 +481,58 @@ section,
   will-change: transform;
 }
 
-html[dir="ltr"] .mobile-menu-drawer {
-  transform: translateX(100%);
-}
+html[dir="ltr"] .mobile-menu-drawer { transform: translateX(100%); }
+html[dir="rtl"] .mobile-menu-drawer { transform: translateX(-100%); }
+.mobile-menu-open .mobile-menu-drawer { transform: translateX(0); }
 
-html[dir="rtl"] .mobile-menu-drawer {
-  transform: translateX(-100%);
-}
-
-.mobile-menu-open .mobile-menu-drawer {
-  transform: translateX(0);
-}
-
-.page-content {
-  padding-bottom: 92px;
-}
-
-/* Mobile Editor & Responsive Container Constraints (Fix Horizontal Scroll) */
-.mobile-editor-page,
-.mobile-section-editor,
-.mobile-form-card,
-.mobile-editor-content {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
+/* ==========================================================================
+   9. PDF Export & Print Break Rules
+   ========================================================================== */
+.pdf-export-container {
+  width: 210mm;
+  min-height: 297mm;
   box-sizing: border-box;
-  overflow-x: hidden;
+  background: #ffffff;
+  overflow: visible !important;
+  position: absolute;
+  left: -100000px;
+  top: 0;
 }
 
-.mobile-editor-page * {
-  min-width: 0;
+.pdf-export-container .resume-page {
+  width: 210mm;
+  min-height: 297mm;
+  box-sizing: border-box;
+  overflow: visible !important;
 }
 
-.mobile-editor-row {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-  gap: 12px;
+.resume-section,
+section,
+.experience-item,
+.education-item,
+.project-item {
+  break-inside: avoid;
+  page-break-inside: avoid;
 }
 
-.add-experience-button {
-  width: 100%;
-  min-height: 48px;
+/* ==========================================================================
+   10. Accessibility & Responsive Constraints
+   ========================================================================== */
+:focus-visible {
+  outline: 2px solid #FF4D2D !important;
+  outline-offset: 2px !important;
 }
 
-.next-step-banner {
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #001639 !important;
+  outline-offset: 2px !important;
 }
 
-.personal-info-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 14px;
-  width: 100%;
-  min-width: 0;
-}
-
-@media (min-width: 768px) {
-  .personal-info-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-  }
-}
-
-.optional-links {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  min-width: 0;
-}
-
-.optional-links button {
-  min-height: 44px;
-  max-width: 100%;
-}
-
-/* Summary AI Header & Button */
-.summary-header {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 8px;
-  width: 100%;
-  min-width: 0;
-}
-
-@media (min-width: 640px) {
-  .summary-header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-}
-
-.generate-ai-button {
-  width: 100%;
-  min-height: 44px;
-}
-
-@media (min-width: 640px) {
-  .generate-ai-button {
-    width: auto;
-  }
-}
-
-/* Warning Cards on Review & Export */
-.warning-card {
-  min-width: 0;
-  overflow: hidden;
-}
-
-.warning-card p,
-.warning-card h4,
-.warning-card span {
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-/* Ensure mobile touch targets satisfy accessibility minimums */
 @media (max-width: 768px) {
   button:not(.inline-tag-btn),
   a[role="button"],
@@ -778,19 +541,7 @@ html[dir="rtl"] .mobile-menu-drawer {
     min-height: 44px;
   }
 
-  .form-grid {
-    grid-template-columns: minmax(0, 1fr) !important;
-  }
-
-  /* Ensure inputs, forms, and containers never overflow viewport */
-  .mobile-editor-page input,
-  .mobile-editor-page textarea,
-  .mobile-editor-page select,
-  .mobile-editor-page button {
-    max-width: 100%;
-  }
-
-  /* Prevent iOS Safari from zooming into form fields on focus when font-size < 16px */
+  /* Prevent iOS Safari from automatic zooming on focus */
   input[type="text"],
   input[type="email"],
   input[type="tel"],
@@ -802,28 +553,8 @@ html[dir="rtl"] .mobile-menu-drawer {
   select {
     font-size: 16px !important;
   }
-
-  .mobile-editor-page {
-    overflow-x: hidden !important;
-  }
 }
 
-/* Ensure Arabic cursive script maintains connected letterforms without artificial letter-spacing */
-[dir="rtl"] h1,
-[dir="rtl"] h2,
-[dir="rtl"] h3,
-[dir="rtl"] h4,
-[dir="rtl"] h5,
-[dir="rtl"] h6,
-[dir="rtl"] p,
-[dir="rtl"] span,
-[dir="rtl"] button,
-[dir="rtl"] input,
-[dir="rtl"] textarea {
-  letter-spacing: normal;
-}
-
-/* Accessibility & Performance: Honor prefers-reduced-motion across all elements */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -839,17 +570,3 @@ html[dir="rtl"] .mobile-menu-drawer {
     transform: none !important;
   }
 }
-
-/* Typography: Distinct Heading Font vs Body Font */
-.resume-template-container h1,
-.resume-template-container h2,
-.resume-template-container h3,
-.resume-template-container .template-heading {
-  font-family: var(--heading-font, inherit) !important;
-}
-
-
-
-
-
-

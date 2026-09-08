@@ -11,7 +11,7 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
   const { personalInfo, experiences, education, skills, projects, certifications, languages } = data;
   const isArabic = settings.language === 'ar';
   const docDir = settings.documentDirection || (isArabic ? 'rtl' : 'ltr');
-  const primaryColor = settings.primaryColor || '#0f766e';
+  const primaryColor = settings.primaryColor || '#001639';
   const headerLayout = settings.headerLayout || 'centered';
   const careerFocus = settings.careerFocus || 'experienced';
   const isFreshGrad = careerFocus === 'fresh-grad';
@@ -28,21 +28,22 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
               <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
                 {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
               </h1>
-              <p className="text-sm font-bold text-teal-700 mt-0.5">
+              <p className="text-sm font-bold mt-0.5 text-[#001639]" style={{ color: primaryColor }}>
                 {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
               </p>
             </div>
             <div className="flex flex-col gap-0.5 text-xs text-gray-500 font-mono text-end shrink-0">
-              {personalInfo.email && <span>{personalInfo.email}</span>}
-              {personalInfo.phone && <span>{personalInfo.phone}</span>}
+              {personalInfo.email && <span><bdi>{personalInfo.email}</bdi></span>}
+              {personalInfo.phone && <span><bdi>{personalInfo.phone}</bdi></span>}
               {personalInfo.location && <span>{personalInfo.location}</span>}
-              {personalInfo.linkedin && <span>{personalInfo.linkedin}</span>}
+              {personalInfo.linkedin && <span><bdi>{personalInfo.linkedin}</bdi></span>}
             </div>
             {settings.showPhoto && personalInfo.photoUrl && (
               <img
                 src={personalInfo.photoUrl}
                 alt={personalInfo.fullName}
-                className="w-16 h-16 rounded-full object-cover border border-teal-600 shrink-0"
+                className="w-16 h-16 rounded-full object-cover border shrink-0"
+                style={{ borderColor: primaryColor }}
               />
             )}
           </div>
@@ -57,15 +58,15 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
             <h1 className="text-xl font-extrabold tracking-tight text-gray-900">
               {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
             </h1>
-            <p className="text-xs font-bold text-teal-700">
+            <p className="text-xs font-bold text-[#001639]" style={{ color: primaryColor }}>
               {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
             </p>
           </div>
           <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-gray-500 font-mono">
-            {personalInfo.email && <span>{personalInfo.email}</span>}
-            {personalInfo.phone && <span>• {personalInfo.phone}</span>}
+            {personalInfo.email && <bdi>{personalInfo.email}</bdi>}
+            {personalInfo.phone && <bdi>• {personalInfo.phone}</bdi>}
             {personalInfo.location && <span>• {personalInfo.location}</span>}
-            {personalInfo.linkedin && <span>• {personalInfo.linkedin}</span>}
+            {personalInfo.linkedin && <bdi>• {personalInfo.linkedin}</bdi>}
           </div>
         </header>
       );
@@ -78,21 +79,22 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
           <img
             src={personalInfo.photoUrl}
             alt={personalInfo.fullName}
-            className="w-18 h-18 rounded-full object-cover border border-teal-600 mx-auto mb-2"
+            className="w-18 h-18 rounded-full object-cover border mx-auto mb-2"
+            style={{ borderColor: primaryColor }}
           />
         )}
         <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
           {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
         </h1>
-        <p className="text-sm font-bold text-teal-700 mt-0.5">
+        <p className="text-sm font-bold text-[#001639] mt-0.5" style={{ color: primaryColor }}>
           {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
         </p>
 
         <div className="flex flex-wrap justify-center gap-x-3 gap-y-1 text-xs text-gray-500 mt-2 font-mono">
-          {personalInfo.email && <span>{personalInfo.email}</span>}
-          {personalInfo.phone && <span>• {personalInfo.phone}</span>}
+          {personalInfo.email && <bdi>{personalInfo.email}</bdi>}
+          {personalInfo.phone && <bdi>• {personalInfo.phone}</bdi>}
           {personalInfo.location && <span>• {personalInfo.location}</span>}
-          {personalInfo.linkedin && <span>• {personalInfo.linkedin}</span>}
+          {personalInfo.linkedin && <bdi>• {personalInfo.linkedin}</bdi>}
         </div>
       </header>
     );
@@ -101,7 +103,10 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
   const renderSummary = () =>
     personalInfo.summary ? (
       <section className="mb-4">
-        <p className="text-xs text-gray-700 leading-normal border-l-2 pl-3 py-0.5 border-teal-600">
+        <p
+          className="text-xs text-gray-700 leading-normal border-l-2 pl-3 py-0.5"
+          style={{ borderColor: primaryColor }}
+        >
           {personalInfo.summary}
         </p>
       </section>
@@ -110,7 +115,10 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
   const renderExperience = () =>
     experiences && experiences.length > 0 ? (
       <section className="mb-4">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-teal-800 mb-2.5 border-b pb-1 border-gray-200">
+        <h2
+          className="text-xs font-bold uppercase tracking-wider text-[#001639] mb-2.5 border-b pb-1 border-gray-200"
+          style={{ color: primaryColor }}
+        >
           {isArabic ? 'الخبرة العملية' : 'EXPERIENCE'}
         </h2>
         <div className="space-y-3.5">
@@ -120,9 +128,9 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
                 <h3 className="font-bold text-xs text-gray-900">
                   {exp.position} — <span className="font-semibold text-gray-600">{exp.company}</span>
                 </h3>
-                <span className="text-[11px] text-gray-500">
+                <bdi className="date-range text-[11px] text-gray-500 font-sans">
                   {exp.startDate} - {exp.current ? (isArabic ? 'حتى الآن' : 'Present') : exp.endDate}
-                </span>
+                </bdi>
               </div>
               {exp.bulletPoints && exp.bulletPoints.length > 0 && (
                 <ul className="list-disc list-inside text-xs text-gray-700 mt-1 space-y-1">
@@ -140,7 +148,7 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
   const renderProjects = () =>
     projects && projects.length > 0 ? (
       <section className="mb-4">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-teal-800 mb-2.5 border-b pb-1 border-gray-200" style={{ color: primaryColor }}>
+        <h2 className="text-xs font-bold uppercase tracking-wider text-[#001639] mb-2.5 border-b pb-1 border-gray-200" style={{ color: primaryColor }}>
           {isArabic ? 'المشاريع' : 'PROJECTS'}
         </h2>
         <div className="space-y-3">
@@ -150,15 +158,19 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
                 <h3 className="font-bold text-xs text-gray-900">
                   {p.title}
                   {p.link && (
-                    <span className="text-[10px] font-normal text-teal-600 underline ml-2 mr-2">
+                    <span
+                      className="text-[10px] font-normal underline ml-2 mr-2"
+                      style={{ color: primaryColor }}
+                      dir="ltr"
+                    >
                       {p.link}
                     </span>
                   )}
                 </h3>
                 {(p.startDate || p.endDate) && (
-                  <span className="text-[11px] text-gray-500">
+                  <bdi className="date-range text-[11px] text-gray-500 font-sans">
                     {p.startDate} {p.endDate ? `- ${p.endDate}` : ''}
-                  </span>
+                  </bdi>
                 )}
               </div>
               <p className="text-xs text-gray-700 leading-normal mt-0.5">{p.description}</p>
@@ -177,7 +189,10 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
   const renderEducation = () =>
     education && education.length > 0 ? (
       <section className="mb-4">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-teal-800 mb-2 border-b pb-1 border-gray-200">
+        <h2
+          className="text-xs font-bold uppercase tracking-wider text-[#001639] mb-2 border-b pb-1 border-gray-200"
+          style={{ color: primaryColor }}
+        >
           {isArabic ? 'التعليم' : 'EDUCATION'}
         </h2>
         <div className="space-y-1.5">
@@ -187,7 +202,7 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
                 <span className="font-bold text-gray-900">{edu.degree}</span> ({edu.fieldOfStudy})
                 <p className="text-gray-600">{edu.institution}</p>
               </div>
-              <span className="text-[11px] text-gray-500">{edu.startDate} - {edu.endDate}</span>
+              <bdi className="date-range text-[11px] text-gray-500 font-sans">{edu.startDate} - {edu.endDate}</bdi>
             </div>
           ))}
         </div>
@@ -197,7 +212,7 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
   const renderSkills = () =>
     skills && skills.length > 0 ? (
       <section className="mb-4">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-teal-800 mb-2 border-b pb-1 border-gray-200" style={{ color: primaryColor }}>
+        <h2 className="text-xs font-bold uppercase tracking-wider text-[#001639] mb-2 border-b pb-1 border-gray-200" style={{ color: primaryColor }}>
           {isArabic ? 'المهارات والتقنيات' : 'SKILLS'}
         </h2>
         <div className="flex flex-wrap gap-1.5">
@@ -205,7 +220,10 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
             <span key={s.id} className="text-xs bg-gray-50 text-gray-800 px-2 py-0.5 border rounded-xs inline-flex items-center gap-1.5">
               <span>{s.name}</span>
               {s.level && (
-                <span className="text-[9px] font-bold text-teal-700 uppercase">
+                <span
+                  className="text-[9px] font-bold uppercase"
+                  style={{ color: primaryColor }}
+                >
                   ({isArabic ? (s.level === 'beginner' ? 'مبتدئ' : s.level === 'intermediate' ? 'متوسط' : s.level === 'advanced' ? 'متقدم' : 'خبير') : s.level})
                 </span>
               )}
@@ -248,7 +266,7 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
       <div className="grid grid-cols-2 gap-4 mt-2 pt-2 border-t border-gray-100">
         {certifications && certifications.length > 0 && (
           <section>
-            <h2 className="text-xs font-bold uppercase tracking-wider text-teal-800 mb-1.5 border-b pb-1 border-gray-200" style={{ color: primaryColor }}>
+            <h2 className="text-xs font-bold uppercase tracking-wider text-[#001639] mb-1.5 border-b pb-1 border-gray-200" style={{ color: primaryColor }}>
               {isArabic ? 'الشهادات' : 'CERTIFICATIONS'}
             </h2>
             <div className="space-y-1 text-xs text-gray-800">
@@ -263,7 +281,7 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
 
         {languages && languages.length > 0 && (
           <section>
-            <h2 className="text-xs font-bold uppercase tracking-wider text-teal-800 mb-1.5 border-b pb-1 border-gray-200" style={{ color: primaryColor }}>
+            <h2 className="text-xs font-bold uppercase tracking-wider text-[#001639] mb-1.5 border-b pb-1 border-gray-200" style={{ color: primaryColor }}>
               {isArabic ? 'اللغات' : 'LANGUAGES'}
             </h2>
             <div className="flex flex-wrap gap-3 text-xs">

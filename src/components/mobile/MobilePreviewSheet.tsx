@@ -59,7 +59,7 @@ export const MobilePreviewSheet: React.FC<MobilePreviewSheetProps> = ({
                     <h2 className="font-bold text-xs sm:text-sm text-[#001639]">
                       {isAr ? 'معاينة السيرة الذاتية (A4)' : 'Resume Preview (A4)'}
                     </h2>
-                    <p className="text-[10px] text-slate-500">
+                    <p className="text-xs text-slate-600 font-medium">
                       {isAr ? 'عرض مباشر لملف الـPDF' : 'Live preview of your PDF'}
                     </p>
                   </div>

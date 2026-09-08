@@ -59,7 +59,7 @@ export const NextStepBanner: React.FC<NextStepBannerProps> = ({
       aria-label={isAr ? 'الإجراء التالي المقترح' : 'Recommended next step'}
       className={`p-3.5 sm:p-4 rounded-2xl border transition-all w-full min-w-0 next-step-banner ${
         variant === 'highlight'
-          ? 'bg-gradient-to-r from-orange-50/90 via-amber-50/70 to-blue-50/60 border-orange-200/90 text-slate-900 shadow-2xs'
+          ? 'bg-orange-50/50 border-orange-200/80 text-slate-900 shadow-2xs'
           : 'bg-slate-50 border-slate-200/90 text-slate-900 shadow-2xs'
       } ${className}`}
     >

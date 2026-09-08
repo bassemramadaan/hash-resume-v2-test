@@ -547,7 +547,7 @@ export const DownloadSection: React.FC = () => {
                     ? 'أصلح هذه الملاحظات قبل التصدير'
                     : 'Fix these before exporting'}
                 </h4>
-                <p className="text-[11px] font-semibold text-slate-500">
+                <p className="text-xs font-semibold text-slate-600">
                   {isAr
                     ? `${allWarnings.length} عناصر تحتاج انتباهك`
                     : `${allWarnings.length} items need your attention`}
@@ -574,7 +574,7 @@ export const DownloadSection: React.FC = () => {
                 >
                   <div className="flex items-start gap-2.5 min-w-0 flex-1">
                     <span
-                      className={`px-2 py-0.5 rounded-md text-[10px] font-black shrink-0 mt-0.5 ${
+                      className={`px-2 py-0.5 rounded-md text-xs font-black shrink-0 mt-0.5 ${
                         isRequired
                           ? 'bg-red-100 text-red-700 border border-red-200'
                           : isRecommended
@@ -590,10 +590,10 @@ export const DownloadSection: React.FC = () => {
                     </span>
 
                     <div className="flex flex-col min-w-0 flex-1">
-                      <h4 className="font-black text-slate-800 leading-snug whitespace-normal break-words overflow-wrap-anywhere">
+                      <h4 className="font-black text-slate-900 leading-snug whitespace-normal break-words overflow-wrap-anywhere">
                         {isAr ? w.titleAr : w.titleEn}
                       </h4>
-                      <p className="text-[11px] text-slate-500 font-medium mt-0.5 whitespace-normal break-words overflow-wrap-anywhere">
+                      <p className="text-xs text-slate-600 font-medium mt-0.5 whitespace-normal break-words overflow-wrap-anywhere">
                         {isAr ? w.descAr : w.descEn}
                       </p>
                     </div>
@@ -603,7 +603,7 @@ export const DownloadSection: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setActiveTab(w.actionTab as any)}
-                      className={`self-end sm:self-auto px-3 py-1.5 font-bold rounded-lg text-[11px] flex items-center gap-1.5 shrink-0 transition cursor-pointer min-h-[32px] ${
+                      className={`self-end sm:self-auto px-3 py-1.5 font-bold rounded-lg text-xs flex items-center gap-1.5 shrink-0 transition cursor-pointer min-h-[32px] ${
                         isRequired
                           ? 'bg-red-600 hover:bg-red-700 text-white'
                           : isRecommended
@@ -611,7 +611,7 @@ export const DownloadSection: React.FC = () => {
                           : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
                       }`}
                     >
-                      <Edit3 className="w-3 h-3" />
+                      <Edit3 className="w-3.5 h-3.5" />
                       <span>{isAr ? w.actionLabelAr : w.actionLabelEn}</span>
                     </button>
                   )}
@@ -652,7 +652,7 @@ export const DownloadSection: React.FC = () => {
           {/* Readiness Score Chip */}
           <div className="flex items-center justify-between sm:justify-center gap-2.5 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5">
             <div className="flex flex-col sm:items-end">
-              <span className="text-[10px] text-slate-300 font-semibold uppercase tracking-wider">
+              <span className="text-xs text-slate-200 font-bold uppercase tracking-wider">
                 {isAr ? 'توافق ATS' : 'ATS Readiness'}
               </span>
               <span
@@ -697,7 +697,7 @@ export const DownloadSection: React.FC = () => {
                   const firstTab = allWarnings[0]?.actionTab || 'personal';
                   setActiveTab(firstTab);
                 }}
-                className="text-[11px] font-bold text-amber-300 hover:text-amber-200 underline flex items-center gap-1 cursor-pointer"
+                className="text-xs font-bold text-amber-300 hover:text-amber-200 underline flex items-center gap-1 cursor-pointer"
               >
                 <span>{isAr ? 'اكتشف ما يجب إصلاحه' : 'See what to fix'}</span>
                 <ArrowRight className="w-3 h-3 rtl:rotate-180" />
@@ -705,7 +705,7 @@ export const DownloadSection: React.FC = () => {
             </div>
 
             {/* Up to 3 Key Reasons */}
-            <ul className="space-y-1.5 text-[11px] text-slate-200 ps-1">
+            <ul className="space-y-1.5 text-xs text-slate-200 ps-1 font-medium">
               {allWarnings.slice(0, 3).map((w, idx) => (
                 <li key={idx} className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0">
@@ -716,7 +716,7 @@ export const DownloadSection: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setActiveTab(w.actionTab)}
-                      className="text-[10px] text-slate-300 hover:text-white underline shrink-0 cursor-pointer"
+                      className="text-xs text-slate-200 hover:text-white underline shrink-0 cursor-pointer font-semibold"
                     >
                       {isAr ? w.actionLabelAr : w.actionLabelEn}
                     </button>
@@ -769,7 +769,7 @@ export const DownloadSection: React.FC = () => {
         </div>
 
         {/* Feature Guarantees Bar */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 border-t border-white/10 text-[11px] text-slate-300">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 border-t border-white/10 text-xs text-slate-200 font-medium">
           <div className="flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
             <span>{isAr ? 'ملف PDF عالي الجودة' : 'High-quality PDF'}</span>
@@ -812,7 +812,7 @@ export const DownloadSection: React.FC = () => {
                   ? 'أصلح هذه النقاط قبل التصدير'
                   : 'Fix these before exporting'}
               </h4>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-600 font-medium">
                 {allWarnings.length === 0
                   ? isAr
                     ? 'سيرتك الذاتية تحتوي على الأقسام المطلوبة وجاهزة للمراجعة والتصدير.'
@@ -837,7 +837,7 @@ export const DownloadSection: React.FC = () => {
                   <span className="font-bold text-[#001639] block">
                     {isAr ? warn.titleAr : warn.titleEn}
                   </span>
-                  <span className="text-[11px] text-slate-600 block leading-relaxed">
+                  <span className="text-xs text-slate-700 block leading-relaxed">
                     {isAr ? warn.descAr : warn.descEn}
                   </span>
                 </div>
@@ -867,7 +867,7 @@ export const DownloadSection: React.FC = () => {
               <h4 className="text-sm font-black text-[#001639]">
                 {isAr ? 'نموذج الدفع: لمرة واحدة فقط عند التحميل' : 'One-Time Payment Model (No Recurring Fees)'}
               </h4>
-              <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+              <span className="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-xs font-bold">
                 {isAr ? 'بدون أي اشتراك تلقائي' : 'Zero Subscriptions'}
               </span>
             </div>
@@ -885,19 +885,19 @@ export const DownloadSection: React.FC = () => {
           <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/70 hover:bg-slate-50 flex flex-col justify-between transition">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-700">{isAr ? 'تحميل فردي' : 'Single Download'}</span>
-                <span className="text-[10px] font-bold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
+                <span className="text-xs font-bold text-slate-800">{isAr ? 'تحميل فردي' : 'Single Download'}</span>
+                <span className="text-xs font-bold text-slate-700 bg-white px-2 py-0.5 rounded border border-slate-200">
                   {isAr ? 'سيرة واحدة' : '1 Resume'}
                 </span>
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl font-black text-[#001639]">50</span>
                 <span className="text-xs font-bold text-slate-600">{isAr ? 'ج.م' : 'EGP'}</span>
-                <span className="text-[10px] text-slate-500 font-medium ms-1">
+                <span className="text-xs text-slate-600 font-medium ms-1">
                   ({isAr ? 'دفعة لمرة واحدة' : 'one-time payment'})
                 </span>
               </div>
-              <ul className="text-[11px] text-slate-600 space-y-1.5 pt-1">
+              <ul className="text-xs text-slate-700 space-y-1.5 pt-1">
                 <li className="flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <span>{isAr ? 'تحميل سيرة ذاتية واحدة عالية الجودة PDF' : '1 high-quality PDF download'}</span>
@@ -929,24 +929,24 @@ export const DownloadSection: React.FC = () => {
 
           {/* Plan 2: 3-Downloads Bundle */}
           <div className="border-2 border-[#FF4D2D] rounded-xl p-4 bg-orange-50/30 hover:bg-orange-50/50 flex flex-col justify-between transition relative">
-            <span className="absolute -top-2.5 left-4 sm:left-auto sm:right-4 px-2 py-0.5 bg-[#FF4D2D] text-white text-[9px] font-black rounded-full uppercase tracking-wider">
+            <span className="absolute -top-2.5 left-4 sm:left-auto sm:right-4 px-2.5 py-0.5 bg-[#FF4D2D] text-white text-xs font-black rounded-full uppercase tracking-wider">
               {isAr ? 'الأكثر توفيراً (توفير 30 ج.م)' : 'Save 30 EGP'}
             </span>
             <div className="space-y-2 pt-1">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-orange-950">{isAr ? 'باقة 3 تحميلات' : '3-Downloads Pack'}</span>
-                <span className="text-[10px] font-bold text-orange-800 bg-orange-100 px-2 py-0.5 rounded border border-orange-200">
+                <span className="text-xs font-bold text-orange-900 bg-orange-100 px-2 py-0.5 rounded border border-orange-200">
                   {isAr ? '3 سير ذاتية' : '3 Resumes'}
                 </span>
               </div>
               <div className="flex items-baseline gap-1">
                 <span className="text-2xl font-black text-[#001639]">120</span>
                 <span className="text-xs font-bold text-slate-600">{isAr ? 'ج.م' : 'EGP'}</span>
-                <span className="text-[10px] text-emerald-700 font-bold ms-1">
+                <span className="text-xs text-emerald-700 font-bold ms-1">
                   ({isAr ? '40 ج.م للتحميل فقط' : 'Only 40 EGP/CV'})
                 </span>
               </div>
-              <ul className="text-[11px] text-slate-600 space-y-1.5 pt-1">
+              <ul className="text-xs text-slate-700 space-y-1.5 pt-1">
                 <li className="flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <span>{isAr ? '3 تحميلات لنماذج أو نسخ سير ذاتية مختلفة' : '3 downloads for different resume versions'}</span>
@@ -978,10 +978,10 @@ export const DownloadSection: React.FC = () => {
         </div>
 
         {/* Local Storage & Data Privacy Banner */}
-        <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-2.5 text-[11px] text-slate-600">
+        <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-2.5 text-xs text-slate-700">
           <Lock className="w-4 h-4 text-[#001639] shrink-0 mt-0.5" />
           <div className="space-y-0.5">
-            <span className="font-bold text-slate-800">
+            <span className="font-bold text-slate-900">
               {isAr ? 'خصوصية وأمان البيانات 100%:' : '100% Data Privacy & Security:'}
             </span>
             <p>
@@ -1010,12 +1010,12 @@ export const DownloadSection: React.FC = () => {
                 <h4 className="text-xs sm:text-sm font-bold text-[#001639]">
                   {isAr ? 'فحص الكلمات المفتاحية ATS' : 'ATS Keyword Match'}
                 </h4>
-                <p className="text-[11px] text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-600 mt-0.5">
                   {isAr ? 'مطابقة السيرة مع إعلان وظيفتك واكتشاف الكلمات الناقصة' : 'Scan missing keywords & match job requirements'}
                 </p>
               </div>
             </div>
-            <span className="text-slate-400 group-hover:text-[#FF4D2D] text-xs font-bold transition rtl:rotate-180">
+            <span className="text-slate-500 group-hover:text-[#FF4D2D] text-xs font-bold transition rtl:rotate-180">
               →
             </span>
           </button>
@@ -1034,12 +1034,12 @@ export const DownloadSection: React.FC = () => {
                 <h4 className="text-xs sm:text-sm font-bold text-[#001639]">
                   {isAr ? 'تخصيص القالب والمظهر' : 'Template & Colors'}
                 </h4>
-                <p className="text-[11px] text-slate-500 mt-0.5">
+                <p className="text-xs text-slate-600 mt-0.5">
                   {isAr ? 'تغيير التصميم والألوان والخطوط' : 'Change theme, font, and layout'}
                 </p>
               </div>
             </div>
-            <span className="text-slate-400 group-hover:text-[#001639] text-xs font-bold transition rtl:rotate-180">
+            <span className="text-slate-500 group-hover:text-[#001639] text-xs font-bold transition rtl:rotate-180">
               →
             </span>
           </button>
@@ -1056,7 +1056,7 @@ export const DownloadSection: React.FC = () => {
                 <h4 className="text-xs sm:text-sm font-bold text-[#001639]">
                   {isAr ? 'النسخة الاحتياطية للبيانات (JSON Backup)' : 'Data Backup & Restore'}
                 </h4>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-xs text-slate-600 font-medium">
                   {isAr
                     ? 'احفظ نسخة من بيانات سيرتك الذاتية على جهازك للخصوصية أو استعدها في أي وقت.'
                     : 'Your backup is downloaded to your device. Keep it somewhere safe.'}

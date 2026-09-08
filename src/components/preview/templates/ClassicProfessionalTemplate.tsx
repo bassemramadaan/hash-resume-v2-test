@@ -33,10 +33,10 @@ export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo((
               </p>
             </div>
             <div className="text-xs text-gray-600 space-y-0.5 text-end shrink-0">
-              {personalInfo.email && <div>{personalInfo.email}</div>}
-              {personalInfo.phone && <div>{personalInfo.phone}</div>}
-              {personalInfo.location && <div>{personalInfo.location}</div>}
-              {personalInfo.linkedin && <div>{personalInfo.linkedin}</div>}
+              {personalInfo.email && <div><bdi className="font-sans">{personalInfo.email}</bdi></div>}
+              {personalInfo.phone && <div><bdi className="font-sans">{personalInfo.phone}</bdi></div>}
+              {personalInfo.location && <div><span>{personalInfo.location}</span></div>}
+              {personalInfo.linkedin && <div><bdi className="font-sans">{personalInfo.linkedin}</bdi></div>}
             </div>
             {settings.showPhoto && personalInfo.photoUrl && (
               <img
@@ -62,10 +62,10 @@ export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo((
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-x-2 text-[11px] text-gray-600">
-            {personalInfo.email && <span>{personalInfo.email}</span>}
-            {personalInfo.phone && <span>• {personalInfo.phone}</span>}
+            {personalInfo.email && <bdi className="font-sans">{personalInfo.email}</bdi>}
+            {personalInfo.phone && <bdi className="font-sans">• {personalInfo.phone}</bdi>}
             {personalInfo.location && <span>• {personalInfo.location}</span>}
-            {personalInfo.linkedin && <span>• {personalInfo.linkedin}</span>}
+            {personalInfo.linkedin && <bdi className="font-sans">• {personalInfo.linkedin}</bdi>}
           </div>
         </header>
       );
@@ -89,10 +89,10 @@ export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo((
         </p>
 
         <div className="flex flex-wrap justify-center items-center gap-x-3 text-xs text-gray-600">
-          {personalInfo.email && <span>{personalInfo.email}</span>}
-          {personalInfo.phone && <span>• {personalInfo.phone}</span>}
+          {personalInfo.email && <bdi className="font-sans">{personalInfo.email}</bdi>}
+          {personalInfo.phone && <bdi className="font-sans">• {personalInfo.phone}</bdi>}
           {personalInfo.location && <span>• {personalInfo.location}</span>}
-          {personalInfo.linkedin && <span>• {personalInfo.linkedin}</span>}
+          {personalInfo.linkedin && <bdi className="font-sans">• {personalInfo.linkedin}</bdi>}
         </div>
       </header>
     );
@@ -119,9 +119,9 @@ export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo((
             <div key={exp.id}>
               <div className="flex justify-between items-baseline">
                 <span className="font-bold text-xs text-gray-900">{exp.position}</span>
-                <span className="text-[11px] font-semibold text-gray-600">
+                <bdi className="date-range text-[11px] font-semibold text-gray-600 font-sans">
                   {exp.startDate} – {exp.current ? (isArabic ? 'حتى الآن' : 'Present') : exp.endDate}
-                </span>
+                </bdi>
               </div>
               <div className="text-xs font-medium text-gray-700 italic mb-1">
                 {exp.company} {exp.location ? `, ${exp.location}` : ''}
@@ -152,15 +152,15 @@ export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo((
                 <span className="font-bold text-xs text-gray-900">
                   {p.title}
                   {p.link && (
-                    <span className="text-[10px] font-normal italic text-indigo-600 ml-1.5 mr-1.5 font-sans">
+                    <span className="text-[10px] font-normal italic text-indigo-600 ml-1.5 mr-1.5 font-sans" dir="ltr">
                       ({p.link})
                     </span>
                   )}
                 </span>
                 {(p.startDate || p.endDate) && (
-                  <span className="text-[11px] font-semibold text-gray-600">
+                  <bdi className="date-range text-[11px] font-semibold text-gray-600 font-sans">
                     {p.startDate} {p.endDate ? `– ${p.endDate}` : ''}
-                  </span>
+                  </bdi>
                 )}
               </div>
               <p className="text-xs text-gray-800 leading-normal">{p.description}</p>
@@ -189,7 +189,7 @@ export const ClassicProfessionalTemplate: React.FC<TemplateProps> = React.memo((
                 <span className="font-bold text-gray-900">{edu.degree} in {edu.fieldOfStudy}</span>
                 <p className="text-gray-700">{edu.institution}</p>
               </div>
-              <span className="text-[11px] text-gray-600">{edu.startDate} – {edu.endDate}</span>
+              <bdi className="date-range text-[11px] text-gray-600 font-sans">{edu.startDate} – {edu.endDate}</bdi>
             </div>
           ))}
         </div>

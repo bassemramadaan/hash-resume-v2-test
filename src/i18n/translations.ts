@@ -20,11 +20,20 @@ export const translations = {
     downloading: "جاري الإنشاء...",
 
     // Quick Actions
-    startNewResume: "بدء سيرة جديدة",
+    startNewResume: "بدء سيرة جديدة فارغة",
+    startFresh: "بدء سيرة جديدة فارغة",
+    loadSampleResume: "تعبئة نموذج سيرة تجريبية",
+    loadSampleConfirmTitle: "تعبئة نموذج سيرة تجريبية؟",
+    loadSampleConfirmDesc: "سيتم ملء السيرة ببيانات نموذجية واقعية واحترافية متوافقة مع الـ ATS لتتمكن من رؤية النتيجة فوراً والتعديل عليها مباشرة.",
+    loadSampleConfirmBtn: "نعم، املأ البيانات التجريبية",
+    loadSampleCancelBtn: "إلغاء والتراجع",
+    loadSampleSuccessMsg: "تم تحميل نموذج السيرة التجريبية بنجاح! يمكنك الآن التعديل عليها مباشرة.",
+    emptyOnboardingTitle: "ابدأ رحلة إنشاء سيرتك الذاتية",
+    emptyOnboardingDesc: "وفر وقتك واستكشف شكل السيرة المكتملة فوراً، أو ابدأ بكتابة بياناتك من الصفر.",
     clearData: "مسح البيانات",
     resetConfirm: "البدء بسيرة ذاتية جديدة؟ مسودتك الحالية محفوظة تلقائياً.",
-    startNewResumeTitle: "بدء سيرة ذاتية جديدة؟",
-    startNewResumeDesc: "البدء بسيرة ذاتية جديدة؟ مسودتك الحالية محفوظة تلقائياً.",
+    startNewResumeTitle: "بدء سيرة ذاتية جديدة فارغة؟",
+    startNewResumeDesc: "سيتم تفريغ كافة الحقول لتبدأ بسيرة جديدة من الصفر. تظل باقاتك ورصيد التفعيل محفوظاً كما هو.",
     startNewResumeConfirmBtn: "نعم، ابدأ سيرة جديدة",
     startNewResumeCancelBtn: "إلغاء والتراجع",
     startNewResumeSuccessMsg: "تم تفريغ النموذج والبدء بسيرة ذاتية جديدة بنجاح.",
@@ -135,6 +144,23 @@ export const translations = {
     atsMissingKeywords: "كلمات مفتاحية يُفضل إضافتها",
     atsActionPoints: "خطوات سريعة لرفع درجتك",
 
+    // ATS Import Protection Modal
+    importConfirmTitle: "استيراد بيانات السيرة الذاتية إلى المحرر",
+    importConfirmDesc: "لديك مسودة حالية في المحرر، هل تريد استبدالها ببيانات هذا الملف، أم فتح المسودة الحالية؟",
+    importReplaceBtn: "استبدال بالبيانات المستوردة",
+    importKeepCurrentBtn: "فتح المسودة الحالية",
+    importCancelBtn: "إلغاء",
+
+    // Undo Actions
+    undo: "تراجع",
+    undoActionSuccess: "تمت الاستعادة بنجاح",
+    experienceDeleted: "تم حذف الخبرة",
+    educationDeleted: "تم حذف المؤهل التعليمي",
+    skillDeleted: "تم حذف المهارة",
+    projectDeleted: "تم حذف المشروع",
+    certDeleted: "تم حذف الشهادة",
+    languageDeleted: "تم حذف اللغة",
+
     // Pricing & Activation
     pricingTitle: "اختر خطة التفعيل المناسبة",
     pricingSub: "دفع لمرة واحدة بأسعار تناسب السوق المصري والعربي. بدون اشتراكات شهرية متكررة وبدون تكاليف خفية.",
@@ -192,11 +218,20 @@ export const translations = {
     downloading: "Generating PDF...",
 
     // Quick Actions
-    startNewResume: "Start New Resume",
+    startNewResume: "Start Fresh",
+    startFresh: "Start Fresh",
+    loadSampleResume: "Load Sample Resume",
+    loadSampleConfirmTitle: "Load Sample Resume Data?",
+    loadSampleConfirmDesc: "This will fill the editor with realistic, professional ATS-compliant sample data so you can see the result immediately and customize it directly.",
+    loadSampleConfirmBtn: "Yes, Load Sample Data",
+    loadSampleCancelBtn: "Cancel",
+    loadSampleSuccessMsg: "Sample resume loaded successfully! You can now customize it directly.",
+    emptyOnboardingTitle: "Start Building Your Resume",
+    emptyOnboardingDesc: "Explore a fully formatted sample resume immediately, or start entering your details from scratch.",
     clearData: "Reset Builder",
     resetConfirm: "Start a new resume? Your current draft is saved.",
-    startNewResumeTitle: "Start a new resume?",
-    startNewResumeDesc: "Start a new resume? Your current draft is saved.",
+    startNewResumeTitle: "Start a new blank resume?",
+    startNewResumeDesc: "All input fields will be cleared so you can begin fresh. Your purchased plans and activation credits remain unaffected.",
     startNewResumeConfirmBtn: "Yes, Start Fresh",
     startNewResumeCancelBtn: "Cancel",
     startNewResumeSuccessMsg: "Resume has been cleared. You are ready to start fresh.",
@@ -307,6 +342,23 @@ export const translations = {
     atsMissingKeywords: "Recommended Missing Keywords",
     atsActionPoints: "Actionable Improvement Steps",
 
+    // ATS Import Protection Modal
+    importConfirmTitle: "Import Resume Data to Builder",
+    importConfirmDesc: "You have an existing draft in the editor. Do you want to replace it with data from this file, or open your current draft?",
+    importReplaceBtn: "Replace with Imported Data",
+    importKeepCurrentBtn: "Open Current Draft",
+    importCancelBtn: "Cancel",
+
+    // Undo Actions
+    undo: "Undo",
+    undoActionSuccess: "Restored successfully",
+    experienceDeleted: "Experience deleted",
+    educationDeleted: "Education deleted",
+    skillDeleted: "Skill deleted",
+    projectDeleted: "Project deleted",
+    certDeleted: "Certification deleted",
+    languageDeleted: "Language deleted",
+
     // Pricing & Activation
     pricingTitle: "Simple One-Time Activation",
     pricingSub: "No subscription trap. Pay once and keep editing locally on your device with complete peace of mind.",
@@ -364,7 +416,16 @@ export const translations = {
     downloading: "Génération en cours...",
 
     // Quick Actions
-    startNewResume: "Nouveau CV",
+    startNewResume: "Commencer à zéro",
+    startFresh: "Commencer à zéro",
+    loadSampleResume: "Charger un CV exemple",
+    loadSampleConfirmTitle: "Charger un exemple de CV ?",
+    loadSampleConfirmDesc: "Des données professionnelles d'exemple seront chargées pour vous permettre de visualiser immédiatement le rendu et de les personnaliser.",
+    loadSampleConfirmBtn: "Oui, charger l'exemple",
+    loadSampleCancelBtn: "Annuler",
+    loadSampleSuccessMsg: "Modèle de CV d'exemple chargé avec succès !",
+    emptyOnboardingTitle: "Commencez à créer votre CV",
+    emptyOnboardingDesc: "Découvrez immédiatement un CV pré-rempli ou commencez à saisir vos informations de zéro.",
     clearData: "Effacer les données",
     resetConfirm: "Voulez-vous vraiment réinitialiser toutes les données et commencer un nouveau CV vierge ?",
     startNewResumeTitle: "Commencer un nouveau CV vierge",
@@ -472,6 +533,23 @@ export const translations = {
     atsStrengths: "Points forts identifiés",
     atsMissingKeywords: "Mots-clés manquants recommandés",
     atsActionPoints: "Actions rapides pour améliorer votre score",
+
+    // ATS Import Protection Modal
+    importConfirmTitle: "Importer les données du CV dans le créateur",
+    importConfirmDesc: "Vous avez un brouillon existant dans l'éditeur. Voulez-vous le remplacer par les données de ce fichier ou ouvrir votre brouillon actuel ?",
+    importReplaceBtn: "Remplacer par les données importées",
+    importKeepCurrentBtn: "Ouvrir le brouillon actuel",
+    importCancelBtn: "Annuler",
+
+    // Undo Actions
+    undo: "Annuler",
+    undoActionSuccess: "Restauré avec succès",
+    experienceDeleted: "Expérience supprimée",
+    educationDeleted: "Formation supprimée",
+    skillDeleted: "Compétence supprimée",
+    projectDeleted: "Projet supprimé",
+    certDeleted: "Certification supprimée",
+    languageDeleted: "Langue supprimée",
 
     // AI Assistant
     aiAssistantTitle: "Assistant IA Hash Resume",

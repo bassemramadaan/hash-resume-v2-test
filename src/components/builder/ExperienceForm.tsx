@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
+import { useUndoToastStore } from '../../store/useUndoToastStore';
 import { getTranslation } from '../../i18n/translations';
 import { generateId } from '../../utils/idGenerator';
 import {
@@ -27,10 +28,12 @@ export const ExperienceForm: React.FC = () => {
     addExperience,
     updateExperience,
     removeExperience,
+    insertExperienceAtIndex,
     reorderExperiences,
     settings,
     openAiModal,
   } = useResumeStore();
+  const { showUndoToast } = useUndoToastStore();
 
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
@@ -214,6 +217,18 @@ export const ExperienceForm: React.FC = () => {
     updateExperience(expId, { bulletPoints: next });
   };
 
+  const handleDeleteExperience = (exp: any, expIdx: number) => {
+    removeExperience(exp.id);
+    showUndoToast({
+      messageAr: exp.position ? `تم حذف خبرة "${exp.position}"` : 'تم حذف الخبرة',
+      messageEn: exp.position ? `Deleted "${exp.position}"` : 'Experience deleted',
+      onUndo: () => {
+        insertExperienceAtIndex(expIdx, exp);
+        setExpandedId(exp.id);
+      },
+    });
+  };
+
   return (
     <div className="space-y-6 text-slate-800 w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content">
       {/* Header */}
@@ -321,7 +336,7 @@ export const ExperienceForm: React.FC = () => {
                     <h3 className="font-semibold text-xs text-slate-900">
                       {exp.position || (isAr ? 'مسمى وظيفي جديد' : 'New Role Title')}
                     </h3>
-                    <p className="text-[11px] text-slate-500 font-normal">
+                    <p className="text-xs text-slate-600 font-medium">
                       {exp.company || (isAr ? 'اسم الشركة' : 'Company Name')}
                       {exp.startDate ? ` • ${exp.startDate} - ${exp.current ? (isAr ? 'حتى الآن' : 'Present') : exp.endDate}` : ''}
                     </p>
@@ -361,7 +376,7 @@ export const ExperienceForm: React.FC = () => {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      removeExperience(exp.id);
+                      handleDeleteExperience(exp, expIdx);
                     }}
                     className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition cursor-pointer"
                     title={isAr ? 'حذف الخبرة' : 'Delete experience'}
@@ -474,7 +489,7 @@ export const ExperienceForm: React.FC = () => {
 
                     {/* Action Verbs Pills Bar */}
                     <div className="flex flex-wrap items-center gap-1.5 py-1">
-                      <span className="text-[11px] text-slate-400 font-medium">
+                      <span className="text-xs text-slate-600 font-semibold">
                         {isAr ? 'أفعال إنجاز:' : 'Verbs:'}
                       </span>
                       {(actionVerbs || []).slice(0, 5).map((verb, vIdx) => (
@@ -482,7 +497,7 @@ export const ExperienceForm: React.FC = () => {
                           key={vIdx}
                           type="button"
                           onClick={() => handleInsertVerb(exp.id, exp.bulletPoints, verb)}
-                          className="px-2 py-0.5 text-[11px] font-medium bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-md transition cursor-pointer"
+                          className="px-2 py-0.5 text-xs font-medium bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-md transition cursor-pointer"
                         >
                           + {verb}
                         </button>
@@ -514,61 +529,61 @@ export const ExperienceForm: React.FC = () => {
                           </div>
 
                           {/* Quick 1-Click Inline Enhancers */}
-                          <div className="flex flex-wrap items-center gap-1.5 text-[10px] text-slate-500 pt-0.5">
+                          <div className="flex flex-wrap items-center gap-1.5 text-xs text-slate-600 pt-0.5">
                             <button
                               type="button"
                               onClick={() => handleStartQuantify(exp.id, bIdx, bullet, exp.position)}
-                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-orange-50 hover:bg-orange-100 text-orange-900 border border-orange-200 transition cursor-pointer font-bold shadow-2xs active:scale-95"
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-orange-50 hover:bg-orange-100 text-orange-900 border border-orange-200 transition cursor-pointer font-bold shadow-2xs active:scale-95 text-xs"
                             >
-                              <Sparkles className="w-3 h-3 text-[#FF4D2D]" />
+                              <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
                               <span>{isAr ? '📊 تحويل لإنجاز كمي (أرقام ونتائج)' : '📊 Quantify with AI (KPIs)'}</span>
                             </button>
 
                             <button
                               type="button"
                               onClick={() => handleApplyQuickTransform(exp.id, exp.bulletPoints, bIdx, 'metric')}
-                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer font-medium"
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer font-semibold text-xs"
                             >
-                              <TrendingUp className="w-3 h-3 text-emerald-600" />
+                              <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
                               <span>{isAr ? '+ أرقام (% / KPIs)' : '+ Metrics (%)'}</span>
                             </button>
                             <button
                               type="button"
                               onClick={() => handleApplyQuickTransform(exp.id, exp.bulletPoints, bIdx, 'action')}
-                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer font-medium"
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer font-semibold text-xs"
                             >
-                              <Wand2 className="w-3 h-3 text-indigo-600" />
+                              <Wand2 className="w-3.5 h-3.5 text-[#FF4D2D]" />
                               <span>{isAr ? 'صياغة قيادية' : 'Action Verb'}</span>
                             </button>
                             <button
                               type="button"
                               onClick={() => handleApplyQuickTransform(exp.id, exp.bulletPoints, bIdx, 'ats')}
-                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer font-medium"
+                              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 transition cursor-pointer font-semibold text-xs"
                             >
-                              <Target className="w-3 h-3 text-blue-600" />
+                              <Target className="w-3.5 h-3.5 text-[#001639]" />
                               <span>{isAr ? 'معايير ATS' : 'ATS Standards'}</span>
                             </button>
                           </div>
 
                           {/* AI Quantify Options Card */}
                           {quantifyTarget?.expId === exp.id && quantifyTarget?.bIdx === bIdx && (
-                            <div className="p-3 bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200 rounded-xl space-y-2 animate-in fade-in-50 duration-150">
+                            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2 animate-in fade-in-50 duration-150">
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-bold text-orange-950 flex items-center gap-1.5">
+                                <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
                                   <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
                                   <span>{isAr ? 'خيارات الصياغة الرقمية القابلة للقياس (منهجية STAR):' : 'Quantified Achievement Options (STAR):'}</span>
                                 </span>
                                 <button
                                   type="button"
                                   onClick={() => setQuantifyTarget(null)}
-                                  className="p-1 text-slate-400 hover:text-slate-700 rounded-md cursor-pointer"
+                                  className="p-1 text-slate-500 hover:text-slate-800 rounded-md cursor-pointer"
                                 >
                                   <X className="w-3.5 h-3.5" />
                                 </button>
                               </div>
 
                               {isQuantifying ? (
-                                <div className="flex items-center justify-center py-4 text-xs font-semibold text-orange-800 gap-2">
+                                <div className="flex items-center justify-center py-4 text-xs font-semibold text-orange-900 gap-2">
                                   <Loader2 className="w-4 h-4 animate-spin text-[#FF4D2D]" />
                                   <span>{isAr ? 'جاري تحويل المسؤولية إلى إنجاز كمي مدعوم بالأرقام...' : 'Generating high-impact quantifiable metrics...'}</span>
                                 </div>
@@ -579,12 +594,12 @@ export const ExperienceForm: React.FC = () => {
                                       key={oIdx}
                                       type="button"
                                       onClick={() => handleApplyQuantified(opt)}
-                                      className="w-full text-start p-2 rounded-lg bg-white hover:bg-orange-100/70 border border-orange-200/80 text-xs text-slate-800 font-medium transition cursor-pointer flex items-start gap-2 group active:scale-99"
+                                      className="w-full text-start p-2 rounded-lg bg-white hover:bg-orange-100/70 border border-orange-200/80 text-xs text-slate-900 font-medium transition cursor-pointer flex items-start gap-2 group active:scale-99"
                                     >
-                                      <span className="w-4 h-4 rounded-full bg-orange-100 group-hover:bg-[#001639] group-hover:text-white text-[#001639] text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5 transition">
+                                      <span className="w-5 h-5 rounded-full bg-orange-100 group-hover:bg-[#001639] group-hover:text-white text-[#001639] text-xs font-bold flex items-center justify-center shrink-0 mt-0.5 transition">
                                         {oIdx + 1}
                                       </span>
-                                      <span className="flex-1">{opt}</span>
+                                      <span className="flex-1 leading-relaxed">{opt}</span>
                                       <Check className="w-3.5 h-3.5 text-emerald-600 opacity-0 group-hover:opacity-100 transition shrink-0 mt-0.5" />
                                     </button>
                                   ))}

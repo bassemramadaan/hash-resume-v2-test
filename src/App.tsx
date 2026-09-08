@@ -4,6 +4,8 @@ import { useResumeStore } from './store/useResumeStore';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { WhatsAppButton } from './components/ui/WhatsAppButton';
+import { GlobalUndoToast } from './components/common/GlobalUndoToast';
+import { PdfExportProgressModal } from './components/common/PdfExportProgressModal';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 
 // Eagerly load LandingPage for fastest initial paint on root route
@@ -115,6 +117,8 @@ export default function App() {
         )}
 
         <WhatsAppButton />
+        <GlobalUndoToast />
+        <PdfExportProgressModal />
 
         {shouldRenderOffscreen && (
           <React.Suspense fallback={null}>

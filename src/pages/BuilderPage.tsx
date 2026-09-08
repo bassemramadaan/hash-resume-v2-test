@@ -6,6 +6,7 @@ import { useMediaQuery } from '../hooks/useMediaQuery';
 import {
   clearDownloadCompletionFlags,
   validateResumeLockState,
+  isResumeBlank,
 } from '../utils/resumeFingerprint';
 import { calculateCompletionScore } from '../utils/resumeCompletion';
 
@@ -68,6 +69,7 @@ export const BuilderPage: React.FC = () => {
     activeTab,
     setActiveTab,
     resetResume,
+    loadSampleResume,
     resumeData,
     activation,
     lockResumeForEdits,
@@ -101,6 +103,20 @@ export const BuilderPage: React.FC = () => {
   // Start New Resume Confirmation Modal state
   const [isResetModalOpen, setIsResetModalOpen] = useState(false);
   const [showResetToast, setShowResetToast] = useState(false);
+
+  // Load Sample Resume Modal & Toast state
+  const [isSampleModalOpen, setIsSampleModalOpen] = useState(false);
+  const [showSampleToast, setShowSampleToast] = useState(false);
+
+  const handleLoadSampleClick = () => {
+    if (isResumeBlank(resumeData)) {
+      loadSampleResume(settings.language);
+      setShowSampleToast(true);
+      setTimeout(() => setShowSampleToast(false), 4000);
+    } else {
+      setIsSampleModalOpen(true);
+    }
+  };
 
   useEffect(() => {
     const handlePageShow = () => {
@@ -203,7 +219,7 @@ export const BuilderPage: React.FC = () => {
       statusLabelAr: isPersonalInfoCompleted ? 'مكتمل' : resumeData.personalInfo.fullName?.trim() ? 'قيد الإدخال' : 'لم تبدأ بعد',
       statusLabelEn: isPersonalInfoCompleted ? 'Complete' : resumeData.personalInfo.fullName?.trim() ? 'In Progress' : 'Not started',
       isComplete: isPersonalInfoCompleted,
-      accentColor: 'text-blue-600 bg-blue-50 border-blue-200',
+      accentColor: 'text-[#001639] bg-slate-100 border-slate-200/80',
     },
     {
       id: 'experiences',
@@ -219,7 +235,7 @@ export const BuilderPage: React.FC = () => {
       statusLabelAr: experiencesCount > 0 ? `${experiencesCount} خبرة` : 'لم تُضف بعد',
       statusLabelEn: experiencesCount > 0 ? `${experiencesCount} added` : 'Not added yet',
       isComplete: isExperienceCompleted,
-      accentColor: 'text-indigo-600 bg-indigo-50 border-indigo-200',
+      accentColor: 'text-[#001639] bg-slate-100 border-slate-200/80',
     },
     {
       id: 'education',
@@ -235,7 +251,7 @@ export const BuilderPage: React.FC = () => {
       statusLabelAr: educationCount > 0 ? `${educationCount} مؤهل` : 'لم تُضف بعد',
       statusLabelEn: educationCount > 0 ? `${educationCount} added` : 'Not added yet',
       isComplete: isEducationCompleted,
-      accentColor: 'text-teal-600 bg-teal-50 border-teal-200',
+      accentColor: 'text-[#001639] bg-slate-100 border-slate-200/80',
     },
     {
       id: 'skills',
@@ -251,7 +267,7 @@ export const BuilderPage: React.FC = () => {
       statusLabelAr: skillsCount > 0 ? `${skillsCount} مهارة` : 'لم تُضف بعد',
       statusLabelEn: skillsCount > 0 ? `${skillsCount} added` : 'Not added yet',
       isComplete: isSkillsCompleted,
-      accentColor: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+      accentColor: 'text-[#001639] bg-slate-100 border-slate-200/80',
     },
     {
       id: 'certifications',
@@ -268,7 +284,7 @@ export const BuilderPage: React.FC = () => {
       statusLabelEn: certsCount > 0 ? `${certsCount} added` : 'Optional',
       isComplete: isCertificationsCompleted,
       isOptional: true,
-      accentColor: 'text-amber-600 bg-amber-50 border-amber-200',
+      accentColor: 'text-[#001639] bg-slate-100 border-slate-200/80',
     },
     {
       id: 'projects',
@@ -285,7 +301,7 @@ export const BuilderPage: React.FC = () => {
       statusLabelEn: projectsCount > 0 ? `${projectsCount} added` : 'Optional',
       isComplete: isProjectsCompleted,
       isOptional: true,
-      accentColor: 'text-violet-600 bg-violet-50 border-violet-200',
+      accentColor: 'text-[#001639] bg-slate-100 border-slate-200/80',
     },
     {
       id: 'customize',
@@ -297,7 +313,7 @@ export const BuilderPage: React.FC = () => {
       statusLabelAr: 'محدد',
       statusLabelEn: 'Ready',
       isComplete: true,
-      accentColor: 'text-rose-600 bg-rose-50 border-rose-200',
+      accentColor: 'text-[#001639] bg-slate-100 border-slate-200/80',
     },
     {
       id: 'ats',
@@ -309,7 +325,7 @@ export const BuilderPage: React.FC = () => {
       statusLabelAr: isPersonalInfoCompleted && isExperienceCompleted ? 'جاهز للفحص' : 'يتطلب البيانات',
       statusLabelEn: isPersonalInfoCompleted && isExperienceCompleted ? 'Ready to scan' : 'Needs info',
       isComplete: isPersonalInfoCompleted && isExperienceCompleted,
-      accentColor: 'text-cyan-600 bg-cyan-50 border-cyan-200',
+      accentColor: 'text-[#001639] bg-slate-100 border-slate-200/80',
     },
     {
       id: 'pricing',
@@ -321,7 +337,7 @@ export const BuilderPage: React.FC = () => {
       statusLabelAr: completionScore >= 40 ? 'جاهز للتحميل' : 'قيد الإنشاء',
       statusLabelEn: completionScore >= 40 ? 'Ready to Export' : 'In draft',
       isComplete: completionScore >= 40,
-      accentColor: 'text-emerald-700 bg-emerald-50 border-emerald-300',
+      accentColor: 'text-[#FF4D2D] bg-orange-50 border-orange-200/80',
     },
   ];
 
@@ -492,6 +508,92 @@ export const BuilderPage: React.FC = () => {
     </AnimatePresence>
   );
 
+  const renderSampleModal = () => (
+    <AnimatePresence>
+      {isSampleModalOpen && (
+        <motion.div
+          key="sample-modal-overlay"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs"
+        >
+          <motion.div
+            key="sample-modal-card"
+            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 10 }}
+            transition={{ duration: 0.18 }}
+            className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden"
+          >
+            <div className="p-5 sm:p-6 text-center space-y-4">
+              <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto">
+                <Sparkles className="w-6 h-6" />
+              </div>
+
+              <div className="space-y-1.5">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                  {t.loadSampleConfirmTitle}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                  {t.loadSampleConfirmDesc}
+                </p>
+              </div>
+
+              <div className="p-3 bg-blue-50 rounded-xl border border-blue-200/80 text-right text-xs text-blue-900 flex items-start gap-2">
+                <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                <span>
+                  {isAr
+                    ? 'ستتمكن من تعديل جميع الحقول المعبأة وتخصيصها لبياناتك الشخصية فوراً.'
+                    : 'You will be able to edit all filled fields and customize them with your own details immediately.'}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsSampleModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs sm:text-sm font-semibold hover:bg-slate-50 transition cursor-pointer min-h-[44px]"
+                >
+                  {t.loadSampleCancelBtn}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    loadSampleResume(settings.language);
+                    setIsSampleModalOpen(false);
+                    setShowSampleToast(true);
+                    setTimeout(() => setShowSampleToast(false), 4000);
+                  }}
+                  className="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs sm:text-sm font-bold transition shadow-xs cursor-pointer min-h-[44px]"
+                >
+                  {t.loadSampleConfirmBtn}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
+  const renderSampleToast = () => (
+    <AnimatePresence>
+      {showSampleToast && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 20 }}
+          className="fixed bottom-20 md:bottom-6 end-6 z-50 bg-[#001639] text-white px-4 py-3 rounded-xl shadow-xl border border-amber-400/50 flex items-center gap-2.5 text-xs sm:text-sm font-medium"
+        >
+          <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+          <span>{t.loadSampleSuccessMsg}</span>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+
   // Check if minimum resume requirements are completed
   const resumeValidation = React.useMemo(() => {
     return validateResumeMinimumRequirements(resumeData);
@@ -531,6 +633,7 @@ export const BuilderPage: React.FC = () => {
               key="mobile-dashboard"
               onSelectSection={(key) => setMobileActiveSection(key)}
               onOpenResetModal={() => setIsResetModalOpen(true)}
+              onLoadSample={handleLoadSampleClick}
               saveStatus={saveStatus}
             />
           )}
@@ -567,8 +670,12 @@ export const BuilderPage: React.FC = () => {
         {/* Start New Resume Confirmation Modal */}
         {renderResetModal()}
 
-        {/* Reset Confirmation Toast */}
+        {/* Load Sample Resume Confirmation Modal */}
+        {renderSampleModal()}
+
+        {/* Reset & Sample Confirmation Toasts */}
         {renderResetToast()}
+        {renderSampleToast()}
       </main>
     );
   }
@@ -705,15 +812,28 @@ export const BuilderPage: React.FC = () => {
                 </span>
               </div>
 
-              {/* Start New Resume Action - Subtle Secondary Link */}
+              {/* Load Sample Resume Button */}
+              <button
+                type="button"
+                id="btn-load-sample-resume"
+                onClick={handleLoadSampleClick}
+                className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300/80 rounded-lg text-xs font-bold transition cursor-pointer shadow-2xs active:scale-95 shrink-0"
+                title={t.loadSampleResume}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                <span className="hidden sm:inline">{t.loadSampleResume}</span>
+                <span className="sm:hidden">{isAr ? 'تجريبي' : 'Sample'}</span>
+              </button>
+
+              {/* Start Fresh (Start New Resume) Action */}
               <button
                 type="button"
                 id="btn-start-new-resume"
                 onClick={() => setIsResetModalOpen(true)}
-                className="inline-flex items-center gap-1 text-slate-400 hover:text-slate-700 hover:underline text-[11px] font-medium transition cursor-pointer ms-1 shrink-0"
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-lg border border-slate-200 hover:border-rose-200 text-xs font-semibold transition cursor-pointer shadow-2xs active:scale-95 shrink-0"
                 title={t.startNewResume}
               >
-                <RotateCcw className="w-3 h-3 text-slate-400 shrink-0" />
+                <RotateCcw className="w-3.5 h-3.5 shrink-0" />
                 <span className="hidden sm:inline">{t.startNewResume}</span>
                 <span className="sm:hidden">{isAr ? 'جديد' : 'New'}</span>
               </button>
@@ -901,6 +1021,49 @@ export const BuilderPage: React.FC = () => {
                   transition={{ duration: 0.12 }}
                   className="space-y-6"
                 >
+                  {/* Onboarding & Quick-Start Card for Empty State */}
+                  {completionScore === 0 && (
+                    <div className="p-4 sm:p-5 bg-gradient-to-br from-slate-900 via-[#001639] to-[#00245E] text-white rounded-2xl shadow-md border border-amber-400/30 space-y-3.5 animate-in fade-in duration-200">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-amber-400/20 text-amber-300 border border-amber-400/30 flex items-center justify-center shrink-0">
+                            <Sparkles className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <h3 className="text-sm sm:text-base font-bold text-white">
+                              {t.emptyOnboardingTitle || (isAr ? 'ابدأ رحلة إنشاء سيرتك الذاتية' : 'Start building your resume')}
+                            </h3>
+                            <p className="text-xs text-slate-300 font-medium">
+                              {t.emptyOnboardingDesc || (isAr
+                                ? 'وفر وقتك واستكشف شكل السيرة المكتملة فوراً، أو ابدأ بكتابة بياناتك من الصفر:'
+                                : 'Explore a fully formatted sample resume immediately, or start entering your details from scratch:')}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2.5 pt-1">
+                        <button
+                          type="button"
+                          onClick={handleLoadSampleClick}
+                          className="px-4 py-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                        >
+                          <FileText className="w-4 h-4 text-slate-950 shrink-0" />
+                          <span>{t.loadSampleResume || (isAr ? 'تعبئة نموذج سيرة تجريبية' : 'Load Sample Resume')}</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setIsResetModalOpen(true)}
+                          className="px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl border border-white/20 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                        >
+                          <RotateCcw className="w-3.5 h-3.5 text-slate-300 shrink-0" />
+                          <span>{t.startFresh || (isAr ? 'بدء سيرة جديدة فارغة' : 'Start Fresh')}</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Dashboard Welcome & Overview Card with Next Step Guidance */}
                   <div className="p-4 sm:p-5 bg-white rounded-2xl border border-slate-200/90 shadow-2xs space-y-4">
                     <div className="space-y-1">
@@ -1160,7 +1323,7 @@ export const BuilderPage: React.FC = () => {
                             onClick={() => handleOpenSection(sec.id)}
                             className={`w-full text-start p-4 rounded-2xl border transition-all duration-180 flex flex-col justify-between gap-3 group cursor-pointer shadow-2xs hover:shadow-xs relative overflow-hidden focus-visible:ring-2 focus-visible:ring-[#001639] focus:outline-none ${
                               sec.id === 'pricing'
-                                ? 'border-emerald-300 bg-emerald-50/40 hover:bg-emerald-50/70 sm:col-span-2'
+                                ? 'border-orange-200/90 bg-orange-50/40 hover:bg-orange-50/70 sm:col-span-2'
                                 : 'border-slate-200/90 hover:border-slate-300 bg-white hover:bg-slate-50/90'
                             }`}
                           >
@@ -1225,8 +1388,12 @@ export const BuilderPage: React.FC = () => {
       {/* Start New Resume Confirmation Modal */}
       {renderResetModal()}
 
-      {/* Reset Confirmation Toast */}
+      {/* Load Sample Resume Confirmation Modal */}
+      {renderSampleModal()}
+
+      {/* Reset & Sample Confirmation Toasts */}
       {renderResetToast()}
+      {renderSampleToast()}
 
       {/* App Version Tag (Development Only) */}
       {import.meta.env.DEV && (

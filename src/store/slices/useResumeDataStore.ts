@@ -32,6 +32,7 @@ import {
   initAutosaveLifecycleListeners,
 } from '../../utils/resumeStorage';
 import { useActivationStore } from './useActivationStore';
+import { getSampleResumeByLanguage } from '../../data/sampleResume';
 
 export const defaultSettings: ResumeSettings = {
   language: 'ar',
@@ -87,31 +88,37 @@ export interface ResumeDataState {
   addExperience: (exp: Omit<WorkExperience, 'id'>) => void;
   updateExperience: (id: string, exp: Partial<WorkExperience>) => void;
   removeExperience: (id: string) => void;
+  insertExperienceAtIndex: (index: number, exp: WorkExperience) => void;
   reorderExperiences: (fromIndex: number, toIndex: number) => void;
 
   addEducation: (edu: Omit<Education, 'id'>) => void;
   updateEducation: (id: string, edu: Partial<Education>) => void;
   removeEducation: (id: string) => void;
+  insertEducationAtIndex: (index: number, edu: Education) => void;
   reorderEducation: (fromIndex: number, toIndex: number) => void;
 
   addSkill: (skill: Omit<SkillItem, 'id'>) => void;
   updateSkill: (id: string, skill: Partial<SkillItem>) => void;
   removeSkill: (id: string) => void;
+  insertSkillAtIndex: (index: number, skill: SkillItem) => void;
   reorderSkills: (fromIndex: number, toIndex: number) => void;
 
   addProject: (proj: Omit<Project, 'id'>) => void;
   updateProject: (id: string, proj: Partial<Project>) => void;
   removeProject: (id: string) => void;
+  insertProjectAtIndex: (index: number, proj: Project) => void;
   reorderProjects: (fromIndex: number, toIndex: number) => void;
 
   addCertification: (cert: Omit<Certification, 'id'>) => void;
   updateCertification: (id: string, cert: Partial<Certification>) => void;
   removeCertification: (id: string) => void;
+  insertCertificationAtIndex: (index: number, cert: Certification) => void;
   reorderCertifications: (fromIndex: number, toIndex: number) => void;
 
   addLanguage: (lang: Omit<LanguageItem, 'id'>) => void;
   updateLanguage: (id: string, lang: Partial<LanguageItem>) => void;
   removeLanguage: (id: string) => void;
+  insertLanguageAtIndex: (index: number, lang: LanguageItem) => void;
 
   setLanguage: (lang: Language) => void;
   setDocumentDirection: (dir: DocumentDirection) => void;
@@ -129,6 +136,7 @@ export interface ResumeDataState {
 
   setResumeData: (data: ResumeData) => void;
   resetResume: () => void;
+  loadSampleResume: (lang?: Language) => void;
 }
 
 export const createResumeDataSlice = (set: any, get: any): ResumeDataState => ({
@@ -179,6 +187,17 @@ export const createResumeDataSlice = (set: any, get: any): ResumeDataState => ({
     });
   },
 
+  insertExperienceAtIndex: (index, exp) => {
+    set((state: any) => {
+      const items = [...(state.resumeData.experiences || [])];
+      const validIndex = Math.max(0, Math.min(index, items.length));
+      items.splice(validIndex, 0, exp);
+      const updated = { ...state.resumeData, experiences: items };
+      saveResumeDirectly(updated);
+      return { resumeData: updated };
+    });
+  },
+
   reorderExperiences: (fromIndex, toIndex) => {
     set((state: any) => {
       const items = [...state.resumeData.experiences];
@@ -218,6 +237,17 @@ export const createResumeDataSlice = (set: any, get: any): ResumeDataState => ({
     set((state: any) => {
       const updatedEdu = state.resumeData.education.filter((item: Education) => item.id !== id);
       const updated = { ...state.resumeData, education: updatedEdu };
+      saveResumeDirectly(updated);
+      return { resumeData: updated };
+    });
+  },
+
+  insertEducationAtIndex: (index, edu) => {
+    set((state: any) => {
+      const items = [...(state.resumeData.education || [])];
+      const validIndex = Math.max(0, Math.min(index, items.length));
+      items.splice(validIndex, 0, edu);
+      const updated = { ...state.resumeData, education: items };
       saveResumeDirectly(updated);
       return { resumeData: updated };
     });
@@ -267,6 +297,17 @@ export const createResumeDataSlice = (set: any, get: any): ResumeDataState => ({
     });
   },
 
+  insertSkillAtIndex: (index, skill) => {
+    set((state: any) => {
+      const items = [...(state.resumeData.skills || [])];
+      const validIndex = Math.max(0, Math.min(index, items.length));
+      items.splice(validIndex, 0, skill);
+      const updated = { ...state.resumeData, skills: items };
+      saveResumeDirectly(updated);
+      return { resumeData: updated };
+    });
+  },
+
   reorderSkills: (fromIndex, toIndex) => {
     set((state: any) => {
       const items = [...state.resumeData.skills];
@@ -306,6 +347,17 @@ export const createResumeDataSlice = (set: any, get: any): ResumeDataState => ({
     set((state: any) => {
       const updatedProjs = state.resumeData.projects.filter((item: Project) => item.id !== id);
       const updated = { ...state.resumeData, projects: updatedProjs };
+      saveResumeDirectly(updated);
+      return { resumeData: updated };
+    });
+  },
+
+  insertProjectAtIndex: (index, proj) => {
+    set((state: any) => {
+      const items = [...(state.resumeData.projects || [])];
+      const validIndex = Math.max(0, Math.min(index, items.length));
+      items.splice(validIndex, 0, proj);
+      const updated = { ...state.resumeData, projects: items };
       saveResumeDirectly(updated);
       return { resumeData: updated };
     });
@@ -355,6 +407,17 @@ export const createResumeDataSlice = (set: any, get: any): ResumeDataState => ({
     });
   },
 
+  insertCertificationAtIndex: (index, cert) => {
+    set((state: any) => {
+      const items = [...(state.resumeData.certifications || [])];
+      const validIndex = Math.max(0, Math.min(index, items.length));
+      items.splice(validIndex, 0, cert);
+      const updated = { ...state.resumeData, certifications: items };
+      saveResumeDirectly(updated);
+      return { resumeData: updated };
+    });
+  },
+
   reorderCertifications: (fromIndex, toIndex) => {
     set((state: any) => {
       const items = [...state.resumeData.certifications];
@@ -394,6 +457,17 @@ export const createResumeDataSlice = (set: any, get: any): ResumeDataState => ({
     set((state: any) => {
       const updatedLangs = state.resumeData.languages.filter((item: LanguageItem) => item.id !== id);
       const updated = { ...state.resumeData, languages: updatedLangs };
+      saveResumeDirectly(updated);
+      return { resumeData: updated };
+    });
+  },
+
+  insertLanguageAtIndex: (index, lang) => {
+    set((state: any) => {
+      const items = [...(state.resumeData.languages || [])];
+      const validIndex = Math.max(0, Math.min(index, items.length));
+      items.splice(validIndex, 0, lang);
+      const updated = { ...state.resumeData, languages: items };
       saveResumeDirectly(updated);
       return { resumeData: updated };
     });
@@ -572,6 +646,27 @@ export const createResumeDataSlice = (set: any, get: any): ResumeDataState => ({
       }
       return {
         resumeData: emptyResume,
+        ...(updatedActivation ? { activation: updatedActivation } : {}),
+      };
+    });
+  },
+
+  loadSampleResume: (lang?: Language) => {
+    const currentLang = lang || get().settings?.language || 'ar';
+    const sample = getSampleResumeByLanguage(currentLang);
+    clearDownloadCompletionFlags();
+    saveResumeDirectly(sample);
+    set((state: any) => {
+      const updatedActivation = state.activation ? {
+        ...state.activation,
+        isResumeLocked: false,
+        lockedResumeFingerprint: null,
+      } : null;
+      if (updatedActivation) {
+        saveActivationDirectly(updatedActivation);
+      }
+      return {
+        resumeData: sample,
         ...(updatedActivation ? { activation: updatedActivation } : {}),
       };
     });

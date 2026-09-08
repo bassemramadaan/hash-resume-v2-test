@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from '../store/useResumeStore';
 import { getTranslation } from '../i18n/translations';
 import { analyzeResumeAts, AtsAnalysisResult } from '../services/atsAnalyzer';
 import { parseResumeFile } from '../services/resumeParser';
+import { isResumeBlank } from '../utils/resumeFingerprint';
 import {
   ShieldCheck,
   Sparkles,
@@ -22,7 +24,7 @@ import {
 } from 'lucide-react';
 
 export const AtsCheckerPage: React.FC = () => {
-  const { settings, targetJobDescription, setTargetJobDescription, setResumeData } = useResumeStore();
+  const { resumeData, settings, targetJobDescription, setTargetJobDescription, setResumeData } = useResumeStore();
   const navigate = useNavigate();
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
@@ -31,6 +33,7 @@ export const AtsCheckerPage: React.FC = () => {
   const [fileError, setFileError] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [isImporting, setIsImporting] = useState<boolean>(false);
+  const [isImportConfirmModalOpen, setIsImportConfirmModalOpen] = useState<boolean>(false);
   const [analysisResult, setAnalysisResult] = useState<AtsAnalysisResult | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -98,7 +101,16 @@ export const AtsCheckerPage: React.FC = () => {
     }
   };
 
-  const handleImportToBuilder = async () => {
+  const handleImportToBuilder = () => {
+    if (!uploadedFile) return;
+    if (isResumeBlank(resumeData)) {
+      executeImport();
+    } else {
+      setIsImportConfirmModalOpen(true);
+    }
+  };
+
+  const executeImport = async () => {
     if (!uploadedFile) return;
     setIsImporting(true);
     setFileError(null);
@@ -385,6 +397,91 @@ export const AtsCheckerPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Smart Confirmation Modal for ATS File Import */}
+      <AnimatePresence>
+        {isImportConfirmModalOpen && (
+          <motion.div
+            key="import-confirm-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs"
+          >
+            <motion.div
+              key="import-confirm-card"
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.18 }}
+              className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden"
+            >
+              <div className="p-5 sm:p-6 text-center space-y-4">
+                <div className="w-12 h-12 rounded-full bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center mx-auto">
+                  <AlertTriangle className="w-6 h-6" />
+                </div>
+
+                <div className="space-y-2">
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900">
+                    {t.importConfirmTitle || 'استيراد بيانات السيرة الذاتية إلى المحرر'}
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+                    {t.importConfirmDesc || 'لديك مسودة حالية في المحرر، هل تريد استبدالها ببيانات هذا الملف، أم فتح المسودة الحالية؟'}
+                  </p>
+                </div>
+
+                <div className="p-3 bg-amber-50/80 rounded-xl border border-amber-200 text-right text-xs text-amber-900 flex items-start gap-2">
+                  <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
+                  <span>
+                    {isAr
+                      ? 'اختيارك لاستبدال البيانات سيؤدي لتعبئة المحرر ببيانات الملف الجديد بدلاً من المسودة الحالية.'
+                      : 'Replacing will overwrite your current builder draft with data extracted from this PDF.'}
+                  </span>
+                </div>
+
+                <div className="space-y-2 pt-2">
+                  {/* 1. Replace with imported data */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsImportConfirmModalOpen(false);
+                      executeImport();
+                    }}
+                    disabled={isImporting}
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#001639] hover:bg-[#00245E] text-white text-xs sm:text-sm font-bold transition shadow-xs flex items-center justify-center gap-2 cursor-pointer min-h-[44px]"
+                  >
+                    <Edit3 className="w-4 h-4 text-amber-400" />
+                    <span>{t.importReplaceBtn || 'استبدال بالبيانات المستوردة'}</span>
+                  </button>
+
+                  {/* 2. Open current draft */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsImportConfirmModalOpen(false);
+                      navigate('/builder');
+                    }}
+                    className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs sm:text-sm font-bold transition flex items-center justify-center gap-2 cursor-pointer min-h-[44px]"
+                  >
+                    <FileText className="w-4 h-4 text-slate-600" />
+                    <span>{t.importKeepCurrentBtn || 'فتح المسودة الحالية'}</span>
+                  </button>
+
+                  {/* 3. Cancel */}
+                  <button
+                    type="button"
+                    onClick={() => setIsImportConfirmModalOpen(false)}
+                    className="w-full py-2 text-slate-500 hover:text-slate-800 text-xs font-semibold transition cursor-pointer"
+                  >
+                    {t.importCancelBtn || 'إلغاء'}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </main>
   );
 };

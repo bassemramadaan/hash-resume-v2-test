@@ -39,9 +39,9 @@ export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ da
             <div key={exp.id}>
               <div className="flex justify-between items-baseline">
                 <h3 className="font-bold text-xs text-gray-900">{exp.position}</h3>
-                <span className="text-[11px] font-medium text-gray-500">
+                <bdi className="date-range text-[11px] font-medium text-gray-500 font-sans">
                   {exp.startDate} - {exp.current ? (isArabic ? 'حتى الآن' : 'Present') : exp.endDate}
-                </span>
+                </bdi>
               </div>
               <p className="text-xs font-semibold text-red-600 mb-1" style={{ color: primaryColor }}>{exp.company}</p>
               {exp.bulletPoints && exp.bulletPoints.length > 0 && (
@@ -70,15 +70,15 @@ export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ da
                 <h3 className="font-bold text-xs text-gray-900">
                   {p.title}
                   {p.link && (
-                    <span className="text-[10px] font-normal text-red-600 underline ml-2 mr-2">
+                    <span className="text-[10px] font-normal text-red-600 underline ml-2 mr-2" dir="ltr">
                       {p.link}
                     </span>
                   )}
                 </h3>
                 {(p.startDate || p.endDate) && (
-                  <span className="text-[11px] text-gray-500">
+                  <bdi className="date-range text-[11px] text-gray-500 font-sans">
                     {p.startDate} {p.endDate ? `- ${p.endDate}` : ''}
-                  </span>
+                  </bdi>
                 )}
               </div>
               <p className="text-xs text-gray-700 leading-normal mt-0.5">{p.description}</p>
@@ -107,7 +107,7 @@ export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ da
                 <h3 className="font-bold text-gray-900">{edu.degree}</h3>
                 <p className="text-gray-600">{edu.institution} ({edu.fieldOfStudy})</p>
               </div>
-              <span className="text-[11px] text-gray-500">{edu.startDate} - {edu.endDate}</span>
+              <bdi className="date-range text-[11px] text-gray-500 font-sans">{edu.startDate} - {edu.endDate}</bdi>
             </div>
           ))}
         </div>
@@ -123,7 +123,7 @@ export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ da
         <div className="space-y-1.5 text-xs text-gray-700">
           {(certifications || []).map((cert) => (
             <div key={cert.id}>
-              <span className="font-bold text-gray-900">{cert.title}</span> – {cert.issuer} ({cert.date})
+              <span className="font-bold text-gray-900">{cert.title}</span> – {cert.issuer} {cert.date ? <bdi className="font-sans">({cert.date})</bdi> : ''}
             </div>
           ))}
         </div>
@@ -162,10 +162,10 @@ export const CreativeCompactTemplate: React.FC<TemplateProps> = React.memo(({ da
             <h2 className="text-[10px] font-bold uppercase tracking-wider text-red-400 border-b border-slate-700 pb-1 mb-2">
               {isArabic ? 'التواصل' : 'CONTACT'}
             </h2>
-            {personalInfo.email && <p className="truncate">📧 {personalInfo.email}</p>}
-            {personalInfo.phone && <p>📱 {personalInfo.phone}</p>}
-            {personalInfo.location && <p>📍 {personalInfo.location}</p>}
-            {personalInfo.linkedin && <p className="truncate">🔗 {personalInfo.linkedin}</p>}
+            {personalInfo.email && <p className="truncate">📧 <bdi className="font-sans">{personalInfo.email}</bdi></p>}
+            {personalInfo.phone && <p>📱 <bdi className="font-sans">{personalInfo.phone}</bdi></p>}
+            {personalInfo.location && <p>📍 <span>{personalInfo.location}</span></p>}
+            {personalInfo.linkedin && <p className="truncate">🔗 <bdi className="font-sans">{personalInfo.linkedin}</bdi></p>}
           </div>
 
           {skills && skills.length > 0 && (

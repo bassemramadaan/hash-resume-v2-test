@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
+import { useUndoToastStore } from '../../store/useUndoToastStore';
 import { getTranslation } from '../../i18n/translations';
 import { Award, Plus, Trash2 } from 'lucide-react';
 import { NextStepBanner } from './NextStepBanner';
 
 export const CertificationsForm: React.FC = () => {
-  const { resumeData, settings, addCertification, updateCertification, removeCertification } =
+  const { resumeData, settings, addCertification, updateCertification, removeCertification, insertCertificationAtIndex } =
     useResumeStore();
+  const { showUndoToast } = useUndoToastStore();
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
   const certs = resumeData.certifications || [];
@@ -15,6 +17,17 @@ export const CertificationsForm: React.FC = () => {
   const [issuer, setIssuer] = useState('');
   const [date, setDate] = useState('');
   const [credentialUrl, setCredentialUrl] = useState('');
+
+  const handleDeleteCert = (cert: any, idx: number) => {
+    removeCertification(cert.id);
+    showUndoToast({
+      messageAr: cert.title ? `تم حذف شهادة "${cert.title}"` : 'تم حذف الشهادة',
+      messageEn: cert.title ? `Deleted "${cert.title}"` : 'Certification deleted',
+      onUndo: () => {
+        insertCertificationAtIndex(idx, cert);
+      },
+    });
+  };
 
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +52,7 @@ export const CertificationsForm: React.FC = () => {
           <Award className="w-4 h-4 text-[#FF4D2D]" />
           <span>{isAr ? 'الشهادات والدورات' : 'Certifications & Courses'}</span>
         </h2>
-        <p className="text-xs text-slate-500 mt-0.5">
+        <p className="text-xs text-slate-600 mt-0.5">
           {isAr
             ? 'أضف الشهادات المهنية والدورات التدريبية المعتمدة'
             : 'Add verified credentials and professional certifications'}
@@ -81,7 +94,7 @@ export const CertificationsForm: React.FC = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={isAr ? 'AWS Certified Solutions Architect' : 'AWS Certified Solutions Architect'}
-              className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+              className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-500 outline-none transition"
               required
             />
           </div>
@@ -95,7 +108,7 @@ export const CertificationsForm: React.FC = () => {
               value={issuer}
               onChange={(e) => setIssuer(e.target.value)}
               placeholder={isAr ? 'Amazon Web Services / Google' : 'Amazon Web Services'}
-              className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+              className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-500 outline-none transition"
             />
           </div>
 
@@ -108,7 +121,7 @@ export const CertificationsForm: React.FC = () => {
               value={date}
               onChange={(e) => setDate(e.target.value)}
               placeholder="05/2024"
-              className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+              className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-500 outline-none transition"
             />
           </div>
 
@@ -123,7 +136,7 @@ export const CertificationsForm: React.FC = () => {
               value={credentialUrl}
               onChange={(e) => setCredentialUrl(e.target.value)}
               placeholder="https://coursera.org/verify/..."
-              className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+              className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-500 outline-none transition"
             />
           </div>
         </div>
@@ -144,22 +157,22 @@ export const CertificationsForm: React.FC = () => {
             {isAr ? 'الشهادات المضافة:' : 'Added Certifications:'}
           </h3>
           <div className="space-y-2">
-            {(certs || []).map((cert) => (
+            {(certs || []).map((cert, cIdx) => (
               <div
                 key={cert.id}
                 className="p-3.5 border border-slate-200 rounded-xl bg-white flex items-center justify-between gap-3 shadow-2xs"
               >
                 <div>
                   <div className="font-semibold text-xs text-slate-900">{cert.title}</div>
-                  <div className="text-[11px] text-slate-500">
+                  <div className="text-xs text-slate-600 font-normal">
                     {cert.issuer} {cert.date ? `• ${cert.date}` : ''}
                   </div>
                 </div>
 
                 <button
                   type="button"
-                  onClick={() => removeCertification(cert.id)}
-                  className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-md transition cursor-pointer"
+                  onClick={() => handleDeleteCert(cert, cIdx)}
+                  className="p-1 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-md transition cursor-pointer"
                   title={isAr ? 'حذف الشهادة' : 'Delete certification'}
                   aria-label={isAr ? 'حذف الشهادة' : 'Delete certification'}
                 >

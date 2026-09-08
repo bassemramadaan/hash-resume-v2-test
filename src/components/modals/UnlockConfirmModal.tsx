@@ -46,7 +46,7 @@ export const UnlockConfirmModal: React.FC = () => {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Top Decorative Header */}
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-500 via-brand-navy to-emerald-500" />
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-[#001639]" />
 
           {/* Close button */}
           <button
@@ -59,7 +59,7 @@ export const UnlockConfirmModal: React.FC = () => {
 
           {/* Header Icon & Title */}
           <div className="flex items-start gap-4 mb-5">
-            <div className="p-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-200 shrink-0">
+            <div className="p-3 bg-orange-50 text-[#FF4D2D] rounded-xl border border-orange-200 shrink-0">
               <KeyRound className="w-6 h-6" />
             </div>
             <div>

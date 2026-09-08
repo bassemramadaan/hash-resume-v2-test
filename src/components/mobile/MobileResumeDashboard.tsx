@@ -36,12 +36,14 @@ import { NextStepBanner } from '../builder/NextStepBanner';
 interface MobileResumeDashboardProps {
   onSelectSection: (key: MobileSectionKey) => void;
   onOpenResetModal: () => void;
+  onLoadSample?: () => void;
   saveStatus: 'saved' | 'saving';
 }
 
 export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
   onSelectSection,
   onOpenResetModal,
+  onLoadSample,
   saveStatus,
 }) => {
   const {
@@ -285,7 +287,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
               <span className="font-brand font-extrabold text-sm text-[#001639] leading-tight">
                 Hash <span className="text-[#FF4D2D]">Resume</span>
               </span>
-              <span className="text-[10px] text-slate-500 font-medium leading-none">
+              <span className="text-xs text-slate-600 font-medium leading-none">
                 {isAr ? 'محرر السيرة الذاتية' : 'Resume Builder'}
               </span>
             </div>
@@ -295,7 +297,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
           <div className="flex items-center gap-1.5">
             {/* Autosave status indicator */}
             <div
-              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold border transition-all duration-200 ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border transition-all duration-200 ${
                 saveStatus === 'saving'
                   ? 'bg-amber-50 text-amber-800 border-amber-200'
                   : 'bg-emerald-50 text-emerald-800 border-emerald-200/80'
@@ -319,13 +321,26 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
               </span>
             </div>
 
+            {/* Load Sample Resume Button */}
+            {onLoadSample && (
+              <button
+                type="button"
+                onClick={onLoadSample}
+                className="p-2 text-amber-700 hover:text-amber-900 bg-amber-50 hover:bg-amber-100 rounded-xl border border-amber-300 transition cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
+                title={t.loadSampleResume || (isAr ? 'تعبئة سيرة تجريبية' : 'Load Sample Resume')}
+                aria-label={t.loadSampleResume || (isAr ? 'تعبئة سيرة تجريبية' : 'Load Sample Resume')}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              </button>
+            )}
+
             {/* Reset / Clear Button */}
             <button
               type="button"
               onClick={onOpenResetModal}
-              className="p-2 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-xl border border-slate-200 transition cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
-              title={isAr ? 'بدء سيرة جديدة' : 'Start New Resume'}
-              aria-label={isAr ? 'بدء سيرة جديدة' : 'Start New Resume'}
+              className="p-2 text-slate-600 hover:text-rose-600 hover:bg-rose-50 rounded-xl border border-slate-200 transition cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
+              title={t.startNewResume || (isAr ? 'بدء سيرة جديدة' : 'Start Fresh')}
+              aria-label={t.startNewResume || (isAr ? 'بدء سيرة جديدة' : 'Start Fresh')}
             >
               <RotateCcw className="w-3.5 h-3.5" />
             </button>
@@ -356,7 +371,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                 <h4 className="font-bold text-xs text-amber-950">
                   {isAr ? 'تم قفل السيرة الذاتية بعد التحميل' : 'Resume Locked After Download'}
                 </h4>
-                <p className="text-[11px] text-amber-900/90 leading-relaxed">
+                <p className="text-xs text-amber-950 font-medium leading-relaxed">
                   {isAr
                     ? 'لحماية نسختك المعتمدة، تم قفل الحقول لمنع التعديلات العشوائية.'
                     : 'Fields are locked to protect your finalized download.'}
@@ -385,7 +400,48 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
       )}
 
       {/* Compact Progress & Header Card */}
-      <div className="px-3">
+      <div className="px-3 space-y-3">
+        {/* Onboarding Quick-Start Card for Empty State */}
+        {completedSectionsCount === 0 && (
+          <div className="bg-gradient-to-br from-slate-900 via-[#001639] to-[#00245E] text-white rounded-2xl p-4 shadow-sm border border-amber-400/30 space-y-3">
+            <div className="flex items-start gap-2.5">
+              <div className="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center shrink-0 mt-0.5">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <div>
+                <h3 className="text-xs font-bold text-white">
+                  {t.emptyOnboardingTitle || (isAr ? 'ابدأ رحلة إنشاء سيرتك الذاتية' : 'Start Building Your Resume')}
+                </h3>
+                <p className="text-[11px] text-slate-300 font-medium leading-relaxed">
+                  {t.emptyOnboardingDesc || (isAr
+                    ? 'وفر وقتك واستكشف شكل السيرة المكتملة فوراً، أو ابدأ بكتابة بياناتك من الصفر:'
+                    : 'Explore a fully formatted sample resume immediately, or start entering your details from scratch:')}
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              {onLoadSample && (
+                <button
+                  type="button"
+                  onClick={onLoadSample}
+                  className="py-2.5 px-2 bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black rounded-xl shadow-2xs transition flex items-center justify-center gap-1.5 cursor-pointer min-h-[44px] active:scale-98"
+                >
+                  <FileText className="w-3.5 h-3.5 shrink-0 text-slate-950" />
+                  <span className="truncate">{t.loadSampleResume || (isAr ? 'نموذج تجريبي' : 'Sample Resume')}</span>
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={onOpenResetModal}
+                className="py-2.5 px-2 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl border border-white/20 transition flex items-center justify-center gap-1.5 cursor-pointer min-h-[44px] active:scale-98"
+              >
+                <RotateCcw className="w-3.5 h-3.5 shrink-0" />
+                <span className="truncate">{t.startFresh || (isAr ? 'بدء من الصفر' : 'Start Fresh')}</span>
+              </button>
+            </div>
+          </div>
+        )}
+
         <div className="bg-gradient-to-br from-[#001639] to-[#00245E] text-white rounded-2xl p-3.5 shadow-sm space-y-2.5">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
@@ -396,7 +452,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                 <h1 className="text-sm font-bold text-white leading-tight">
                   {isAr ? 'ابنِ سيرتك الذاتية' : 'Build Your Resume'}
                 </h1>
-                <p className="text-[11px] text-slate-300 font-medium">
+                <p className="text-xs text-slate-200 font-medium">
                   {isAr
                     ? `اكتمل ${completedSectionsCount} من 6 أقسام`
                     : `${completedSectionsCount} of 6 sections complete`}
@@ -417,7 +473,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
               >
                 {completionScore}%
               </span>
-              <span className="text-[10px] text-slate-200 font-bold hidden xs:inline">
+              <span className="text-xs text-slate-200 font-bold hidden xs:inline">
                 {completionScore >= 80
                   ? isAr ? 'جاهز ⭐' : 'Ready ⭐'
                   : isAr ? 'مكتمل' : 'Done'}
@@ -500,7 +556,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                       <h4 className="font-bold text-xs sm:text-sm text-[#001639] truncate">
                         {isAr ? sec.titleAr : sec.titleEn}
                       </h4>
-                      <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
+                      <p className="text-xs text-slate-600 font-medium truncate mt-0.5">
                         {status.label}
                       </p>
                     </div>
@@ -513,7 +569,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                         <Check className="w-3.5 h-3.5" />
                       </span>
                     ) : (
-                      <span className="text-[11px] font-bold text-slate-600 px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 hidden xs:inline-block">
+                      <span className="text-xs font-bold text-slate-700 px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 hidden xs:inline-block">
                         {idx + 1}
                       </span>
                     )}
@@ -537,11 +593,11 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                 <span className="text-xs font-bold text-slate-800">
                   {isAr ? 'أقسام إضافية (الشهادات والمشاريع)' : 'Additional Sections (Certs & Projects)'}
                 </span>
-                <span className="text-[10px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded-md border border-slate-200">
+                <span className="text-xs font-semibold text-slate-600 bg-white px-2 py-0.5 rounded-md border border-slate-200">
                   {isAr ? 'اختياري' : 'Optional'}
                 </span>
                 {certsCount + projectsCount > 0 && (
-                  <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">
+                  <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                     {certsCount + projectsCount}
                   </span>
                 )}
@@ -594,7 +650,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                             <h4 className="font-bold text-xs sm:text-sm text-[#001639] truncate">
                               {isAr ? sec.titleAr : sec.titleEn}
                             </h4>
-                            <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
+                            <p className="text-xs text-slate-600 font-medium truncate mt-0.5">
                               {status.label}
                             </p>
                           </div>
@@ -665,12 +721,12 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                           {isAr ? sec.titleAr : sec.titleEn}
                         </h4>
                         {sec.key === 'ats' && (
-                          <span className="px-1.5 py-0.5 rounded-md bg-orange-100 text-[#FF4D2D] text-[9px] font-extrabold shrink-0">
+                          <span className="px-2 py-0.5 rounded-md bg-orange-100 text-[#FF4D2D] text-xs font-black shrink-0">
                             AI
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-slate-500 font-medium truncate mt-0.5">
+                      <p className="text-xs text-slate-600 font-medium truncate mt-0.5">
                         {status.label}
                       </p>
                     </div>
@@ -683,7 +739,7 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                         <Check className="w-3.5 h-3.5" />
                       </span>
                     ) : (
-                      <span className="text-[11px] font-bold text-slate-600 px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 hidden xs:inline-block">
+                      <span className="text-xs font-bold text-slate-700 px-2 py-0.5 rounded-md bg-slate-100 border border-slate-200 hidden xs:inline-block">
                         •
                       </span>
                     )}

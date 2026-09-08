@@ -130,7 +130,7 @@ export const ImportResumeModal: React.FC<ImportResumeModalProps> = ({
             {/* Metrics Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
               <div className="bg-white p-2.5 rounded-lg border border-slate-200/60 flex items-center gap-2">
-                <Briefcase className="w-4 h-4 text-blue-600 shrink-0" />
+                <Briefcase className="w-4 h-4 text-[#001639] shrink-0" />
                 <div>
                   <div className="text-xs font-bold text-slate-800">
                     {summary.experienceCount}
@@ -142,7 +142,7 @@ export const ImportResumeModal: React.FC<ImportResumeModalProps> = ({
               </div>
 
               <div className="bg-white p-2.5 rounded-lg border border-slate-200/60 flex items-center gap-2">
-                <GraduationCap className="w-4 h-4 text-indigo-600 shrink-0" />
+                <GraduationCap className="w-4 h-4 text-[#001639] shrink-0" />
                 <div>
                   <div className="text-xs font-bold text-slate-800">
                     {summary.educationCount}
@@ -154,7 +154,7 @@ export const ImportResumeModal: React.FC<ImportResumeModalProps> = ({
               </div>
 
               <div className="bg-white p-2.5 rounded-lg border border-slate-200/60 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
+                <Sparkles className="w-4 h-4 text-[#FF4D2D] shrink-0" />
                 <div>
                   <div className="text-xs font-bold text-slate-800">
                     {summary.skillCount}
@@ -167,7 +167,7 @@ export const ImportResumeModal: React.FC<ImportResumeModalProps> = ({
 
               {summary.projectCount > 0 && (
                 <div className="bg-white p-2.5 rounded-lg border border-slate-200/60 flex items-center gap-2">
-                  <Layers className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <Layers className="w-4 h-4 text-[#001639] shrink-0" />
                   <div>
                     <div className="text-xs font-bold text-slate-800">
                       {summary.projectCount}
@@ -181,7 +181,7 @@ export const ImportResumeModal: React.FC<ImportResumeModalProps> = ({
 
               {summary.certificationCount > 0 && (
                 <div className="bg-white p-2.5 rounded-lg border border-slate-200/60 flex items-center gap-2">
-                  <Award className="w-4 h-4 text-purple-600 shrink-0" />
+                  <Award className="w-4 h-4 text-[#001639] shrink-0" />
                   <div>
                     <div className="text-xs font-bold text-slate-800">
                       {summary.certificationCount}
@@ -195,7 +195,7 @@ export const ImportResumeModal: React.FC<ImportResumeModalProps> = ({
 
               {summary.languageCount > 0 && (
                 <div className="bg-white p-2.5 rounded-lg border border-slate-200/60 flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-teal-600 shrink-0" />
+                  <Globe className="w-4 h-4 text-[#001639] shrink-0" />
                   <div>
                     <div className="text-xs font-bold text-slate-800">
                       {summary.languageCount}

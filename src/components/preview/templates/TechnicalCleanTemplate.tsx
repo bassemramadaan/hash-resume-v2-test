@@ -32,10 +32,10 @@ export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ dat
             </p>
           </div>
           <div className="flex flex-col gap-0.5 text-xs text-gray-600 font-mono text-end shrink-0">
-            {personalInfo.email && <span>📧 {personalInfo.email}</span>}
-            {personalInfo.phone && <span>📱 {personalInfo.phone}</span>}
-            {personalInfo.github && <span>💻 {personalInfo.github}</span>}
-            {personalInfo.linkedin && <span>🔗 {personalInfo.linkedin}</span>}
+            {personalInfo.email && <span>📧 <bdi>{personalInfo.email}</bdi></span>}
+            {personalInfo.phone && <span>📱 <bdi>{personalInfo.phone}</bdi></span>}
+            {personalInfo.github && <span>💻 <bdi>{personalInfo.github}</bdi></span>}
+            {personalInfo.linkedin && <span>🔗 <bdi>{personalInfo.linkedin}</bdi></span>}
           </div>
           {settings.showPhoto && personalInfo.photoUrl && (
             <img
@@ -60,10 +60,10 @@ export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ dat
             </p>
           </div>
           <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-gray-600 font-mono">
-            {personalInfo.email && <span>{personalInfo.email}</span>}
-            {personalInfo.phone && <span>• {personalInfo.phone}</span>}
-            {personalInfo.github && <span>• {personalInfo.github}</span>}
-            {personalInfo.linkedin && <span>• {personalInfo.linkedin}</span>}
+            {personalInfo.email && <bdi>{personalInfo.email}</bdi>}
+            {personalInfo.phone && <bdi>• {personalInfo.phone}</bdi>}
+            {personalInfo.github && <bdi>• {personalInfo.github}</bdi>}
+            {personalInfo.linkedin && <bdi>• {personalInfo.linkedin}</bdi>}
           </div>
         </header>
       );
@@ -79,11 +79,11 @@ export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ dat
           <p className="text-xs font-mono font-bold text-indigo-600 mt-0.5">
             // {personalInfo.jobTitle || (isArabic ? 'المسمى الوظيفي' : 'Job Title')}
           </p>
-          <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-600 mt-2">
-            {personalInfo.email && <span>📧 {personalInfo.email}</span>}
-            {personalInfo.phone && <span>📱 {personalInfo.phone}</span>}
-            {personalInfo.github && <span>💻 {personalInfo.github}</span>}
-            {personalInfo.linkedin && <span>🔗 {personalInfo.linkedin}</span>}
+          <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-600 mt-2 font-mono">
+            {personalInfo.email && <span>📧 <bdi>{personalInfo.email}</bdi></span>}
+            {personalInfo.phone && <span>📱 <bdi>{personalInfo.phone}</bdi></span>}
+            {personalInfo.github && <span>💻 <bdi>{personalInfo.github}</bdi></span>}
+            {personalInfo.linkedin && <span>🔗 <bdi>{personalInfo.linkedin}</bdi></span>}
           </div>
         </div>
         {settings.showPhoto && personalInfo.photoUrl && (
@@ -144,9 +144,9 @@ export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ dat
             <div key={exp.id}>
               <div className="flex justify-between items-baseline text-xs">
                 <span className="font-bold text-gray-900">{exp.position} @ {exp.company}</span>
-                <span className="text-[11px] font-mono text-gray-500">
+                <bdi className="date-range text-[11px] font-mono text-gray-500">
                   {exp.startDate} - {exp.current ? (isArabic ? 'الآن' : 'PRESENT') : exp.endDate}
-                </span>
+                </bdi>
               </div>
               {exp.bulletPoints && exp.bulletPoints.length > 0 && (
                 <ul className="list-disc list-inside text-xs text-gray-700 mt-1 space-y-1">
@@ -174,15 +174,15 @@ export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ dat
                 <div className="font-bold text-gray-900">
                   {p.title}
                   {p.link && (
-                    <span className="text-[10px] font-normal text-indigo-600 underline ml-2 mr-2">
+                    <span className="text-[10px] font-normal text-indigo-600 underline ml-2 mr-2" dir="ltr">
                       {p.link}
                     </span>
                   )}
                 </div>
                 {(p.startDate || p.endDate) && (
-                  <span className="text-[10px] text-gray-500">
+                  <bdi className="date-range text-[10px] text-gray-500">
                     {p.startDate} {p.endDate ? `- ${p.endDate}` : ''}
-                  </span>
+                  </bdi>
                 )}
               </div>
               <p className="text-gray-700 text-xs mt-0.5">{p.description}</p>
@@ -210,7 +210,7 @@ export const TechnicalCleanTemplate: React.FC<TemplateProps> = React.memo(({ dat
               <span className="font-bold text-gray-900">{e.degree}</span> in {e.fieldOfStudy}
               <p className="text-gray-600">{e.institution}</p>
             </div>
-            <span className="text-[11px] font-mono text-gray-500">{e.startDate} - {e.endDate}</span>
+            <bdi className="date-range text-[11px] font-mono text-gray-500">{e.startDate} - {e.endDate}</bdi>
           </div>
         ))}
       </section>

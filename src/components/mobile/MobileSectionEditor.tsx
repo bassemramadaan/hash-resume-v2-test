@@ -243,13 +243,13 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
                 aria-label={isAr ? 'معاينة سريعة' : 'Quick Preview'}
               >
                 <Eye className="w-3.5 h-3.5 text-[#FF4D2D]" />
-                <span className="text-[11px] hidden xs:inline">{isAr ? 'معاينة' : 'Preview'}</span>
+                <span className="text-xs hidden xs:inline">{isAr ? 'معاينة' : 'Preview'}</span>
               </button>
             )}
 
             {/* Autosave Indicator */}
             <div
-              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-semibold border transition-all duration-200 ${
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border transition-all duration-200 ${
                 saveStatus === 'saving'
                   ? 'bg-amber-50 text-amber-800 border-amber-200'
                   : 'bg-emerald-50 text-emerald-800 border-emerald-200/80'
@@ -286,7 +286,7 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
                 <h4 className="font-bold text-xs text-amber-950">
                   {isAr ? 'السيرة الذاتية مقفلة' : 'Resume is locked'}
                 </h4>
-                <p className="text-[11px] text-amber-900/90 leading-relaxed">
+                <p className="text-xs text-amber-950 font-medium leading-relaxed">
                   {isAr
                     ? 'تم تنزيل الـPDF وقفل الحقول لمنع التعديل غير المقصود.'
                     : 'Download complete. Resume locked to protect finalized version.'}

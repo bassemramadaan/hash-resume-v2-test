@@ -71,12 +71,12 @@ export const PostDownloadSuccessModal: React.FC = () => {
             </button>
 
             {/* Header / Celebration Banner */}
-            <div className="bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-slate-50 p-6 pt-8 text-center relative overflow-hidden border-b border-slate-100">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 mb-3 shadow-inner ring-4 ring-emerald-50">
+            <div className="bg-slate-50/90 p-6 pt-8 text-center relative overflow-hidden border-b border-slate-100">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[#001639] text-[#FF4D2D] mb-3 shadow-xs ring-4 ring-slate-100">
                 <FileCheck2 className="w-8 h-8" />
               </div>
 
-              <h2 className="font-black text-xl sm:text-2xl text-slate-900 leading-snug">
+              <h2 className="font-black text-xl sm:text-2xl text-[#001639] leading-snug">
                 {isAr ? 'تم تحميل سيرتك الذاتية بنجاح! 🎉' : 'Your resume is downloaded! 🎉'}
               </h2>
             </div>

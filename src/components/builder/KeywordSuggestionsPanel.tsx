@@ -138,7 +138,7 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3 bg-gradient-to-r from-slate-50 to-orange-50/30 hover:bg-slate-100/80 transition cursor-pointer text-start"
+        className="w-full px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3 bg-slate-50/80 hover:bg-slate-100/90 transition cursor-pointer text-start"
         aria-expanded={isOpen}
       >
         <div className="flex items-center gap-2.5 min-w-0">
@@ -149,14 +149,14 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
             <h3 className="text-xs sm:text-sm font-bold text-[#001639] truncate">
               {isAr ? 'الكلمات المفتاحية المقترحة لمجالك المستهدف' : 'Suggested keywords for your target role'}
             </h3>
-            <p className="text-[11px] text-slate-500 truncate hidden sm:block">
+            <p className="text-xs text-slate-600 truncate hidden sm:block">
               {isAr ? 'أضف المهارات الموصى بها بنقرة واحدة لرفع درجة التوافق مع ATS' : 'Add recommended keywords with one click to boost ATS compatibility'}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <span className="text-xs font-semibold text-slate-500 hidden sm:inline">
+          <span className="text-xs font-semibold text-slate-600 hidden sm:inline">
             {isOpen ? (isAr ? 'إخفاء' : 'Collapse') : (isAr ? 'عرض المهارات' : 'Show skills')}
           </span>
           <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-600">
@@ -174,7 +174,7 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
               {/* Select Industry */}
               <div className="flex items-center gap-1.5 shrink-0">
                 <label htmlFor="industry-select" className="text-xs font-bold text-slate-700 whitespace-nowrap flex items-center gap-1.5">
-                  <Briefcase className="w-3.5 h-3.5 text-slate-400" />
+                  <Briefcase className="w-3.5 h-3.5 text-slate-500" />
                   <span>{isAr ? 'المجال:' : 'Industry:'}</span>
                 </label>
                 <select
@@ -203,13 +203,13 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
 
               {/* Search Bar */}
               <div className="relative flex-1 max-w-full sm:max-w-xs">
-                <Search className="w-3.5 h-3.5 text-slate-400 absolute start-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-3.5 h-3.5 text-slate-500 absolute start-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={isAr ? 'بحث في المهارات المقترحة...' : 'Search suggested skills...'}
-                  className="w-full ps-8 pe-3 py-1.5 h-9 bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs text-slate-800 placeholder:text-slate-400 outline-none transition shadow-2xs"
+                  className="w-full ps-8 pe-3 py-1.5 h-9 bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs text-slate-800 placeholder:text-slate-500 outline-none transition shadow-2xs"
                 />
               </div>
             </div>
@@ -234,7 +234,7 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
 
           {/* Curated Skill Chips */}
           <div className="space-y-2.5">
-            <div className="flex items-center justify-between text-xs text-slate-500 font-semibold">
+            <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
               <span>
                 {query
                   ? (isAr ? `نتائج البحث (${totalCount})` : `Search results (${totalCount})`)
@@ -245,7 +245,7 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
             </div>
 
             {visibleItems.length === 0 ? (
-              <div className="p-4 bg-slate-50 rounded-xl text-center text-xs text-slate-500">
+              <div className="p-4 bg-slate-50 rounded-xl text-center text-xs text-slate-600">
                 {isAr ? 'لم يتم العثور على مهارات مطابقة للبحث.' : 'No matching skills found.'}
               </div>
             ) : (

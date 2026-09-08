@@ -138,7 +138,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-2 text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full transition cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
+                className="p-2 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full transition cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
                 aria-label={isAr ? 'إغلاق القائمة' : 'Close menu'}
               >
                 <X className="w-4 h-4" />
@@ -152,7 +152,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                   <Globe className="w-3.5 h-3.5 text-[#FF4D2D]" />
                   <span>{isAr ? 'اللغة' : 'Language'}</span>
                 </div>
-                <span className="text-[11px] font-semibold text-slate-500">
+                <span className="text-xs font-semibold text-slate-600">
                   {isAr ? 'العربية | English' : 'English | العربية'}
                 </span>
               </div>
@@ -231,10 +231,10 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                           <span className="text-xs font-bold">{item.label}</span>
                           {(item as any).badge && (
                             <span
-                              className={`text-[9px] font-black px-1.5 py-0.5 rounded-md ${
+                              className={`text-xs font-black px-1.5 py-0.5 rounded-md ${
                                 active
                                   ? 'bg-white/20 text-white'
-                                  : 'bg-slate-100 text-slate-600 border border-slate-200'
+                                  : 'bg-slate-100 text-slate-700 border border-slate-200'
                               }`}
                             >
                               {(item as any).badge}
@@ -243,8 +243,8 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                         </div>
                         {item.subtitle && (
                           <span
-                            className={`text-[10px] font-medium leading-tight ${
-                              active ? 'text-slate-200' : 'text-slate-400'
+                            className={`text-xs font-medium leading-tight ${
+                              active ? 'text-slate-200' : 'text-slate-600'
                             }`}
                           >
                             {item.subtitle}
@@ -255,7 +255,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
 
                     <Arrow
                       className={`w-4 h-4 shrink-0 ${
-                        active ? 'text-white/80' : 'text-slate-400'
+                        active ? 'text-white/80' : 'text-slate-500'
                       }`}
                     />
                   </Link>
@@ -280,7 +280,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                 <span>{isAr ? 'الدعم الفني عبر واتساب' : 'WhatsApp Support'}</span>
               </a>
 
-              <p className="text-[11px] text-slate-400 font-medium">
+              <p className="text-xs text-slate-600 font-medium">
                 {isAr
                   ? 'هاش ريزيومي — محرر السيرة الذاتية الاحترافي'
                   : 'Hash Resume — Professional CV Builder'}

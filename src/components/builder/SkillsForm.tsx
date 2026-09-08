@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
+import { useUndoToastStore } from '../../store/useUndoToastStore';
 import { getTranslation } from '../../i18n/translations';
 import { KeywordSuggestionsPanel } from './KeywordSuggestionsPanel';
 import { Wrench, Plus, Sparkles, Languages as LangIcon, X } from 'lucide-react';
@@ -10,11 +11,14 @@ export const SkillsForm: React.FC = () => {
     resumeData,
     addSkill,
     removeSkill,
+    insertSkillAtIndex,
     addLanguage,
     removeLanguage,
+    insertLanguageAtIndex,
     settings,
     openAiModal,
   } = useResumeStore();
+  const { showUndoToast } = useUndoToastStore();
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
   const skills = resumeData.skills || [];
@@ -27,6 +31,28 @@ export const SkillsForm: React.FC = () => {
   const [newLangName, setNewLangName] = useState('');
   const [newLangProf, setNewLangProf] =
     useState<'native' | 'fluent' | 'advanced' | 'intermediate' | 'basic'>('fluent');
+
+  const handleDeleteSkill = (skill: any, idx: number) => {
+    removeSkill(skill.id);
+    showUndoToast({
+      messageAr: `تم حذف مهارة "${skill.name}"`,
+      messageEn: `Deleted "${skill.name}"`,
+      onUndo: () => {
+        insertSkillAtIndex(idx, skill);
+      },
+    });
+  };
+
+  const handleDeleteLanguage = (lang: any, idx: number) => {
+    removeLanguage(lang.id);
+    showUndoToast({
+      messageAr: `تم حذف لغة "${lang.language}"`,
+      messageEn: `Deleted "${lang.language}"`,
+      onUndo: () => {
+        insertLanguageAtIndex(idx, lang);
+      },
+    });
+  };
 
   const handleAddSkillSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,14 +172,14 @@ export const SkillsForm: React.FC = () => {
         {/* Skill Badges List */}
         {skills.length > 0 ? (
           <div className="flex flex-wrap gap-2 pt-1 w-full min-w-0">
-            {(skills || []).map((skill) => (
+            {(skills || []).map((skill, sIdx) => (
               <span
                 key={skill.id}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs max-w-full min-w-0"
               >
                 <span className="truncate max-w-[200px]">{skill.name}</span>
                 {skill.level && (
-                  <span className="text-[10px] px-1 py-0.5 rounded-sm bg-slate-200 text-slate-600 font-bold uppercase scale-90 shrink-0">
+                  <span className="text-xs px-1.5 py-0.5 rounded-sm bg-slate-200 text-slate-700 font-bold uppercase shrink-0">
                     {isAr
                       ? skill.level === 'beginner'
                         ? 'مبتدئ'
@@ -167,8 +193,8 @@ export const SkillsForm: React.FC = () => {
                 )}
                 <button
                   type="button"
-                  onClick={() => removeSkill(skill.id)}
-                  className="text-slate-400 hover:text-rose-600 transition cursor-pointer p-0.5 shrink-0"
+                  onClick={() => handleDeleteSkill(skill, sIdx)}
+                  className="text-slate-500 hover:text-rose-600 transition cursor-pointer p-0.5 shrink-0"
                   aria-label={isAr ? `حذف مهارة ${skill.name}` : `Remove ${skill.name}`}
                 >
                   <X className="w-3.5 h-3.5" />
@@ -177,7 +203,7 @@ export const SkillsForm: React.FC = () => {
             ))}
           </div>
         ) : (
-          <p className="text-xs text-slate-400 pt-1">
+          <p className="text-xs text-slate-600 font-medium pt-1">
             {isAr ? 'لم يتم إضافة مهارات بعد.' : 'No skills added yet.'}
           </p>
         )}
@@ -233,7 +259,7 @@ export const SkillsForm: React.FC = () => {
 
         {languages.length > 0 && (
           <div className="flex flex-wrap gap-2 pt-1 w-full min-w-0">
-            {(languages || []).map((lang) => (
+            {(languages || []).map((lang, lIdx) => (
               <span
                 key={lang.id}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs max-w-full min-w-0"
@@ -243,8 +269,8 @@ export const SkillsForm: React.FC = () => {
                 </span>
                 <button
                   type="button"
-                  onClick={() => removeLanguage(lang.id)}
-                  className="text-slate-400 hover:text-rose-600 transition cursor-pointer p-0.5 shrink-0"
+                  onClick={() => handleDeleteLanguage(lang, lIdx)}
+                  className="text-slate-500 hover:text-rose-600 transition cursor-pointer p-0.5 shrink-0"
                   aria-label={isAr ? `حذف لغة ${lang.language}` : `Remove ${lang.language}`}
                 >
                   <X className="w-3.5 h-3.5" />
