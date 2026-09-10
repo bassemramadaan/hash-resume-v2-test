@@ -28,9 +28,10 @@ export default defineConfig(({ mode }) => {
       'process.env.GOOGLE_MAPS_PLATFORM_KEY': JSON.stringify(env.GOOGLE_MAPS_PLATFORM_KEY || process.env.GOOGLE_MAPS_PLATFORM_KEY || ''),
     },
     resolve: {
-      alias: {
-        '@': path.resolve(__dirname, '.'),
-      },
+      alias: [
+        { find: /^@\/(.*)/, replacement: path.resolve(__dirname, 'src/$1') },
+        { find: '@', replacement: path.resolve(__dirname, 'src') },
+      ],
     },
     build: {
       chunkSizeWarningLimit: 600,

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
 import { INDUSTRY_DOMAINS, findMatchingIndustry, DomainKeywordGroup } from '../../data/industryKeywords';
+import { aiApi } from '../../lib/api';
 import {
   Sparkles,
   Plus,
@@ -65,16 +66,12 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
     if (!userJobTitle.trim()) return;
     setIsAiLoading(true);
     try {
-      const res = await fetch('/api/ai/suggest-keywords', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jobTitle: userJobTitle,
-          domain: selectedDomain.nameEn,
-          language: settings.language,
-        }),
+      const data = await aiApi.suggestKeywords({
+        jobTitle: userJobTitle,
+        domain: selectedDomain.nameEn,
+        language: settings.language,
       });
-      const data = await res.json();
+
       if (data && (data.technical || data.tools || data.softSkills)) {
         setAiCustomKeywords({
           technical: data.technical || [],

@@ -21,6 +21,7 @@ import {
   X,
 } from 'lucide-react';
 import { NextStepBanner } from './NextStepBanner';
+import { aiApi } from '../../lib/api';
 
 export const ExperienceForm: React.FC = () => {
   const {
@@ -59,16 +60,12 @@ export const ExperienceForm: React.FC = () => {
     setQuantifyOptions([]);
 
     try {
-      const res = await fetch('/api/ai/quantify-achievement', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: text || 'مسؤول عن تحسين وتطوير العمليات والأنظمة',
-          jobTitle: jobTitle || 'محترف',
-          language: settings.language,
-        }),
+      const data = await aiApi.quantifyAchievement({
+        text: text || 'مسؤول عن تحسين وتطوير العمليات والأنظمة',
+        jobTitle: jobTitle || 'محترف',
+        language: settings.language,
       });
-      const data = await res.json();
+
       if (data && Array.isArray(data.options)) {
         setQuantifyOptions(data.options);
       } else {

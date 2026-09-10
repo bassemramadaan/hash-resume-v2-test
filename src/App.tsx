@@ -1,36 +1,38 @@
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { useResumeStore } from './store/useResumeStore';
-import { Navbar } from './components/layout/Navbar';
-import { Footer } from './components/layout/Footer';
-import { WhatsAppButton } from './components/ui/WhatsAppButton';
-import { GlobalUndoToast } from './components/common/GlobalUndoToast';
-import { PdfExportProgressModal } from './components/common/PdfExportProgressModal';
-import { ErrorBoundary } from './components/common/ErrorBoundary';
+import {
+  Navbar,
+  Footer,
+  WhatsAppButton,
+  GlobalUndoToast,
+  PdfExportProgressModal,
+  ErrorBoundary,
+} from './components';
 
 // Eagerly load LandingPage for fastest initial paint on root route
-import { LandingPage } from './pages/LandingPage';
+import { LandingPage } from './pages';
 
-// Lazy-loaded route components
-const BuilderPage = React.lazy(() => import('./pages/BuilderPage').then((m) => ({ default: m.BuilderPage })));
-const TemplatesPage = React.lazy(() => import('./pages/TemplatesPage').then((m) => ({ default: m.TemplatesPage })));
-const AtsCheckerPage = React.lazy(() => import('./pages/AtsCheckerPage').then((m) => ({ default: m.AtsCheckerPage })));
-const HashHuntPage = React.lazy(() => import('./pages/HashHuntPage').then((m) => ({ default: m.HashHuntPage })));
-const PricingPage = React.lazy(() => import('./pages/PricingPage').then((m) => ({ default: m.PricingPage })));
-const FaqPage = React.lazy(() => import('./pages/FaqPage').then((m) => ({ default: m.FaqPage })));
-const PrivacyPage = React.lazy(() => import('./pages/PrivacyPage').then((m) => ({ default: m.PrivacyPage })));
-const TermsPage = React.lazy(() => import('./pages/TermsPage').then((m) => ({ default: m.TermsPage })));
-const PaymentSuccessPage = React.lazy(() => import('./pages/PaymentSuccessPage').then((m) => ({ default: m.PaymentSuccessPage })));
-const PaymentDeclinedPage = React.lazy(() => import('./pages/PaymentDeclinedPage').then((m) => ({ default: m.PaymentDeclinedPage })));
-const ShowcasePage = React.lazy(() => import('./pages/ShowcasePage').then((m) => ({ default: m.ShowcasePage })));
-const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage').then((m) => ({ default: m.NotFoundPage })));
+// Lazy-loaded route components from barrel export
+const BuilderPage = React.lazy(() => import('./pages').then((m) => ({ default: m.BuilderPage })));
+const TemplatesPage = React.lazy(() => import('./pages').then((m) => ({ default: m.TemplatesPage })));
+const AtsCheckerPage = React.lazy(() => import('./pages').then((m) => ({ default: m.AtsCheckerPage })));
+const HashHuntPage = React.lazy(() => import('./pages').then((m) => ({ default: m.HashHuntPage })));
+const PricingPage = React.lazy(() => import('./pages').then((m) => ({ default: m.PricingPage })));
+const FaqPage = React.lazy(() => import('./pages').then((m) => ({ default: m.FaqPage })));
+const PrivacyPage = React.lazy(() => import('./pages').then((m) => ({ default: m.PrivacyPage })));
+const TermsPage = React.lazy(() => import('./pages').then((m) => ({ default: m.TermsPage })));
+const PaymentSuccessPage = React.lazy(() => import('./pages').then((m) => ({ default: m.PaymentSuccessPage })));
+const PaymentDeclinedPage = React.lazy(() => import('./pages').then((m) => ({ default: m.PaymentDeclinedPage })));
+const ShowcasePage = React.lazy(() => import('./pages').then((m) => ({ default: m.ShowcasePage })));
+const NotFoundPage = React.lazy(() => import('./pages').then((m) => ({ default: m.NotFoundPage })));
 
-// Lazy-loaded global modals & offscreen renderer
-const AiAssistantModal = React.lazy(() => import('./components/builder/AiAssistantModal').then((m) => ({ default: m.AiAssistantModal })));
-const ActivationModal = React.lazy(() => import('./components/activation/ActivationModal').then((m) => ({ default: m.ActivationModal })));
-const PostDownloadSuccessModal = React.lazy(() => import('./components/activation/PostDownloadSuccessModal').then((m) => ({ default: m.PostDownloadSuccessModal })));
-const UnlockConfirmModal = React.lazy(() => import('./components/modals/UnlockConfirmModal').then((m) => ({ default: m.UnlockConfirmModal })));
-const ResumeOffscreenRenderer = React.lazy(() => import('./components/preview/ResumeOffscreenRenderer').then((m) => ({ default: m.ResumeOffscreenRenderer })));
+// Lazy-loaded global modals & offscreen renderer from barrel export
+const AiAssistantModal = React.lazy(() => import('./components').then((m) => ({ default: m.AiAssistantModal })));
+const ActivationModal = React.lazy(() => import('./components').then((m) => ({ default: m.ActivationModal })));
+const PostDownloadSuccessModal = React.lazy(() => import('./components').then((m) => ({ default: m.PostDownloadSuccessModal })));
+const UnlockConfirmModal = React.lazy(() => import('./components').then((m) => ({ default: m.UnlockConfirmModal })));
+const ResumeOffscreenRenderer = React.lazy(() => import('./components').then((m) => ({ default: m.ResumeOffscreenRenderer })));
 
 const PageFallback = () => {
   const isAr = useResumeStore.getState().settings.language === 'ar';
@@ -131,5 +133,3 @@ export default function App() {
     </ErrorBoundary>
   );
 }
-
-

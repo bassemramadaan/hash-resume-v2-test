@@ -4,6 +4,7 @@ import { getTranslation } from '../../i18n/translations';
 import { detectResumeRedFlags } from '../../utils/redFlagDetector';
 import { RedFlagItem } from '../../types/resume';
 import { AtsSectionBreakdown } from './AtsSectionBreakdown';
+import { aiApi } from '../../lib/api';
 import {
   ShieldCheck,
   Sparkles,
@@ -75,21 +76,12 @@ export const AtsAnalyzerPanel: React.FC = () => {
     setAddedKeywords([]);
     setAddedAllSuccess(false);
     try {
-      const response = await fetch('/api/ai/ats-analyzer', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          resumeData,
-          jobDescription: targetJobDescription,
-          language: settings.language,
-        }),
+      const data = await aiApi.atsAnalyze({
+        resumeData,
+        jobDescription: targetJobDescription,
+        language: settings.language,
       });
 
-      if (!response.ok) {
-        throw new Error('ATS Check Server Error');
-      }
-
-      const data = await response.json();
       setAtsResult(data);
     } catch (err) {
       console.error('ATS Analysis Error:', err);

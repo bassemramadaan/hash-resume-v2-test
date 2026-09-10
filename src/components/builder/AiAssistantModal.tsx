@@ -3,6 +3,7 @@ import { useResumeStore } from '../../store/useResumeStore';
 import { getTranslation } from '../../i18n/translations';
 import { Sparkles, X, Check, Loader2, Copy } from 'lucide-react';
 import { parseApiError } from '../../utils/apiErrorHelper';
+import { aiApi } from '../../lib/api';
 
 export const AiAssistantModal: React.FC = () => {
   const {
@@ -58,18 +59,13 @@ export const AiAssistantModal: React.FC = () => {
 
     try {
       if (aiModalType === 'bullet') {
-        const response = await fetch('/api/ai/enhance-bullet', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            bulletText: inputText || (expItem?.bulletPoints?.[0] ?? 'أدرت واستكملت المهام اليومية بكفاءة'),
-            jobTitle: expItem?.position || resumeData.personalInfo.jobTitle,
-            language: settings.language,
-          }),
+        const data = await aiApi.enhanceBullet({
+          bulletText: inputText || (expItem?.bulletPoints?.[0] ?? 'أدرت واستكملت المهام اليومية بكفاءة'),
+          jobTitle: expItem?.position || resumeData.personalInfo.jobTitle,
+          language: settings.language,
         });
 
-        const data = await response.json();
-        if (response.ok && data.suggestions) {
+        if (data.suggestions && data.suggestions.length > 0) {
           setSuggestions(data.suggestions);
         } else if (data.fallbackSuggestions) {
           setSuggestions(data.fallbackSuggestions);
@@ -78,37 +74,25 @@ export const AiAssistantModal: React.FC = () => {
           setErrorMessage(settings.language === 'en' ? data.errorEn || data.error : data.error);
         }
       } else if (aiModalType === 'summary') {
-        const response = await fetch('/api/ai/generate-summary', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            jobTitle: resumeData.personalInfo.jobTitle || 'محترف',
-            yearsOfExperience: '3-5',
-            keySkills: (resumeData.skills || []).map((s) => s.name).join(', '),
-            language: settings.language,
-          }),
+        const data = await aiApi.generateSummary({
+          jobTitle: resumeData.personalInfo.jobTitle || 'محترف',
+          yearsOfExperience: '3-5',
+          keySkills: (resumeData.skills || []).map((s) => s.name).join(', '),
+          language: settings.language,
         });
 
-        const data = await response.json();
-        if (response.ok && data.summary) {
-          setSuggestions([data.summary]);
-        } else if (data.summary) {
+        if (data.summary) {
           setSuggestions([data.summary]);
           if (data.error) setErrorMessage(settings.language === 'en' ? data.errorEn || data.error : data.error);
         } else if (data.error) {
           setErrorMessage(settings.language === 'en' ? data.errorEn || data.error : data.error);
         }
       } else if (aiModalType === 'skills') {
-        const response = await fetch('/api/ai/suggest-skills', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            jobTitle: resumeData.personalInfo.jobTitle || 'مهندس برمجيات',
-            language: settings.language,
-          }),
+        const data = await aiApi.suggestSkills({
+          jobTitle: resumeData.personalInfo.jobTitle || 'مهندس برمجيات',
+          language: settings.language,
         });
 
-        const data = await response.json();
         if (data.technicalSkills || data.softSkills || data.tools) {
           setCategorizedSkills(data);
           if (data.error) setErrorMessage(settings.language === 'en' ? data.errorEn || data.error : data.error);

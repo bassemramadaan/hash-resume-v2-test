@@ -3,6 +3,7 @@
  */
 
 import { PaymentStatusResponse } from '../types/payment';
+import { paymentApi } from '../lib/api';
 
 const PAYMENT_API_URL =
   (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_PAYMENT_API_URL) || '';
@@ -142,25 +143,18 @@ export async function checkPaymentStatus(reference: string) {
 
 export async function verifyActivationCode(code: string, reference: string) {
   try {
-    const response = await fetch('/api/verify-code', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        code: code ? code.trim().toUpperCase() : '',
-        reference: reference ? reference.trim() : '',
-      }),
+    const data = await paymentApi.verifyCode({
+      code: code ? code.trim().toUpperCase() : '',
+      reference: reference ? reference.trim() : '',
     });
 
-    const data = await response.json().catch(() => ({}));
-
     if (
-      response.ok &&
       data.success &&
-      (data.status === 'USED' || data.status === 'APPROVED' || data.status === 'ACTIVE' || data.valid === true)
+      ((data as any).status === 'USED' || (data as any).status === 'APPROVED' || (data as any).status === 'ACTIVE' || data.valid === true)
     ) {
       return {
         success: true,
-        status: data.status || 'USED',
+        status: (data as any).status || 'USED',
         message: data.message || 'تم تفعيل الكود بنجاح!',
         remainingDownloads: data.remainingDownloads || 1,
       };
