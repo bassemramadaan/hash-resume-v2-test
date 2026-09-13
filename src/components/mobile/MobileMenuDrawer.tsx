@@ -18,16 +18,21 @@ import {
   ChevronRight,
   ChevronLeft,
   Briefcase,
+  RotateCcw,
 } from 'lucide-react';
 
 interface MobileMenuDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  onLoadSample?: () => void;
+  onOpenResetModal?: () => void;
 }
 
 export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
   isOpen,
   onClose,
+  onLoadSample,
+  onOpenResetModal,
 }) => {
   const { settings, setLanguage } = useResumeStore();
   const location = useLocation();
@@ -130,7 +135,9 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
             {/* Header */}
             <div className="p-4 border-b border-slate-100 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <Logo variant="icon" size="sm" className="!h-8 w-auto" />
+                <div className="p-1.5 rounded-xl bg-white shadow-xs border border-slate-100 ring-2 ring-[#FF4D2D]/10 shrink-0 flex items-center justify-center">
+                  <Logo variant="icon" size="sm" className="!h-7 w-auto object-contain rounded-lg" />
+                </div>
                 <span className="font-brand font-extrabold text-sm text-[#001639]">
                   Hash <span className="text-[#FF4D2D]">Resume</span>
                 </span>
@@ -185,17 +192,56 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               </div>
             </div>
 
+            {/* Quick Resume Actions (When in builder) */}
+            {(onLoadSample || onOpenResetModal) && (
+              <div className="px-3 pt-2 pb-1 space-y-1.5 border-b border-slate-100">
+                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider px-1">
+                  {isAr ? 'أدوات السيرة الذاتية' : 'Resume Tools'}
+                </span>
+                <div className="grid grid-cols-2 gap-2">
+                  {onLoadSample && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        onLoadSample();
+                      }}
+                      className="p-2.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/80 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      <span className="truncate">{isAr ? 'نموذج تجريبي' : 'Load Sample'}</span>
+                    </button>
+                  )}
+                  {onOpenResetModal && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        onOpenResetModal();
+                      }}
+                      className="p-2.5 bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 shrink-0" />
+                      <span className="truncate">{isAr ? 'سيرة جديدة' : 'Start Fresh'}</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Primary Action CTA (Build My Resume) */}
-            <div className="p-3 pb-1">
-              <Link
-                to="/builder"
-                onClick={onClose}
-                className="w-full py-3 px-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-xs flex items-center justify-center gap-2 active:scale-98 transition"
-              >
-                <Sparkles className="w-4 h-4" />
-                <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
-              </Link>
-            </div>
+            {!location.pathname.startsWith('/builder') && (
+              <div className="p-3 pb-1">
+                <Link
+                  to="/builder"
+                  onClick={onClose}
+                  className="w-full py-3 px-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-xs flex items-center justify-center gap-2 active:scale-98 transition"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
+                </Link>
+              </div>
+            )}
 
             {/* Nav Links */}
             <nav className="flex-1 overflow-y-auto p-3 space-y-1.5">

@@ -44,9 +44,9 @@ export const FaqPage: React.FC = () => {
   ];
 
   return (
-    <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-7">
       {/* Header */}
-      <div className="text-center max-w-2xl mx-auto space-y-3">
+      <div className="text-center max-w-2xl mx-auto space-y-2.5">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8EEF7] border border-[#CBD5E1] text-[#001639] text-xs font-bold shadow-2xs">
           <HelpCircle className="w-4 h-4 text-[#001639]" />
           <span>{isAr ? 'الأسئلة الأكثر شيوعاً' : 'Frequently Asked Questions'}</span>

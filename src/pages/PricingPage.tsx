@@ -9,9 +9,9 @@ export const PricingPage: React.FC = () => {
   const isAr = settings.language === 'ar';
 
   return (
-    <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+    <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
       {/* Header */}
-      <div className="text-center max-w-2xl mx-auto space-y-3">
+      <div className="text-center max-w-2xl mx-auto space-y-2.5">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8EEF7] border border-[#CBD5E1] text-[#001639] text-xs font-bold shadow-2xs">
           <CreditCard className="w-4 h-4 text-[#001639]" />
           <span>{isAr ? 'خطط تسعير بسيطة ودعم كامل لوسائل الدفع المحلية' : 'Transparent Local Pricing'}</span>
@@ -27,9 +27,9 @@ export const PricingPage: React.FC = () => {
       </div>
 
       {/* Pricing Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6 max-w-4xl mx-auto">
         {/* Single Plan Card */}
-        <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs flex flex-col justify-between space-y-6 relative">
+        <div className="bg-white rounded-3xl border border-[#E2E8F0] p-5 sm:p-7 shadow-xs flex flex-col justify-between space-y-5 relative">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-extrabold text-[#0B1120] text-base">{t.planSingleTitle}</h3>
@@ -61,15 +61,15 @@ export const PricingPage: React.FC = () => {
 
           <button
             onClick={() => setIsActivationModalOpen(true)}
-            className="w-full py-3 bg-[#001639] hover:bg-[#00214F] text-white font-extrabold text-xs rounded-full transition cursor-pointer shadow-xs"
+            className="w-full py-3 bg-[#001639] hover:bg-[#00214F] text-white font-extrabold text-xs rounded-full transition cursor-pointer shadow-xs min-h-[44px] active:scale-98"
           >
             {isAr ? 'تفعيل خطة التحميل الفردي' : 'Get Single Key'}
           </button>
         </div>
 
         {/* Bundle Plan Card */}
-        <div className="bg-[#000F27] text-white rounded-3xl border border-[#001639] p-6 sm:p-8 shadow-xl flex flex-col justify-between space-y-6 relative overflow-hidden">
-          <div className="absolute top-4 right-4 px-3 py-1 rounded-full text-[10px] font-black bg-[#FF4D2D] text-white uppercase shadow-2xs">
+        <div className="bg-[#000F27] text-white rounded-3xl border border-[#001639] p-5 sm:p-7 shadow-xl flex flex-col justify-between space-y-5 relative overflow-hidden">
+          <div className="absolute top-4 end-4 px-3 py-1 rounded-full text-[10px] font-black bg-[#FF4D2D] text-white uppercase shadow-2xs">
             {t.planBundleBadge}
           </div>
 

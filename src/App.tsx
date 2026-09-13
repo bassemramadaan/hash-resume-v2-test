@@ -1,5 +1,6 @@
 import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from './store/useResumeStore';
 import {
   Navbar,
@@ -64,6 +65,11 @@ export default function App() {
     document.documentElement.dir = isAr ? 'rtl' : 'ltr';
   }, [settings.language]);
 
+  // Scroll to top on every route navigation for a crisp transition
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [location.pathname]);
+
   return (
     <ErrorBoundary>
       <div
@@ -72,24 +78,35 @@ export default function App() {
       >
         <Navbar />
 
-        {/* Main App Routes Container */}
-        <main className="flex-1 w-full">
+        {/* Main App Routes Container with Professional Page Transitions */}
+        <main className="flex-1 w-full flex flex-col">
           <React.Suspense fallback={<PageFallback />}>
-            <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/builder" element={<BuilderPage />} />
-              <Route path="/templates" element={<TemplatesPage />} />
-              <Route path="/ats-checker" element={<AtsCheckerPage />} />
-              <Route path="/hash-hunt" element={<HashHuntPage />} />
-              <Route path="/pricing" element={<PricingPage />} />
-              <Route path="/faq" element={<FaqPage />} />
-              <Route path="/privacy" element={<PrivacyPage />} />
-              <Route path="/terms" element={<TermsPage />} />
-              <Route path="/payment/success" element={<PaymentSuccessPage />} />
-              <Route path="/payment/failed" element={<PaymentDeclinedPage />} />
-              <Route path="/showcase" element={<ShowcasePage />} />
-              <Route path="*" element={<NotFoundPage />} />
-            </Routes>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.18, ease: [0.25, 1, 0.5, 1] }}
+                className="w-full flex-1 flex flex-col"
+              >
+                <Routes location={location}>
+                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/builder" element={<BuilderPage />} />
+                  <Route path="/templates" element={<TemplatesPage />} />
+                  <Route path="/ats-checker" element={<AtsCheckerPage />} />
+                  <Route path="/hash-hunt" element={<HashHuntPage />} />
+                  <Route path="/pricing" element={<PricingPage />} />
+                  <Route path="/faq" element={<FaqPage />} />
+                  <Route path="/privacy" element={<PrivacyPage />} />
+                  <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/payment/success" element={<PaymentSuccessPage />} />
+                  <Route path="/payment/failed" element={<PaymentDeclinedPage />} />
+                  <Route path="/showcase" element={<ShowcasePage />} />
+                  <Route path="*" element={<NotFoundPage />} />
+                </Routes>
+              </motion.div>
+            </AnimatePresence>
           </React.Suspense>
         </main>
 
@@ -128,7 +145,7 @@ export default function App() {
           </React.Suspense>
         )}
 
-        <Footer />
+        {!isBuilderPage && <Footer />}
       </div>
     </ErrorBoundary>
   );

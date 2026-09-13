@@ -30,14 +30,16 @@ export const NextStepBanner: React.FC<NextStepBannerProps> = ({
         aria-label={isAr ? 'الإجراء التالي المقترح' : 'Recommended next step'}
         className={`px-3.5 py-2.5 bg-blue-50/70 border border-blue-200/80 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 text-xs text-blue-950 shadow-2xs w-full min-w-0 next-step-banner ${className}`}
       >
-        <div className="flex items-start sm:items-center gap-2 min-w-0 flex-1">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D2D] shrink-0 mt-1 sm:mt-0" />
-          <span className="text-[11px] font-bold text-blue-900/70 shrink-0 uppercase tracking-wider">
-            {isAr ? 'الخطوة التالية:' : 'Next step:'}
-          </span>
-          <span className="font-semibold text-blue-950 leading-relaxed break-words whitespace-normal min-w-0">
-            {isAr ? stepTextAr : stepTextEn}
-          </span>
+        <div className="flex items-start gap-2 min-w-0 flex-1 overflow-hidden">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D2D] shrink-0 mt-1.5" />
+          <p className="text-xs text-blue-950 leading-relaxed break-words whitespace-normal min-w-0 flex-1">
+            <span className="text-[11px] font-bold text-blue-900/80 uppercase tracking-wider me-1.5 inline-block">
+              {isAr ? 'الخطوة التالية:' : 'Next step:'}
+            </span>
+            <span className="font-semibold">
+              {isAr ? stepTextAr : stepTextEn}
+            </span>
+          </p>
         </div>
 
         {onAction && (actionTextAr || actionTextEn) && (

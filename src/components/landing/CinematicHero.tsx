@@ -28,7 +28,6 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[70vw] max-w-[800px] max-h-[800px] bg-coral-soft rounded-full blur-[120px] opacity-40 pointer-events-none"></div>
       
       <div className="relative z-10 w-full max-w-5xl mx-auto text-center space-y-5 sm:space-y-8">
-        
         {/* Header Badges & Slogan Flag */}
         <div className="flex flex-col items-center gap-2 hero-reveal hero-reveal-badge">
           <div

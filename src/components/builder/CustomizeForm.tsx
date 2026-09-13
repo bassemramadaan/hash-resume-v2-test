@@ -236,7 +236,7 @@ export const CustomizeForm: React.FC = () => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 pb-2 -mx-3 px-3 scrollbar-hide">
           {TEMPLATE_OPTIONS.map((tpl) => {
             const isSelected = settings.templateId === tpl.id;
             const name = (t as any)[tpl.nameKey] || tpl.id;
@@ -248,29 +248,31 @@ export const CustomizeForm: React.FC = () => {
                 type="button"
                 key={tpl.id}
                 onClick={() => setTemplate(tpl.id)}
-                className={`p-3.5 rounded-xl border text-start transition cursor-pointer text-xs space-y-1.5 relative ${
+                className={`flex-none w-[260px] sm:w-[280px] snap-center p-3.5 rounded-xl border text-start transition cursor-pointer text-xs space-y-1.5 relative ${
                   isSelected
                     ? 'bg-slate-50 border-[#001639] ring-1 ring-[#001639]/20 shadow-xs'
                     : 'bg-white border-slate-200 hover:border-slate-300'
                 }`}
               >
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-1.5 min-w-0 flex-wrap">
-                    <span className="font-bold text-slate-900 truncate">{name}</span>
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-bold text-slate-900">{name}</span>
+                    {isSelected && <Check className="w-4 h-4 text-[#001639] shrink-0" />}
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
                     {isRecommended && (
-                      <span className="shrink-0 text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">
+                      <span className="shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">
                         {isAr ? 'الأفضل لـ ATS' : 'Best for ATS'}
                       </span>
                     )}
                     {(tpl.id === 'classic-professional' || tpl.id === 'creative-compact') && (
-                      <span className="shrink-0 text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs">
+                      <span className="shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200 shadow-2xs">
                         {isAr ? 'أفضل للمراجعة البشرية والبورتفوليو' : 'Human Review & Portfolio'}
                       </span>
                     )}
                   </div>
-                  {isSelected && <Check className="w-4 h-4 text-[#001639] shrink-0" />}
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed">{desc}</p>
+                <p className="text-[11px] text-slate-600 leading-relaxed mt-2">{desc}</p>
               </button>
             );
           })}

@@ -35,9 +35,9 @@ export const TemplatesPage: React.FC = () => {
   const ArrowIcon = isAr ? ArrowLeft : ArrowRight;
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-7">
       {/* Page Header */}
-      <div className="text-center max-w-2xl mx-auto space-y-3">
+      <div className="text-center max-w-2xl mx-auto space-y-2.5">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8EEF7] border border-[#CBD5E1] text-[#001639] text-xs font-bold shadow-2xs">
           <Layout className="w-4 h-4 text-[#001639]" />
           <span>{isAr ? 'معرض القوالب الاحترافية' : 'Professional Template Gallery'}</span>
@@ -52,13 +52,13 @@ export const TemplatesPage: React.FC = () => {
         </p>
       </div>
 
-      {/* Category Filter Tabs */}
-      <div className="flex flex-wrap items-center justify-center gap-2">
+      {/* Category Filter Tabs with Horizontal Scroll on Mobile */}
+      <div className="flex items-center justify-start sm:justify-center gap-1.5 overflow-x-auto pb-1 no-scrollbar -mx-4 px-4 sm:mx-0 sm:px-0">
         {categories.map((cat) => (
           <button
             key={cat.id}
             onClick={() => setFilterCategory(cat.id)}
-            className={`px-4 py-2 rounded-full text-xs font-bold transition cursor-pointer ${
+            className={`px-3.5 py-2 rounded-full text-xs font-bold transition cursor-pointer shrink-0 whitespace-nowrap min-h-[38px] ${
               filterCategory === cat.id
                 ? 'bg-[#001639] text-white shadow-xs'
                 : 'bg-white text-[#52627A] border border-[#E2E8F0] hover:bg-slate-50'

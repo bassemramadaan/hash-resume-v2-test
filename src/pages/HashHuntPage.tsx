@@ -350,34 +350,34 @@ export const HashHuntPage: React.FC = () => {
 
   return (
     <main dir={isAr ? "rtl" : "ltr"} className="overflow-x-hidden bg-[#F8FAFC] min-h-screen font-sans text-navy selection:bg-coral/20 selection:text-coral">
-      {/* 1. Header Transparent & Sticky - Mobile Optimized */}
-      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#E5E7EB] h-16 md:h-[72px] transition-all duration-200">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between gap-4">
-          <Link to="/" className="inline-flex items-center gap-2 text-slate-600 hover:text-coral transition-colors font-medium min-h-[44px] px-2 -mx-2">
-            {isAr ? <ArrowRight className="w-5 h-5" /> : <ArrowLeft className="w-5 h-5" />}
-            <span className="hidden sm:block font-bold">{isAr ? "Hash Resume" : "Hash Resume"}</span>
-          </Link>
-          
-          <div className="flex items-center gap-1.5 flex-1 justify-center sm:justify-start sm:flex-none">
-            <span className="text-xl tracking-tight flex items-center gap-1 font-brand">
-              <span className="text-navy">Hash</span>
+      {/* 1. Sub-Banner Context Bar */}
+      <div className="bg-white/95 border-b border-[#E5E7EB] py-2.5 transition-all">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <Link to="/" className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-coral transition-colors font-medium">
+              {isAr ? <ArrowRight className="w-3.5 h-3.5" /> : <ArrowLeft className="w-3.5 h-3.5" />}
+              <span>{isAr ? "الرئيسية" : "Home"}</span>
+            </Link>
+            <span className="text-slate-300">/</span>
+            <span className="text-xs font-bold text-navy flex items-center gap-1">
+              <span>Hash</span>
               <span className="text-coral">Hunt</span>
             </span>
-            <span className="hidden md:inline-flex items-center justify-center px-2.5 py-1 ml-2 bg-coral-soft text-coral text-[10px] font-bold uppercase tracking-wider rounded-lg">
+            <span className="inline-flex items-center justify-center px-2 py-0.5 bg-coral-soft text-coral text-[10px] font-bold uppercase tracking-wider rounded-md">
               {isAr ? "وظائف" : "Jobs"}
             </span>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => scrollToSection('apply-now')}
-              className="min-h-[40px] px-4 rounded-xl bg-coral text-sm font-bold text-white transition hover:bg-coral-hover focus:outline-none focus:ring-2 focus:ring-coral focus:ring-offset-2 flex items-center justify-center gap-2"
+              className="min-h-[34px] px-3.5 rounded-lg bg-coral text-xs font-bold text-white transition hover:bg-coral-hover focus:outline-none flex items-center justify-center gap-1.5 shadow-xs"
             >
               {isAr ? "قدّم الآن" : "Apply Now"}
             </button>
           </div>
         </div>
-      </header>
+      </div>
 
       {/* 2. Hero Section - Short & Direct */}
       <section className="relative bg-gradient-to-b from-coral-soft/50 to-[#F8FAFC] pt-12 pb-12 md:pt-20 md:pb-16 overflow-hidden">

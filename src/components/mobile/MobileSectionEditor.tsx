@@ -84,6 +84,7 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
       subtitleEn: string;
       icon: any;
       nextSection?: MobileSectionKey;
+      prevSection?: MobileSectionKey;
     }
   > = {
     personal: {
@@ -101,6 +102,7 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
       subtitleEn: 'Positions, companies, and achievements',
       icon: Briefcase,
       nextSection: 'education',
+      prevSection: 'personal',
     },
     education: {
       titleAr: 'المؤهلات التعليمية',
@@ -109,6 +111,7 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
       subtitleEn: 'Degrees, universities, and graduation years',
       icon: GraduationCap,
       nextSection: 'skills',
+      prevSection: 'experiences',
     },
     skills: {
       titleAr: 'المهارات والقدرات',
@@ -117,6 +120,7 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
       subtitleEn: 'Technical, soft skills, and languages',
       icon: Wrench,
       nextSection: 'certifications',
+      prevSection: 'education',
     },
     certifications: {
       titleAr: 'الشهادات والدورات',
@@ -125,6 +129,7 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
       subtitleEn: 'Accredited certificates and licenses',
       icon: Award,
       nextSection: 'projects',
+      prevSection: 'skills',
     },
     projects: {
       titleAr: 'المشاريع العملية',
@@ -133,6 +138,7 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
       subtitleEn: 'Notable projects and applications',
       icon: FolderGit2,
       nextSection: 'customize',
+      prevSection: 'certifications',
     },
     customize: {
       titleAr: 'القالب والتنسيق',
@@ -141,6 +147,7 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
       subtitleEn: 'Pick template, typography, and accent colors',
       icon: Layout,
       nextSection: 'ats',
+      prevSection: 'projects',
     },
     ats: {
       titleAr: 'فحص جودة ATS',
@@ -149,6 +156,7 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
       subtitleEn: 'Match your resume with a job description',
       icon: FileText,
       nextSection: 'download',
+      prevSection: 'customize',
     },
     download: {
       titleAr: 'المراجعة والتصدير',
@@ -156,6 +164,7 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
       subtitleAr: 'معاينة نهائية وتحميل ملف الـPDF',
       subtitleEn: 'Final review and PDF export options',
       icon: Download,
+      prevSection: 'ats',
     },
   };
 
@@ -207,71 +216,88 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
       transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
       className="space-y-4 pb-28 mobile-section-editor mobile-editor-content w-full max-w-full min-w-0 overflow-x-hidden section-enter"
     >
+      {/* Floating Mid-Screen Navigation Arrows */}
+      {current?.prevSection && (
+        <button
+          type="button"
+          onClick={() => onNavigateSection(current.prevSection!)}
+          className={`fixed top-1/2 -translate-y-1/2 z-40 w-8 h-8 flex items-center justify-center bg-white border border-slate-200/90 shadow-md rounded-full text-slate-400 hover:text-[#001639] transition active:scale-95 cursor-pointer ${
+            isAr ? 'right-1' : 'left-1'
+          }`}
+          aria-label={isAr ? 'القسم السابق' : 'Previous Section'}
+        >
+          <ArrowPrev className="w-4 h-4" />
+        </button>
+      )}
+
+      {current?.nextSection && (
+        <button
+          type="button"
+          onClick={() => onNavigateSection(current.nextSection!)}
+          className={`fixed top-1/2 -translate-y-1/2 z-40 w-8 h-8 flex items-center justify-center bg-white border border-slate-200/90 shadow-md rounded-full text-slate-400 hover:text-[#FF4D2D] transition active:scale-95 cursor-pointer ${
+            isAr ? 'left-1' : 'right-1'
+          }`}
+          aria-label={isAr ? 'القسم التالي' : 'Next Section'}
+        >
+          <ArrowNext className="w-4 h-4" />
+        </button>
+      )}
+
       {/* Top Section Navigation Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-20 px-3 py-2.5 shadow-2xs w-full max-w-full min-w-0">
+      <div className="bg-white/95 backdrop-blur-md border-b border-slate-200/90 sticky top-0 z-20 px-3.5 py-2.5 shadow-2xs w-full max-w-full min-w-0">
         <div className="flex items-center justify-between gap-2 w-full min-w-0">
-          {/* Back Button */}
+          {/* Back Button to Dashboard */}
           <button
             type="button"
             onClick={onBack}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-2 text-xs font-bold text-[#001639] bg-slate-100 hover:bg-slate-200 rounded-xl transition cursor-pointer min-h-[44px] active:scale-95 shrink-0"
-            aria-label={isAr ? 'الرجوع إلى لوحة الأقسام' : 'Back to Sections Dashboard'}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition cursor-pointer min-h-[38px] active:scale-95 shrink-0"
+            aria-label={isAr ? 'الرجوع للأقسام' : 'Back to Sections'}
           >
             <BackIcon className="w-4 h-4 text-[#FF4D2D]" />
-            <span className="text-xs">{isAr ? 'الأقسام' : 'Dashboard'}</span>
+            <span className="text-xs">{isAr ? 'الأقسام' : 'Back'}</span>
           </button>
 
-          {/* Section Title */}
+          {/* Section Title & Icon */}
           <div className="flex items-center gap-1.5 min-w-0 flex-1 justify-center px-1 overflow-hidden">
             <div className="w-6 h-6 rounded-lg bg-[#001639] text-white flex items-center justify-center shrink-0">
               <Icon className="w-3.5 h-3.5 text-[#FF4D2D]" />
             </div>
-            <h1 className="font-bold text-xs sm:text-sm text-[#001639] truncate text-center min-w-0">
+            <h1 className="font-bold text-xs sm:text-sm text-slate-900 truncate text-center min-w-0">
               {isAr ? current?.titleAr : current?.titleEn}
             </h1>
           </div>
 
-          {/* Actions: Autosave & Quick Preview */}
-          <div className="flex items-center gap-1.5 shrink-0">
+          {/* Actions: Autosave status & Quick Preview Button */}
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Autosave Status Minimal Indicator */}
+            <div className="flex items-center gap-1 text-[11px] font-medium text-slate-600 px-2 py-1 rounded-full bg-slate-100/80">
+              {saveStatus === 'saving' ? (
+                <>
+                  <Loader2 className="w-3 h-3 text-amber-600 animate-spin" />
+                  <span className="text-amber-700 hidden xxs:inline">
+                    {isAr ? 'حفظ...' : 'Saving...'}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+                  <span className="hidden xxs:inline">{isAr ? 'محفوظ' : 'Saved'}</span>
+                </>
+              )}
+            </div>
+
             {/* Quick Preview Button */}
             {onOpenPreview && (
               <button
                 type="button"
                 onClick={onOpenPreview}
-                className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-[#001639] bg-slate-100 hover:bg-slate-200 border border-slate-200/80 rounded-full transition cursor-pointer min-h-[34px] active:scale-95 shadow-2xs"
-                title={isAr ? 'معاينة سريعة' : 'Quick Preview'}
-                aria-label={isAr ? 'معاينة سريعة' : 'Quick Preview'}
+                className="w-9 h-9 flex items-center justify-center text-[#001639] bg-slate-100 hover:bg-slate-200 rounded-xl transition cursor-pointer active:scale-95 shrink-0"
+                title={isAr ? 'معاينة السيرة' : 'Preview Resume'}
+                aria-label={isAr ? 'معاينة السيرة' : 'Preview Resume'}
               >
-                <Eye className="w-3.5 h-3.5 text-[#FF4D2D]" />
-                <span className="text-xs hidden xs:inline">{isAr ? 'معاينة' : 'Preview'}</span>
+                <Eye className="w-4 h-4 text-[#FF4D2D]" />
               </button>
             )}
-
-            {/* Autosave Indicator */}
-            <div
-              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border transition-all duration-200 ${
-                saveStatus === 'saving'
-                  ? 'bg-amber-50 text-amber-800 border-amber-200'
-                  : 'bg-emerald-50 text-emerald-800 border-emerald-200/80'
-              }`}
-            >
-              {saveStatus === 'saving' ? (
-                <Loader2 className="w-3 h-3 text-amber-600 animate-spin shrink-0" />
-              ) : (
-                <span className="saved-check">
-                  <Check className="w-3 h-3 text-emerald-600 shrink-0" />
-                </span>
-              )}
-              <span className="hidden xxs:inline">
-                {saveStatus === 'saving'
-                  ? isAr
-                    ? 'جارِ الحفظ...'
-                    : 'Saving...'
-                  : isAr
-                  ? 'محفوظ'
-                  : 'Saved'}
-              </span>
-            </div>
           </div>
         </div>
       </div>
@@ -316,68 +342,17 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
 
       {/* Form Container */}
       <div className="px-3 w-full max-w-full min-w-0 overflow-x-hidden">
-        <div className="bg-white border border-slate-200 rounded-2xl p-3.5 sm:p-4 shadow-2xs w-full max-w-full min-w-0 overflow-x-hidden mobile-form-card">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-3.5 sm:p-4 shadow-2xs w-full max-w-full min-w-0 overflow-x-hidden mobile-form-card">
           <fieldset
             disabled={activation.isResumeLocked}
-            className={
+            className={`w-full min-w-0 max-w-full border-none p-0 m-0 block ${
               activation.isResumeLocked
-                ? 'pointer-events-none opacity-75 select-none border-none p-0 m-0'
-                : 'border-none p-0 m-0'
-            }
+                ? 'pointer-events-none opacity-75 select-none'
+                : ''
+            }`}
           >
             {renderSectionForm()}
           </fieldset>
-
-          {/* Bottom Action inside Form Card */}
-          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-col gap-2">
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={onBack}
-                className="py-2.5 px-3 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition min-h-[44px] cursor-pointer active:scale-98 shadow-2xs"
-              >
-                <ArrowPrev className="w-3.5 h-3.5 text-slate-500" />
-                <span>{isAr ? 'الرجوع للأقسام' : 'Back to sections'}</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleSaveDraft}
-                className={`py-2.5 px-3 text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition min-h-[44px] cursor-pointer active:scale-98 shadow-2xs ${
-                  isDraftSavedFeedback
-                    ? 'bg-emerald-600 text-white'
-                    : 'bg-white hover:bg-slate-50 border border-slate-300 text-slate-800'
-                }`}
-              >
-                {isDraftSavedFeedback ? (
-                  <>
-                    <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-                    <span>{isAr ? 'تم الحفظ' : 'Draft saved'}</span>
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-3.5 h-3.5 text-slate-500" />
-                    <span>{isAr ? 'حفظ المسودة' : 'Save draft'}</span>
-                  </>
-                )}
-              </button>
-            </div>
-
-            {current?.nextSection && (
-              <button
-                type="button"
-                onClick={() => onNavigateSection(current.nextSection!)}
-                className="w-full py-2.5 px-3 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2 transition min-h-[44px] cursor-pointer active:scale-98 shadow-xs"
-              >
-                <span>
-                  {isAr
-                    ? `التالي: ${sectionMeta[current.nextSection].titleAr}`
-                    : `Next: ${sectionMeta[current.nextSection].titleEn}`}
-                </span>
-                <ArrowNext className="w-3.5 h-3.5 text-white" />
-              </button>
-            )}
-          </div>
         </div>
       </div>
     </motion.div>

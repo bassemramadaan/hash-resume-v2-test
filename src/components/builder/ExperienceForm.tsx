@@ -436,18 +436,36 @@ export const ExperienceForm: React.FC = () => {
                       />
                     </div>
 
-                    {/* End Date */}
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1.5">{t.endDate}</label>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        disabled={exp.current}
-                        value={exp.current ? (isAr ? 'حتى الآن' : 'Present') : exp.endDate}
-                        onChange={(e) => updateExperience(exp.id, { endDate: e.target.value })}
-                        placeholder="12/2023"
-                        className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition disabled:opacity-50"
-                      />
+                    {/* End Date & Current Checkbox */}
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-semibold text-slate-700">{t.endDate}</label>
+                      <div className="flex flex-col gap-2">
+                        <input
+                          type="text"
+                          inputMode="numeric"
+                          disabled={exp.current}
+                          value={exp.current ? (isAr ? 'حتى الآن' : 'Present') : exp.endDate}
+                          onChange={(e) => updateExperience(exp.id, { endDate: e.target.value })}
+                          placeholder="12/2023"
+                          className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition disabled:opacity-50 disabled:bg-slate-50"
+                        />
+                        <label className="flex items-center gap-2 cursor-pointer group w-fit">
+                          <input
+                            type="checkbox"
+                            checked={exp.current}
+                            onChange={(e) => {
+                              updateExperience(exp.id, {
+                                current: e.target.checked,
+                                endDate: e.target.checked ? '' : exp.endDate
+                              });
+                            }}
+                            className="w-4 h-4 rounded border-slate-300 text-[#FF4D2D] focus:ring-[#FF4D2D] cursor-pointer"
+                          />
+                          <span className="text-xs font-medium text-slate-600 group-hover:text-slate-900 transition">
+                            {isAr ? 'أعمل هنا حالياً' : 'I currently work here'}
+                          </span>
+                        </label>
+                      </div>
                     </div>
                   </div>
 

@@ -8,13 +8,10 @@ import {
   Globe,
   Menu,
   X,
-  Linkedin,
-  Facebook,
-  MessageCircle,
   ChevronDown,
   Check,
-  Sparkles,
 } from 'lucide-react';
+import { MobileMenuDrawer } from '../mobile/MobileMenuDrawer';
 
 const LANGUAGES: { code: Language; label: string; nativeName: string; flag: string }[] = [
   { code: 'ar', label: 'العربية', nativeName: 'العربية', flag: '🇪🇬' },
@@ -89,14 +86,17 @@ export const Navbar: React.FC = () => {
         {/* Brand Logo & Title */}
         <Link
           to="/"
-          className="flex items-center gap-2.5 sm:gap-3 group shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#001639] rounded-lg p-0.5"
+          className="flex items-center gap-2.5 sm:gap-3 group shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#001639] rounded-xl p-0.5"
         >
-          <Logo
-            variant="icon"
-            size="lg"
-            loading="eager"
-            className="!h-[32px] sm:!h-[36px] md:!h-[38px] w-auto !max-w-none shrink-0 object-contain"
-          />
+          {/* Featured Brand Icon Container with white backdrop, rounded edges, soft shadow and subtle focus ring */}
+          <div className="relative p-1.5 sm:p-2 rounded-xl sm:rounded-2xl bg-white shadow-sm border border-slate-100 ring-2 sm:ring-4 ring-[#FF4D2D]/10 shrink-0 group-hover:scale-105 transition-transform flex items-center justify-center">
+            <Logo
+              variant="icon"
+              size="lg"
+              loading="eager"
+              className="!h-[26px] sm:!h-[32px] md:!h-[36px] w-auto !max-w-none shrink-0 object-contain rounded-lg"
+            />
+          </div>
           <div className="flex flex-col text-start">
             <span className="font-brand font-bold text-base sm:text-lg tracking-tight text-[#001639] leading-tight">
               Hash <span className="text-[#001639]">Resume</span>
@@ -241,116 +241,11 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Drawer Navigation (< 768px - Unchanged) */}
-      {mobileMenuOpen && (
-        <div className="md:hidden border-t border-[#E2E8F0] bg-white p-4 space-y-3 shadow-lg animate-in slide-in-from-top-2 duration-150">
-          {/* Mobile Language Switcher Segmented Control */}
-          <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
-            <div className="flex items-center gap-2 text-xs font-bold text-slate-700">
-              <Globe className="w-4 h-4 text-[#001639]" />
-              <span>{isAr ? 'اختر لغة الواجهة:' : 'Select Language:'}</span>
-            </div>
-            <div className="grid grid-cols-3 gap-1.5">
-              {LANGUAGES.map((langItem) => {
-                const isSelected = settings.language === langItem.code;
-                return (
-                  <button
-                    key={langItem.code}
-                    type="button"
-                    onClick={() => handleSelectLanguage(langItem.code)}
-                    className={`py-2 px-2 text-xs font-bold rounded-lg border transition cursor-pointer flex items-center justify-center gap-1.5 ${
-                      isSelected
-                        ? 'bg-[#001639] text-white border-[#001639] shadow-xs'
-                        : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
-                    }`}
-                  >
-                    <span>{langItem.flag}</span>
-                    <span>{langItem.nativeName}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-1">
-            {navLinks.map((link) => {
-              const active = isActive(link.path);
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`px-4 py-3 text-xs font-bold rounded-xl transition flex items-center justify-between min-h-[44px] ${
-                    active
-                      ? 'bg-[#001639] text-white shadow-xs'
-                      : 'text-[#52627A] hover:bg-slate-100 hover:text-[#001639]'
-                  }`}
-                >
-                  <div className="flex items-center gap-2">
-                    <span>{link.label}</span>
-                    {link.badge && (
-                      <span className="text-[9px] bg-slate-100 text-slate-600 font-bold px-1.5 py-0.5 rounded-md border border-slate-200">
-                        {link.badge}
-                      </span>
-                    )}
-                  </div>
-                  {active && <span className="w-2 h-2 rounded-full bg-[#FF4D2D]" />}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Quick CTA inside Mobile Drawer */}
-          {location.pathname !== '/builder' && (
-            <div className="pt-2 border-t border-slate-100">
-              <Link
-                to="/builder"
-                onClick={() => setMobileMenuOpen(false)}
-                className="w-full py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 shadow-xs min-h-[44px] active:scale-98 transition"
-              >
-                <Sparkles className="w-4 h-4" />
-                <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
-              </Link>
-            </div>
-          )}
-
-          {/* Social Links inside Mobile Drawer */}
-          <div className="pt-3 border-t border-slate-100 space-y-2">
-            <span className="text-xs font-bold text-slate-600 block px-1">
-              {isAr ? 'تواصل معنا مباشرة:' : 'Connect with Us:'}
-            </span>
-            <div className="grid grid-cols-3 gap-2">
-              <a
-                href="https://wa.me/201101007965"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-slate-100 hover:bg-[#001639] text-slate-700 hover:text-white text-xs font-bold border border-slate-200 transition"
-              >
-                <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" />
-                <span>واتساب</span>
-              </a>
-              <a
-                href="https://www.linkedin.com/company/hashresume"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-slate-100 hover:bg-[#001639] text-slate-700 hover:text-white text-xs font-bold border border-slate-200 transition"
-              >
-                <Linkedin className="w-3.5 h-3.5 text-[#0A66C2]" />
-                <span>LinkedIn</span>
-              </a>
-              <a
-                href="https://www.facebook.com/hashresume"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-slate-100 hover:bg-[#001639] text-slate-700 hover:text-white text-xs font-bold border border-slate-200 transition"
-              >
-                <Facebook className="w-3.5 h-3.5 text-[#1877F2]" />
-                <span>Facebook</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Unified Mobile Drawer (Clean, Uncluttered, Modern) */}
+      <MobileMenuDrawer
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+      />
     </header>
   );
 };

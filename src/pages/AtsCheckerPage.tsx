@@ -133,9 +133,9 @@ export const AtsCheckerPage: React.FC = () => {
   const ArrowIcon = isAr ? ArrowLeft : ArrowRight;
 
   return (
-    <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 text-xs text-[#52627A]">
+    <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-7 text-xs text-[#52627A]">
       {/* Header */}
-      <div className="text-center max-w-2xl mx-auto space-y-3">
+      <div className="text-center max-w-2xl mx-auto space-y-2.5">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-2xs">
           <ShieldCheck className="w-4 h-4 text-emerald-600" />
           <span>{isAr ? 'أداة فحص التوافق مع أنظمة ATS' : 'ATS Compatibility Checker'}</span>
@@ -145,16 +145,16 @@ export const AtsCheckerPage: React.FC = () => {
         </h1>
         <p className="text-xs sm:text-sm text-[#52627A]">
           {isAr
-            ? 'احصل على تقييم لدرجة الجاهزية والتوافق التقريبي واستخرج الكلمات المفتاحية الناقصة فوراً.'
+            ? 'احصل على تقييم لدرجة الجاهزية والتوافق واستخرج الكلمات المفتاحية الناقصة فوراً.'
             : 'Get an estimated ATS compatibility score and identify missing keyword gaps instantly.'}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
         {/* Left Column: File Upload & Job Description */}
-        <div className="lg:col-span-6 space-y-6">
+        <div className="lg:col-span-6 space-y-5 sm:space-y-6">
           {/* 1. PDF Upload Card */}
-          <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs space-y-4">
+          <div className="bg-white rounded-3xl border border-[#E2E8F0] p-5 sm:p-6 shadow-xs space-y-3.5">
             <h3 className="font-extrabold text-[#0B1120] text-sm flex items-center gap-2">
               <FileText className="w-4 h-4 text-[#001639]" />
               <span>{isAr ? '1. رفع ملف السيرة الذاتية (PDF)' : '1. Upload Resume PDF'}</span>

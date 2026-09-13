@@ -49,6 +49,9 @@ export const AtsAnalyzerPanel: React.FC = () => {
   const [addedKeywords, setAddedKeywords] = useState<string[]>([]);
   const [addedAllSuccess, setAddedAllSuccess] = useState(false);
   const [fixedFlagIds, setFixedFlagIds] = useState<string[]>([]);
+  
+  // New local state to manage the sub-tabs inside ATS panel
+  const [activeScanTab, setActiveScanTab] = useState<'structure' | 'red_flags' | 'ai_match'>('structure');
 
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
@@ -208,217 +211,254 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
   const scoreTheme = atsResult ? getScoreTheme(atsResult.score) : null;
 
   return (
-    <div className="space-y-6 text-slate-800 w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content" aria-live="polite">
+    <div className="space-y-5 text-slate-800 w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content" aria-live="polite">
       {/* Header */}
-      <div className="border-b pb-3.5 border-slate-100">
-        <h2 className="text-base font-bold text-[#001639] flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-[#FF4D2D]" />
-          <span>{t.atsAnalyzerTitle}</span>
-        </h2>
-        <p className="text-xs text-slate-600 mt-0.5">{t.atsAnalyzerSub}</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3 border-slate-100">
+        <div>
+          <h2 className="text-base font-bold text-[#001639] flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-[#FF4D2D]" />
+            <span>{t.atsAnalyzerTitle}</span>
+          </h2>
+          <p className="text-xs text-slate-600 mt-0.5">{t.atsAnalyzerSub}</p>
+        </div>
       </div>
 
-      {/* Red Flags Detector Section */}
-      <div className="space-y-3 bg-white rounded-2xl border border-slate-200 p-4.5 shadow-xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
-              criticalFlags.length > 0
-                ? 'bg-rose-100 text-rose-600'
-                : warningFlags.length > 0
-                ? 'bg-amber-100 text-amber-600'
-                : 'bg-emerald-100 text-emerald-600'
-            }`}>
-              {criticalFlags.length > 0 ? (
-                <ShieldAlert className="w-4 h-4" />
-              ) : warningFlags.length > 0 ? (
-                <AlertTriangle className="w-4 h-4" />
-              ) : (
-                <CheckCircle2 className="w-4 h-4" />
-              )}
-            </div>
-            <div>
-              <h3 className="font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
-                <span>{isAr ? 'كاشف الأخطاء المانعة للتوظيف (Red Flags Detector)' : 'Resume Red Flags Detector'}</span>
-              </h3>
-              <p className="text-xs text-slate-600">
-                {isAr
-                  ? 'فحص استباقي للبريد غير الرسمي، فجوات العمل، والمعلومات الحساسة المخالفة للـ ATS'
-                  : 'Proactive scan for unprofessional email, work gaps, and discriminatory fields'}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1.5 self-start sm:self-center">
-            {criticalFlags.length > 0 ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
-                <AlertCircle className="w-3 h-3" />
-                <span>{isAr ? `${criticalFlags.length} تنبيه حرج` : `${criticalFlags.length} Critical`}</span>
-              </span>
-            ) : warningFlags.length > 0 ? (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                <AlertTriangle className="w-3 h-3" />
-                <span>{isAr ? `${warningFlags.length} ملاحظة` : `${warningFlags.length} Warning`}</span>
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                <Check className="w-3 h-3" />
-                <span>{isAr ? 'سيرتك نظيفة 100%' : '0 Red Flags Detected'}</span>
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Flag Cards List */}
-        {redFlags.length === 0 ? (
-          <div className="p-3.5 rounded-xl bg-emerald-50/60 border border-emerald-200 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
-              <Check className="w-4 h-4" />
-            </div>
-            <div className="text-xs text-emerald-950">
-              <p className="font-bold">
-                {isAr ? 'لا توجد أي أخطاء مانعة للتوظيف في سيرتك الذاتية!' : 'No critical red flags detected!'}
-              </p>
-              <p className="text-xs text-emerald-900 mt-0.5">
-                {isAr
-                  ? 'بيانات الاتصال مهنية ونظيفة وخالية من المعلومات الحساسة ومطابقة لقواعد الـ ATS.'
-                  : 'Your contact information, dates, and format adhere strictly to international ATS benchmarks.'}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-2.5">
-            {redFlags.map((flag) => {
-              const isFixed = fixedFlagIds.includes(flag.id);
-              return (
-                <div
-                  key={flag.id}
-                  className={`p-3.5 rounded-xl border transition ats-result-card ${
-                    flag.severity === 'critical'
-                      ? 'bg-rose-50/50 border-rose-200'
-                      : flag.severity === 'warning'
-                      ? 'bg-amber-50/50 border-amber-200'
-                      : 'bg-blue-50/50 border-blue-200'
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="space-y-1 flex-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className={`text-xs font-extrabold uppercase px-1.5 py-0.5 rounded-md ${
-                          flag.severity === 'critical'
-                            ? 'bg-rose-600 text-white'
-                            : flag.severity === 'warning'
-                            ? 'bg-amber-600 text-white'
-                            : 'bg-blue-600 text-white'
-                        }`}>
-                          {flag.severity === 'critical'
-                            ? isAr ? 'حرج' : 'Critical'
-                            : flag.severity === 'warning'
-                            ? isAr ? 'تحذير' : 'Warning'
-                            : isAr ? 'نصيحة' : 'Tip'}
-                        </span>
-                        <h4 className="font-bold text-xs sm:text-sm text-slate-900">
-                          {isAr ? flag.titleAr : flag.titleEn}
-                        </h4>
-                      </div>
-
-                      <p className="text-xs text-slate-700 leading-relaxed">
-                        {isAr ? flag.descriptionAr : flag.descriptionEn}
-                      </p>
-
-                      <div className="flex items-center gap-1.5 text-xs font-medium text-slate-800 bg-white/80 p-2 rounded-lg border border-slate-200/70 mt-1">
-                        <Sparkles className="w-3.5 h-3.5 text-orange-500 shrink-0" />
-                        <span>
-                          <strong>{isAr ? 'الحل الموصى به: ' : 'Fix: '}</strong>
-                          {isAr ? flag.suggestionAr : flag.suggestionEn}
-                        </span>
-                      </div>
-                    </div>
-
-                    {flag.autoFixable && (
-                      <button
-                        type="button"
-                        onClick={() => handleFixFlag(flag)}
-                        disabled={isFixed}
-                        className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-xs ${
-                          isFixed
-                            ? 'bg-emerald-600 text-white'
-                            : 'bg-[#001639] hover:bg-[#002868] text-white'
-                        }`}
-                      >
-                        {isFixed ? (
-                          <>
-                            <Check className="w-3.5 h-3.5" />
-                            <span>{isAr ? 'تم الإصلاح!' : 'Fixed!'}</span>
-                          </>
-                        ) : (
-                          <>
-                            <Wrench className="w-3.5 h-3.5" />
-                            <span>{isAr ? 'إصلاح تلقائي' : 'Auto Fix'}</span>
-                          </>
-                        )}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Interactive Per-Section ATS Audit Breakdown */}
-      <AtsSectionBreakdown />
-
-      {/* Target Job Input Form */}
-      <div className="space-y-3 bg-slate-50/60 p-4 rounded-xl border border-slate-200">
-        <div className="flex items-center justify-between">
-          <label htmlFor="ats-target-jd" className="block text-xs font-semibold text-slate-800 flex items-center gap-1.5">
-            <Target className="w-3.5 h-3.5 text-[#001639]" />
-            <span>{isAr ? 'مطابقة مع إعلان وظيفي محدد (اختياري)' : 'Match with Specific Job Description (Optional)'}</span>
-          </label>
-          <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-800">
-            {isAr ? 'ميزة إضافية' : 'Optional'}
-          </span>
-        </div>
-        <p className="text-xs text-slate-600 leading-normal">
-          {isAr
-            ? 'التحليل العام للسيرة مفعّل تلقائياً بالأعلى. إذا كانت لديك وظيفة معينة تود التقديم عليها، انسخ وصفها هنا لاستخراج الكلمات المفتاحية الناقصة بدقة.'
-            : 'General ATS analysis is enabled above automatically. If you have a specific job posting, paste its description below to identify exact target keywords.'}
-        </p>
-
-        <textarea
-          id="ats-target-jd"
-          rows={3}
-          value={targetJobDescription}
-          onChange={(e) => setTargetJobDescription(e.target.value)}
-          placeholder={t.jobDescPlaceholder}
-          className="w-full p-3 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs text-slate-900 placeholder:text-slate-500 outline-none leading-relaxed transition"
-        />
-
+      {/* Internal Tabs for Scan Types */}
+      <div className="flex bg-slate-100/80 p-1 rounded-xl w-full">
         <button
           type="button"
-          onClick={handleRunAtsCheck}
-          disabled={isAnalyzingAts}
-          className="w-full py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] active:bg-[#CC3A1A] text-white font-semibold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-h-[40px]"
+          onClick={() => setActiveScanTab('structure')}
+          className={`flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg transition-all ${
+            activeScanTab === 'structure'
+              ? 'bg-white text-[#001639] shadow-xs'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
         >
-          {isAnalyzingAts ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span>{isAr ? 'جارِ تحليل السيرة الذاتية...' : 'Analyzing your resume...'}</span>
-            </>
-          ) : (
-            <>
-              <Sparkles className="w-3.5 h-3.5 fill-white" />
-              <span>{atsResult ? (isAr ? 'إعادة الفحص والتحليل' : 'Re-run ATS Scan') : t.runAtsCheck}</span>
-            </>
+          {isAr ? 'البناء والمحتوى' : 'Structure & Content'}
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveScanTab('red_flags')}
+          className={`flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+            activeScanTab === 'red_flags'
+              ? 'bg-white text-[#001639] shadow-xs'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          {isAr ? 'الأخطاء الشائعة' : 'Red Flags'}
+          {criticalFlags.length > 0 && (
+            <span className="w-2 h-2 rounded-full bg-rose-500" />
           )}
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveScanTab('ai_match')}
+          className={`flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+            activeScanTab === 'ai_match'
+              ? 'bg-[#001639] text-white shadow-xs'
+              : 'text-slate-600 hover:text-slate-900'
+          }`}
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>{isAr ? 'مطابقة الوظيفة (AI)' : 'AI Match'}</span>
         </button>
       </div>
 
-      {/* ATS Analysis Result Card - Executive Aesthetic */}
-      {atsResult && scoreTheme && (
-        <div className="space-y-4 animate-in fade-in duration-200">
+      {/* Tab Content: Structure & Content */}
+      {activeScanTab === 'structure' && (
+        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <AtsSectionBreakdown />
+        </div>
+      )}
+
+      {/* Tab Content: Red Flags */}
+      {activeScanTab === 'red_flags' && (
+        <div className="space-y-3 bg-white rounded-2xl border border-slate-200 p-4.5 shadow-xs animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
+            <div className="flex items-center gap-2">
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+                criticalFlags.length > 0
+                  ? 'bg-rose-100 text-rose-600'
+                  : warningFlags.length > 0
+                  ? 'bg-amber-100 text-amber-600'
+                  : 'bg-emerald-100 text-emerald-600'
+              }`}>
+                {criticalFlags.length > 0 ? (
+                  <ShieldAlert className="w-4 h-4" />
+                ) : warningFlags.length > 0 ? (
+                  <AlertTriangle className="w-4 h-4" />
+                ) : (
+                  <CheckCircle2 className="w-4 h-4" />
+                )}
+              </div>
+              <div>
+                <h3 className="font-bold text-xs sm:text-sm text-slate-900">
+                  {isAr ? 'كاشف الأخطاء المانعة للتوظيف (Red Flags)' : 'Resume Red Flags Detector'}
+                </h3>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 self-start sm:self-center">
+              {criticalFlags.length > 0 ? (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                  <AlertCircle className="w-3 h-3" />
+                  <span>{isAr ? `${criticalFlags.length} تنبيه حرج` : `${criticalFlags.length} Critical`}</span>
+                </span>
+              ) : warningFlags.length > 0 ? (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                  <AlertTriangle className="w-3 h-3" />
+                  <span>{isAr ? `${warningFlags.length} ملاحظة` : `${warningFlags.length} Warning`}</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  <Check className="w-3 h-3" />
+                  <span>{isAr ? 'سيرتك نظيفة 100%' : '0 Red Flags Detected'}</span>
+                </span>
+              )}
+            </div>
+          </div>
+
+          {redFlags.length === 0 ? (
+            <div className="p-3.5 rounded-xl bg-emerald-50/60 border border-emerald-200 flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                <Check className="w-4 h-4" />
+              </div>
+              <div className="text-xs text-emerald-950">
+                <p className="font-bold">
+                  {isAr ? 'لا توجد أي أخطاء مانعة للتوظيف في سيرتك الذاتية!' : 'No critical red flags detected!'}
+                </p>
+                <p className="text-xs text-emerald-900 mt-0.5">
+                  {isAr
+                    ? 'بيانات الاتصال مهنية ونظيفة وخالية من المعلومات الحساسة ومطابقة لقواعد الـ ATS.'
+                    : 'Your contact information, dates, and format adhere strictly to international ATS benchmarks.'}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2.5">
+              {redFlags.map((flag) => {
+                const isFixed = fixedFlagIds.includes(flag.id);
+                return (
+                  <div
+                    key={flag.id}
+                    className={`p-3.5 rounded-xl border transition ats-result-card ${
+                      flag.severity === 'critical'
+                        ? 'bg-rose-50/50 border-rose-200'
+                        : flag.severity === 'warning'
+                        ? 'bg-amber-50/50 border-amber-200'
+                        : 'bg-blue-50/50 border-blue-200'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="space-y-1 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded-md ${
+                            flag.severity === 'critical'
+                              ? 'bg-rose-600 text-white'
+                              : flag.severity === 'warning'
+                              ? 'bg-amber-600 text-white'
+                              : 'bg-blue-600 text-white'
+                          }`}>
+                            {flag.severity === 'critical'
+                              ? isAr ? 'حرج' : 'Critical'
+                              : flag.severity === 'warning'
+                              ? isAr ? 'تحذير' : 'Warning'
+                              : isAr ? 'نصيحة' : 'Tip'}
+                          </span>
+                          <h4 className="font-bold text-xs text-slate-900">
+                            {isAr ? flag.titleAr : flag.titleEn}
+                          </h4>
+                        </div>
+  
+                        <p className="text-[11px] text-slate-700 leading-relaxed">
+                          {isAr ? flag.descriptionAr : flag.descriptionEn}
+                        </p>
+  
+                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-800 bg-white/80 p-2 rounded-lg border border-slate-200/70 mt-1">
+                          <Sparkles className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                          <span>
+                            <strong>{isAr ? 'الحل الموصى به: ' : 'Fix: '}</strong>
+                            {isAr ? flag.suggestionAr : flag.suggestionEn}
+                          </span>
+                        </div>
+                      </div>
+  
+                      {flag.autoFixable && (
+                        <button
+                          type="button"
+                          onClick={() => handleFixFlag(flag)}
+                          disabled={isFixed}
+                          className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-xs ${
+                            isFixed
+                              ? 'bg-emerald-600 text-white'
+                              : 'bg-[#001639] hover:bg-[#002868] text-white'
+                          }`}
+                        >
+                          {isFixed ? (
+                            <>
+                              <Check className="w-3.5 h-3.5" />
+                              <span>{isAr ? 'تم الإصلاح!' : 'Fixed!'}</span>
+                            </>
+                          ) : (
+                            <>
+                              <Wrench className="w-3.5 h-3.5" />
+                              <span>{isAr ? 'إصلاح تلقائي' : 'Auto Fix'}</span>
+                            </>
+                          )}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Tab Content: AI Job Match */}
+      {activeScanTab === 'ai_match' && (
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+            <div className="flex items-center justify-between">
+              <label htmlFor="ats-target-jd" className="block text-xs font-semibold text-slate-800 flex items-center gap-1.5">
+                <Target className="w-3.5 h-3.5 text-[#001639]" />
+                <span>{isAr ? 'مطابقة مع إعلان وظيفي (AI Match)' : 'Match with Job Description (AI)'}</span>
+              </label>
+            </div>
+            
+            <textarea
+              id="ats-target-jd"
+              rows={3}
+              value={targetJobDescription}
+              onChange={(e) => setTargetJobDescription(e.target.value)}
+              placeholder={t.jobDescPlaceholder}
+              className="w-full p-3 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs text-slate-900 placeholder:text-slate-500 outline-none leading-relaxed transition shadow-2xs"
+            />
+  
+            <button
+              type="button"
+              onClick={handleRunAtsCheck}
+              disabled={isAnalyzingAts}
+              className="w-full py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] active:bg-[#CC3A1A] text-white font-semibold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-h-[40px]"
+            >
+              {isAnalyzingAts ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>{isAr ? 'جارِ تحليل السيرة الذاتية...' : 'Analyzing your resume...'}</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-3.5 h-3.5 fill-white" />
+                  <span>{atsResult ? (isAr ? 'إعادة الفحص والتحليل' : 'Re-run AI Match') : (isAr ? 'تحليل المطابقة' : 'Analyze Match')}</span>
+                </>
+              )}
+            </button>
+          </div>
+  
+          {/* AI ATS Analysis Result Card */}
+          {atsResult && scoreTheme && (
+            <div className="space-y-4 animate-in fade-in duration-200">
           {/* Main Score Hero Card */}
           <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-4 ats-result-card">
             {/* Top Row: Score & Verdict */}
@@ -681,6 +721,8 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
               )}
             </div>
           </div>
+        </div>
+      )}
         </div>
       )}
     </div>
