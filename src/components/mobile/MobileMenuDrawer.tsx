@@ -24,14 +24,12 @@ import {
 interface MobileMenuDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  onLoadSample?: () => void;
   onOpenResetModal?: () => void;
 }
 
 export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
   isOpen,
   onClose,
-  onLoadSample,
   onOpenResetModal,
 }) => {
   const { settings, setLanguage } = useResumeStore();
@@ -193,38 +191,23 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
             </div>
 
             {/* Quick Resume Actions (When in builder) */}
-            {(onLoadSample || onOpenResetModal) && (
+            {onOpenResetModal && (
               <div className="px-3 pt-2 pb-1 space-y-1.5 border-b border-slate-100">
                 <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider px-1">
                   {isAr ? 'أدوات السيرة الذاتية' : 'Resume Tools'}
                 </span>
-                <div className="grid grid-cols-2 gap-2">
-                  {onLoadSample && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onClose();
-                        onLoadSample();
-                      }}
-                      className="p-2.5 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/80 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer"
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                      <span className="truncate">{isAr ? 'نموذج تجريبي' : 'Load Sample'}</span>
-                    </button>
-                  )}
-                  {onOpenResetModal && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        onClose();
-                        onOpenResetModal();
-                      }}
-                      className="p-2.5 bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5 shrink-0" />
-                      <span className="truncate">{isAr ? 'سيرة جديدة' : 'Start Fresh'}</span>
-                    </button>
-                  )}
+                <div className="grid grid-cols-1 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      onOpenResetModal();
+                    }}
+                    className="p-2.5 bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-600 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition active:scale-95 cursor-pointer"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5 shrink-0" />
+                    <span className="truncate">{isAr ? 'سيرة جديدة' : 'Start Fresh'}</span>
+                  </button>
                 </div>
               </div>
             )}

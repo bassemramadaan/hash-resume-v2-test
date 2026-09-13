@@ -33,14 +33,12 @@ import { validateResumeMinimumRequirements } from '../../utils/resumeValidation'
 interface MobileResumeDashboardProps {
   onSelectSection: (key: MobileSectionKey) => void;
   onOpenResetModal: () => void;
-  onLoadSample?: () => void;
   saveStatus: 'saved' | 'saving';
 }
 
 export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
   onSelectSection,
   onOpenResetModal,
-  onLoadSample,
   saveStatus,
 }) => {
   const {
@@ -371,7 +369,6 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
       <MobileMenuDrawer
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
-        onLoadSample={onLoadSample}
         onOpenResetModal={onOpenResetModal}
       />
 
@@ -436,16 +433,6 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
                   <User className="w-4 h-4" />
                   <span>{isAr ? 'إدخال بياناتي' : 'Start with My Info'}</span>
                 </button>
-                {onLoadSample && (
-                  <button
-                    type="button"
-                    onClick={onLoadSample}
-                    className="flex-1 px-4 py-3 bg-[#FFF2ED] text-[#FF4D2D] text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 hover:bg-[#FFE5DC] transition active:scale-95"
-                  >
-                    <Sparkles className="w-4 h-4" />
-                    <span>{isAr ? 'نموذج جاهز' : 'Load Sample'}</span>
-                  </button>
-                )}
               </div>
             </div>
           ) : (

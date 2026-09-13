@@ -83,10 +83,74 @@ export const Navbar: React.FC = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-5 md:px-5 lg:px-8 h-14 sm:h-16 md:h-[72px] flex items-center justify-between gap-4 lg:gap-8">
-        {/* Brand Logo & Title */}
+        {/* Left Side: Desktop Dropdown Menu & Mobile Menu Toggle */}
+        <div className="flex items-center flex-1">
+          {/* Desktop Dropdown Menu (Replacing inline links) */}
+          {!isBuilder && (
+            <div className="hidden md:block relative">
+              <button
+                type="button"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="w-11 h-11 p-2.5 text-[#001639] hover:bg-slate-100 rounded-xl transition flex items-center justify-center cursor-pointer focus-visible:ring-2 focus-visible:ring-[#001639]"
+                aria-label={isAr ? 'القائمة الرئيسية' : 'Main Menu'}
+                aria-expanded={mobileMenuOpen}
+              >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+              
+              {/* Desktop Dropdown items (using absolute positioning below button) */}
+              {mobileMenuOpen && (
+                <div className="absolute top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-slate-200 py-2 z-50 animate-in fade-in zoom-in-95 origin-top-left rtl:origin-top-right">
+                  {navLinks.map((link) => {
+                    const active = isActive(link.path);
+                    return (
+                      <Link
+                        key={link.path}
+                        to={link.path}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className={`w-full px-4 py-2.5 text-sm font-medium flex items-center justify-between transition-colors ${
+                          active
+                            ? 'bg-slate-50 text-[#001639] font-bold'
+                            : 'text-[#536176] hover:bg-slate-50 hover:text-[#001639]'
+                        }`}
+                      >
+                        <span>{link.label}</span>
+                        {link.badge && (
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-[6px] bg-[#fff2ed] border border-[#ffd7c8] text-[#b5472b] leading-none shrink-0">
+                            {link.badge}
+                          </span>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Mobile Menu Toggle Button (Strict 44x44px Touch Target) */}
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden w-11 h-11 min-w-[44px] min-h-[44px] p-2.5 text-[#001639] hover:bg-slate-100 rounded-xl transition flex items-center justify-center cursor-pointer focus-visible:ring-2 focus-visible:ring-[#001639]"
+            aria-label={
+              mobileMenuOpen
+                ? isAr
+                  ? 'إغلاق قائمة التنقل'
+                  : 'Close navigation menu'
+                : isAr
+                ? 'فتح قائمة التنقل'
+                : 'Open navigation menu'
+            }
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
+
+        {/* Center: Brand Logo & Title */}
         <Link
           to="/"
-          className="flex items-center gap-2.5 sm:gap-3 group shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#001639] rounded-xl p-0.5"
+          className="flex items-center gap-2.5 sm:gap-3 group shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#001639] rounded-xl p-0.5 justify-center flex-1"
         >
           {/* Featured Brand Icon Container with white backdrop, rounded edges, soft shadow and subtle focus ring */}
           <div className="relative p-1.5 sm:p-2 rounded-xl sm:rounded-2xl bg-white shadow-sm border border-slate-100 ring-2 sm:ring-4 ring-[#FF4D2D]/10 shrink-0 group-hover:scale-105 transition-transform flex items-center justify-center">
@@ -101,7 +165,7 @@ export const Navbar: React.FC = () => {
             <span className="font-brand font-bold text-base sm:text-lg tracking-tight text-[#001639] leading-tight">
               Hash <span className="text-[#001639]">Resume</span>
             </span>
-            <span className="text-xs font-medium text-[#536176] hidden xs:inline">
+            <span className="text-[10px] sm:text-xs font-medium text-[#536176] hidden xs:inline whitespace-nowrap">
               {isBuilder
                 ? isAr
                   ? 'محرر السيرة الذاتية'
@@ -113,50 +177,8 @@ export const Navbar: React.FC = () => {
           </div>
         </Link>
 
-        {/* Desktop / Tablet Navigation Links */}
-        {!isBuilder ? (
-          <nav
-            className="hidden md:flex items-center gap-6 lg:gap-7 h-full"
-            aria-label={isAr ? 'التنقل الرئيسي' : 'Main navigation'}
-          >
-            {navLinks.map((link) => {
-              const active = isActive(link.path);
-              return (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`relative h-full flex items-center gap-1.5 text-sm font-medium transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#001639] focus-visible:ring-offset-2 ${
-                    active
-                      ? 'text-[#001639] font-bold'
-                      : 'text-[#536176] hover:text-[#001639]'
-                  }`}
-                >
-                  <span>{link.label}</span>
-                  {link.badge && (
-                    <span className="text-xs font-bold px-1.5 py-0.5 rounded-[6px] bg-[#fff2ed] border border-[#ffd7c8] text-[#b5472b] leading-none shrink-0">
-                      {link.badge}
-                    </span>
-                  )}
-                  {active && (
-                    <span
-                      className="absolute bottom-0 inset-x-0 h-[3px] bg-[#ff4d2d] rounded-full"
-                      aria-hidden="true"
-                    />
-                  )}
-                </Link>
-              );
-            })}
-          </nav>
-        ) : (
-          <div className="hidden md:flex items-center gap-2 text-sm text-[#536176]">
-            <span className="font-bold text-[#001639]">
-              {isAr ? 'محرر السيرة الذاتية' : 'Resume Builder'}
-            </span>
-          </div>
-        )}
-
         {/* Right Action Controls */}
-        <div className="flex items-center gap-3 lg:gap-4">
+        <div className="flex items-center justify-end gap-3 lg:gap-4 flex-1">
           {/* Desktop Language Switch Dropdown */}
           <div className="relative hidden md:block" ref={langDropdownRef}>
             <button
@@ -207,43 +229,12 @@ export const Navbar: React.FC = () => {
               </div>
             )}
           </div>
-
-          {/* Primary Action Button (Build My Resume CTA) - hidden on mobile & builder */}
-          {!isBuilder && (
-            <Link
-              to="/builder"
-              className="hidden md:inline-flex h-[42px] px-[18px] bg-[#ff4d2d] hover:bg-[#e03e1f] text-white text-xs lg:text-sm font-bold rounded-[10px] shadow-[0_8px_18px_rgba(255,77,45,0.18)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-150 items-center gap-1.5 shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#ff4d2d] focus-visible:ring-offset-2"
-            >
-              <span>{isAr ? 'أنشئ سيرتك الذاتية' : 'Build My Resume'}</span>
-              <span className="inline-block transition-transform">
-                {isAr ? '←' : '→'}
-              </span>
-            </Link>
-          )}
-
-          {/* Mobile Menu Toggle Button (Strict 44x44px Touch Target) */}
-          <button
-            type="button"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden w-11 h-11 min-w-[44px] min-h-[44px] p-2.5 text-[#001639] hover:bg-slate-100 rounded-xl transition flex items-center justify-center cursor-pointer focus-visible:ring-2 focus-visible:ring-[#001639]"
-            aria-label={
-              mobileMenuOpen
-                ? isAr
-                  ? 'إغلاق قائمة التنقل'
-                  : 'Close navigation menu'
-                : isAr
-                ? 'فتح قائمة التنقل'
-                : 'Open navigation menu'
-            }
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
         </div>
       </div>
 
       {/* Unified Mobile Drawer (Clean, Uncluttered, Modern) */}
       <MobileMenuDrawer
-        isOpen={mobileMenuOpen}
+        isOpen={mobileMenuOpen && (window.innerWidth < 768)} // Only show drawer on mobile size
         onClose={() => setMobileMenuOpen(false)}
       />
     </header>

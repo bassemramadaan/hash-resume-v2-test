@@ -54,14 +54,12 @@ interface ResumeSkeletonPreviewProps {
   isAr: boolean;
   primaryColor: string;
   fontFamily: string;
-  onLoadSampleResume?: () => void;
 }
 
 const ResumeSkeletonPreview: React.FC<ResumeSkeletonPreviewProps> = ({
   isAr,
   primaryColor,
   fontFamily,
-  onLoadSampleResume,
 }) => {
   return (
     <div
@@ -70,35 +68,6 @@ const ResumeSkeletonPreview: React.FC<ResumeSkeletonPreviewProps> = ({
         fontFamily: getTemplateFontFamily(fontFamily, isAr ? 'ar' : 'en'),
       }}
     >
-      {/* Onboarding Callout Banner on Empty Preview */}
-      {onLoadSampleResume && (
-        <div className="bg-gradient-to-r from-[#001639] via-[#00245E] to-[#001639] text-white p-4 rounded-xl shadow-md border border-amber-400/40 flex flex-col sm:flex-row items-center justify-between gap-3 text-start mb-2">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-400/20 text-amber-300 flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div>
-              <h4 className="text-xs sm:text-sm font-bold text-white leading-tight">
-                {isAr ? 'تريد رؤية سيرة مكتملة فوراً؟' : 'Want to preview a filled resume?'}
-              </h4>
-              <p className="text-[11px] text-slate-300">
-                {isAr
-                  ? 'املأ النموذج ببيانات سيرة تجريبية متكاملة ثم عدّل عليها مباشرة.'
-                  : 'Load realistic sample data in one click and customize directly.'}
-              </p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={onLoadSampleResume}
-            className="w-full sm:w-auto px-3.5 py-1.5 bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black rounded-lg shadow-2xs transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0 active:scale-95"
-          >
-            <FileText className="w-3.5 h-3.5 text-slate-950" />
-            <span>{isAr ? 'تعبئة نموذج سيرة تجريبية' : 'Load Sample Resume'}</span>
-          </button>
-        </div>
-      )}
-
       {/* Header Skeleton */}
       <header className="border-b-2 pb-5 text-center" style={{ borderColor: primaryColor }}>
         <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 mb-1 uppercase">
@@ -649,7 +618,6 @@ export const ResumePreview: React.FC = () => {
                   isAr={isAr}
                   primaryColor={settings.primaryColor || '#001639'}
                   fontFamily={settings.fontFamily}
-                  onLoadSampleResume={() => loadSampleResume(settings.language)}
                 />
               ) : (
                 renderActiveTemplate()

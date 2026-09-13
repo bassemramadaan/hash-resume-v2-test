@@ -89,8 +89,8 @@ export const SkillsForm: React.FC = () => {
   return (
     <div className="space-y-6 text-slate-800 w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content" aria-live="polite">
       {/* Skills Section */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between gap-3 border-b pb-3.5 border-slate-100 w-full min-w-0">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between gap-3 border-b pb-4 border-slate-100 w-full min-w-0">
           <div className="min-w-0 flex-1">
             <h2 className="text-sm sm:text-base font-bold text-[#001639] flex items-center gap-2 truncate">
               <Wrench className="w-4 h-4 text-[#FF4D2D] shrink-0" />
@@ -106,7 +106,7 @@ export const SkillsForm: React.FC = () => {
           <button
             type="button"
             onClick={() => openAiModal('skills')}
-            className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#001639] bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 transition cursor-pointer shrink-0 min-h-[36px] active:scale-95"
+            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs font-bold text-[#001639] bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 transition cursor-pointer shrink-0 min-h-[38px] active:scale-95 whitespace-nowrap shadow-2xs"
           >
             <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
             <span>{t.aiSuggestSkills}</span>
@@ -134,9 +134,9 @@ export const SkillsForm: React.FC = () => {
         />
 
         {/* Add Skill Form */}
-        <form onSubmit={handleAddSkillSubmit} className="space-y-2.5">
+        <form onSubmit={handleAddSkillSubmit} className="space-y-3">
           {/* Quick Suggestions (Tap vs Type) */}
-          <div className="flex flex-wrap gap-2 mb-2">
+          <div className="flex flex-wrap gap-1.5 mb-1">
             {[
               isAr ? 'إدارة الوقت' : 'Time Management',
               isAr ? 'حل المشكلات' : 'Problem Solving',
@@ -151,30 +151,32 @@ export const SkillsForm: React.FC = () => {
                   setNewSkillName(skill);
                   setNewSkillCategory(skill === 'Microsoft Office' ? 'tool' : 'soft');
                 }}
-                className="px-2.5 py-1 text-[11px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition cursor-pointer active:scale-95"
+                className="px-2.5 py-1 text-[11px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition cursor-pointer active:scale-95"
               >
                 + {skill}
               </button>
             ))}
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-            <div className="sm:col-span-5">
+          <div className="space-y-2.5">
+            {/* Input Row */}
+            <div className="w-full">
               <input
                 type="text"
                 value={newSkillName}
                 onChange={(e) => setNewSkillName(e.target.value)}
                 placeholder={isAr ? 'مثال: React.js, Python, إدارة المشاريع' : 'e.g. React.js, Python, Management'}
-                className="w-full px-3.5 min-h-[42px] h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
+                className="w-full px-3.5 h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition shadow-2xs"
               />
             </div>
 
-            <div className="grid grid-cols-2 sm:contents gap-2 sm:gap-0">
-              <div className="sm:col-span-3">
+            {/* Selects & Add Button Row */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div>
                 <select
                   value={newSkillCategory}
                   onChange={(e) => setNewSkillCategory(e.target.value as any)}
-                  className="w-full px-2.5 sm:px-3 min-h-[42px] h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-semibold text-slate-700 outline-none transition cursor-pointer"
+                  className="w-full px-3 h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-semibold text-slate-700 outline-none transition cursor-pointer shadow-2xs"
                 >
                   <option value="technical">{t.techSkills}</option>
                   <option value="soft">{t.softSkills}</option>
@@ -182,11 +184,11 @@ export const SkillsForm: React.FC = () => {
                 </select>
               </div>
 
-              <div className="sm:col-span-2">
+              <div>
                 <select
                   value={newSkillLevel}
                   onChange={(e) => setNewSkillLevel(e.target.value as any)}
-                  className="w-full px-2.5 sm:px-3 min-h-[42px] h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-semibold text-slate-700 outline-none transition cursor-pointer truncate"
+                  className="w-full px-3 h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-semibold text-slate-700 outline-none transition cursor-pointer shadow-2xs truncate"
                 >
                   <option value="">{isAr ? 'المستوى (اختياري)' : 'Level (Optional)'}</option>
                   <option value="beginner">{isAr ? 'مبتدئ' : 'Beginner'}</option>
@@ -195,27 +197,27 @@ export const SkillsForm: React.FC = () => {
                   <option value="expert">{isAr ? 'خبير' : 'Expert'}</option>
                 </select>
               </div>
-            </div>
 
-            <div className="sm:col-span-2">
-              <button
-                type="submit"
-                className="w-full min-h-[42px] h-10 sm:h-11 bg-[#001639] hover:bg-[#00245E] text-white font-bold rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer text-xs active:scale-95"
-              >
-                <Plus className="w-4 h-4 text-[#FF4D2D]" />
-                <span>{t.addSkill}</span>
-              </button>
+              <div>
+                <button
+                  type="submit"
+                  className="w-full h-11 bg-[#001639] hover:bg-[#00245E] text-white font-bold rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer text-xs active:scale-95"
+                >
+                  <Plus className="w-4 h-4 text-[#FF4D2D] shrink-0" />
+                  <span>{t.addSkill}</span>
+                </button>
+              </div>
             </div>
           </div>
         </form>
 
         {/* Category Filter Tabs */}
         {skills.length > 0 && (
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-1">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden pt-4 border-t border-slate-100 mt-4">
             <button
               type="button"
               onClick={() => setFilterCategory('all')}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition shrink-0 cursor-pointer ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition shrink-0 cursor-pointer ${
                 filterCategory === 'all'
                   ? 'bg-[#001639] text-white shadow-2xs'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -227,13 +229,13 @@ export const SkillsForm: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setFilterCategory('technical')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition shrink-0 cursor-pointer flex items-center gap-2 ${
                   filterCategory === 'technical'
                     ? 'bg-blue-900 text-white shadow-2xs'
                     : 'bg-blue-50 text-blue-800 hover:bg-blue-100'
                 }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-blue-400 shrink-0" />
                 <span>{isAr ? `تقنية (${techCount})` : `Technical (${techCount})`}</span>
               </button>
             )}
@@ -241,13 +243,13 @@ export const SkillsForm: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setFilterCategory('soft')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition shrink-0 cursor-pointer flex items-center gap-2 ${
                   filterCategory === 'soft'
                     ? 'bg-emerald-900 text-white shadow-2xs'
                     : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100'
                 }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-emerald-400 shrink-0" />
                 <span>{isAr ? `شخصية (${softCount})` : `Soft (${softCount})`}</span>
               </button>
             )}
@@ -255,13 +257,13 @@ export const SkillsForm: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setFilterCategory('tool')}
-                className={`px-2.5 py-1 rounded-lg text-xs font-bold transition shrink-0 cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition shrink-0 cursor-pointer flex items-center gap-2 ${
                   filterCategory === 'tool'
                     ? 'bg-amber-900 text-white shadow-2xs'
                     : 'bg-amber-50 text-amber-900 hover:bg-amber-100'
                 }`}
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                <span className="w-2 h-2 rounded-full bg-amber-400 shrink-0" />
                 <span>{isAr ? `أدوات (${toolCount})` : `Tools (${toolCount})`}</span>
               </button>
             )}
@@ -270,7 +272,7 @@ export const SkillsForm: React.FC = () => {
 
         {/* Skill Badges List */}
         {filteredSkills.length > 0 ? (
-          <div className="flex flex-wrap gap-2 pt-1 w-full min-w-0">
+          <div className="flex flex-wrap gap-2.5 pt-2 w-full min-w-0">
             {filteredSkills.map((skill, sIdx) => {
               const isTech = skill.category === 'technical';
               const isSoft = skill.category === 'soft';
@@ -350,45 +352,39 @@ export const SkillsForm: React.FC = () => {
         </div>
 
         <form onSubmit={handleAddLangSubmit} className="space-y-2.5">
-          <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-            <div className="sm:col-span-6">
-              <input
-                type="text"
-                value={newLangName}
-                onChange={(e) => setNewLangName(e.target.value)}
-                placeholder={isAr ? 'العربية / الإنجليزية' : 'Arabic / English'}
-                className="w-full px-3.5 min-h-[42px] h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition"
-              />
-            </div>
-            <div className="grid grid-cols-2 sm:contents gap-2 sm:gap-0">
-              <div className="sm:col-span-3">
-                <select
-                  value={newLangProf}
-                  onChange={(e) => setNewLangProf(e.target.value as any)}
-                  className="w-full px-2.5 sm:px-3 min-h-[42px] h-10 sm:h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-semibold text-slate-700 outline-none transition cursor-pointer truncate"
-                >
-                  <option value="native">{t.profNative}</option>
-                  <option value="fluent">{t.profFluent}</option>
-                  <option value="advanced">{t.profAdvanced}</option>
-                  <option value="intermediate">{t.profIntermediate}</option>
-                  <option value="basic">{t.profBasic}</option>
-                </select>
-              </div>
-              <div className="sm:col-span-3">
-                <button
-                  type="submit"
-                  className="w-full min-h-[42px] h-10 sm:h-11 bg-[#001639] hover:bg-[#00245E] text-white font-semibold rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer text-xs active:scale-95"
-                >
-                  <Plus className="w-4 h-4 text-[#FF4D2D]" />
-                  <span>{t.addLanguage}</span>
-                </button>
-              </div>
+          <div className="flex flex-col sm:flex-row gap-2 items-stretch">
+            <input
+              type="text"
+              value={newLangName}
+              onChange={(e) => setNewLangName(e.target.value)}
+              placeholder={isAr ? 'مثال: العربية، الإنجليزية' : 'e.g. Arabic, English'}
+              className="flex-1 min-w-0 px-3.5 h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-400 outline-none transition shadow-2xs"
+            />
+            <div className="flex items-center gap-2">
+              <select
+                value={newLangProf}
+                onChange={(e) => setNewLangProf(e.target.value as any)}
+                className="flex-1 sm:w-44 px-3 h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-semibold text-slate-700 outline-none transition cursor-pointer shadow-2xs shrink-0 truncate"
+              >
+                <option value="native">{t.profNative}</option>
+                <option value="fluent">{t.profFluent}</option>
+                <option value="advanced">{t.profAdvanced}</option>
+                <option value="intermediate">{t.profIntermediate}</option>
+                <option value="basic">{t.profBasic}</option>
+              </select>
+              <button
+                type="submit"
+                className="h-11 px-4 bg-[#001639] hover:bg-[#00245E] text-white font-bold rounded-xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer text-xs active:scale-95 shrink-0 whitespace-nowrap"
+              >
+                <Plus className="w-4 h-4 text-[#FF4D2D] shrink-0" />
+                <span>{t.addLanguage}</span>
+              </button>
             </div>
           </div>
         </form>
 
         {languages.length > 0 && (
-          <div className="flex flex-wrap gap-2 pt-1 w-full min-w-0">
+          <div className="flex flex-wrap gap-2.5 pt-2 w-full min-w-0">
             {(languages || []).map((lang, lIdx) => (
               <span
                 key={lang.id}

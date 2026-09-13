@@ -88,7 +88,7 @@ export const translations = {
     techSkills: "مهارات تقنية",
     softSkills: "مهارات شخصية",
     tools: "أدوات وبرامج",
-    aiSuggestSkills: "اقتراح مهارات ذكية",
+    aiSuggestSkills: "اقتراح ذكي",
 
     // Languages
     addLanguage: "إضافة لغة",
@@ -286,7 +286,7 @@ export const translations = {
     techSkills: "Technical Skills",
     softSkills: "Soft Skills",
     tools: "Tools & Software",
-    aiSuggestSkills: "AI Skill Recommendations",
+    aiSuggestSkills: "AI Suggestions",
 
     // Languages
     addLanguage: "Add Language",
@@ -484,7 +484,7 @@ export const translations = {
     techSkills: "Compétences techniques",
     softSkills: "Compétences relationnelles",
     tools: "Outils & Logiciels",
-    aiSuggestSkills: "Suggérer des compétences IA",
+    aiSuggestSkills: "Suggestions IA",
 
     // Languages
     addLanguage: "Ajouter une langue",

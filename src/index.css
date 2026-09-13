@@ -5,10 +5,10 @@
    ========================================================================== */
 :root {
   /* Typography Tokens */
-  --font-ui-en: "Manrope", "Inter", system-ui, sans-serif;
-  --font-ui-ar: "Tajawal", "Segoe UI", Tahoma, sans-serif;
-  --font-display-en: "Manrope", "Inter", system-ui, sans-serif;
-  --font-display-ar: "Alexandria", "Tajawal", sans-serif;
+  --font-ui-en: "Manrope", system-ui, sans-serif;
+  --font-ui-ar: "Alexandria", system-ui, sans-serif;
+  --font-display-en: "Manrope", system-ui, sans-serif;
+  --font-display-ar: "Alexandria", system-ui, sans-serif;
 
   /* Brand Colors */
   --brand-coral: #FF4D2D;
@@ -108,6 +108,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display-en);
+}
+
 /* ==========================================================================
    4. RTL & Arabic Typography System
    ========================================================================== */
@@ -126,7 +130,12 @@ html[dir="rtl"] body {
 [dir="rtl"] h3,
 [dir="rtl"] h4,
 [dir="rtl"] h5,
-[dir="rtl"] h6,
+[dir="rtl"] h6 {
+  font-family: var(--font-display-ar);
+  line-height: 1.48 !important;
+  letter-spacing: normal;
+}
+
 [dir="rtl"] .font-display-ar,
 [dir="rtl"] .hero-headline-ar,
 [dir="rtl"] .builder-page-title-ar,
