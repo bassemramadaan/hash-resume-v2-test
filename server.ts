@@ -5,6 +5,7 @@ import { GoogleGenAI } from "@google/genai";
 import {
   getAiConfig,
   checkRateLimit,
+  checkVerifyRateLimit,
   releaseConcurrencyLock,
   sanitizeText,
   sanitizeResumeForAts,
@@ -21,8 +22,17 @@ dotenv.config();
 const app = express();
 const PORT = 3000;
 
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ limit: "10mb", extended: true }));
+// Security Headers Middleware
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.removeHeader("X-Powered-By");
+  next();
+});
+
+app.use(express.json({ limit: "5mb" }));
+app.use(express.urlencoded({ limit: "5mb", extended: false }));
 
 // Single Gemini Client factory
 const getGeminiClient = (apiKey: string | null) => {
@@ -1098,13 +1108,28 @@ app.post("/api/ai/parse-resume", async (req, res) => {
 // 8. Activation Code Verification (Google Apps Script Integration - 100% Preserved)
 app.post("/api/verify-code", async (req, res) => {
   try {
+    const clientIp = getClientIp(req);
+    const rateLimitCheck = await checkVerifyRateLimit(clientIp);
+    if (!rateLimitCheck.allowed) {
+      return res.status(429).json({
+        success: false,
+        valid: false,
+        message: "تم تجاوز عدد محاولات التحقق المسموح بها (10 محاولات). يرجى الانتظار 10 دقائق قبل المحاولة مجدداً لحماية الحساب.",
+      });
+    }
+
     const { code, reference } = req.body || {};
     if (!code || typeof code !== "string") {
       return res.status(400).json({ success: false, valid: false, message: "كود التفعيل مطلوب" });
     }
 
     const cleanCode = code.trim().toUpperCase();
-    const cleanReference = reference ? String(reference).trim() : "";
+    const cleanReference = reference ? String(reference).trim().slice(0, 120) : "";
+
+    // Security guard: prevent oversized or invalid code attacks
+    if (cleanCode.length > 64 || cleanCode.length < 3) {
+      return res.status(400).json({ success: false, valid: false, message: "صيغة كود التفعيل غير صالحة" });
+    }
 
     const gasUrl =
       process.env.PAYMENT_API_URL ||

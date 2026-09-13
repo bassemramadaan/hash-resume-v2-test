@@ -18,8 +18,7 @@ service cloud.firestore {
 
     function isAdmin() {
       return isSignedIn() && (
-        request.auth.token.email == 'bassemramadaan@gmail.com' ||
-        request.auth.token.email == 'BassemRamadaan@gmail.com'
+        request.auth.token.email.lower() == 'bassemramadaan@gmail.com'
       );
     }
 
@@ -40,9 +39,12 @@ service cloud.firestore {
 
     // Hunt Submissions Collection
     match /hunt_submissions/{submissionId} {
-      allow create: if isValidId(submissionId);
+      allow create: if isValidId(submissionId)
+        && request.resource.data.keys().hasAll(['fullName', 'email'])
+        && request.resource.data.fullName is string && request.resource.data.fullName.size() <= 150
+        && request.resource.data.email is string && request.resource.data.email.size() <= 150;
       allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && (request.auth.uid == resource.data.userId || isAdmin());
       allow update, delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
     }
   }

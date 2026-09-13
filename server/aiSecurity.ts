@@ -383,6 +383,17 @@ export async function releaseConcurrencyLock(clientIp: string): Promise<void> {
   await sharedStore.releaseLock(`lock:concurrent:${safeIp}`);
 }
 
+export async function checkVerifyRateLimit(clientIp: string): Promise<{ allowed: boolean; retryAfterSeconds?: number }> {
+  const safeIp = clientIp.replace(/[^a-zA-Z0-9:._-]/g, '');
+  const verifyKey = `ratelimit:verify:${safeIp}`;
+  // Max 10 attempts per 10 minutes (600 seconds) to prevent brute-force attacks
+  const count = await sharedStore.incr(verifyKey, 600);
+  if (count > 10) {
+    return { allowed: false, retryAfterSeconds: 600 };
+  }
+  return { allowed: true };
+}
+
 // ---------------------------------------------------------------------------
 // 6. Safe Aggregate Logging Only (Zero PII, Zero Secret Exposure)
 // ---------------------------------------------------------------------------
