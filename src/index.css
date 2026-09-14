@@ -183,6 +183,111 @@ html[dir="rtl"] body {
 }
 
 /* ==========================================================================
+   Resume Density & Page Spacing Modes (Controlled from Template & Style)
+   ========================================================================== */
+
+/* 1. Compact Density (Fit single page / reduced spacing) */
+.resume-density-compact .resume-template-container {
+  padding: 1.25rem 1.75rem !important;
+}
+.resume-density-compact .resume-template-container header {
+  margin-bottom: 0.85rem !important;
+  padding-bottom: 0.5rem !important;
+}
+.resume-density-compact .resume-template-container section {
+  margin-bottom: 0.75rem !important;
+}
+.resume-density-compact .resume-template-container h2 {
+  margin-bottom: 0.35rem !important;
+  padding-bottom: 0.2rem !important;
+}
+.resume-density-compact .resume-template-container .space-y-4 > :not([hidden]) ~ :not([hidden]),
+.resume-density-compact .resume-template-container .space-y-3\.5 > :not([hidden]) ~ :not([hidden]),
+.resume-density-compact .resume-template-container .space-y-3 > :not([hidden]) ~ :not([hidden]),
+.resume-density-compact .resume-template-container .space-y-2\.5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.45rem * calc(1 - var(--tw-space-y-reverse))) !important;
+  margin-bottom: calc(0.45rem * var(--tw-space-y-reverse)) !important;
+}
+.resume-density-compact .resume-template-container ul {
+  margin-top: 0.2rem !important;
+}
+.resume-density-compact .resume-template-container li {
+  line-height: 1.4 !important;
+  margin-bottom: 0.15rem !important;
+}
+
+/* 2. Normal Density (Standard ATS Balanced Spacing) */
+.resume-density-normal .resume-template-container {
+  padding: 2.25rem 2.5rem !important;
+}
+.resume-density-normal .resume-template-container header {
+  margin-bottom: 1.25rem !important;
+  padding-bottom: 0.85rem !important;
+}
+.resume-density-normal .resume-template-container section {
+  margin-bottom: 1.05rem !important;
+}
+
+/* 3. Spacious Density (Relaxed, Generous Margins & Whitespace) */
+.resume-density-spacious .resume-template-container {
+  padding: 2.75rem 3.25rem !important;
+}
+.resume-density-spacious .resume-template-container header {
+  margin-bottom: 1.6rem !important;
+  padding-bottom: 1.15rem !important;
+}
+.resume-density-spacious .resume-template-container section {
+  margin-bottom: 1.4rem !important;
+}
+.resume-density-spacious .resume-template-container .space-y-4 > :not([hidden]) ~ :not([hidden]),
+.resume-density-spacious .resume-template-container .space-y-3\.5 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(1.15rem * calc(1 - var(--tw-space-y-reverse))) !important;
+  margin-bottom: calc(1.15rem * var(--tw-space-y-reverse)) !important;
+}
+
+/* ==========================================================================
+   Resume Font Size Scales
+   ========================================================================== */
+.resume-font-sm .resume-template-container {
+  font-size: 11.5px !important;
+  line-height: 1.45 !important;
+}
+.resume-font-sm .resume-template-container p,
+.resume-font-sm .resume-template-container li,
+.resume-font-sm .resume-template-container span:not(.ats-score-num) {
+  font-size: 11px;
+}
+.resume-font-sm .resume-template-container h1 {
+  font-size: 21px !important;
+}
+.resume-font-sm .resume-template-container h2 {
+  font-size: 12.5px !important;
+}
+
+.resume-font-md .resume-template-container {
+  font-size: 13px !important;
+  line-height: 1.55 !important;
+}
+
+.resume-font-lg .resume-template-container {
+  font-size: 14.5px !important;
+  line-height: 1.65 !important;
+}
+.resume-font-lg .resume-template-container p,
+.resume-font-lg .resume-template-container li,
+.resume-font-lg .resume-template-container span:not(.ats-score-num) {
+  font-size: 13px;
+}
+.resume-font-lg .resume-template-container h1 {
+  font-size: 26px !important;
+}
+.resume-font-lg .resume-template-container h2 {
+  font-size: 15px !important;
+}
+
+/* ==========================================================================
    5. RTL Isolation & BiDi Guard (Numbers, Dates, Phone, Email, ATS Scores)
    ========================================================================== */
 bdi,

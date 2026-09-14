@@ -53,7 +53,11 @@ export const ResumeOffscreenRenderer: React.FC = () => {
         overflow: 'hidden',
       }}
     >
-      <div id="resume-export-source-document" style={{ width: '794px' }}>
+      <div
+        id="resume-export-source-document"
+        style={{ width: '794px' }}
+        className={`resume-density-${settings.spacing || 'normal'} resume-font-${settings.fontSize || 'md'}`}
+      >
         {renderTemplate()}
       </div>
     </div>

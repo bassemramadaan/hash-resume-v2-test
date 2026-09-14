@@ -637,7 +637,11 @@ export const ResumePreview: React.FC = () => {
             }}
           >
             {/* Render Active Template Document or Live Skeleton Preview */}
-            <div id="resume-preview-document" ref={documentRef} className="relative min-h-[1050px]">
+            <div
+              id="resume-preview-document"
+              ref={documentRef}
+              className={`relative min-h-[1050px] resume-density-${settings.spacing || 'normal'} resume-font-${settings.fontSize || 'md'}`}
+            >
               {isCurrentResumeBlank ? (
                 <ResumeSkeletonPreview
                   isAr={isAr}
@@ -767,7 +771,7 @@ export const ResumePreview: React.FC = () => {
 
               {/* Fullscreen Body */}
               <div className="flex-1 overflow-auto p-6 bg-slate-200 flex justify-center items-start">
-                <div className="bg-white shadow-2xl rounded-sm">
+                <div className={`bg-white shadow-2xl rounded-sm resume-density-${settings.spacing || 'normal'} resume-font-${settings.fontSize || 'md'}`}>
                   {renderActiveTemplate()}
                 </div>
               </div>
