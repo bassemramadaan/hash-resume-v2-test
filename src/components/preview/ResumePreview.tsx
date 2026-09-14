@@ -273,6 +273,9 @@ export const ResumePreview: React.FC = () => {
       setZoom(0.68);
     }
   };
+  const handleZoomFullRead = () => {
+    setZoom(1.0);
+  };
 
   const handlePdfDownload = () => {
     if (isCurrentResumeBlank) {
@@ -366,43 +369,65 @@ export const ResumePreview: React.FC = () => {
         {/* Zoom & Fullscreen controls */}
         <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
           <button
+            type="button"
             onClick={handleZoomOut}
-            className="p-1 hover:bg-slate-200 rounded text-slate-600 transition cursor-pointer"
+            className="p-1 hover:bg-slate-200 rounded text-slate-600 transition cursor-pointer min-w-[28px] min-h-[28px] flex items-center justify-center"
             title={isAr ? 'تصغير' : 'Zoom Out'}
             aria-label={isAr ? 'تصغير المعاينة' : 'Zoom Out'}
           >
             <ZoomOut className="w-3.5 h-3.5" />
           </button>
-          <span className="px-1.5 font-mono text-[11px] text-slate-700 font-bold">
+          <span className="px-1.5 font-mono text-[11px] text-slate-700 font-bold min-w-[38px] text-center">
             {Math.round(zoom * 100)}%
           </span>
           <button
+            type="button"
             onClick={handleZoomIn}
-            className="p-1 hover:bg-slate-200 rounded text-slate-600 transition cursor-pointer"
+            className="p-1 hover:bg-slate-200 rounded text-slate-600 transition cursor-pointer min-w-[28px] min-h-[28px] flex items-center justify-center"
             title={isAr ? 'تكبير' : 'Zoom In'}
             aria-label={isAr ? 'تكبير المعاينة' : 'Zoom In'}
           >
             <ZoomIn className="w-3.5 h-3.5" />
           </button>
+
+          {/* Quick Preset: Fit Full Page */}
           <button
+            type="button"
             onClick={handleZoomFit}
-            className="px-1.5 py-0.5 text-[10px] hover:bg-slate-200 rounded text-slate-600 transition cursor-pointer font-medium"
-            title={isAr ? 'ملاءمة العرض' : 'Fit Width'}
+            className={`px-2 py-0.5 text-[10px] rounded-lg transition cursor-pointer font-bold ${
+              zoom <= 0.52 ? 'bg-[#001639] text-white' : 'hover:bg-slate-200 text-slate-700'
+            }`}
+            title={isAr ? 'ملاءمة الصفحة بالكامل' : 'Fit Full Page'}
           >
-            Fit
+            {isAr ? 'كاملة' : 'Fit'}
           </button>
+
+          {/* Quick Preset: 100% Readable Text View */}
           <button
+            type="button"
+            onClick={handleZoomFullRead}
+            className={`px-2 py-0.5 text-[10px] rounded-lg transition cursor-pointer font-bold ${
+              zoom >= 0.95 && zoom <= 1.05 ? 'bg-[#001639] text-white' : 'hover:bg-slate-200 text-slate-700'
+            }`}
+            title={isAr ? 'تكبير للقراءة بنسبة 100%' : '100% Readable View'}
+          >
+            100%
+          </button>
+
+          <button
+            type="button"
             onClick={handleZoomReset}
-            className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-slate-700 transition cursor-pointer"
+            className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-slate-700 transition cursor-pointer hidden sm:flex items-center justify-center"
             title={isAr ? 'إعادة ضبط الحجم' : 'Reset Zoom'}
             aria-label={isAr ? 'إعادة ضبط الحجم' : 'Reset Zoom'}
           >
             <RotateCcw className="w-3 h-3" />
           </button>
-          <div className="w-[1px] h-3.5 bg-slate-300 mx-0.5" />
+          <div className="w-[1px] h-3.5 bg-slate-300 mx-0.5 hidden xs:block" />
           <button
+            type="button"
             onClick={() => setIsFullscreen(true)}
-            className="p-1 hover:bg-slate-200 rounded text-[#001639] hover:text-[#FF4D2D] transition cursor-pointer"
+            className="p-1 hover:bg-slate-200 rounded text-[#001639] hover:text-[#FF4D2D] transition cursor-pointer hidden xs:flex items-center justify-center"
             title={isAr ? 'معاينة ملء الشاشة' : 'Fullscreen Preview'}
             aria-label={isAr ? 'معاينة ملء الشاشة' : 'Fullscreen Preview'}
           >

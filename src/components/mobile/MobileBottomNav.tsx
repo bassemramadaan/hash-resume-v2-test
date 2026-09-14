@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Eye, Download, Sparkles } from 'lucide-react';
 import { useResumeStore } from '../../store/useResumeStore';
 
@@ -17,11 +17,43 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
 }) => {
   const { settings } = useResumeStore();
   const isAr = settings.language === 'ar';
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+  // Detect virtual keyboard on mobile via focusin/focusout on editable inputs
+  useEffect(() => {
+    const handleFocusIn = (e: FocusEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable)
+      ) {
+        setIsKeyboardOpen(true);
+      }
+    };
+
+    const handleFocusOut = () => {
+      setIsKeyboardOpen(false);
+    };
+
+    window.addEventListener('focusin', handleFocusIn);
+    window.addEventListener('focusout', handleFocusOut);
+
+    return () => {
+      window.removeEventListener('focusin', handleFocusIn);
+      window.removeEventListener('focusout', handleFocusOut);
+    };
+  }, []);
 
   return (
     <nav
       aria-label={isAr ? 'شريط التنقل السفلي' : 'Mobile Bottom Navigation'}
-      className="fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-4 py-2.5 pb-[max(10px,env(safe-area-inset-bottom))] md:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.05)]"
+      className={`fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-4 py-2.5 pb-[max(10px,env(safe-area-inset-bottom))] md:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.05)] transition-all duration-200 ${
+        isKeyboardOpen
+          ? 'translate-y-full opacity-0 pointer-events-none'
+          : 'translate-y-0 opacity-100'
+      }`}
     >
       <div className="max-w-md mx-auto flex items-center justify-between gap-3">
         {/* Preview Button */}

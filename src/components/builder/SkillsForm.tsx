@@ -3,7 +3,7 @@ import { useResumeStore } from '../../store/useResumeStore';
 import { useUndoToastStore } from '../../store/useUndoToastStore';
 import { getTranslation } from '../../i18n/translations';
 import { KeywordSuggestionsPanel } from './KeywordSuggestionsPanel';
-import { Wrench, Plus, Sparkles, Languages as LangIcon, X } from 'lucide-react';
+import { Wrench, Plus, Sparkles, Languages as LangIcon, X, Check, ArrowLeft, ArrowRight } from 'lucide-react';
 import { NextStepBanner } from './NextStepBanner';
 
 export const SkillsForm: React.FC = () => {
@@ -11,6 +11,7 @@ export const SkillsForm: React.FC = () => {
     resumeData,
     addSkill,
     removeSkill,
+    reorderSkills,
     insertSkillAtIndex,
     addLanguage,
     removeLanguage,
@@ -41,6 +42,22 @@ export const SkillsForm: React.FC = () => {
     filterCategory === 'all'
       ? skills
       : skills.filter((s) => s.category === filterCategory);
+
+  const handleQuickAddSkill = (name: string, category: 'technical' | 'soft' | 'tool') => {
+    if (skills.some((s) => s.name.trim().toLowerCase() === name.trim().toLowerCase())) {
+      return;
+    }
+    addSkill({
+      name: name.trim(),
+      category,
+    });
+  };
+
+  const handleMoveSkill = (currentIdx: number, direction: 'prev' | 'next') => {
+    const targetIdx = direction === 'prev' ? currentIdx - 1 : currentIdx + 1;
+    if (targetIdx < 0 || targetIdx >= skills.length) return;
+    reorderSkills(currentIdx, targetIdx);
+  };
 
   const handleDeleteSkill = (skill: any, idx: number) => {
     removeSkill(skill.id);
@@ -135,27 +152,45 @@ export const SkillsForm: React.FC = () => {
 
         {/* Add Skill Form */}
         <form onSubmit={handleAddSkillSubmit} className="space-y-3">
-          {/* Quick Suggestions (Tap vs Type) */}
-          <div className="flex flex-wrap gap-1.5 mb-1">
-            {[
-              isAr ? 'إدارة الوقت' : 'Time Management',
-              isAr ? 'حل المشكلات' : 'Problem Solving',
-              isAr ? 'القيادة' : 'Leadership',
-              isAr ? 'التواصل' : 'Communication',
-              'Microsoft Office',
-            ].map((skill) => (
-              <button
-                key={skill}
-                type="button"
-                onClick={() => {
-                  setNewSkillName(skill);
-                  setNewSkillCategory(skill === 'Microsoft Office' ? 'tool' : 'soft');
-                }}
-                className="px-2.5 py-1 text-[11px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition cursor-pointer active:scale-95"
-              >
-                + {skill}
-              </button>
-            ))}
+          {/* One-Tap Quick Skill Suggestions */}
+          <div className="space-y-1.5 mb-2">
+            <span className="text-[11px] font-bold text-slate-500 block">
+              {isAr ? 'إضافة سريعة بلمسة واحدة:' : 'One-Tap Quick Add:'}
+            </span>
+            <div className="flex flex-wrap gap-1.5">
+              {[
+                { name: isAr ? 'إدارة الوقت' : 'Time Management', cat: 'soft' as const },
+                { name: isAr ? 'حل المشكلات' : 'Problem Solving', cat: 'soft' as const },
+                { name: isAr ? 'القيادة والعمل الجماعي' : 'Leadership & Teamwork', cat: 'soft' as const },
+                { name: isAr ? 'التواصل الفعال' : 'Communication', cat: 'soft' as const },
+                { name: 'Microsoft Excel', cat: 'tool' as const },
+                { name: 'Git & GitHub', cat: 'tool' as const },
+              ].map((item) => {
+                const isAdded = skills.some(
+                  (s) => s.name.trim().toLowerCase() === item.name.trim().toLowerCase()
+                );
+                return (
+                  <button
+                    key={item.name}
+                    type="button"
+                    onClick={() => handleQuickAddSkill(item.name, item.cat)}
+                    disabled={isAdded}
+                    className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition flex items-center gap-1 cursor-pointer active:scale-95 ${
+                      isAdded
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 cursor-default'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200/80 hover:text-[#001639]'
+                    }`}
+                  >
+                    {isAdded ? (
+                      <Check className="w-3 h-3 text-emerald-600 shrink-0" />
+                    ) : (
+                      <Plus className="w-3 h-3 text-[#FF4D2D] shrink-0" />
+                    )}
+                    <span>{item.name}</span>
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           <div className="space-y-2.5">
@@ -316,10 +351,37 @@ export const SkillsForm: React.FC = () => {
                         : skill.level}
                     </span>
                   )}
+                  {filterCategory === 'all' && (
+                    <div className="flex items-center gap-0.5 ms-1 border-s border-slate-300/80 ps-1">
+                      {sIdx > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => handleMoveSkill(sIdx, 'prev')}
+                          className="text-slate-400 hover:text-[#001639] p-0.5 transition cursor-pointer"
+                          title={isAr ? 'تحريك للأمام' : 'Move up/earlier'}
+                          aria-label={isAr ? 'تحريك للأمام' : 'Move up'}
+                        >
+                          {isAr ? <ArrowRight className="w-3 h-3" /> : <ArrowLeft className="w-3 h-3" />}
+                        </button>
+                      )}
+                      {sIdx < skills.length - 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleMoveSkill(sIdx, 'next')}
+                          className="text-slate-400 hover:text-[#001639] p-0.5 transition cursor-pointer"
+                          title={isAr ? 'تحريك للخلف' : 'Move down/later'}
+                          aria-label={isAr ? 'تحريك للخلف' : 'Move down'}
+                        >
+                          {isAr ? <ArrowLeft className="w-3 h-3" /> : <ArrowRight className="w-3 h-3" />}
+                        </button>
+                      )}
+                    </div>
+                  )}
+
                   <button
                     type="button"
                     onClick={() => handleDeleteSkill(skill, sIdx)}
-                    className="text-slate-400 hover:text-rose-600 transition cursor-pointer p-0.5 shrink-0"
+                    className="text-slate-400 hover:text-rose-600 transition cursor-pointer p-0.5 shrink-0 ms-0.5"
                     aria-label={isAr ? `حذف مهارة ${skill.name}` : `Remove ${skill.name}`}
                   >
                     <X className="w-3.5 h-3.5" />

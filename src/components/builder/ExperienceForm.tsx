@@ -469,23 +469,6 @@ export const ExperienceForm: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Current Job Checkbox */}
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      id={`curr-${exp.id}`}
-                      checked={exp.current}
-                      onChange={(e) => updateExperience(exp.id, { current: e.target.checked })}
-                      className="w-4 h-4 rounded text-[#001639] focus:ring-[#001639] cursor-pointer"
-                    />
-                    <label
-                      htmlFor={`curr-${exp.id}`}
-                      className="font-medium text-slate-700 cursor-pointer text-xs"
-                    >
-                      {t.currentJob}
-                    </label>
-                  </div>
-
                   {/* Bullet Points Section */}
                   <div className="pt-3 border-t border-slate-200/80 space-y-3">
                     <div className="flex items-center justify-between gap-2">
