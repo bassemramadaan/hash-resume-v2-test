@@ -16,13 +16,71 @@ export interface LogoProps {
 export const Logo: React.FC<LogoProps> = ({
   variant = 'full',
   size = 'md',
-  loading = 'lazy',
+  loading = 'eager',
   className = '',
   onDark = false,
 }) => {
   const [imageError, setImageError] = useState(false);
 
-  // Select image source URL based on variant
+  // High-performance Vector Logo fallback (0ms load time, 100% compatible with Firefox ETP & adblockers)
+  const renderVectorLogo = () => {
+    const textColor = onDark ? 'text-white' : 'text-[#001639]';
+    const subtextColor = onDark ? 'text-slate-300' : 'text-slate-500';
+
+    const getBadgeSize = () => {
+      switch (size) {
+        case 'sm': return 'w-8 h-8 text-base rounded-lg';
+        case 'lg': return 'w-12 h-12 text-2xl rounded-xl';
+        case 'xl': return 'w-16 h-16 text-3xl rounded-2xl';
+        case 'md':
+        default: return 'w-10 h-10 text-xl rounded-xl';
+      }
+    };
+
+    const getFullTextSize = () => {
+      switch (size) {
+        case 'sm': return 'text-lg';
+        case 'lg': return 'text-3xl';
+        case 'xl': return 'text-4xl';
+        case 'md':
+        default: return 'text-2xl';
+      }
+    };
+
+    if (variant === 'icon') {
+      return (
+        <div
+          className={`relative inline-flex shrink-0 items-center justify-center bg-gradient-to-br from-[#001639] via-[#0B2545] to-[#000F27] text-white font-black shadow-md border border-white/10 select-none ${getBadgeSize()} ${className}`}
+          title="Hash Resume"
+        >
+          <span className="text-[#FF4D2D] font-black tracking-tight drop-shadow-sm">#</span>
+        </div>
+      );
+    }
+
+    return (
+      <div className={`inline-flex shrink-0 items-center gap-2.5 font-brand select-none ${className}`}>
+        <div className={`relative inline-flex shrink-0 items-center justify-center bg-gradient-to-br from-[#001639] via-[#0B2545] to-[#000F27] text-white font-black shadow-md border border-white/10 ${getBadgeSize()}`}>
+          <span className="text-[#FF4D2D] font-black tracking-tight drop-shadow-sm">#</span>
+        </div>
+
+        <div className="flex flex-col justify-center leading-none">
+          <div className={`font-black tracking-tight flex items-center gap-1 ${textColor} ${getFullTextSize()}`}>
+            <span>Hash</span>
+            <span className="text-[#FF4D2D]">Resume</span>
+          </div>
+          <span className={`text-[10px] font-extrabold tracking-widest uppercase mt-0.5 ${subtextColor}`}>
+            ATS BUILDER
+          </span>
+        </div>
+      </div>
+    );
+  };
+
+  if (imageError) {
+    return renderVectorLogo();
+  }
+
   const getLogoSrc = () => {
     switch (variant) {
       case 'icon':
@@ -35,7 +93,6 @@ export const Logo: React.FC<LogoProps> = ({
     }
   };
 
-  // Dimension classes to prevent Cumulative Layout Shift (CLS)
   const getSizeClasses = () => {
     if (variant === 'icon') {
       switch (size) {
@@ -64,42 +121,18 @@ export const Logo: React.FC<LogoProps> = ({
     }
   };
 
-  // Fallback text rendering if external image URL fails to load
-  if (imageError) {
-    const textColor = onDark ? 'text-white' : 'text-[#001639]';
-    if (variant === 'icon') {
-      return (
-        <span
-          className={`inline-flex shrink-0 items-center justify-center rounded-xl bg-[#001639] font-black text-white ${
-            size === 'sm' ? 'w-8 h-8 text-sm' : size === 'lg' ? 'w-12 h-12 text-xl' : size === 'xl' ? 'w-16 h-16 text-2xl' : 'w-10 h-10 text-base'
-          } ${className}`}
-          title="Hash Resume"
-        >
-          #
-        </span>
-      );
-    }
-
-    return (
-      <span
-        className={`inline-flex shrink-0 items-center gap-2 font-brand font-extrabold tracking-tight ${textColor} ${
-          size === 'sm' ? 'text-lg' : size === 'lg' ? 'text-3xl' : size === 'xl' ? 'text-4xl' : 'text-2xl'
-        } ${className}`}
-      >
-        <span className="bg-[#001639] text-white rounded-lg px-2 py-0.5 text-sm font-black shrink-0">#</span>
-        <span className="shrink-0">Hash Resume</span>
-      </span>
-    );
-  }
-
   return (
-    <img
-      src={getLogoSrc()}
-      alt="Hash Resume"
-      loading={loading}
-      onError={() => setImageError(true)}
-      className={`object-contain shrink-0 transition-all duration-200 ${getSizeClasses()} ${className}`}
-    />
+    <div className="relative inline-flex items-center shrink-0">
+      <img
+        src={getLogoSrc()}
+        alt="Hash Resume"
+        loading={loading}
+        referrerPolicy="no-referrer"
+        crossOrigin="anonymous"
+        onError={() => setImageError(true)}
+        className={`object-contain shrink-0 transition-all duration-200 ${getSizeClasses()} ${className}`}
+      />
+    </div>
   );
 };
 
