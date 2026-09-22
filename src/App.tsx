@@ -12,16 +12,9 @@ import { PdfExportProgressModal } from './components/common/PdfExportProgressMod
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 import { ResumeOffscreenRenderer } from './components/preview/ResumeOffscreenRenderer';
 
-// Lazy load routes with retry for code-splitting and instant initial page load
-const LandingPage = lazyWithRetry(() => import('./pages/LandingPage'), 'LandingPage');
-const BuilderPage = lazyWithRetry(() => import('./pages/BuilderPage'), 'BuilderPage');
-
-// Background preloader for BuilderPage so transition is instant when user clicks
-if (typeof window !== 'undefined') {
-  setTimeout(() => {
-    import('./pages/BuilderPage').catch(() => {});
-  }, 2000);
-}
+// Core Pages eagerly imported for 100% reliable rendering without dynamic import errors
+import { LandingPage } from './pages/LandingPage';
+import { BuilderPage } from './pages/BuilderPage';
 
 /**
  * Robust lazy import with automatic retry on transient chunk loading / network errors

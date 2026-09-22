@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from '../../store/useResumeStore';
-import { CheckCircle2, ArrowRight, ArrowLeft, Briefcase, X, FileCheck2 } from 'lucide-react';
+import { CheckCircle2, ArrowRight, ArrowLeft, Briefcase, X, FileCheck2, Sparkles, Building2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export const PostDownloadSuccessModal: React.FC = () => {
@@ -85,7 +85,7 @@ export const PostDownloadSuccessModal: React.FC = () => {
             </div>
 
             {/* Content Body */}
-            <div className="px-6 pb-6 space-y-5 text-center">
+            <div className="px-6 pb-6 space-y-4 text-center">
               <div className="space-y-3 text-xs sm:text-sm text-slate-600 leading-relaxed">
                 <p>
                   {isAr
@@ -98,6 +98,19 @@ export const PostDownloadSuccessModal: React.FC = () => {
                     <span>{isAr ? 'جاهزة 100% للتقديم على أنظمة ATS' : '100% ATS Ready'}</span>
                   </span>
                 </div>
+              </div>
+
+              {/* Hash Hunt Referral Notice */}
+              <div className="p-3.5 bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl border border-orange-200/90 text-start space-y-1">
+                <span className="font-extrabold text-[#001639] text-xs flex items-center gap-1.5">
+                  <Building2 className="w-4 h-4 text-[#FF4D2D] shrink-0" />
+                  {isAr ? 'تم ربط سيرتك الذاتية بـ Hash Hunt 🎯' : 'Resume Connected to Hash Hunt 🎯'}
+                </span>
+                <p className="text-[11px] text-slate-600 leading-relaxed">
+                  {isAr
+                    ? 'سيرتك الذاتية أصبحت متوفرة ومجهزة للربط المباشر مع الشركات والمؤسسات المتعاقدة معنا الباحثة عن تخصصاتك!'
+                    : 'Your ATS resume is indexed in our referral system to connect directly with contracted corporate partners.'}
+                </p>
               </div>
 
               {/* Action Buttons */}

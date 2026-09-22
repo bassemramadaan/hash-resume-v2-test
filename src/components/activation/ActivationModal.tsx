@@ -42,13 +42,13 @@ const PAYMENT_MODAL_I18N = {
     // Single Plan
     singleTitle: 'Single Download — 50 EGP',
     singlePrice: '50 ج.م',
-    singleSub: 'تحميل فردي • دفع لمرة واحدة',
+    singleSub: 'تفعيل سيرة واحدة + ربط بالشركات',
     singleBullets: [
-      'رصيد تحميل لمرة واحدة لسيرة ذاتية',
-      'استخدمه لأي نسخة من اختيارك',
-      'بدون علامة مائية',
-      'تنسيق معتمد لأجهزة ATS',
-      'بدون أي رسوم تكرارية',
+      'رصيد تحميل سيرة ذاتية عالية الدقة (PDF)',
+      'الرفع والربط التلقائي على منصة Hash Hunt للتوظيف',
+      'توصيل CV للشركات المتعاقدة معنا الباحثة عن تخصصات محددة',
+      'تنسيق معتمد 100% لأجهزة الـ ATS وبدون علامة مائية',
+      'دفع لمرة واحدة بدون أي رسوم تكرارية',
     ],
     buySingleBtn: 'Select Single — 50 EGP',
     buySingleBtnAr: 'اختيار باقة 50 ج.م',
@@ -57,13 +57,13 @@ const PAYMENT_MODAL_I18N = {
     bundleTitle: '3-Download Pack — 120 EGP',
     bundlePrice: '120 ج.م',
     bundleBadge: 'الأكثر توفيراً',
-    bundleSub: 'باقة 3 تحميلات • أنسب للباحثين عن عمل',
+    bundleSub: 'باقة 3 تفعيلات + تسويق وظيفي شامل',
     bundleBullets: [
-      '3 رصيد تحميل لمرة واحدة',
-      'استخدمها للتقديم على وظائف مختلفة',
-      'بدون علامة مائية',
-      'تنسيق معتمد لأجهزة ATS',
-      'بدون أي رسوم تكرارية',
+      '3 رصيد تحميل مستقل لـ 3 سير ذاتية مختلفة',
+      'رفع وربط جميع النسخ على Hash Hunt لتسويقك للشركات',
+      'توصيل سيرتك الذاتية لشركات ومؤسسات متعاقدة',
+      'توفير 30 ج.م مقارنة بالتحميل الفردي',
+      'دفع لمرة واحدة بدون أي رسوم شهري',
     ],
     buyBundleBtn: 'Select Pack — 120 EGP',
     buyBundleBtnAr: 'اختيار باقة 120 ج.م',
@@ -135,13 +135,13 @@ const PAYMENT_MODAL_I18N = {
     // Single Plan
     singleTitle: 'Single Download — 50 EGP',
     singlePrice: '50 EGP',
-    singleSub: 'Single download credit',
+    singleSub: '1 Resume Activation + Company Referral',
     singleBullets: [
-      '1 one-time download credit',
-      'Use for any resume version',
-      'No watermark',
-      'ATS-friendly layout',
-      'No recurring fees',
+      '1 High-res ATS PDF download credit',
+      'Automated upload & indexing on Hash Hunt',
+      'Direct CV referral to contracted hiring partners',
+      '100% ATS-compliant layout & zero watermark',
+      'One-time payment with zero recurring fees',
     ],
     buySingleBtn: 'Select Single — 50 EGP',
     buySingleBtnAr: 'Select Single — 50 EGP',
@@ -150,13 +150,13 @@ const PAYMENT_MODAL_I18N = {
     bundleTitle: '3-Download Pack — 120 EGP',
     bundlePrice: '120 EGP',
     bundleBadge: 'Best value',
-    bundleSub: 'Ideal for tailoring to multiple jobs',
+    bundleSub: '3 Resume Pack + Full Employer Placement',
     bundleBullets: [
-      '3 one-time download credits',
-      'Use them for different job applications',
-      'No watermark',
-      'ATS-friendly layout',
-      'No recurring fees',
+      '3 separate activation slots for targeted CVs',
+      'Indexing & referral on Hash Hunt for all CV versions',
+      'Direct candidate delivery to contracted companies',
+      'Save 30 EGP instantly compared to single credits',
+      'One-time payment with zero monthly subscriptions',
     ],
     buyBundleBtn: 'Select Pack — 120 EGP',
     buyBundleBtnAr: 'Select Pack — 120 EGP',
@@ -773,8 +773,8 @@ export const ActivationModal: React.FC = () => {
                       </summary>
                       <p className="pt-1 text-slate-500 ps-2.5 border-s-2 border-slate-200">
                         {isAr
-                          ? 'تشمل تحميل سيرة ذاتية واحدة بصيغة PDF متوافقة 100% مع أجهزة الـ ATS وتعديلات غير محدودة في نفس الجلسة قبل التحميل النهائي وبدون أي علامات مائية.'
-                          : 'Includes 1 high-resolution ATS-friendly vector PDF download without watermark. Unlimited session edits before final download.'}
+                          ? 'رسوم الـ 50 ج.م تشمل تصميم وتنزيل سيرة ذاتية بصيغة PDF متوافقة 100% مع أنظمة ATS + الرفع والربط التلقائي على منصة Hash Hunt للتوظيف لتوصيل سيرتك الذاتية مباشرةً للشركات والمؤسسات المتعاقدة معنا.'
+                          : 'The 50 EGP fee covers 1 high-res ATS vector PDF export + automated upload & referral on Hash Hunt connecting your CV with our contracted corporate partners.'}
                       </p>
                     </details>
 

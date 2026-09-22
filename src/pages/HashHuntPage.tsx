@@ -400,8 +400,23 @@ export const HashHuntPage: React.FC = () => {
               </h1>
 
               <p className="text-sm sm:text-base md:text-lg text-slate-600 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
-                {isAr ? "تصفّح فرصًا مختارة للمواهب الطموحة، وقدّم بسيرتك الذاتية في أقل من دقيقة." : "Browse curated opportunities for ambitious talents, and apply with your resume in under a minute."}
+                {isAr 
+                  ? "تصفّح الفرص الحصرية لشركاتنا المتعاقدة. عندما تصمم سيرتك الذاتية عبر Hash Resume، نكون وسيلة لتوصيلك مباشرة بمسؤولي التوظيف في الشركات الشريكة."
+                  : "Explore exclusive opportunities with our contracted partner companies. When you create your ATS resume with Hash Resume, we directly connect your CV to partner hiring managers."}
               </p>
+
+              {/* Hash Hunt Bridge Value Callout */}
+              <div className="p-3.5 bg-white/80 backdrop-blur-xs border border-coral/30 rounded-2xl shadow-2xs max-w-xl text-xs space-y-1">
+                <span className="font-extrabold text-navy flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  {isAr ? 'جسر الربط المباشر مع الشركات المتعاقدة' : 'Direct Bridge with Contracted Companies'}
+                </span>
+                <p className="text-[#52627A] leading-relaxed">
+                  {isAr
+                    ? 'الـ 50 ج.م لا تقتصر على تحميل السيرة الذاتية بصيغة ATS المحترفة فحسب، بل تشمل رفع وتوجيه ملفك لشبكة الشركات المتعاقدة معنا والمؤسسات الباحثة عن كفاءات محددة.'
+                    : 'The 50 EGP payment is not just for downloading an ATS CV—it includes uploading and delivering your profile directly to our network of hiring partners.'}
+                </p>
+              </div>
 
               <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row justify-center lg:justify-start gap-3">
                 <button

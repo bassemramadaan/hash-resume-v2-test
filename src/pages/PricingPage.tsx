@@ -15,7 +15,10 @@ import {
   Lock,
   ArrowUpRight,
   Headphones,
-  CheckCircle2
+  CheckCircle2,
+  Building2,
+  Briefcase,
+  Target
 } from 'lucide-react';
 import { INSTAPAY_ADDRESS, VODAFONE_CASH_NUMBER, INSTAPAY_LINK } from '../lib/constants/payment';
 
@@ -36,6 +39,12 @@ export const PricingPage: React.FC = () => {
 
   const faqs = [
     {
+      q: isAr ? 'هل الـ 50 ج.م هي فقط لتصميم وتحميل السيرة الذاتية؟' : 'Is the 50 EGP only for downloading the CV?',
+      a: isAr
+        ? 'لا! الـ 50 ج.م تشمل تصميم سيرة ذاتية احترافية متوافقة 100% مع أنظمة ATS + الرفع والربط التلقائي على منصة Hash Hunt للتوظيف، حيث نعمل كجسر لتوصيل سيرتك الذاتية مباشرةً للشركات والمؤسسات المتعاقدة معنا الباحثة عن تخصصات وكفاءات محددة.'
+        : 'No! The 50 EGP covers creating your 100% ATS-compliant PDF resume PLUS automatically uploading & indexing it on Hash Hunt to refer you directly to our contracted hiring partners looking for specialized candidate profiles.'
+    },
+    {
       q: isAr ? 'هل يتم تجديد الدفع شهرياً تلقائياً؟' : 'Is there an automatic monthly renewal?',
       a: isAr
         ? 'قطعاً لا. جميع الأسعار هنا هي دفع لمرة واحدة فقط (One-Time Payment). لن يتم خصم أي قرش إضافي من حسابك مستقبلاً.'
@@ -50,13 +59,13 @@ export const PricingPage: React.FC = () => {
     {
       q: isAr ? 'ما الذي أحصل عليه مع كل تفعيل؟' : 'What is included with each activation credit?',
       a: isAr
-        ? 'تحميل سيرة ذاتية بصيغة PDF عالية الدقة بدون أي علامات مائية، مع اعتماد كامل لأنظمة فحص التوظيف الذكية (ATS)، والوصول لجميع القوالب والألوان والخطوط.'
-        : 'Full high-resolution PDF download with zero watermarks, 100% ATS compliance guarantee, and unrestricted access to all 5 professional templates.'
+        ? 'تحميل سيرة ذاتية بصيغة PDF عالية الدقة بدون أي علامات مائية، مع اعتماد كامل لأنظمة فحص التوظيف الذكية (ATS)، والرفع التلقائي على Hash Hunt لتوصيلك بالشركات، والوصول لجميع القوالب والألوان والخطوط.'
+        : 'Full high-resolution PDF download with zero watermarks, 100% ATS compliance guarantee, automated upload to Hash Hunt for employer referral, and unrestricted access to all 5 professional templates.'
     },
     {
       q: isAr ? 'هل بياناتي وتفاصيل سيرتي الذاتية آمنة؟' : 'Is my personal and resume data safe?',
       a: isAr
-        ? 'نعم بنسبة 100%. نظام Hash Resume يعمل بتقنية الخصوصية المحلية (Client-Side Privacy)؛ نصوصك وبياناتك لا تُباع ولا تُشارك مع أي جهة خارجية إطلاقاً.'
+        ? 'نعم بنسبة 100%. نظام Hash Resume يعمل بتقنية الخصوصية المحلية (Client-Side Privacy)؛ نصوصك وبياناتك لا تُباع ولا تُشارك مع أي جهة خارجية بدون موافقتك.'
         : 'Yes, 100%. Hash Resume adheres strictly to client-side privacy. Your confidential information stays entirely on your device and is never harvested.'
     }
   ];
@@ -106,6 +115,43 @@ export const PricingPage: React.FC = () => {
         )}
       </section>
 
+      {/* Hash Hunt Corporate Value Banner */}
+      <section className="bg-gradient-to-br from-[#001639] via-[#0B2545] to-[#000F27] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-white/10 relative overflow-hidden max-w-4xl mx-auto">
+        <div className="absolute top-0 end-0 w-80 h-80 bg-[#FF4D2D]/15 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="space-y-3 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF4D2D]/20 border border-[#FF4D2D]/30 text-[#FF4D2D] text-xs font-black">
+              <Building2 className="w-3.5 h-3.5" />
+              <span>{isAr ? 'أكثر من مجرد سيرة ذاتية 🎯' : 'More Than Just a Resume 🎯'}</span>
+            </div>
+            
+            <h2 className="text-xl sm:text-2xl font-black text-white leading-snug">
+              {isAr ? (
+                <>الـ 50 ج.م مش مجرد تمن تحميل الـ CV! 🚀</>
+              ) : (
+                <>The 50 EGP is NOT just for generating a CV! 🚀</>
+              )}
+            </h2>
+            
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              {isAr
+                ? 'عند إنشاء وتفعيل سيرتك الذاتية معنا، يتم رفعها وتكشيفها تلقائياً عبر منصة Hash Hunt. نكون وسيلة وجسر مباشر لتوصيل سيرتك الذاتية لشركات ومؤسسات كبرى متعاقدين معاها تبحث عن مهارات وتخصصات محددة لوظائف مستهدفة.'
+                : 'When you create & activate your resume through us, it is automatically uploaded to Hash Hunt. We act as an active bridge connecting your CV directly to our contracted companies looking for targeted skills.'}
+            </p>
+          </div>
+
+          <div className="shrink-0 w-full md:w-auto flex flex-col gap-2">
+            <div className="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/15 text-center space-y-1">
+              <span className="text-2xl font-black text-[#FF4D2D] block">2 في 1</span>
+              <span className="text-xs font-bold text-slate-200 block">
+                {isAr ? 'سيرة ATS + توصيل للشركات' : 'ATS Resume + Job Referral'}
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Pricing Cards Grid */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto items-stretch">
         {/* Single Plan Card */}
@@ -136,6 +182,19 @@ export const PricingPage: React.FC = () => {
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               {t.planSingleDesc}
             </p>
+
+            {/* Hash Hunt Value Feature Highlight Box */}
+            <div className="p-3.5 rounded-2xl bg-orange-50/80 border border-orange-200/90 text-xs text-[#001639] space-y-1">
+              <div className="flex items-center gap-1.5 font-black text-[#FF4D2D]">
+                <Sparkles className="w-4 h-4 shrink-0" />
+                <span>{isAr ? 'شامل الربط والرفع على Hash Hunt 🎯' : 'Includes Hash Hunt Direct Referral 🎯'}</span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-slate-600 font-medium">
+                {isAr
+                  ? 'رفع وتوجيه تلقائي لسيرتك الذاتية لشركات توظيف متعاقدة تبحث عن CVs معينة لوظائف متخصصة.'
+                  : 'Automatic indexing & referral connecting your resume directly with companies hiring for specialized roles.'}
+              </p>
+            </div>
 
             <div className="border-t border-slate-100 pt-5 space-y-3 text-xs sm:text-sm text-slate-700">
               <div className="flex items-start gap-2.5">
