@@ -7,7 +7,7 @@ import { useResumeStore } from '../../store/useResumeStore';
 export const GlobalUndoToast: React.FC = () => {
   const { currentToast, dismissUndoToast, triggerUndo } = useUndoToastStore();
   const { settings } = useResumeStore();
-  const isAr = settings.language === 'ar';
+  const isAr = (settings?.language || 'ar') === 'ar';
   const [progress, setProgress] = useState(100);
 
   useEffect(() => {

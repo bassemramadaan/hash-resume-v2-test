@@ -24,6 +24,15 @@ export const ARABIC_FONTS: FontOption[] = [
     descriptionEn: 'Clean, elegant and highly readable modern Arabic sans',
   },
   {
+    id: 'Cairo',
+    nameAr: 'كايرو (Cairo)',
+    nameEn: 'Cairo (Modern Geometric)',
+    fontFamily: "'Cairo', 'Tajawal', system-ui, sans-serif",
+    category: 'sans',
+    descriptionAr: 'خط هندسي عصري وجريء وواضح في الطباعة',
+    descriptionEn: 'Modern, punchy geometric Arabic sans',
+  },
+  {
     id: 'IBM Plex Sans Arabic',
     nameAr: 'آي بي إم بليكس (IBM Plex Sans Arabic)',
     nameEn: 'IBM Plex Sans Arabic (Corporate)',
@@ -33,13 +42,22 @@ export const ARABIC_FONTS: FontOption[] = [
     descriptionEn: 'Corporate, high-precision technical sans',
   },
   {
-    id: 'Cairo',
-    nameAr: 'كايرو (Cairo)',
-    nameEn: 'Cairo (Modern Geometric)',
-    fontFamily: "'Cairo', 'Tajawal', system-ui, sans-serif",
+    id: 'Readex Pro',
+    nameAr: 'ريديكس برو (Readex Pro)',
+    nameEn: 'Readex Pro (Ultra Clear Body)',
+    fontFamily: "'Readex Pro', 'Tajawal', system-ui, sans-serif",
     category: 'sans',
-    descriptionAr: 'خط هندسي عصري وجريء وواضح في الطباعة',
-    descriptionEn: 'Modern, punchy geometric Arabic sans',
+    descriptionAr: 'فائق الوضوح ومريح جداً للعين أثناء قراءة الفقرات الطويلة',
+    descriptionEn: 'Ultra-clear typography optimized for paragraphs and body text',
+  },
+  {
+    id: 'Noto Sans Arabic',
+    nameAr: 'نوتو سانس (Noto Sans Arabic)',
+    nameEn: 'Noto Sans Arabic (Universal)',
+    fontFamily: "'Noto Sans Arabic', 'Tajawal', system-ui, sans-serif",
+    category: 'sans',
+    descriptionAr: 'خط عالمي موحد متزن للغاية ومتوافق مع جميع الأنظمة',
+    descriptionEn: 'Universal balanced Arabic sans for global ATS compatibility',
   },
   {
     id: 'Almarai',
@@ -63,6 +81,15 @@ export const ARABIC_FONTS: FontOption[] = [
 
 export const ENGLISH_FONTS: FontOption[] = [
   {
+    id: 'Plus Jakarta Sans',
+    nameAr: 'بلس جاكارتا (Plus Jakarta Sans)',
+    nameEn: 'Plus Jakarta Sans (Modern Executive)',
+    fontFamily: "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif",
+    category: 'sans',
+    descriptionAr: 'خط عصري فاخر يعكس القيادة والحداثة في كبرى الشركات العالمية',
+    descriptionEn: 'Premium modern corporate sans for leadership & tech roles',
+  },
+  {
     id: 'Inter',
     nameAr: 'إنتر (Inter)',
     nameEn: 'Inter (Modern Standard)',
@@ -79,6 +106,15 @@ export const ENGLISH_FONTS: FontOption[] = [
     category: 'sans',
     descriptionAr: 'خط تقني واضح للمهندسين والمطورين والتقنيين',
     descriptionEn: 'Technical and structured sans for STEM and engineering',
+  },
+  {
+    id: 'Calibri',
+    nameAr: 'كاليبرا (Calibri / Arial)',
+    nameEn: 'Calibri / Arial (Corporate Standard)',
+    fontFamily: "Calibri, Arial, 'Helvetica Neue', sans-serif",
+    category: 'sans',
+    descriptionAr: 'الخط القياسي الكلاسيكي الأكثر انتشاراً في السير الذاتية بالشركات',
+    descriptionEn: 'Classic corporate standard font used widely across industries',
   },
   {
     id: 'Georgia',

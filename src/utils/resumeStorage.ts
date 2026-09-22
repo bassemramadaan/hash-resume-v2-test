@@ -13,6 +13,38 @@ let pendingResumeData: ResumeData | null = null;
 let saveDebounceTimer: ReturnType<typeof setTimeout> | null = null;
 let isLifecycleInitialized = false;
 
+// In-memory fallback if localStorage is blocked (e.g. cross-origin iframe security restrictions)
+const memoryStorage: Record<string, string> = {};
+
+function safeGetItem(key: string): string | null {
+  try {
+    if (typeof window !== 'undefined') {
+      const storage = window.localStorage;
+      if (storage) {
+        const val = storage.getItem(key);
+        if (val !== null) return val;
+      }
+    }
+  } catch {
+    // Storage access denied
+  }
+  return memoryStorage[key] || null;
+}
+
+function safeSetItem(key: string, value: string): void {
+  memoryStorage[key] = value;
+  try {
+    if (typeof window !== 'undefined') {
+      const storage = window.localStorage;
+      if (storage) {
+        storage.setItem(key, value);
+      }
+    }
+  } catch {
+    // Storage access denied
+  }
+}
+
 /**
  * Checks whether an object structure resembles valid ResumeData
  */
@@ -34,43 +66,41 @@ export function isValidResumeStructure(obj: any): obj is ResumeData {
  */
 export function loadSavedResume(fallback: ResumeData): { data: ResumeData; loadedFromStorage: boolean } {
   try {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      const savedRaw = localStorage.getItem(LOCAL_STORAGE_KEY_RESUME);
-      if (savedRaw && savedRaw.trim()) {
+    const savedRaw = safeGetItem(LOCAL_STORAGE_KEY_RESUME);
+    if (savedRaw && savedRaw.trim()) {
+      try {
+        const parsed = JSON.parse(savedRaw);
+        if (parsed && typeof parsed === 'object' && parsed.personalInfo) {
+          // Ensure array fields exist even if partially structured
+          const normalized: ResumeData = {
+            personalInfo: {
+              fullName: parsed.personalInfo?.fullName || '',
+              jobTitle: parsed.personalInfo?.jobTitle || '',
+              email: parsed.personalInfo?.email || '',
+              phone: parsed.personalInfo?.phone || '',
+              location: parsed.personalInfo?.location || '',
+              linkedin: parsed.personalInfo?.linkedin || '',
+              github: parsed.personalInfo?.github || '',
+              website: parsed.personalInfo?.website || '',
+              photoUrl: parsed.personalInfo?.photoUrl || '',
+              summary: parsed.personalInfo?.summary || '',
+            },
+            experiences: Array.isArray(parsed.experiences) ? parsed.experiences : [],
+            education: Array.isArray(parsed.education) ? parsed.education : [],
+            skills: Array.isArray(parsed.skills) ? parsed.skills : [],
+            projects: Array.isArray(parsed.projects) ? parsed.projects : [],
+            certifications: Array.isArray(parsed.certifications) ? parsed.certifications : [],
+            languages: Array.isArray(parsed.languages) ? parsed.languages : [],
+            customSections: Array.isArray(parsed.customSections) ? parsed.customSections : [],
+          };
+          return { data: normalized, loadedFromStorage: true };
+        }
+      } catch (parseErr) {
+        console.error('[ResumeStorage] Corrupt JSON detected. Creating backup...', parseErr);
         try {
-          const parsed = JSON.parse(savedRaw);
-          if (parsed && typeof parsed === 'object' && parsed.personalInfo) {
-            // Ensure array fields exist even if partially structured
-            const normalized: ResumeData = {
-              personalInfo: {
-                fullName: parsed.personalInfo?.fullName || '',
-                jobTitle: parsed.personalInfo?.jobTitle || '',
-                email: parsed.personalInfo?.email || '',
-                phone: parsed.personalInfo?.phone || '',
-                location: parsed.personalInfo?.location || '',
-                linkedin: parsed.personalInfo?.linkedin || '',
-                github: parsed.personalInfo?.github || '',
-                website: parsed.personalInfo?.website || '',
-                photoUrl: parsed.personalInfo?.photoUrl || '',
-                summary: parsed.personalInfo?.summary || '',
-              },
-              experiences: Array.isArray(parsed.experiences) ? parsed.experiences : [],
-              education: Array.isArray(parsed.education) ? parsed.education : [],
-              skills: Array.isArray(parsed.skills) ? parsed.skills : [],
-              projects: Array.isArray(parsed.projects) ? parsed.projects : [],
-              certifications: Array.isArray(parsed.certifications) ? parsed.certifications : [],
-              languages: Array.isArray(parsed.languages) ? parsed.languages : [],
-              customSections: Array.isArray(parsed.customSections) ? parsed.customSections : [],
-            };
-            return { data: normalized, loadedFromStorage: true };
-          }
-        } catch (parseErr) {
-          console.error('[ResumeStorage] Corrupt JSON detected. Creating backup...', parseErr);
-          try {
-            localStorage.setItem(LOCAL_STORAGE_KEY_CORRUPT_BACKUP, savedRaw);
-          } catch {
-            // storage quota fallback
-          }
+          safeSetItem(LOCAL_STORAGE_KEY_CORRUPT_BACKUP, savedRaw);
+        } catch {
+          // storage quota fallback
         }
       }
     }
@@ -84,9 +114,8 @@ export function loadSavedResume(fallback: ResumeData): { data: ResumeData; loade
  * Saves ResumeData immediately to localStorage
  */
 export function saveResumeDirectly(data: ResumeData): void {
-  if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
   try {
-    localStorage.setItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(data));
+    safeSetItem(LOCAL_STORAGE_KEY_RESUME, JSON.stringify(data));
     pendingResumeData = null;
     if (saveDebounceTimer) {
       clearTimeout(saveDebounceTimer);
@@ -147,10 +176,21 @@ export function initAutosaveLifecycleListeners(): void {
  */
 export function loadSavedSettings(defaultSettings: ResumeSettings): ResumeSettings {
   try {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY_SETTINGS);
-      if (saved) {
-        return JSON.parse(saved);
+    const saved = safeGetItem(LOCAL_STORAGE_KEY_SETTINGS);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed && typeof parsed === 'object') {
+        const validLanguages = ['ar', 'en', 'fr'];
+        const validatedLanguage = validLanguages.includes(parsed.language)
+          ? parsed.language
+          : defaultSettings.language;
+
+        return {
+          ...defaultSettings,
+          ...parsed,
+          language: validatedLanguage,
+          documentDirection: parsed.documentDirection || (validatedLanguage === 'ar' ? 'rtl' : 'ltr'),
+        };
       }
     }
   } catch (e) {
@@ -163,9 +203,8 @@ export function loadSavedSettings(defaultSettings: ResumeSettings): ResumeSettin
  * Saves settings to localStorage
  */
 export function saveSettingsDirectly(settings: ResumeSettings): void {
-  if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
   try {
-    localStorage.setItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(settings));
+    safeSetItem(LOCAL_STORAGE_KEY_SETTINGS, JSON.stringify(settings));
   } catch (e) {
     console.error('[ResumeStorage] Failed to save settings', e);
   }
@@ -176,25 +215,27 @@ export function saveSettingsDirectly(settings: ResumeSettings): void {
  */
 export function loadSavedActivation(initialResume: ResumeData, defaultActivation: ActivationState): ActivationState {
   try {
-    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY_ACTIVATION);
-      if (saved) {
-        const parsed: ActivationState = JSON.parse(saved);
-        if (parsed && typeof parsed === 'object') {
-          // If stored state claims to be locked, validate it against initialResume
-          if (parsed.isResumeLocked) {
-            const { isValid, fingerprint } = validateResumeLockState(parsed, initialResume);
-            if (!isValid) {
-              parsed.isResumeLocked = false;
-              parsed.lockedResumeFingerprint = null;
-              clearDownloadCompletionFlags();
-              localStorage.setItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(parsed));
-            } else {
-              parsed.lockedResumeFingerprint = fingerprint;
-            }
+    const saved = safeGetItem(LOCAL_STORAGE_KEY_ACTIVATION);
+    if (saved) {
+      const parsed: ActivationState = JSON.parse(saved);
+      if (parsed && typeof parsed === 'object') {
+        const merged: ActivationState = {
+          ...defaultActivation,
+          ...parsed,
+        };
+        // If stored state claims to be locked, validate it against initialResume
+        if (merged.isResumeLocked) {
+          const { isValid, fingerprint } = validateResumeLockState(merged, initialResume);
+          if (!isValid) {
+            merged.isResumeLocked = false;
+            merged.lockedResumeFingerprint = null;
+            clearDownloadCompletionFlags();
+            safeSetItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(merged));
+          } else {
+            merged.lockedResumeFingerprint = fingerprint;
           }
-          return parsed;
         }
+        return merged;
       }
     }
   } catch (e) {
@@ -207,9 +248,8 @@ export function loadSavedActivation(initialResume: ResumeData, defaultActivation
  * Saves activation state to localStorage
  */
 export function saveActivationDirectly(activation: ActivationState): void {
-  if (typeof window === 'undefined' || typeof localStorage === 'undefined') return;
   try {
-    localStorage.setItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(activation));
+    safeSetItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(activation));
   } catch (e) {
     console.error('[ResumeStorage] Failed to save activation', e);
   }

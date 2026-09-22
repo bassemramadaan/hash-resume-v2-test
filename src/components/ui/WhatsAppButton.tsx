@@ -6,7 +6,7 @@ import { MessageCircle } from 'lucide-react';
 export const WhatsAppButton: React.FC = () => {
   const { settings, isActivationModalOpen } = useResumeStore();
   const location = useLocation();
-  const isAr = settings.language === 'ar';
+  const isAr = (settings?.language || 'ar') === 'ar';
   const isLandingPage = location.pathname === '/';
   const isBuilderPage = location.pathname.startsWith('/builder');
 

@@ -258,6 +258,7 @@ export function normalizeJsonResume(jsonObj: any): ResumeData {
 
 /**
  * Extracts raw lines from PDF ArrayBuffer via pdfjs-dist
+ * Supports multi-column layouts, sorts by X/Y coordinates, and normalizes Arabic presentation forms
  */
 async function extractTextFromPdf(arrayBuffer: ArrayBuffer, language: Language): Promise<string[]> {
   const isAr = language === 'ar';
@@ -277,41 +278,125 @@ async function extractTextFromPdf(arrayBuffer: ArrayBuffer, language: Language):
     throw new Error(isAr ? 'تعذر فتح ملف الـ PDF. يرجى التأكد من سلامة الملف.' : 'Could not open PDF file. Please ensure the file is valid.');
   }
 
-  const lines: string[] = [];
+  interface PlacedItem {
+    str: string;
+    x: number;
+    y: number;
+  }
+
+  const allLines: string[] = [];
   let totalRawChars = 0;
 
   for (let i = 1; i <= pdfDoc.numPages; i++) {
     const page = await pdfDoc.getPage(i);
     const textContent = await page.getTextContent();
-    const items = textContent.items as Array<{ str: string; transform: number[] }>;
+    const rawItems = (textContent.items || []) as Array<{ str: string; transform: number[] }>;
 
-    if (!items || items.length === 0) continue;
+    if (!rawItems || rawItems.length === 0) continue;
 
-    // Group items by vertical position (Y-coord) to reconstruct lines accurately
-    const lineMap: { y: number; text: string }[] = [];
+    const items: PlacedItem[] = [];
+    for (const it of rawItems) {
+      if (!it.str) continue;
+      // Normalize NFKC converts Arabic presentation forms (e.g. \uFE80) into standard Unicode Arabic letters
+      const normalized = it.str.normalize('NFKC').trim();
+      if (!normalized) continue;
+      totalRawChars += normalized.length;
 
+      items.push({
+        str: normalized,
+        x: Math.round(it.transform?.[4] || 0),
+        y: Math.round(it.transform?.[5] || 0),
+      });
+    }
+
+    if (items.length === 0) continue;
+
+    // Detect if page has two distinct columns (sidebar vs main content)
+    let minX = Infinity;
+    let maxX = -Infinity;
     for (const item of items) {
-      if (!item.str) continue;
-      totalRawChars += item.str.trim().length;
+      if (item.x < minX) minX = item.x;
+      if (item.x > maxX) maxX = item.x;
+    }
 
-      const y = Math.round(item.transform[5]);
-      const existingLine = lineMap.find((l) => Math.abs(l.y - y) <= 4);
-      if (existingLine) {
-        existingLine.text += (existingLine.text ? ' ' : '') + item.str.trim();
-      } else {
-        lineMap.push({ y, text: item.str.trim() });
+    const pageWidth = maxX - minX;
+    let columnSplitX: number | null = null;
+
+    if (pageWidth > 260 && items.length > 12) {
+      const candidateLeft = minX + pageWidth * 0.22;
+      const candidateRight = minX + pageWidth * 0.60;
+
+      // Check unique X starting positions for a gutter
+      const sortedX = [...new Set(items.map((it) => it.x))].sort((a, b) => a - b);
+      let bestGap = 0;
+      let bestSplit = 0;
+
+      for (let j = 0; j < sortedX.length - 1; j++) {
+        const x1 = sortedX[j];
+        const x2 = sortedX[j + 1];
+        if (x1 >= candidateLeft && x2 <= candidateRight) {
+          const gap = x2 - x1;
+          if (gap > bestGap && gap >= 18) {
+            bestGap = gap;
+            bestSplit = (x1 + x2) / 2;
+          }
+        }
+      }
+
+      if (bestGap >= 18) {
+        const leftCount = items.filter((it) => it.x < bestSplit).length;
+        const rightCount = items.filter((it) => it.x >= bestSplit).length;
+        if (leftCount >= 4 && rightCount >= 4) {
+          columnSplitX = bestSplit;
+        }
       }
     }
 
-    // Sort descending by Y (top to bottom of page)
-    lineMap.sort((a, b) => b.y - a.y);
-    for (const l of lineMap) {
-      const clean = l.text.trim();
-      if (clean) lines.push(clean);
+    const extractLinesFromItems = (itemList: PlacedItem[]) => {
+      // Group items by vertical position with 4px tolerance
+      const lineMap: { y: number; items: PlacedItem[] }[] = [];
+      for (const item of itemList) {
+        const existing = lineMap.find((l) => Math.abs(l.y - item.y) <= 4);
+        if (existing) {
+          existing.items.push(item);
+        } else {
+          lineMap.push({ y: item.y, items: [item] });
+        }
+      }
+
+      // Sort lines top to bottom (Y descending in PDF coordinate space)
+      lineMap.sort((a, b) => b.y - a.y);
+
+      const pageLines: string[] = [];
+      for (const line of lineMap) {
+        // Sort items left-to-right on the same line
+        line.items.sort((a, b) => a.x - b.x);
+        const joined = line.items.map((it) => it.str).join(' ').trim();
+        if (joined) {
+          pageLines.push(joined);
+        }
+      }
+      return pageLines;
+    };
+
+    if (columnSplitX !== null) {
+      // Multi-column page: extract columns separately to prevent sidebar text interleaving with main body
+      const leftItems = items.filter((it) => it.x < columnSplitX);
+      const rightItems = items.filter((it) => it.x >= columnSplitX);
+
+      const leftLines = extractLinesFromItems(leftItems);
+      const rightLines = extractLinesFromItems(rightItems);
+
+      // In English/standard CVs, sidebar is often on the left, but header name can be on top
+      allLines.push(...leftLines);
+      allLines.push(...rightLines);
+    } else {
+      // Single-column flow
+      allLines.push(...extractLinesFromItems(items));
     }
   }
 
-  if (totalRawChars < 30 || lines.length === 0) {
+  if (totalRawChars < 20 || allLines.length === 0) {
     throw new Error(
       isAr
         ? 'يبدو أن ملف PDF هذا عبارة عن صورة ممسوحة ضوئياً. يرجى رفع ملف نصي أو إدخال البيانات يدوياً.'
@@ -319,7 +404,80 @@ async function extractTextFromPdf(arrayBuffer: ArrayBuffer, language: Language):
     );
   }
 
-  return lines;
+  return allLines;
+}
+
+/**
+ * Robust candidate name detector from lines & email address
+ */
+function detectCandidateName(lines: string[], email?: string, maxSearchLines: number = 8): string {
+  // 1. Explicit name line: Name: Bassem Ramadan or الاسم: باسم رمضان
+  for (const line of lines.slice(0, Math.min(15, lines.length))) {
+    const m = line.match(/^(?:Name|Full Name|الاسم|اسم المرشح)\s*[:\-]\s*(.+)$/i);
+    if (m && m[1].trim()) return m[1].trim();
+  }
+
+  // Action verbs or resume buzzwords to reject as names
+  const nonNameWords = /^(?:building|developing|developed|managing|managed|created|creating|implemented|designing|designed|working|worked|handling|handled|spearheaded|leading|responsible|seeking|passionate|motivated|experienced|تطوير|بناء|تصميم|إدارة|تنفيذ|خبرة|العمل|مسؤول|باحث)/i;
+
+  // 2. Look in header lines (before first section header) for a clean name candidate
+  const searchLimit = Math.min(maxSearchLines, lines.length);
+  for (const line of lines.slice(0, searchLimit)) {
+    const clean = line.replace(/^[•\-*–\d.]\s+/, '').trim();
+    if (clean.includes('@') || clean.includes('http') || clean.includes('.com') || clean.includes('www.')) continue;
+    if (/\d/.test(clean)) continue;
+    if (clean.length < 3 || clean.length > 35) continue;
+    
+    // Skip common headings, titles, prepositions or locations
+    if (/summary|experience|education|skills|profile|contact|cairo|egypt|giza|riyadh|dubai|القاهرة|مصر|الرياض/i.test(clean)) continue;
+    if (/(?:engineer|developer|designer|manager|architect|specialist|consultant|analyst|officer|lead|frontend|backend|fullstack|software|devops|مطور|مهندس|مصمم|محاسب|مدير|أخصائي|مستشار)/i.test(clean)) continue;
+    if (/\b(?:at|in|with|for|and|to|from)\b/i.test(clean)) continue;
+    if (nonNameWords.test(clean)) continue;
+
+    const words = clean.split(/\s+/);
+    if (words.length >= 2 && words.length <= 4) {
+      return clean;
+    }
+  }
+
+  // 3. Fallback to extracting from email username: bassemramadaan17@gmail.com -> "Bassem Ramadaan"
+  if (email) {
+    const rawUser = email.split('@')[0];
+    const username = rawUser.replace(/\d+/g, '').replace(/[._-]+/g, ' ').trim();
+    if (username.length >= 3) {
+      return username
+        .split(' ')
+        .filter(Boolean)
+        .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+        .join(' ');
+    }
+  }
+
+  return '';
+}
+
+/**
+ * Robust job title detector from CV lines
+ */
+function detectCandidateJobTitle(lines: string[], fullName: string, maxSearchLines: number = 8): string {
+  const titleKeywords = [
+    'developer', 'engineer', 'designer', 'manager', 'lead', 'architect',
+    'specialist', 'consultant', 'analyst', 'officer', 'coordinator', 'director',
+    'frontend', 'backend', 'fullstack', 'full stack', 'software', 'devops',
+    'مطور', 'مهندس', 'مصمم', 'محاسب', 'مدير', 'أخصائي', 'مستشار', 'محلل', 'مسؤول', 'مبرمج'
+  ];
+
+  const searchLimit = Math.min(maxSearchLines, lines.length);
+  for (const line of lines.slice(0, searchLimit)) {
+    const clean = line.trim();
+    if (clean === fullName || clean.includes('@') || clean.includes('http')) continue;
+    if (clean.length > 50) continue;
+    const lower = clean.toLowerCase();
+    if (titleKeywords.some((kw) => lower.includes(kw))) {
+      return clean.replace(/^(?:Title|Job Title|المسمى الوظيفي|الوظيفة)\s*[:\-]\s*/i, '').trim();
+    }
+  }
+  return '';
 }
 
 /**
@@ -361,79 +519,70 @@ export function parseCvTextLines(lines: string[]): ResumeData {
   }> = [
     {
       type: 'summary',
-      regex: /^(?:النبذة\s+الشخصية|الملخص\s+المهني|الملخص|الهدف\s+المهني|نبذة\s+عني|نبذة\s+شخصية|Professional\s+Summary|Executive\s+Summary|Summary|Profile|About\s+Me|Objective)(?:[:\-\s]|$)/i,
+      regex: /(?:النبذة\s+الشخصية|الملخص\s+المهني|الملخص|الهدف\s+المهني|نبذة\s+عني|نبذة\s+شخصية|نبذة|سيرة\s+ذاتية|عني|المقدمة|professional\s+summary|executive\s+summary|summary|profile|about\s+me|objective|career\s+objective|overview|bio)/i,
     },
     {
       type: 'experience',
-      regex: /^(?:الخبرات\s+المهنية|الخبرة\s+المهنية|الخبرات\s+السابقة|الخبرات|سجل\s+العمل|التاريخ\s+المهني|الخبرة|Work\s+Experience|Professional\s+Experience|Experience|Employment\s+History|Work\s+History)(?:[:\-\s]|$)/i,
+      regex: /(?:الخبرات\s+المهنية|الخبرات\s+العملية|الخبرة\s+المهنية|الخبرة\s+العملية|الخبرات\s+السابقة|الخبرات|الخبرة|سجل\s+العمل|التاريخ\s+المهني|التاريخ\s+الوظيفي|الوظائف\s+السابقة|المناصب\s+السابقة|العمل|work\s+experience|professional\s+experience|experience|employment\s+history|work\s+history|career\s+history)/i,
     },
     {
       type: 'education',
-      regex: /^(?:المؤهلات\s+التعليمية|المؤهل\s+الدراسي|التعليم|الشهادات\s+الأكاديمية|الدرجات\s+العلمية|المؤهل\s+العلمي|Education|Academic\s+Background|Academic\s+History|Qualifications)(?:[:\-\s]|$)/i,
+      regex: /(?:المؤهلات\s+التعليمية|المؤهلات\s+العلمية|المؤهل\s+الدراسي|التعليم|الشهادات\s+الأكاديمية|الدرجات\s+العلمية|المؤهل\s+العلمي|الدراسة|التحصيل\s+العلمي|education|academic\s+background|academic\s+history|qualifications|educational\s+background|degrees)/i,
     },
     {
       type: 'skills',
-      regex: /^(?:المهارات\s+التقنية|المهارات\s+المهنية|المهارات|الكفاءات|القدرات|المهارات\s+والخبرات|Skills|Technical\s+Skills|Key\s+Skills|Core\s+Competencies|Expertise|Proficiencies)(?:[:\-\s]|$)/i,
+      regex: /(?:المهارات\s+التقنية|المهارات\s+المهنية|المهارات\s+الشخصية|المهارات|الكفاءات|القدرات|المهارات\s+والخبرات|أبرز\s+المهارات|الأدوات|skills|technical\s+skills|key\s+skills|core\s+competencies|expertise|proficiencies|tools\s*(&|and)?\s*technologies|technologies)/i,
     },
     {
       type: 'projects',
-      regex: /^(?:المشاريع\s+السابقة|أبرز\s+المشاريع|المشاريع|الأعمال|المشاريع\s+الشخصية|Projects|Key\s+Projects|Personal\s+Projects|Notable\s+Projects)(?:[:\-\s]|$)/i,
+      regex: /(?:المشاريع\s+السابقة|أبرز\s+المشاريع|المشاريع\s+الشخصية|المشاريع|الأعمال|أعمالي|projects|key\s+projects|personal\s+projects|notable\s+projects|portfolio)/i,
     },
     {
       type: 'certifications',
-      regex: /^(?:الشهادات\s+المهنية|الدورات\s+التدريبية|الشهادات|التراخيص|الدورات|Certifications|Certificates|Courses|Licenses|Accreditations)(?:[:\-\s]|$)/i,
+      regex: /(?:الشهادات\s+المهنية|الدورات\s+التدريبية|الشهادات|التراخيص|الدورات|الاعتمادات|certifications|certificates|courses|licenses|training)/i,
     },
     {
       type: 'languages',
-      regex: /^(?:اللغات\s+المتقنة|اللغات|Languages|Language\s+Proficiency)(?:[:\-\s]|$)/i,
+      regex: /(?:اللغات\s+المتقنة|اللغات|languages|language\s+proficiency|language\s+skills)/i,
     },
   ];
 
   const detectedHeaders: SectionHeader[] = [];
 
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    // Section headers are usually short (< 40 chars)
-    if (line.length > 45) continue;
+    const rawLine = lines[i].trim();
+    if (!rawLine || rawLine.length > 50) continue;
+
+    // Clean leading bullets, numbers, emojis, dashes, colons
+    const cleanLine = rawLine
+      .replace(/^[\p{P}\p{S}\d\s]+|[\p{P}\p{S}\s]+$/gu, '')
+      .trim();
+
+    if (!cleanLine || cleanLine.length > 40) continue;
 
     for (const pat of SECTION_PATTERNS) {
-      if (pat.regex.test(line)) {
+      if (pat.regex.test(cleanLine)) {
         detectedHeaders.push({
           type: pat.type,
           lineIndex: i,
-          title: line,
+          title: cleanLine,
         });
         break;
       }
     }
   }
 
-  // 3. Extract Name & Job Title from top lines (before first section)
-  const firstHeaderIndex = detectedHeaders.length > 0 ? detectedHeaders[0].lineIndex : Math.min(6, lines.length);
-  const headerLines = lines.slice(0, firstHeaderIndex).filter((l) => {
-    // Filter out email, phone, links
-    return (
-      !l.includes('@') &&
-      !l.match(/linkedin\.com/i) &&
-      !l.match(/github\.com/i) &&
-      !l.match(/(?:\+?\d{1,4}[-.\s]?)?\(?\d{2,4}\)?[-.\s]?\d{3,4}/)
-    );
-  });
-
-  if (headerLines.length > 0) {
-    // First valid clean line is usually Name
-    resume.personalInfo.fullName = headerLines[0].replace(/^(Name|الاسم|Full Name)\s*[:\-]/i, '').trim();
-    if (headerLines.length > 1) {
-      resume.personalInfo.jobTitle = headerLines[1].replace(/^(Title|المسمى الوظيفي|Position)\s*[:\-]/i, '').trim();
-    }
-  }
+  // 3. Extract Name & Job Title (strictly search before first section header)
+  const firstHeaderIndex = detectedHeaders.length > 0 ? detectedHeaders[0].lineIndex : 8;
+  resume.personalInfo.fullName = detectCandidateName(lines, resume.personalInfo.email, firstHeaderIndex);
+  resume.personalInfo.jobTitle = detectCandidateJobTitle(lines, resume.personalInfo.fullName, firstHeaderIndex);
 
   // Look for location keywords
   const locationPatterns = [
     /Cairo|Alexandria|Giza|Riyadh|Jeddah|Dammam|Dubai|Abu Dhabi|Amman|Beirut|London|Paris|New York/i,
     /القاهرة|الإسكندرية|الجيزة|الرياض|جدة|الدمام|دبي|أبوظبي|عمان|بيروت|مصر|السعودية|الإمارات/,
   ];
-  for (let i = 0; i < Math.min(8, lines.length); i++) {
+  for (let i = 0; i < Math.min(10, lines.length); i++) {
     for (const lp of locationPatterns) {
       if (lp.test(lines[i])) {
         resume.personalInfo.location = lines[i].trim();
@@ -443,7 +592,7 @@ export function parseCvTextLines(lines: string[]): ResumeData {
     if (resume.personalInfo.location) break;
   }
 
-  // 4. Parse Sections Content
+  // 4. Parse Sections Content if headers detected
   for (let i = 0; i < detectedHeaders.length; i++) {
     const current = detectedHeaders[i];
     const next = detectedHeaders[i + 1];
@@ -475,12 +624,9 @@ export function parseCvTextLines(lines: string[]): ResumeData {
         for (const line of sectionLines) {
           const isBullet = /^[•\-*–\d.]\s+/.test(line);
           const cleanLine = line.replace(/^[•\-*–\d.]\s+/, '').trim();
-
-          // Check if line looks like a job header (Company / Title or dates)
           const hasDate = /(?:\b(?:19|20)\d{2}\b|Present|Current|الآن|حتى الآن)/i.test(line);
 
           if (!isBullet && (hasDate || !currentExp || currentExp.bulletPoints.length > 0)) {
-            // Start a new experience item
             if (currentExp) {
               resume.experiences.push(currentExp);
             }
@@ -496,7 +642,7 @@ export function parseCvTextLines(lines: string[]): ResumeData {
               current: /Present|Current|الآن/i.test(line),
               bulletPoints: [],
             };
-          } else if (currentExp) {
+          } else if (currentExp && cleanLine) {
             currentExp.bulletPoints.push(cleanLine);
           }
         }
@@ -524,7 +670,7 @@ export function parseCvTextLines(lines: string[]): ResumeData {
               startDate: '2017',
               endDate: '2021',
             };
-          } else if (currentEdu && !currentEdu.description) {
+          } else if (currentEdu && !currentEdu.description && line.trim()) {
             currentEdu.description = line.trim();
           }
         }
@@ -594,12 +740,71 @@ export function parseCvTextLines(lines: string[]): ResumeData {
     }
   }
 
+  // 5. Fallback Heuristics: if section detection missed items due to stylized PDF formatting
+  if (resume.skills.length === 0) {
+    const commonSkills = [
+      'JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'Java', 'HTML', 'CSS',
+      'SQL', 'Git', 'Docker', 'AWS', 'Tailwind', 'MongoDB', 'Next.js', 'Excel',
+      'Figma', 'UI/UX', 'Project Management', 'Communication', 'Problem Solving',
+      'إدارة المشاريع', 'التواصل الفعال', 'حل المشكلات', 'العمل الجماعي'
+    ];
+    for (const skill of commonSkills) {
+      if (new RegExp(`\\b${skill}\\b`, 'i').test(allText)) {
+        resume.skills.push({
+          id: generateId(),
+          name: skill,
+          category: 'technical',
+        });
+      }
+    }
+  }
+
+  if (resume.experiences.length === 0) {
+    // Scan for lines with date ranges (e.g. 2021 - 2024 or 2020 - Present)
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const dateMatch = line.match(/\b(20\d{2}|19\d{2})\s*(?:[-–]|to|إلى|حتى)\s*(20\d{2}|Present|Current|الآن|حتى الآن)\b/i);
+      if (dateMatch) {
+        const posLine = i > 0 ? lines[i - 1] : line;
+        resume.experiences.push({
+          id: generateId(),
+          position: posLine.slice(0, 50).trim(),
+          company: line.replace(dateMatch[0], '').trim() || 'Company',
+          location: '',
+          startDate: dateMatch[1],
+          endDate: dateMatch[2],
+          current: /Present|Current|الآن/i.test(dateMatch[2]),
+          bulletPoints: lines.slice(i + 1, i + 3).map((b) => b.replace(/^[•\-*–\d.]\s+/, '').trim()).filter(Boolean),
+        });
+        if (resume.experiences.length >= 3) break;
+      }
+    }
+  }
+
+  if (resume.education.length === 0) {
+    // Scan for degree keywords
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (/(?:Bachelor|Master|PhD|BSc|MSc|University|College|بكالوريوس|ماجستير|دبلوم|جامعة|كلية)/i.test(line)) {
+        resume.education.push({
+          id: generateId(),
+          degree: line.slice(0, 60).trim(),
+          institution: i + 1 < lines.length && lines[i + 1].length < 60 ? lines[i + 1].trim() : 'University',
+          fieldOfStudy: '',
+          startDate: '2018',
+          endDate: '2022',
+        });
+        break;
+      }
+    }
+  }
+
   return resume;
 }
 
 /**
  * Main client-side resume file parser (JSON & PDF)
- * Completely 100% in-browser, zero external API calls or tracking
+ * Uses AI for intelligent extraction with automatic resilient local fallback
  */
 export async function parseResumeFile(
   file: File,
@@ -659,6 +864,42 @@ export async function parseResumeFile(
     try {
       const arrayBuffer = await file.arrayBuffer();
       const extractedLines = await extractTextFromPdf(arrayBuffer, language);
+      const rawText = extractedLines.join('\n');
+
+      // Attempt AI Transformation First for maximum accuracy and ATS quality
+      if (rawText.length >= 25) {
+        try {
+          const res = await fetch('/api/ai/parse-and-transform', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rawText, language }),
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data?.success && data?.resumeData && !isResumeEmpty(data.resumeData)) {
+              const aiResume = data.resumeData as ResumeData;
+              return {
+                resumeData: aiResume,
+                summary: {
+                  hasPersonalInfo: Boolean(aiResume.personalInfo.fullName || aiResume.personalInfo.email),
+                  experienceCount: (aiResume.experiences || []).length,
+                  educationCount: (aiResume.education || []).length,
+                  skillCount: (aiResume.skills || []).length,
+                  projectCount: (aiResume.projects || []).length,
+                  certificationCount: (aiResume.certifications || []).length,
+                  languageCount: (aiResume.languages || []).length,
+                  detectedName: aiResume.personalInfo.fullName,
+                  detectedJobTitle: aiResume.personalInfo.jobTitle,
+                },
+              };
+            }
+          }
+        } catch (aiErr) {
+          console.warn('AI parser bypassed, using enhanced local parser:', aiErr);
+        }
+      }
+
+      // Enhanced resilient local rule-based parser fallback
       const resumeData = parseCvTextLines(extractedLines);
 
       if (isResumeEmpty(resumeData)) {
@@ -708,3 +949,51 @@ export async function parseResumeFile(
       : 'Please upload a PDF or JSON resume file.'
   );
 }
+
+/**
+ * Extracts all raw text from a PDF or Text file for AI processing
+ */
+export async function extractFileRawText(file: File, language: Language = 'ar'): Promise<string> {
+  const isAr = language === 'ar';
+  const fileName = file.name.toLowerCase();
+
+  if (file.size > 10 * 1024 * 1024) {
+    throw new Error(isAr ? 'يجب ألا يتجاوز حجم الملف 10 ميجابايت.' : 'File must be 10 MB or smaller.');
+  }
+
+  if (fileName.endsWith('.txt') || fileName.endsWith('.json') || file.type.includes('text')) {
+    return await file.text();
+  }
+
+  if (fileName.endsWith('.pdf') || file.type.includes('pdf')) {
+    const arrayBuffer = await file.arrayBuffer();
+    const lines = await extractTextFromPdf(arrayBuffer, language);
+    return lines.join('\n');
+  }
+
+  throw new Error(isAr ? 'يرجى رفع ملف بصيغة PDF أو TXT.' : 'Please upload a PDF or TXT file.');
+}
+
+/**
+ * Parses raw text directly into structured ATS ResumeData
+ */
+export function parseResumeText(text: string, language: Language = 'ar'): ParseResult {
+  const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
+  const resumeData = parseCvTextLines(lines);
+  return {
+    resumeData,
+    summary: {
+      hasPersonalInfo: Boolean(resumeData.personalInfo.fullName || resumeData.personalInfo.email),
+      experienceCount: resumeData.experiences.length,
+      educationCount: resumeData.education.length,
+      skillCount: resumeData.skills.length,
+      projectCount: resumeData.projects.length,
+      certificationCount: resumeData.certifications.length,
+      languageCount: resumeData.languages.length,
+      detectedName: resumeData.personalInfo.fullName,
+      detectedJobTitle: resumeData.personalInfo.jobTitle,
+    },
+  };
+}
+
+

@@ -49,18 +49,14 @@ export const AtsAnalyzerPanel: React.FC = () => {
   const [addedKeywords, setAddedKeywords] = useState<string[]>([]);
   const [addedAllSuccess, setAddedAllSuccess] = useState(false);
   const [fixedFlagIds, setFixedFlagIds] = useState<string[]>([]);
+  const [showEditJd, setShowEditJd] = useState(false);
   
-  // New local state to manage the sub-tabs inside ATS panel
-  const [activeScanTab, setActiveScanTab] = useState<'structure' | 'red_flags' | 'ai_match'>('structure');
+  // Local state to manage the sub-tabs inside ATS panel
+  const [activeScanTab, setActiveScanTab] = useState<'ai_match' | 'structure' | 'red_flags'>('ai_match');
 
   const t = getTranslation(settings.language);
   const isAr = settings.language === 'ar';
 
-  useEffect(() => {
-    if (!atsResult && !isAnalyzingAts) {
-      handleRunAtsCheck();
-    }
-  }, []);
   const redFlags = detectResumeRedFlags(resumeData);
   const criticalFlags = redFlags.filter((f) => f.severity === 'critical');
   const warningFlags = redFlags.filter((f) => f.severity === 'warning');
@@ -78,6 +74,7 @@ export const AtsAnalyzerPanel: React.FC = () => {
     setIsAnalyzingAts(true);
     setAddedKeywords([]);
     setAddedAllSuccess(false);
+    setShowEditJd(false);
     try {
       const data = await aiApi.atsAnalyze({
         resumeData,
@@ -210,39 +207,178 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
 
   const scoreTheme = atsResult ? getScoreTheme(atsResult.score) : null;
 
-  return (
-    <div className="space-y-5 text-slate-800 w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content" aria-live="polite">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3 border-slate-100">
-        <div>
-          <h2 className="text-base font-bold text-[#001639] flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-[#FF4D2D]" />
-            <span>{t.atsAnalyzerTitle}</span>
-          </h2>
-          <p className="text-xs text-slate-600 mt-0.5">{t.atsAnalyzerSub}</p>
+  // 1. INITIAL CALM STATE (No scan run yet)
+  if (!atsResult && !isAnalyzingAts) {
+    return (
+      <div className="space-y-4 sm:space-y-6 text-slate-900 w-full max-w-full">
+        <div className="p-4 sm:p-6 bg-white border-2 border-[#e8e5de] rounded-2xl sm:rounded-3xl space-y-4 sm:space-y-5 shadow-2xs">
+          <div className="flex items-center gap-3 sm:gap-3.5">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#FF4D2D]/10 text-[#FF4D2D] flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />
+            </div>
+            <div>
+              <h3 className="text-base sm:text-lg font-black text-[#001639] leading-tight">
+                {isAr ? 'فحص جاهزية ATS ومطابقة الوظيفة' : 'ATS Compatibility & Job Alignment Audit'}
+              </h3>
+              <p className="text-[11px] sm:text-xs text-[#7a8093] mt-0.5 leading-relaxed">
+                {isAr
+                  ? 'الصق نص الإعلان الوظيفي المستهدف لمطابقة الكلمات المفتاحية، أو ابدأ الفحص العام لهيكل السيرة.'
+                  : 'Paste the target job description to audit keyword density, or run a general structure scan.'}
+              </p>
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="ats-job-desc-input" className="block text-[11px] sm:text-xs font-bold text-[#12141a] mb-1.5 sm:mb-2">
+              {isAr ? 'نص الوصف الوظيفي (اختياري ولكن يُنصح به):' : 'Job Description text (optional but recommended):'}
+            </label>
+            <textarea
+              id="ats-job-desc-input"
+              rows={4}
+              value={targetJobDescription}
+              onChange={(e) => setTargetJobDescription(e.target.value)}
+              placeholder={
+                isAr
+                  ? 'مثال: مطلوب مهندس برمجيات يجيد React و TypeScript، ولديه خبرة في بناء الأنظمة السحابية وإدارة واجهات API وتحسين الأداء...'
+                  : 'e.g. Seeking a Software Engineer with strong experience in React, TypeScript, scalable systems, and REST APIs...'
+              }
+              className="w-full p-3 sm:p-4 bg-slate-50/50 hover:bg-white focus:bg-white border-2 border-[#e8e5de] focus:border-[#FF4D2D] focus:ring-3 focus:ring-[#FF4D2D]/10 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-medium text-[#12141a] placeholder:text-[#9099ac] outline-none transition resize-y leading-relaxed"
+            />
+          </div>
+
+          <button
+            type="button"
+            onClick={handleRunAtsCheck}
+            className="w-full py-3.5 sm:py-4 px-4 sm:px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+          >
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-[#FF4D2D] shrink-0" />
+            <span>{isAr ? 'ابدأ الفحص والتحليل الذكي' : 'Run Smart ATS Audit'}</span>
+          </button>
+
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-3 border-t border-[#e8e5de]/60 text-xs text-[#7a8093]">
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>{isAr ? 'مطابقة الكلمات المفتاحية' : 'Keyword Density'}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>{isAr ? 'كاشف الأخطاء المانعة' : 'Red Flags Detector'}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>{isAr ? 'هيكل التنسيق القياسي' : 'Standard Structure'}</span>
+            </div>
+          </div>
         </div>
       </div>
+    );
+  }
+
+  // 2. LOADING STATE
+  if (isAnalyzingAts) {
+    return (
+      <div className="p-8 bg-white border-2 border-[#e8e5de] rounded-3xl text-center space-y-4 shadow-xs">
+        <div className="w-14 h-14 rounded-2xl bg-[#001639]/5 text-[#001639] flex items-center justify-center mx-auto">
+          <Loader2 className="w-7 h-7 animate-spin text-[#FF4D2D]" />
+        </div>
+        <h3 className="text-base font-black text-[#001639]">
+          {isAr ? 'جارِ فحص السيرة الذاتية عبر خوارزميات ATS...' : 'Auditing resume with ATS parsers...'}
+        </h3>
+        <p className="text-xs text-[#7a8093] max-w-sm mx-auto">
+          {isAr
+            ? 'نقوم بتحليل الترتيب الزمني، واستخراج الكلمات المفتاحية، ومطابقة متطلبات الإعلان الوظيفي...'
+            : 'Analyzing chronological flow, keywords density, and matching job requirements...'}
+        </p>
+      </div>
+    );
+  }
+
+  // 3. DETAILED RESULTS STATE
+  return (
+    <div className="space-y-5 text-slate-800 w-full max-w-full min-w-0 overflow-x-hidden" aria-live="polite">
+      {/* Top Banner with Edit JD trigger */}
+      <div className="p-4 bg-white border-2 border-[#e8e5de] rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+        <div className="flex items-center gap-3">
+          <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${scoreTheme?.badgeBg}`}>
+            {atsResult.score}%
+          </div>
+          <div>
+            <div className="text-xs font-black text-[#001639]">{atsResult.verdict}</div>
+            <div className="text-[11px] text-[#7a8093]">
+              {targetJobDescription
+                ? (isAr ? 'مطابقة مع الوصف الوظيفي المُدخل' : 'Matched against target Job Description')
+                : (isAr ? 'فحص عام للهيكل وقابلية القراءة' : 'General structure & readiness scan')}
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setShowEditJd(!showEditJd)}
+          className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#f4f1e9] hover:bg-[#e8e5de] text-[#001639] rounded-xl text-xs font-bold transition self-start sm:self-auto cursor-pointer"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
+          <span>{showEditJd ? (isAr ? 'إخفاء تعديل الإعلان' : 'Hide Job Desc') : (isAr ? 'تعديل الإعلان وإعادة الفحص' : 'Edit Job Desc / Re-run')}</span>
+        </button>
+      </div>
+
+      {/* Expandable JD editor */}
+      {showEditJd && (
+        <div className="p-4 bg-[#f4f1e9] border border-[#e8e5de] rounded-2xl space-y-3">
+          <label htmlFor="ats-target-jd-edit" className="block text-xs font-bold text-[#001639]">
+            {isAr ? 'تعديل نص الإعلان الوظيفي:' : 'Edit Job Description:'}
+          </label>
+          <textarea
+            id="ats-target-jd-edit"
+            rows={3}
+            value={targetJobDescription}
+            onChange={(e) => setTargetJobDescription(e.target.value)}
+            className="w-full p-3 bg-white border border-[#e8e5de] rounded-xl text-xs font-medium text-[#12141a] outline-none"
+          />
+          <button
+            type="button"
+            onClick={handleRunAtsCheck}
+            className="px-4 py-2 bg-[#001639] text-white rounded-xl text-xs font-bold hover:bg-[#00214F] transition"
+          >
+            {isAr ? 'إعادة الفحص الآن' : 'Re-run Audit Now'}
+          </button>
+        </div>
+      )}
 
       {/* Internal Tabs for Scan Types */}
-      <div className="flex bg-slate-100/80 p-1 rounded-xl w-full">
+      <div className="flex bg-[#f4f1e9] p-1 rounded-2xl border border-[#e8e5de] w-full gap-1">
+        <button
+          type="button"
+          onClick={() => setActiveScanTab('ai_match')}
+          className={`flex-1 py-2 text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 ${
+            activeScanTab === 'ai_match'
+              ? 'bg-[#001639] text-white shadow-xs'
+              : 'text-[#7a8093] hover:text-[#001639]'
+          }`}
+        >
+          <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
+          <span>{isAr ? 'مطابقة الوظيفة والكلمات' : 'Job Match & Keywords'}</span>
+        </button>
+
         <button
           type="button"
           onClick={() => setActiveScanTab('structure')}
-          className={`flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg transition-all ${
+          className={`flex-1 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${
             activeScanTab === 'structure'
-              ? 'bg-white text-[#001639] shadow-xs'
-              : 'text-slate-600 hover:text-slate-900'
+              ? 'bg-[#001639] text-white shadow-xs'
+              : 'text-[#7a8093] hover:text-[#001639]'
           }`}
         >
           {isAr ? 'البناء والمحتوى' : 'Structure & Content'}
         </button>
+
         <button
           type="button"
           onClick={() => setActiveScanTab('red_flags')}
-          className={`flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
+          className={`flex-1 py-2 text-xs font-bold rounded-xl transition cursor-pointer flex items-center justify-center gap-1.5 ${
             activeScanTab === 'red_flags'
-              ? 'bg-white text-[#001639] shadow-xs'
-              : 'text-slate-600 hover:text-slate-900'
+              ? 'bg-[#001639] text-white shadow-xs'
+              : 'text-[#7a8093] hover:text-[#001639]'
           }`}
         >
           {isAr ? 'الأخطاء الشائعة' : 'Red Flags'}
@@ -250,38 +386,26 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
             <span className="w-2 h-2 rounded-full bg-rose-500" />
           )}
         </button>
-        <button
-          type="button"
-          onClick={() => setActiveScanTab('ai_match')}
-          className={`flex-1 py-2 text-[11px] sm:text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 ${
-            activeScanTab === 'ai_match'
-              ? 'bg-[#001639] text-white shadow-xs'
-              : 'text-slate-600 hover:text-slate-900'
-          }`}
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>{isAr ? 'مطابقة الوظيفة (AI)' : 'AI Match'}</span>
-        </button>
       </div>
 
       {/* Tab Content: Structure & Content */}
       {activeScanTab === 'structure' && (
-        <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+        <div className="animate-in fade-in duration-200">
           <AtsSectionBreakdown />
         </div>
       )}
 
       {/* Tab Content: Red Flags */}
       {activeScanTab === 'red_flags' && (
-        <div className="space-y-3 bg-white rounded-2xl border border-slate-200 p-4.5 shadow-xs animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
+        <div className="space-y-3 bg-white rounded-2xl border-2 border-[#e8e5de] p-4 sm:p-5 animate-in fade-in duration-200 shadow-2xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-[#e8e5de]">
             <div className="flex items-center gap-2">
-              <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${
+              <div className={`w-7 h-7 rounded-xl flex items-center justify-center border ${
                 criticalFlags.length > 0
-                  ? 'bg-rose-100 text-rose-600'
+                  ? 'bg-rose-50 text-rose-700 border-rose-200'
                   : warningFlags.length > 0
-                  ? 'bg-amber-100 text-amber-600'
-                  : 'bg-emerald-100 text-emerald-600'
+                  ? 'bg-amber-50 text-amber-700 border-amber-200'
+                  : 'bg-emerald-50 text-emerald-700 border-emerald-200'
               }`}>
                 {criticalFlags.length > 0 ? (
                   <ShieldAlert className="w-4 h-4" />
@@ -292,35 +416,35 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                 )}
               </div>
               <div>
-                <h3 className="font-bold text-xs sm:text-sm text-slate-900">
+                <h3 className="font-bold text-xs sm:text-sm text-[#001639]">
                   {isAr ? 'كاشف الأخطاء المانعة للتوظيف (Red Flags)' : 'Resume Red Flags Detector'}
                 </h3>
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 self-start sm:self-center">
+            <div className="flex items-center gap-1.5 self-start sm:self-center text-[10px] font-bold">
               {criticalFlags.length > 0 ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200">
                   <AlertCircle className="w-3 h-3" />
-                  <span>{isAr ? `${criticalFlags.length} تنبيه حرج` : `${criticalFlags.length} Critical`}</span>
+                  <span>{isAr ? `${criticalFlags.length} تنبيه حرج` : `${criticalFlags.length} CRITICAL`}</span>
                 </span>
               ) : warningFlags.length > 0 ? (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
                   <AlertTriangle className="w-3 h-3" />
-                  <span>{isAr ? `${warningFlags.length} ملاحظة` : `${warningFlags.length} Warning`}</span>
+                  <span>{isAr ? `${warningFlags.length} ملاحظة` : `${warningFlags.length} WARNING`}</span>
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
                   <Check className="w-3 h-3" />
-                  <span>{isAr ? 'سيرتك نظيفة 100%' : '0 Red Flags Detected'}</span>
+                  <span>{isAr ? 'سيرتك نظيفة 100%' : 'CLEAN / 0 FLAGS'}</span>
                 </span>
               )}
             </div>
           </div>
 
           {redFlags.length === 0 ? (
-            <div className="p-3.5 rounded-xl bg-emerald-50/60 border border-emerald-200 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0">
+            <div className="p-4 rounded-xl bg-emerald-50/50 border border-emerald-200 flex items-center gap-3">
+              <div className="w-7 h-7 rounded-xl bg-emerald-700 text-white flex items-center justify-center shrink-0">
                 <Check className="w-4 h-4" />
               </div>
               <div className="text-xs text-emerald-950">
@@ -341,41 +465,41 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                 return (
                   <div
                     key={flag.id}
-                    className={`p-3.5 rounded-xl border transition ats-result-card ${
+                    className={`p-3.5 rounded-xl border transition ${
                       flag.severity === 'critical'
-                        ? 'bg-rose-50/50 border-rose-200'
+                        ? 'bg-rose-50/30 border-rose-200'
                         : flag.severity === 'warning'
-                        ? 'bg-amber-50/50 border-amber-200'
-                        : 'bg-blue-50/50 border-blue-200'
+                        ? 'bg-amber-50/30 border-amber-200'
+                        : 'bg-blue-50/30 border-blue-200'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="space-y-1 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                          <span className={`text-[10px] font-extrabold uppercase px-1.5 py-0.5 rounded-md ${
+                          <span className={`text-[9px] font-bold uppercase px-2 py-0.5 rounded-md border ${
                             flag.severity === 'critical'
-                              ? 'bg-rose-600 text-white'
+                              ? 'bg-rose-700 text-white border-rose-800'
                               : flag.severity === 'warning'
-                              ? 'bg-amber-600 text-white'
-                              : 'bg-blue-600 text-white'
+                              ? 'bg-amber-600 text-white border-amber-700'
+                              : 'bg-blue-600 text-white border-blue-700'
                           }`}>
                             {flag.severity === 'critical'
-                              ? isAr ? 'حرج' : 'Critical'
+                              ? isAr ? 'حرج' : 'CRITICAL'
                               : flag.severity === 'warning'
-                              ? isAr ? 'تحذير' : 'Warning'
-                              : isAr ? 'نصيحة' : 'Tip'}
+                              ? isAr ? 'تحذير' : 'WARNING'
+                              : isAr ? 'نصيحة' : 'TIP'}
                           </span>
-                          <h4 className="font-bold text-xs text-slate-900">
+                          <h4 className="font-bold text-xs text-[#001639]">
                             {isAr ? flag.titleAr : flag.titleEn}
                           </h4>
                         </div>
   
-                        <p className="text-[11px] text-slate-700 leading-relaxed">
+                        <p className="text-xs text-[#7a8093] leading-relaxed">
                           {isAr ? flag.descriptionAr : flag.descriptionEn}
                         </p>
   
-                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-800 bg-white/80 p-2 rounded-lg border border-slate-200/70 mt-1">
-                          <Sparkles className="w-3.5 h-3.5 text-orange-500 shrink-0" />
+                        <div className="flex items-center gap-1.5 text-xs text-slate-800 bg-white p-2.5 rounded-xl border border-[#e8e5de] mt-1">
+                          <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D] shrink-0" />
                           <span>
                             <strong>{isAr ? 'الحل الموصى به: ' : 'Fix: '}</strong>
                             {isAr ? flag.suggestionAr : flag.suggestionEn}
@@ -388,10 +512,10 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                           type="button"
                           onClick={() => handleFixFlag(flag)}
                           disabled={isFixed}
-                          className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer shadow-xs ${
+                          className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer border ${
                             isFixed
-                              ? 'bg-emerald-600 text-white'
-                              : 'bg-[#001639] hover:bg-[#002868] text-white'
+                              ? 'bg-emerald-700 text-white border-emerald-800'
+                              : 'bg-[#001639] hover:bg-[#00214F] text-white border-[#001639]'
                           }`}
                         >
                           {isFixed ? (
@@ -401,7 +525,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                             </>
                           ) : (
                             <>
-                              <Wrench className="w-3.5 h-3.5" />
+                              <Wrench className="w-3.5 h-3.5 text-[#FF4D2D]" />
                               <span>{isAr ? 'إصلاح تلقائي' : 'Auto Fix'}</span>
                             </>
                           )}
@@ -416,140 +540,12 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
         </div>
       )}
 
-      {/* Tab Content: AI Job Match */}
+      {/* Tab Content: AI Job Match & Keywords */}
       {activeScanTab === 'ai_match' && (
-        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <div className="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-            <div className="flex items-center justify-between">
-              <label htmlFor="ats-target-jd" className="block text-xs font-semibold text-slate-800 flex items-center gap-1.5">
-                <Target className="w-3.5 h-3.5 text-[#001639]" />
-                <span>{isAr ? 'مطابقة مع إعلان وظيفي (AI Match)' : 'Match with Job Description (AI)'}</span>
-              </label>
-            </div>
-            
-            <textarea
-              id="ats-target-jd"
-              rows={3}
-              value={targetJobDescription}
-              onChange={(e) => setTargetJobDescription(e.target.value)}
-              placeholder={t.jobDescPlaceholder}
-              className="w-full p-3 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs text-slate-900 placeholder:text-slate-500 outline-none leading-relaxed transition shadow-2xs"
-            />
-  
-            <button
-              type="button"
-              onClick={handleRunAtsCheck}
-              disabled={isAnalyzingAts}
-              className="w-full py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] active:bg-[#CC3A1A] text-white font-semibold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-h-[40px]"
-            >
-              {isAnalyzingAts ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>{isAr ? 'جارِ تحليل السيرة الذاتية...' : 'Analyzing your resume...'}</span>
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-3.5 h-3.5 fill-white" />
-                  <span>{atsResult ? (isAr ? 'إعادة الفحص والتحليل' : 'Re-run AI Match') : (isAr ? 'تحليل المطابقة' : 'Analyze Match')}</span>
-                </>
-              )}
-            </button>
-          </div>
-  
-          {/* AI ATS Analysis Result Card */}
-          {atsResult && scoreTheme && (
-            <div className="space-y-4 animate-in fade-in duration-200">
-          {/* Main Score Hero Card */}
-          <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-4 ats-result-card">
-            {/* Top Row: Score & Verdict */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
-              <div className="space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${scoreTheme.badgeBg}`}>
-                    {scoreTheme.statusText}
-                  </span>
-                  <span className="text-xs text-slate-600 font-semibold">
-                    {isAr ? 'معيار ATS القياسي' : 'Standard ATS Protocol'}
-                  </span>
-                </div>
-                <h3 className="text-sm font-bold text-slate-900 leading-snug">
-                  {atsResult.verdict}
-                </h3>
-              </div>
-
-              {/* Circular / Radial Score Meter */}
-              <div className="flex items-center gap-3 shrink-0 self-start sm:self-auto bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                <div className="relative w-12 h-12 flex items-center justify-center">
-                  <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 36 36">
-                    <path
-                      className="text-slate-200"
-                      strokeWidth="3.5"
-                      stroke="currentColor"
-                      fill="none"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                    <path
-                      className={`${scoreTheme.ringColor} ats-circle-meter`}
-                      strokeDasharray={`${atsResult.score}, 100`}
-                      strokeWidth="3.5"
-                      strokeLinecap="round"
-                      stroke="currentColor"
-                      fill="none"
-                      d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    />
-                  </svg>
-                  <span className={`absolute text-xs font-black ${scoreTheme.textColor}`}>
-                    {atsResult.score}%
-                  </span>
-                </div>
-                <div className="text-start">
-                  <div className="text-xs font-bold uppercase text-slate-600 tracking-wider">
-                    {isAr ? 'جاهزية السيرة الذاتية' : 'Resume Readiness'}
-                  </div>
-                  <div className="text-xs font-bold text-slate-800">
-                    {atsResult.score} / 100
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Micro Breakdown Metrics */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 w-full min-w-0">
-              <div className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-center space-y-1 min-w-0">
-                <div className="text-xs font-semibold text-slate-600 truncate">
-                  {isAr ? 'هيكل السيرة' : 'Structure'}
-                </div>
-                <div className="text-xs font-bold text-emerald-600 flex items-center justify-center gap-1">
-                  <FileCheck className="w-3 h-3 shrink-0" />
-                  <span>95%</span>
-                </div>
-              </div>
-
-              <div className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-center space-y-1 min-w-0">
-                <div className="text-xs font-semibold text-slate-600 truncate">
-                  {isAr ? 'الكلمات المفتاحية' : 'Keywords'}
-                </div>
-                <div className="text-xs font-bold text-amber-600 flex items-center justify-center gap-1">
-                  <Zap className="w-3 h-3 shrink-0" />
-                  <span>{atsResult.score >= 80 ? '88%' : '72%'}</span>
-                </div>
-              </div>
-
-              <div className="bg-slate-50/80 p-2.5 rounded-xl border border-slate-100 text-center space-y-1 min-w-0">
-                <div className="text-xs font-semibold text-slate-600 truncate">
-                  {isAr ? 'الأفعال والنتائج' : 'Impact'}
-                </div>
-                <div className="text-xs font-bold text-sky-600 flex items-center justify-center gap-1">
-                  <Target className="w-3 h-3 shrink-0" />
-                  <span>80%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
+        <div className="space-y-4 animate-in fade-in duration-200">
           {/* Missing Keywords Card with 1-Click Add */}
           {atsResult.missingKeywords && atsResult.missingKeywords.length > 0 && (
-            <div className="p-4 rounded-xl bg-amber-50/40 border border-amber-200/80 space-y-3 ats-result-card">
+            <div className="p-4 rounded-2xl bg-amber-50/60 border-2 border-amber-200/80 space-y-3 shadow-2xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <h4 className="font-bold text-xs text-amber-900 flex items-center gap-1.5">
                   <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
@@ -559,7 +555,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                   type="button"
                   onClick={handleAddAllKeywords}
                   disabled={activation.isResumeLocked}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold transition cursor-pointer self-start sm:self-auto shadow-2xs disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-amber-700 hover:bg-amber-800 text-white rounded-xl text-xs font-bold transition cursor-pointer self-start sm:self-auto border border-amber-800 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {addedAllSuccess ? (
                     <>
@@ -576,13 +572,9 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
               </div>
 
               <p className="text-xs text-amber-900 leading-relaxed">
-                {activation.isResumeLocked
-                  ? (isAr
-                      ? 'الرجاء فك قفل السيرة للتعديل وإضافة الكلمات الناقصة تلقائياً.'
-                      : 'Please unlock the resume to edit and add missing keywords.')
-                  : (isAr
-                      ? 'الكلمات المفتاحية التالية تم رصدها كمتطلبات أساسية في إعلان الوظيفة وتفتقدها سيرتك الحالية. عدم تضمينها قد يستبعد سيرتك في الفرز الآلي. انقر على أي كلمة لإضافتها إلى قائمة مهاراتك:'
-                      : 'These keywords are critical requirements from the job description missing from your CV. Lack of these may cause ATS rejection. Click any keyword below to add it directly to your skills:')}
+                {isAr
+                  ? 'الكلمات المفتاحية التالية تم رصدها كمتطلبات أساسية في إعلان الوظيفة وتفتقدها سيرتك الحالية. انقر على أي كلمة لإضافتها إلى قائمة مهاراتك فوراً:'
+                  : 'These keywords are critical requirements from the job description missing from your CV. Click any keyword below to add it directly to your skills:'}
               </p>
 
               <div className="flex flex-wrap gap-2 pt-1">
@@ -594,27 +586,18 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
                       key={idx}
                       onClick={() => handleAddKeywordToSkills(kw)}
                       disabled={activation.isResumeLocked}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border cursor-pointer shadow-2xs keyword-chip ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border cursor-pointer transition ${
                         isAdded
-                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200/90 shadow-2xs is-added'
-                          : activation.isResumeLocked
-                          ? 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed'
-                          : 'bg-white hover:bg-amber-50 text-slate-800 border-amber-200/80 hover:border-amber-300'
+                          ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
+                          : 'bg-white hover:bg-amber-100/60 text-slate-800 border-amber-200'
                       }`}
                     >
                       {isAdded ? (
-                        <span className="saved-check">
-                          <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                        </span>
+                        <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                       ) : (
-                        <Plus className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                        <Plus className="w-3.5 h-3.5 text-amber-600 shrink-0" />
                       )}
                       <span>{kw}</span>
-                      {isAdded ? (
-                        <span className="text-xs text-emerald-800 font-bold ml-0.5 rtl:mr-0.5">
-                          ({isAr ? 'تمت الإضافة' : 'Added'})
-                        </span>
-                      ) : null}
                     </button>
                   );
                 })}
@@ -624,12 +607,12 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
 
           {/* Strengths Card */}
           {atsResult.strengths && atsResult.strengths.length > 0 && (
-            <div className="p-4 rounded-xl bg-emerald-50/40 border border-emerald-200/80 space-y-2.5 ats-result-card">
+            <div className="p-4 rounded-2xl bg-emerald-50/50 border-2 border-emerald-200/80 space-y-2.5 shadow-2xs">
               <h4 className="font-bold text-xs text-emerald-900 flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
                 <span>{t.atsStrengths}</span>
               </h4>
-              <ul className="space-y-1.5 text-slate-700 text-xs pl-5 rtl:pl-0 rtl:pr-5 list-disc">
+              <ul className="space-y-1.5 text-emerald-950 text-xs pl-5 rtl:pl-0 rtl:pr-5 list-disc">
                 {atsResult.strengths.map((str, idx) => (
                   <li key={idx} className="leading-relaxed">{str}</li>
                 ))}
@@ -639,15 +622,15 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
 
           {/* Action Recommendations Card */}
           {atsResult.actionPoints && atsResult.actionPoints.length > 0 && (
-            <div className="p-4 rounded-xl bg-sky-50/40 border border-sky-200/80 space-y-2.5 ats-result-card">
+            <div className="p-4 rounded-2xl bg-sky-50/50 border-2 border-sky-200/80 space-y-2.5 shadow-2xs">
               <h4 className="font-bold text-xs text-sky-900 flex items-center gap-1.5">
-                <ArrowUpRight className="w-4 h-4 text-sky-600 shrink-0" />
+                <ArrowUpRight className="w-4 h-4 text-sky-700 shrink-0" />
                 <span>{t.atsActionPoints}</span>
               </h4>
               <div className="space-y-2">
                 {atsResult.actionPoints.map((action, idx) => (
-                  <div key={idx} className="flex items-start gap-2 text-xs text-slate-700 bg-white/70 p-2.5 rounded-lg border border-sky-100">
-                    <span className="w-5 h-5 rounded-full bg-sky-100 text-sky-700 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                  <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-800 bg-white p-3 rounded-xl border border-sky-200/80">
+                    <span className="w-5 h-5 rounded-lg bg-sky-100 text-sky-800 flex items-center justify-center text-[10px] font-bold shrink-0 mt-0.5 border border-sky-200">
                       {idx + 1}
                     </span>
                     <span className="leading-relaxed">{action}</span>
@@ -656,75 +639,40 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
               </div>
             </div>
           )}
-
-          {/* Quick Actions Footer */}
-          <div className="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-slate-100">
-            <div className="flex items-center gap-1.5 text-xs text-slate-600">
-              <Info className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-              <span>
-                {isAr
-                  ? 'مؤشر استرشادي خاضع لقواعد خوارزميات التوظيف الحديثة'
-                  : 'Based on leading ATS candidate screening algorithms'}
-              </span>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={handleCopyReport}
-                className="inline-flex items-center gap-1 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition cursor-pointer"
-              >
-                {copiedReport ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>{isAr ? 'تم نسخ التقرير' : 'Report Copied'}</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>{isAr ? 'نسخ التقرير' : 'Copy Report'}</span>
-                  </>
-                )}
-              </button>
-
-              {activation.isResumeLocked ? (
-                <button
-                  type="button"
-                  onClick={handleUnlockInAts}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs font-bold transition cursor-pointer shadow-xs"
-                >
-                  <Key className="w-3.5 h-3.5" />
-                  <span>
-                    {activation.remainingDownloads > 0
-                      ? (isAr ? 'فتح التعديل باستخدام تفعيل متبقي' : 'Unlock to Edit with Credit')
-                      : (isAr ? 'هل تحتاج لإجراء تعديلات؟ اشترِ تفعيل إضافي' : 'Need to make changes? Purchase another download credit.')}
-                  </span>
-                </button>
-              ) : (
-                <>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('experiences')}
-                    className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-[#001639] rounded-lg text-xs font-semibold transition cursor-pointer"
-                  >
-                    <span>{isAr ? 'تعديل الخبرات ➔' : 'Edit Experience ➔'}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab('skills')}
-                    className="inline-flex items-center gap-1 px-3 py-1.5 bg-[#001639] hover:bg-[#00245E] text-white rounded-lg text-xs font-semibold transition cursor-pointer"
-                  >
-                    <span>{isAr ? 'قسم المهارات ➔' : 'Go to Skills ➔'}</span>
-                  </button>
-                </>
-              )}
-            </div>
-          </div>
         </div>
       )}
+
+      {/* Quick Actions Footer */}
+      <div className="pt-2 flex flex-wrap items-center justify-between gap-2 border-t border-[#e8e5de]">
+        <div className="flex items-center gap-1.5 text-xs text-[#7a8093]">
+          <Info className="w-3.5 h-3.5 text-[#7a8093] shrink-0" />
+          <span>
+            {isAr
+              ? 'مؤشر استرشادي خاضع لقواعد خوارزميات التوظيف الحديثة'
+              : 'Based on leading ATS candidate screening algorithms'}
+          </span>
         </div>
-      )}
+
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={handleCopyReport}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white hover:bg-[#f4f1e9] text-[#001639] border-2 border-[#e8e5de] rounded-xl text-xs font-bold transition cursor-pointer"
+          >
+            {copiedReport ? (
+              <>
+                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                <span>{isAr ? 'تم نسخ التقرير' : 'Report Copied'}</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3.5 h-3.5 text-[#001639]" />
+                <span>{isAr ? 'نسخ التقرير' : 'Copy Report'}</span>
+              </>
+            )}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

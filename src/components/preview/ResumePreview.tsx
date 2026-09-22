@@ -24,7 +24,6 @@ import {
   FileText,
 } from 'lucide-react';
 import { useResumeExport } from '../../hooks/useResumeExport';
-import { ShareModal } from '../common/ShareModal';
 import { getTranslation } from '../../i18n/translations';
 import { TemplateId } from '../../types/resume';
 import { isResumeBlank } from '../../utils/resumeFingerprint';
@@ -176,6 +175,7 @@ export const ResumePreview: React.FC = () => {
   const deferredResumeData = useDeferredValue(resumeData);
 
   const documentRef = React.useRef<HTMLDivElement>(null);
+  const canvasContainerRef = React.useRef<HTMLDivElement>(null);
   const [renderedHeight, setRenderedHeight] = useState<number>(1050);
 
   // Measure exact template content height to calculate accurate page fill percentage
@@ -276,6 +276,15 @@ export const ResumePreview: React.FC = () => {
   const handleZoomFullRead = () => {
     setZoom(1.0);
   };
+  const handleZoomFitWidth = () => {
+    if (canvasContainerRef.current) {
+      const containerW = canvasContainerRef.current.clientWidth;
+      const targetZoom = Math.min(1.2, Math.max(0.35, (containerW - 36) / 794));
+      setZoom(Number(targetZoom.toFixed(2)));
+    } else {
+      setZoom(0.78);
+    }
+  };
 
   const handlePdfDownload = () => {
     if (isCurrentResumeBlank) {
@@ -309,173 +318,73 @@ export const ResumePreview: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-slate-100 text-slate-800 rounded-3xl overflow-hidden border border-[#CBD5E1] shadow-xs">
-      {/* Top Controls Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 px-4 py-2.5 bg-white border-b border-[#E2E8F0] text-xs">
+    <div className="flex flex-col h-full bg-white text-slate-800 rounded-3xl overflow-hidden border border-slate-200/90 shadow-xs">
+      {/* Top Controls Bar - Streamlined Minimalist Toolbar */}
+      <div className="flex items-center justify-between gap-2 px-4 py-2.5 bg-white border-b border-slate-100 text-xs">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#E8EEF7] text-[#001639]">
-            <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
-            <span>{isAr ? 'المعاينة اللحظية' : 'Live Preview'}</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-bold text-[11px] text-[#001639] bg-slate-100/90 border border-slate-200/60">
+            <span className="w-2 h-2 rounded-full bg-[#FF4D2D]"></span>
+            <span>{isAr ? 'معاينة مباشرة A4' : 'A4 Live Preview'}</span>
           </span>
 
           <button
             type="button"
             onClick={() => setShowQuickToolbar(!showQuickToolbar)}
-            className={`px-2.5 py-1 rounded-full text-[11px] font-medium border flex items-center gap-1.5 transition cursor-pointer ${
+            className={`px-3 py-1 rounded-lg text-xs font-bold border flex items-center gap-1.5 transition cursor-pointer ${
               showQuickToolbar
-                ? 'bg-[#001639] text-white border-[#001639]'
-                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+                ? 'bg-[#001639] text-white border-[#001639] shadow-2xs'
+                : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
             }`}
             title={isAr ? 'شريط التخصيص السريع' : 'Quick Style Customizer'}
           >
-            <Palette className="w-3 h-3 text-[#FF4D2D]" />
+            <Palette className="w-3.5 h-3.5 text-[#FF4D2D]" />
             <span>{isAr ? 'تنسيق سريع' : 'Quick Style'}</span>
           </button>
-
-          {/* Page Fill Gauge */}
-          <div
-            className={`hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all ${
-              fillPercent > 104
-                ? 'bg-amber-50 text-amber-900 border-amber-200'
-                : fillPercent >= 70
-                ? 'bg-emerald-50 text-emerald-900 border-emerald-200'
-                : 'bg-slate-50 text-slate-700 border-slate-200'
-            }`}
-            title={
-              isAr
-                ? `نسبة امتلاء الصفحة: ${fillPercent}% (الحد الأقصى لصفحة A4 واحدة هو 100%)`
-                : `Page Fill: ${fillPercent}% (Single A4 page limit is 100%)`
-            }
-          >
-            <span className="font-medium text-[10px] text-slate-500">
-              {isAr ? 'امتلاء الصفحة:' : 'Page Fill:'}
-            </span>
-            <span className="font-bold font-mono text-[11px]">{fillPercent}%</span>
-            <div className="w-10 sm:w-14 h-1.5 bg-slate-200/90 rounded-full overflow-hidden shrink-0">
-              <div
-                className={`h-full rounded-full transition-all duration-300 ${
-                  fillPercent > 104
-                    ? 'bg-amber-500'
-                    : fillPercent >= 70
-                    ? 'bg-emerald-500'
-                    : 'bg-sky-500'
-                }`}
-                style={{ width: `${Math.min(fillPercent, 100)}%` }}
-              />
-            </div>
-          </div>
         </div>
 
-        {/* Zoom & Fullscreen controls */}
-        <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
-          <button
-            type="button"
-            onClick={handleZoomOut}
-            className="p-1 hover:bg-slate-200 rounded text-slate-600 transition cursor-pointer min-w-[28px] min-h-[28px] flex items-center justify-center"
-            title={isAr ? 'تصغير' : 'Zoom Out'}
-            aria-label={isAr ? 'تصغير المعاينة' : 'Zoom Out'}
-          >
-            <ZoomOut className="w-3.5 h-3.5" />
-          </button>
-          <span className="px-1.5 font-mono text-[11px] text-slate-700 font-bold min-w-[38px] text-center">
-            {Math.round(zoom * 100)}%
-          </span>
-          <button
-            type="button"
-            onClick={handleZoomIn}
-            className="p-1 hover:bg-slate-200 rounded text-slate-600 transition cursor-pointer min-w-[28px] min-h-[28px] flex items-center justify-center"
-            title={isAr ? 'تكبير' : 'Zoom In'}
-            aria-label={isAr ? 'تكبير المعاينة' : 'Zoom In'}
-          >
-            <ZoomIn className="w-3.5 h-3.5" />
-          </button>
+        {/* Streamlined Zoom & View controls */}
+        <div className="flex items-center gap-1">
+          <div className="flex items-center bg-slate-100/90 p-0.5 rounded-xl border border-slate-200/70">
+            <button
+              type="button"
+              onClick={handleZoomOut}
+              className="p-1.5 hover:bg-white rounded-lg text-slate-700 transition cursor-pointer flex items-center justify-center"
+              title={isAr ? 'تصغير' : 'Zoom Out'}
+              aria-label={isAr ? 'تصغير المعاينة' : 'Zoom Out'}
+            >
+              <ZoomOut className="w-3.5 h-3.5" />
+            </button>
+            <span className="px-2 text-[11px] text-slate-800 font-bold min-w-[36px] text-center">
+              {Math.round(zoom * 100)}%
+            </span>
+            <button
+              type="button"
+              onClick={handleZoomIn}
+              className="p-1.5 hover:bg-white rounded-lg text-slate-700 transition cursor-pointer flex items-center justify-center"
+              title={isAr ? 'تكبير' : 'Zoom In'}
+              aria-label={isAr ? 'تكبير المعاينة' : 'Zoom In'}
+            >
+              <ZoomIn className="w-3.5 h-3.5" />
+            </button>
+            <div className="w-[1px] h-3.5 bg-slate-200 mx-0.5" />
+            <button
+              type="button"
+              onClick={handleZoomFit}
+              className="px-2 py-1 text-[11px] rounded-lg transition cursor-pointer font-bold hover:bg-white text-slate-700"
+              title={isAr ? 'ملاءمة الصفحة' : 'Fit Page'}
+            >
+              {isAr ? 'ملاءمة' : 'Fit'}
+            </button>
+          </div>
 
-          {/* Quick Preset: Fit Full Page */}
-          <button
-            type="button"
-            onClick={handleZoomFit}
-            className={`px-2 py-0.5 text-[10px] rounded-lg transition cursor-pointer font-bold ${
-              zoom <= 0.52 ? 'bg-[#001639] text-white' : 'hover:bg-slate-200 text-slate-700'
-            }`}
-            title={isAr ? 'ملاءمة الصفحة بالكامل' : 'Fit Full Page'}
-          >
-            {isAr ? 'كاملة' : 'Fit'}
-          </button>
-
-          {/* Quick Preset: 100% Readable Text View */}
-          <button
-            type="button"
-            onClick={handleZoomFullRead}
-            className={`px-2 py-0.5 text-[10px] rounded-lg transition cursor-pointer font-bold ${
-              zoom >= 0.95 && zoom <= 1.05 ? 'bg-[#001639] text-white' : 'hover:bg-slate-200 text-slate-700'
-            }`}
-            title={isAr ? 'تكبير للقراءة بنسبة 100%' : '100% Readable View'}
-          >
-            100%
-          </button>
-
-          <button
-            type="button"
-            onClick={handleZoomReset}
-            className="p-1 hover:bg-slate-200 rounded text-slate-400 hover:text-slate-700 transition cursor-pointer hidden sm:flex items-center justify-center"
-            title={isAr ? 'إعادة ضبط الحجم' : 'Reset Zoom'}
-            aria-label={isAr ? 'إعادة ضبط الحجم' : 'Reset Zoom'}
-          >
-            <RotateCcw className="w-3 h-3" />
-          </button>
-          <div className="w-[1px] h-3.5 bg-slate-300 mx-0.5 hidden xs:block" />
           <button
             type="button"
             onClick={() => setIsFullscreen(true)}
-            className="p-1 hover:bg-slate-200 rounded text-[#001639] hover:text-[#FF4D2D] transition cursor-pointer hidden xs:flex items-center justify-center"
+            className="p-2 hover:bg-slate-100 rounded-xl text-slate-600 hover:text-[#001639] border border-slate-200/70 transition cursor-pointer flex items-center justify-center"
             title={isAr ? 'معاينة ملء الشاشة' : 'Fullscreen Preview'}
             aria-label={isAr ? 'معاينة ملء الشاشة' : 'Fullscreen Preview'}
           >
             <Maximize2 className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
-        <div className="flex items-center gap-2">
-          {/* Quick Share Button - Disabled when resume is blank */}
-          <button
-            type="button"
-            onClick={() => setIsShareOpen(true)}
-            disabled={isCurrentResumeBlank}
-            className={`flex items-center gap-1.5 px-3 py-1.5 font-medium text-xs rounded-full border transition min-h-[34px] ${
-              isCurrentResumeBlank
-                ? 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-50'
-                : 'bg-slate-100 hover:bg-slate-200 text-[#001639] border-slate-300 cursor-pointer active:scale-95'
-            }`}
-            title={
-              isCurrentResumeBlank
-                ? isAr
-                  ? 'أدخل بياناتك أولاً لتمكين المشاركة'
-                  : 'Fill your info first to enable sharing'
-                : isAr
-                ? 'مشاركة السيرة الذاتية'
-                : 'Share Resume'
-            }
-          >
-            <Share2 className="w-3.5 h-3.5 text-orange-600" />
-            <span className="hidden sm:inline">{isAr ? 'مشاركة' : 'Share'}</span>
-          </button>
-
-          {/* Quick Export CTA */}
-          <button
-            onClick={handlePdfDownload}
-            disabled={isExporting}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-semibold text-xs rounded-full shadow-2xs transition transform active:scale-95 disabled:opacity-50 cursor-pointer min-h-[34px]"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>
-              {isExporting
-                ? isAr
-                  ? 'جاري التصدير...'
-                  : 'Exporting...'
-                : isAr
-                ? 'تصدير PDF'
-                : 'Download PDF'}
-            </span>
           </button>
         </div>
       </div>
@@ -620,7 +529,10 @@ export const ResumePreview: React.FC = () => {
       </AnimatePresence>
 
       {/* Canvas Scroll Container with Visual Page Break Line */}
-      <div className="preview-desk-canvas flex-1 overflow-x-auto overflow-y-auto p-2 sm:p-6 flex justify-center items-start bg-slate-200/70 custom-scrollbar relative">
+      <div
+        ref={canvasContainerRef}
+        className="preview-desk-canvas flex-1 overflow-x-auto overflow-y-auto p-4 sm:p-8 flex justify-center items-start bg-slate-100/70 custom-scrollbar relative"
+      >
         <div
           className="flex justify-center items-start relative shrink-0 transition-all duration-150 mx-auto"
           style={{
@@ -629,13 +541,19 @@ export const ResumePreview: React.FC = () => {
           }}
         >
           <div
-            className="transition-transform duration-150 shadow-xl rounded-sm bg-white relative shrink-0"
+            className="transition-transform duration-150 border border-slate-200/90 shadow-xl shadow-slate-900/5 bg-white relative shrink-0 rounded-xs"
             style={{
               width: '794px',
               transform: `scale(${zoom})`,
               transformOrigin: 'top center',
             }}
           >
+            {/* Document Engineering A4 Corner Crop Marks */}
+            <div className="a4-corner-mark top-left no-print" aria-hidden="true" />
+            <div className="a4-corner-mark top-right no-print" aria-hidden="true" />
+            <div className="a4-corner-mark bottom-left no-print" aria-hidden="true" />
+            <div className="a4-corner-mark bottom-right no-print" aria-hidden="true" />
+
             {/* Render Active Template Document or Live Skeleton Preview */}
             <div
               id="resume-preview-document"
@@ -657,10 +575,10 @@ export const ResumePreview: React.FC = () => {
                 className="absolute left-0 right-0 border-b-2 border-dashed border-rose-400 pointer-events-none no-print flex items-center justify-center"
                 style={{ top: '1050px' }} // Standard A4 page height boundary
               >
-                <span className="bg-rose-50 text-rose-700 border border-rose-300 text-[10px] font-medium px-3 py-0.5 rounded-full shadow-2xs transform -translate-y-1/2">
+                <span className="bg-white text-rose-700 border border-rose-300 font-bold text-[10px] rounded-full px-3 py-0.5 transform -translate-y-1/2 shadow-xs">
                   {isAr
-                    ? '--- فاصل الصفحة الأولى A4 (صفحة ثانية) ---'
-                    : '--- Page 1 Break (A4 Page 2 Begins) ---'}
+                    ? '--- فاصل الصفحة الأولى A4 ---'
+                    : '--- A4 Page 1 Break ---'}
                 </span>
               </div>
             </div>
@@ -669,21 +587,21 @@ export const ResumePreview: React.FC = () => {
       </div>
 
       {/* Bottom Page Status & Count Bar */}
-      <div className="bg-white border-t border-slate-200 px-4 py-2 flex items-center justify-between text-xs text-slate-600 no-print">
+      <div className="bg-white border-t border-slate-100 px-4 py-2.5 flex items-center justify-between text-xs text-slate-500 no-print">
         <div className="flex items-center gap-2.5">
           {isMultiPage ? (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-[11px] font-bold border border-amber-200">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-amber-50 text-amber-800 text-[11px] font-bold border border-amber-200 rounded-lg">
               <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-              <span>{isAr ? `المحتوى يتجاوز صفحة واحدة (${fillPercent}%)` : `Content exceeds 1 page (${fillPercent}%)`}</span>
+              <span>{isAr ? 'المحتوى يتجاوز صفحة واحدة' : 'Content exceeds 1 page'}</span>
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-semibold border border-emerald-200">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-800 text-[11px] font-bold border border-emerald-200/80 rounded-lg">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-              <span>{isAr ? `صفحة 1 من 1 (${fillPercent}% ممتلئة)` : `Page 1 of 1 (${fillPercent}% filled)`}</span>
+              <span>{isAr ? 'صفحة 01 / 01 (مثالي)' : 'Page 01 / 01 (Optimal)'}</span>
             </span>
           )}
 
-          {fillPercent > 104 && (
+          {isMultiPage && (
             <span className="text-[10px] text-amber-700 hidden lg:inline">
               {isAr ? '💡 نصيحة: اختر مسافات ضيقة (Compact) لضغط السيرة في صفحة واحدة' : '💡 Tip: Select Compact density to fit on one page'}
             </span>
@@ -779,14 +697,6 @@ export const ResumePreview: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Share Modal */}
-      <ShareModal
-        isOpen={isShareOpen}
-        onClose={() => setIsShareOpen(false)}
-        data={resumeData}
-        settings={settings}
-      />
     </div>
   );
 };

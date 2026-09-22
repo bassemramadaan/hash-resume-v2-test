@@ -7,8 +7,9 @@ import { ShieldCheck, Globe, Linkedin, Facebook, MessageCircle, Phone } from 'lu
 
 export const Footer: React.FC = () => {
   const { settings, setLanguage } = useResumeStore();
-  const t = getTranslation(settings.language);
-  const isAr = settings.language === 'ar';
+  const currentLang = settings?.language || 'ar';
+  const t = getTranslation(currentLang);
+  const isAr = currentLang === 'ar';
 
   const socialLinks = [
     {
@@ -66,7 +67,7 @@ export const Footer: React.FC = () => {
               <span className="block text-[11px] font-bold text-slate-300">
                 {isAr ? 'تابعنا وتواصل معنا:' : 'Connect & Reach Us:'}
               </span>
-              <div className="flex flex-wrap items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2.5">
                 {socialLinks.map((s) => {
                   const Icon = s.icon;
                   return (
@@ -75,10 +76,10 @@ export const Footer: React.FC = () => {
                       href={s.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-700/80 text-slate-300 text-[11px] font-medium transition cursor-pointer ${s.color}`}
+                      className={`min-h-[44px] inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-slate-700/80 text-slate-300 text-xs font-semibold transition cursor-pointer active:scale-95 ${s.color}`}
                       title={s.name}
                     >
-                      <Icon className="w-3.5 h-3.5" />
+                      <Icon className="w-4 h-4" />
                       <span>{s.label}</span>
                     </a>
                   );
@@ -145,9 +146,9 @@ export const Footer: React.FC = () => {
               <li>
                 <a
                   href="tel:+201101007965"
-                  className="inline-flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 font-bold transition"
+                  className="min-h-[40px] inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-bold transition py-1"
                 >
-                  <Phone className="w-3.5 h-3.5" />
+                  <Phone className="w-4 h-4" />
                   <span>{isAr ? 'اتصال مباشر: 011 01007965' : 'Direct Call: 011 01007965'}</span>
                 </a>
               </li>
@@ -156,18 +157,18 @@ export const Footer: React.FC = () => {
                   href="https://wa.me/201101007965"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-[#25D366] hover:text-emerald-300 transition"
+                  className="min-h-[40px] inline-flex items-center gap-2 text-[#25D366] hover:text-emerald-300 transition py-1"
                 >
-                  <MessageCircle className="w-3.5 h-3.5" />
+                  <MessageCircle className="w-4 h-4" />
                   <span>{isAr ? 'واتساب الدعم: 011 01007965' : 'WhatsApp Support: 011 01007965'}</span>
                 </a>
               </li>
               <li>
                 <button
                   onClick={() => setLanguage(isAr ? 'en' : 'ar')}
-                  className="inline-flex items-center gap-1.5 hover:text-white transition text-slate-400 cursor-pointer"
+                  className="min-h-[40px] inline-flex items-center gap-2 hover:text-white transition text-slate-400 cursor-pointer py-1"
                 >
-                  <Globe className="w-3.5 h-3.5" />
+                  <Globe className="w-4 h-4" />
                   <span>{isAr ? 'تغيير اللغة إلى English' : 'Switch to العربية'}</span>
                 </button>
               </li>
@@ -181,12 +182,12 @@ export const Footer: React.FC = () => {
             </h4>
             <ul className="space-y-2 text-slate-400 font-medium">
               <li>
-                <Link to="/privacy" className="hover:text-white transition">
+                <Link to="/privacy" className="hover:text-white transition inline-block py-1">
                   {isAr ? 'سياسة الخصوصية' : 'Privacy Policy'}
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="hover:text-white transition">
+                <Link to="/terms" className="hover:text-white transition inline-block py-1">
                   {isAr ? 'الشروط والأحكام' : 'Terms of Service'}
                 </Link>
               </li>
@@ -195,41 +196,41 @@ export const Footer: React.FC = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
-          <div>
+        <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+          <div className="text-center sm:text-start">
             © 2026 Hash Resume. {isAr ? 'جميع الحقوق محفوظة.' : 'All rights reserved.'}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-4 gap-y-2 text-xs">
             <a
               href="https://www.linkedin.com/company/hashresume"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-[#0A66C2] transition"
+              className="hover:text-[#0A66C2] transition py-1"
             >
               LinkedIn
             </a>
-            <span>•</span>
+            <span className="text-slate-700 hidden sm:inline">•</span>
             <a
               href="https://www.facebook.com/hashresume"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-[#1877F2] transition"
+              className="hover:text-[#1877F2] transition py-1"
             >
               Facebook
             </a>
-            <span>•</span>
+            <span className="text-slate-700 hidden sm:inline">•</span>
             <a
               href="tel:+201101007965"
-              className="hover:text-emerald-400 transition flex items-center gap-1"
+              className="hover:text-emerald-400 transition flex items-center gap-1 py-1"
             >
               <span>Phone: 011 01007965</span>
             </a>
-            <span>•</span>
+            <span className="text-slate-700 hidden sm:inline">•</span>
             <a
               href="https://wa.me/201101007965"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-[#25D366] transition flex items-center gap-1"
+              className="hover:text-[#25D366] transition flex items-center gap-1 py-1"
             >
               <span>WhatsApp</span>
             </a>

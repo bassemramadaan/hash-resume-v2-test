@@ -28,13 +28,13 @@ export const NextStepBanner: React.FC<NextStepBannerProps> = ({
     return (
       <aside
         aria-label={isAr ? 'الإجراء التالي المقترح' : 'Recommended next step'}
-        className={`px-3.5 py-2.5 bg-blue-50/70 border border-blue-200/80 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 text-xs text-blue-950 shadow-2xs w-full min-w-0 next-step-banner ${className}`}
+        className={`px-3.5 py-2.5 bg-paper border border-line rounded-none flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 text-xs text-ink w-full min-w-0 next-step-banner ${className}`}
       >
         <div className="flex items-start gap-2 min-w-0 flex-1 overflow-hidden">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D2D] shrink-0 mt-1.5" />
-          <p className="text-xs text-blue-950 leading-relaxed break-words whitespace-normal min-w-0 flex-1">
-            <span className="text-[11px] font-bold text-blue-900/80 uppercase tracking-wider me-1.5 inline-block">
-              {isAr ? 'الخطوة التالية:' : 'Next step:'}
+          <span className="w-1.5 h-1.5 bg-orange shrink-0 mt-1.5" />
+          <p className="font-ibm-sans text-xs text-ink leading-relaxed break-words whitespace-normal min-w-0 flex-1">
+            <span className="font-ibm-mono text-[10px] font-bold text-orange uppercase tracking-wider me-1.5 inline-block">
+              {isAr ? 'الخطوة التالية:' : 'NEXT STEP:'}
             </span>
             <span className="font-semibold">
               {isAr ? stepTextAr : stepTextEn}
@@ -46,7 +46,7 @@ export const NextStepBanner: React.FC<NextStepBannerProps> = ({
           <button
             type="button"
             onClick={onAction}
-            className="inline-flex items-center gap-1 font-bold text-[#001639] hover:text-[#FF4D2D] transition shrink-0 cursor-pointer text-[11px] self-end sm:self-auto"
+            className="inline-flex items-center gap-1 font-ibm-sans font-bold text-ink hover:text-orange transition shrink-0 cursor-pointer text-xs self-end sm:self-auto"
           >
             <span>{isAr ? actionTextAr : actionTextEn}</span>
             <Arrow className="w-3 h-3" />
@@ -59,27 +59,20 @@ export const NextStepBanner: React.FC<NextStepBannerProps> = ({
   return (
     <aside
       aria-label={isAr ? 'الإجراء التالي المقترح' : 'Recommended next step'}
-      className={`p-3.5 sm:p-4 rounded-2xl border transition-all w-full min-w-0 next-step-banner ${
-        variant === 'highlight'
-          ? 'bg-orange-50/50 border-orange-200/80 text-slate-900 shadow-2xs'
-          : 'bg-slate-50 border-slate-200/90 text-slate-900 shadow-2xs'
-      } ${className}`}
+      className={`p-3.5 sm:p-4 rounded-none border border-line bg-paper text-ink w-full min-w-0 next-step-banner ${className}`}
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-start gap-2.5 min-w-0 flex-1">
-          <div className="w-7 h-7 rounded-lg bg-[#FF4D2D]/10 text-[#FF4D2D] flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
+          <div className="w-7 h-7 rounded-none border border-line bg-white text-orange flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
             <Sparkles className="w-3.5 h-3.5" />
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <span className="text-[10.5px] font-extrabold uppercase tracking-wider text-[#FF4D2D]">
-                {isAr ? 'ماذا أفعل الآن؟' : 'WHAT TO DO NEXT?'}
+              <span className="font-ibm-mono text-[10px] font-bold uppercase tracking-wider text-orange">
+                {isAr ? 'الإجراء التالي المقترح' : 'RECOMMENDED ACTION'}
               </span>
             </div>
-            <p className="text-xs sm:text-sm font-bold text-[#001639] leading-relaxed break-words whitespace-normal mt-0.5">
-              <span className="text-slate-500 font-medium">
-                {isAr ? 'الإجراء التالي المقترح: ' : 'Recommended next step: '}
-              </span>
+            <p className="font-tajawal text-xs sm:text-sm font-bold text-ink leading-relaxed break-words whitespace-normal mt-0.5">
               <span>{isAr ? stepTextAr : stepTextEn}</span>
             </p>
           </div>
@@ -89,10 +82,10 @@ export const NextStepBanner: React.FC<NextStepBannerProps> = ({
           <button
             type="button"
             onClick={onAction}
-            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl transition cursor-pointer shadow-2xs active:scale-98 shrink-0 self-end sm:self-auto min-h-[38px]"
+            className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 bg-ink hover:bg-ink-soft text-white text-xs font-ibm-sans font-bold rounded-none transition cursor-pointer active:scale-98 shrink-0 self-end sm:self-auto min-h-[36px]"
           >
             <span>{isAr ? actionTextAr || 'ابدأ الآن' : actionTextEn || 'Start now'}</span>
-            <Arrow className="w-3 h-3 text-[#FF4D2D]" />
+            <Arrow className="w-3 h-3 text-orange" />
           </button>
         )}
       </div>

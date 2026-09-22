@@ -1,30 +1,43 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import Backend from 'i18next-http-backend';
-import LanguageDetector from 'i18next-browser-languagedetector';
+import { translations } from './translations';
 
-// Import translation fallbacks directly to guarantee offline & iframe reliability
-import arTranslation from '../../public/locales/ar/translation.json';
-import enTranslation from '../../public/locales/en/translation.json';
-import frTranslation from '../../public/locales/fr/translation.json';
+// Detect initial language safely without accessing document.cookie directly
+const getSafeInitialLanguage = (): string => {
+  try {
+    if (typeof window !== 'undefined') {
+      const storage = window.localStorage;
+      if (storage) {
+        const stored = storage.getItem('hash_resume_language_preference');
+        if (stored && ['ar', 'en', 'fr'].includes(stored)) {
+          return stored;
+        }
+      }
+    }
+  } catch {
+    // Storage restricted or denied in iframe
+  }
+  return 'ar';
+};
+
+const initialLng = getSafeInitialLanguage();
 
 i18n
-  .use(Backend)
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources: {
-      ar: { translation: arTranslation },
-      en: { translation: enTranslation },
-      fr: { translation: frTranslation },
+      ar: { translation: translations.ar },
+      en: { translation: translations.en },
+      fr: { translation: translations.fr },
     },
+    lng: initialLng,
     fallbackLng: 'ar',
     debug: false,
     interpolation: {
       escapeValue: false,
     },
-    backend: {
-      loadPath: '/locales/{{lng}}/translation.json',
+    react: {
+      useSuspense: false,
     },
   });
 
@@ -33,13 +46,12 @@ i18n.on('languageChanged', (lng) => {
   if (typeof document !== 'undefined') {
     const isAr = lng === 'ar';
     document.documentElement.setAttribute('dir', isAr ? 'rtl' : 'ltr');
-    document.documentElement.setAttribute('lang', lng);
+    document.documentElement.setAttribute('lang', lng || 'ar');
   }
 });
 
 // Set initial html attributes
 if (typeof document !== 'undefined') {
-  const initialLng = i18n.language || 'ar';
   document.documentElement.setAttribute('dir', initialLng === 'ar' ? 'rtl' : 'ltr');
   document.documentElement.setAttribute('lang', initialLng);
 }

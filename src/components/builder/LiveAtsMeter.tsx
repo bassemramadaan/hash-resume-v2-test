@@ -132,66 +132,71 @@ export const LiveAtsMeter: React.FC = () => {
       : 'bg-rose-500';
 
   return (
-    <div className="relative">
-      {/* Live ATS Pill Button */}
+    <div className="relative inline-flex items-center">
+      {/* Modern Executive ATS Meter Chip */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold shadow-2xs transition cursor-pointer hover:shadow-xs active:scale-98 ${scoreColor}`}
-        title={isAr ? 'مؤشر فحص جودة ATS اللحظي' : 'Live Real-time ATS Scan Meter'}
+        className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100/90 hover:bg-slate-200/80 border border-slate-200/80 transition cursor-pointer"
+        title={isAr ? 'مؤشر فحص جودة ATS اللحظي - انقر للتفاصيل' : 'Live ATS Scan - Click for checklist'}
       >
-        <ShieldCheck className="w-4 h-4 shrink-0" />
-        <span className="font-bold ats-score-num">ATS: {metrics.score}%</span>
-        <div className="w-12 h-1.5 bg-slate-200 rounded-full overflow-hidden hidden sm:block">
-          <div
-            className={`h-full ${progressBg} transition-all duration-500 rounded-full`}
-            style={{ width: `${metrics.score}%` }}
-          />
+        <div className="flex items-center gap-1.5">
+          <span className={`w-2 h-2 rounded-full ${metrics.score >= 80 ? 'bg-emerald-500 ring-2 ring-emerald-200' : 'bg-orange-500 ring-2 ring-orange-200'}`} />
+          <span className="text-[11px] font-bold text-slate-700">ATS</span>
         </div>
-        {isOpen ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+        <span className={`text-xs font-black px-1.5 py-0.5 rounded-md ${metrics.score >= 80 ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-[#FF4D2D]'}`}>
+          {metrics.score}%
+        </span>
       </button>
 
-      {/* Dropdown Recommendations Popover */}
+      {/* Modern Executive Dropdown Recommendations Popover */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            initial={{ opacity: 0, y: 6, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            exit={{ opacity: 0, y: 6, scale: 0.98 }}
             transition={{ duration: 0.15 }}
             className={`absolute top-full mt-2 ${
               isAr ? 'left-0 sm:left-auto sm:right-0' : 'right-0 sm:right-auto sm:left-0'
-            } z-50 w-80 sm:w-96 bg-white rounded-2xl shadow-xl border border-slate-200 p-4 space-y-3.5 text-slate-800 text-xs`}
+            } z-50 w-80 sm:w-96 bg-white border border-slate-200/90 rounded-2xl p-4 space-y-3.5 text-slate-800 text-xs shadow-xl shadow-slate-900/10`}
           >
             {/* Popover Header */}
-            <div className="flex items-center justify-between border-b pb-2.5 border-slate-100">
+            <div className="flex items-center justify-between border-b pb-3 border-slate-100">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-[#001639]" />
-                <span className="font-bold text-[#0B1120]">
-                  {isAr ? 'تحليل جودة السيرة لـ ATS' : 'Real-time ATS Readiness'}
-                </span>
+                <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-[#001639]">
+                  <ShieldCheck className="w-4 h-4 text-[#FF4D2D]" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm text-[#001639]">
+                    {isAr ? 'تحليل جودة السيرة لـ ATS' : 'Real-time ATS Readiness'}
+                  </h4>
+                  <p className="text-[11px] text-slate-400">
+                    {isAr ? 'توافق الفرز والأنظمة الآلية' : 'Parser compatibility score'}
+                  </p>
+                </div>
               </div>
-              <span className={`px-2 py-0.5 rounded-full font-bold text-xs ${scoreColor}`}>
+              <span className={`font-bold text-xs px-2.5 py-1 rounded-full ${metrics.score >= 80 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-orange-50 text-[#FF4D2D] border border-orange-200'}`}>
                 {metrics.score}% {isAr ? 'جاهزية' : 'Ready'}
               </span>
             </div>
 
             {/* Progress bar */}
-            <div className="space-y-1">
-              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+            <div className="space-y-1.5">
+              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200/60 p-0.5">
                 <div
-                  className={`h-full ${progressBg} transition-all duration-500 rounded-full`}
+                  className="h-full bg-gradient-to-r from-[#FF4D2D] to-emerald-500 rounded-full transition-all duration-300"
                   style={{ width: `${metrics.score}%` }}
                 />
               </div>
-              <p className="text-xs text-slate-600 font-medium">
+              <p className="text-[11px] text-slate-500">
                 {metrics.score >= 85
                   ? isAr
-                    ? '🎉 سيرتك الذاتية مطابقة لمعايير الفرز الآلي بنسبة ممتازة!'
-                    : '🎉 Your resume has exceptional ATS compatibility!'
+                    ? 'سيرتك الذاتية مطابقة لمعايير الفرز الآلي بنسبة ممتازة.'
+                    : 'Your resume has exceptional ATS compatibility.'
                   : isAr
-                  ? '⚡ اتبع التوصيات أدناه لرفع نسبة القبول وتخطي الفلترة الآلية:'
-                  : '⚡ Follow the quick tips below to boost parser score:'}
+                  ? 'اتبع التوصيات أدناه لرفع نسبة القبول وتخطي الفلترة الآلية:'
+                  : 'Follow the quick tips below to boost parser score:'}
               </p>
             </div>
 
@@ -200,22 +205,22 @@ export const LiveAtsMeter: React.FC = () => {
               {(metrics.checklist || []).map((item, idx) => (
                 <div
                   key={idx}
-                  className={`p-2.5 rounded-xl border transition flex items-start justify-between gap-2 ${
-                    item.passed ? 'bg-emerald-50/50 border-emerald-200' : 'bg-slate-50 border-slate-200'
+                  className={`p-3 rounded-xl border transition flex items-start justify-between gap-2.5 ${
+                    item.passed ? 'bg-emerald-50/50 border-emerald-200/70' : 'bg-slate-50/80 border-slate-200/70'
                   }`}
                 >
-                  <div className="flex items-start gap-2 min-w-0">
+                  <div className="flex items-start gap-2.5 min-w-0">
                     {item.passed ? (
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                     ) : (
-                      <AlertCircle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                      <AlertCircle className="w-4 h-4 text-[#FF4D2D] shrink-0 mt-0.5" />
                     )}
                     <div className="space-y-0.5 min-w-0">
-                      <div className="font-semibold text-xs text-[#0B1120]">
+                      <div className="font-bold text-xs text-slate-800">
                         {isAr ? item.titleAr : item.titleEn}
                       </div>
                       {!item.passed && (
-                        <div className="text-xs text-slate-600 leading-normal font-normal">
+                        <div className="text-[11px] text-slate-500 leading-normal font-normal">
                           {isAr ? item.tipAr : item.tipEn}
                         </div>
                       )}
@@ -229,7 +234,7 @@ export const LiveAtsMeter: React.FC = () => {
                         setActiveTab(item.id as any);
                         setIsOpen(false);
                       }}
-                      className="px-2.5 py-1 bg-white hover:bg-slate-100 text-[#001639] border border-slate-300 rounded-lg text-xs font-semibold shrink-0 cursor-pointer shadow-2xs"
+                      className="px-2.5 py-1 bg-[#001639] hover:bg-slate-800 text-white rounded-lg text-xs font-bold shrink-0 cursor-pointer transition shadow-2xs"
                     >
                       {isAr ? 'تحسين' : 'Fix'}
                     </button>
@@ -239,22 +244,22 @@ export const LiveAtsMeter: React.FC = () => {
             </div>
 
             {/* Footer quick action */}
-            <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+            <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs">
               <button
                 type="button"
                 onClick={() => {
                   setActiveTab('ats');
                   setIsOpen(false);
                 }}
-                className="text-[#001639] font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                className="text-[#001639] hover:text-[#FF4D2D] font-bold flex items-center gap-1.5 cursor-pointer transition"
               >
                 <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
-                <span>{isAr ? 'فحص ATS العميق مع إعلان الوظيفة' : 'Deep ATS Scan with Job Post'}</span>
+                <span>{isAr ? 'فحص ATS الشامل مع إعلان الوظيفة' : 'Deep ATS Scan with Job Post'}</span>
               </button>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer"
+                className="text-slate-400 hover:text-slate-600 text-xs font-mono cursor-pointer transition"
               >
                 {isAr ? 'إغلاق' : 'Close'}
               </button>

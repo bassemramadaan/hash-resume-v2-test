@@ -45,62 +45,36 @@ export const CertificationsForm: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 text-slate-800 w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content" aria-live="polite">
-      {/* Header */}
-      <div className="border-b pb-3.5 border-slate-100">
-        <h2 className="text-base font-bold text-[#001639] flex items-center gap-2">
-          <Award className="w-4 h-4 text-[#FF4D2D]" />
-          <span>{isAr ? 'الشهادات والدورات' : 'Certifications & Courses'}</span>
-        </h2>
-        <p className="text-xs text-slate-600 mt-0.5">
-          {isAr
-            ? 'أضف الشهادات المهنية والدورات التدريبية المعتمدة'
-            : 'Add verified credentials and professional certifications'}
-        </p>
+    <div className="space-y-4 text-slate-800 w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content" aria-live="polite">
+      {/* Top Header Label */}
+      <div className="flex items-center justify-between pb-1">
+        <span className="text-xs font-bold text-slate-700">
+          {isAr ? `الشهادات والدورات (${certs.length})` : `Certifications & Courses (${certs.length})`}
+        </span>
       </div>
-
-      {/* Next Action in Section */}
-      <NextStepBanner
-        variant="section"
-        isAr={isAr}
-        stepTextAr={
-          certs.length === 0
-            ? 'أضف أي شهادة أو تدريب معتمد لإثبات تخصصك (اختياري لكن يُعزز التقييم).'
-            : 'شهاداتك مضافة بنجاح! انتقل للمشاريع أو قوالب السيرة الذاتية.'
-        }
-        stepTextEn={
-          certs.length === 0
-            ? 'Add professional certifications to boost credibility (optional).'
-            : 'Certifications added! Move to Projects or Templates.'
-        }
-      />
 
       {/* Add New Form */}
       <form
         onSubmit={handleAdd}
-        className="p-4 sm:p-5 bg-slate-50/50 border border-slate-200 rounded-xl space-y-4 shadow-2xs"
+        className="p-4 sm:p-5 bg-slate-50/70 border border-slate-200/80 rounded-2xl space-y-3.5 shadow-2xs"
       >
-        <h3 className="text-xs font-bold text-slate-900">
-          {isAr ? 'إضافة شهادة جديدة' : 'Add New Certification'}
-        </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           <div className="space-y-1">
-            <label className="block text-xs font-semibold text-slate-700">
-              {isAr ? 'اسم الشهادة / الدورة' : 'Certification Title'} <span className="text-rose-500 font-bold">*</span>
+            <label className="block text-xs font-bold text-slate-700">
+              {isAr ? 'اسم الشهادة / الدورة' : 'Certification Title'} <span className="text-[#FF4D2D] font-bold">*</span>
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={isAr ? 'AWS Certified Solutions Architect' : 'AWS Certified Solutions Architect'}
-              className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-500 outline-none transition"
+              className="w-full px-3.5 h-11 bg-white hover:border-slate-300 focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 rounded-xl text-sm font-ibm-sans text-slate-900 placeholder:text-slate-400 outline-none transition shadow-2xs"
               required
             />
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-semibold text-slate-700">
+            <label className="block text-xs font-bold text-slate-700">
               {isAr ? 'الجهة المانحة' : 'Issuing Organization'}
             </label>
             <input
@@ -108,42 +82,44 @@ export const CertificationsForm: React.FC = () => {
               value={issuer}
               onChange={(e) => setIssuer(e.target.value)}
               placeholder={isAr ? 'Amazon Web Services / Google' : 'Amazon Web Services'}
-              className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-500 outline-none transition"
+              className="w-full px-3.5 h-11 bg-white hover:border-slate-300 focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 rounded-xl text-sm font-ibm-sans text-slate-900 placeholder:text-slate-400 outline-none transition shadow-2xs"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-semibold text-slate-700">
+            <label className="block text-xs font-bold text-slate-700">
               {isAr ? 'تاريخ الإصدار' : 'Issue Date'}
             </label>
             <input
               type="text"
+              dir="ltr"
               value={date}
               onChange={(e) => setDate(e.target.value)}
               placeholder="05/2024"
-              className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-500 outline-none transition"
+              className="w-full px-3.5 h-11 bg-white hover:border-slate-300 focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 rounded-xl text-xs sm:text-sm font-mono text-slate-900 placeholder:text-slate-400 outline-none transition shadow-2xs"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="block text-xs font-semibold text-slate-700">
+            <label className="block text-xs font-bold text-slate-700">
               {isAr ? 'رابط التحقق (اختياري)' : 'Credential Link (Optional)'}
             </label>
             <input
               type="url"
+              dir="ltr"
               inputMode="url"
               autoCapitalize="none"
               value={credentialUrl}
               onChange={(e) => setCredentialUrl(e.target.value)}
               placeholder="https://coursera.org/verify/..."
-              className="w-full px-3.5 min-h-[44px] h-11 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-sm font-medium text-slate-900 placeholder:text-slate-500 outline-none transition"
+              className="w-full px-3.5 h-11 bg-white hover:border-slate-300 focus:bg-white border border-slate-200 focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 rounded-xl text-xs sm:text-sm font-mono text-slate-900 placeholder:text-slate-400 outline-none transition shadow-2xs"
             />
           </div>
         </div>
 
         <button
           type="submit"
-          className="px-4 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5 cursor-pointer min-h-[44px] active:scale-95 shadow-xs"
+          className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 bg-[#001639] hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition cursor-pointer shadow-2xs active:scale-98"
         >
           <Plus className="w-4 h-4 text-[#FF4D2D]" />
           <span>{isAr ? 'إضافة الشهادة' : 'Add Certification'}</span>
@@ -152,35 +128,30 @@ export const CertificationsForm: React.FC = () => {
 
       {/* Certifications List */}
       {certs.length > 0 && (
-        <div className="space-y-3">
-          <h3 className="font-bold text-xs text-slate-900">
-            {isAr ? 'الشهادات المضافة:' : 'Added Certifications:'}
-          </h3>
-          <div className="space-y-2">
-            {(certs || []).map((cert, cIdx) => (
-              <div
-                key={cert.id}
-                className="p-3.5 border border-slate-200 rounded-xl bg-white flex items-center justify-between gap-3 shadow-2xs"
-              >
-                <div>
-                  <div className="font-semibold text-xs text-slate-900">{cert.title}</div>
-                  <div className="text-xs text-slate-600 font-normal">
-                    {cert.issuer} {cert.date ? `• ${cert.date}` : ''}
-                  </div>
+        <div className="space-y-2.5 pt-2">
+          {(certs || []).map((cert, cIdx) => (
+            <div
+              key={cert.id}
+              className="p-3.5 border border-slate-200/90 rounded-2xl bg-white flex items-center justify-between gap-3 hover:border-slate-300 transition shadow-2xs"
+            >
+              <div>
+                <div className="font-tajawal font-bold text-xs sm:text-sm text-slate-900">{cert.title}</div>
+                <div className="text-xs text-slate-500 font-normal">
+                  {cert.issuer} {cert.date ? `• ${cert.date}` : ''}
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => handleDeleteCert(cert, cIdx)}
-                  className="p-1 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-md transition cursor-pointer"
-                  title={isAr ? 'حذف الشهادة' : 'Delete certification'}
-                  aria-label={isAr ? 'حذف الشهادة' : 'Delete certification'}
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
               </div>
-            ))}
-          </div>
+
+              <button
+                type="button"
+                onClick={() => handleDeleteCert(cert, cIdx)}
+                className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                title={isAr ? 'حذف الشهادة' : 'Delete certification'}
+                aria-label={isAr ? 'حذف الشهادة' : 'Delete certification'}
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
         </div>
       )}
     </div>

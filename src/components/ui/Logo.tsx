@@ -70,7 +70,7 @@ export const Logo: React.FC<LogoProps> = ({
     if (variant === 'icon') {
       return (
         <span
-          className={`inline-flex items-center justify-center rounded-xl bg-[#001639] font-black text-white ${
+          className={`inline-flex shrink-0 items-center justify-center rounded-xl bg-[#001639] font-black text-white ${
             size === 'sm' ? 'w-8 h-8 text-sm' : size === 'lg' ? 'w-12 h-12 text-xl' : size === 'xl' ? 'w-16 h-16 text-2xl' : 'w-10 h-10 text-base'
           } ${className}`}
           title="Hash Resume"
@@ -82,12 +82,12 @@ export const Logo: React.FC<LogoProps> = ({
 
     return (
       <span
-        className={`inline-flex items-center gap-2 font-brand font-extrabold tracking-tight ${textColor} ${
+        className={`inline-flex shrink-0 items-center gap-2 font-brand font-extrabold tracking-tight ${textColor} ${
           size === 'sm' ? 'text-lg' : size === 'lg' ? 'text-3xl' : size === 'xl' ? 'text-4xl' : 'text-2xl'
         } ${className}`}
       >
-        <span className="bg-[#001639] text-white rounded-lg px-2 py-0.5 text-sm font-black">#</span>
-        <span>Hash Resume</span>
+        <span className="bg-[#001639] text-white rounded-lg px-2 py-0.5 text-sm font-black shrink-0">#</span>
+        <span className="shrink-0">Hash Resume</span>
       </span>
     );
   }
@@ -98,7 +98,7 @@ export const Logo: React.FC<LogoProps> = ({
       alt="Hash Resume"
       loading={loading}
       onError={() => setImageError(true)}
-      className={`object-contain transition-all duration-200 ${getSizeClasses()} ${className}`}
+      className={`object-contain shrink-0 transition-all duration-200 ${getSizeClasses()} ${className}`}
     />
   );
 };

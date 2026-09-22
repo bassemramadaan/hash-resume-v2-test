@@ -581,7 +581,7 @@ export const ActivationModal: React.FC = () => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs transition-opacity"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/60 backdrop-blur-sm transition-opacity"
       onClick={(e) => {
         if (e.target === e.currentTarget && paymentStep !== 'activating') {
           setIsActivationModalOpen(false);
@@ -593,69 +593,79 @@ export const ActivationModal: React.FC = () => {
         role="dialog"
         aria-modal="true"
         dir={isAr ? 'rtl' : 'ltr'}
-        className="w-full max-w-lg bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden text-slate-800 my-auto max-h-[90vh] flex flex-col payment-modal"
+        className="w-full max-w-lg bg-white border border-slate-100 rounded-3xl shadow-2xl overflow-hidden text-slate-800 my-auto max-h-[92vh] flex flex-col payment-modal"
       >
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 bg-white sticky top-0 z-10 shrink-0">
+        {/* Top Accent Gradient Bar */}
+        <div className="h-1.5 w-full bg-gradient-to-r from-[#001639] via-[#FF4D2D] to-[#001639] shrink-0" />
+
+        {/* Modal Header */}
+        <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 bg-white/95 backdrop-blur-xs sticky top-0 z-10 shrink-0">
           <div className="flex items-center gap-3">
             {paymentStep !== 'payment_details' && paymentStep !== 'activating' && paymentStep !== 'approved' && (
               <button
                 type="button"
                 onClick={() => setPaymentStep('payment_details')}
-                className="w-11 h-11 flex items-center justify-center text-slate-400 hover:text-[#001639] hover:bg-slate-100 rounded-xl transition cursor-pointer focus-visible:ring-2 focus-visible:ring-[#001639]"
+                className="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-[#001639] hover:bg-slate-100 rounded-full transition cursor-pointer"
                 aria-label={isAr ? 'الرجوع لاختيار الباقة' : 'Back to plans'}
               >
-                {isAr ? <ArrowRight className="w-5 h-5" /> : <ArrowLeft className="w-5 h-5" />}
+                {isAr ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
               </button>
             )}
             <div>
-              <h3 className="font-extrabold text-base sm:text-lg text-[#0B1120]">
-                {paymentStep === 'error' ? labels.errorTitle : labels.modalTitle}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3 className="font-tajawal font-extrabold text-base sm:text-lg text-[#001639]">
+                  {paymentStep === 'error' ? labels.errorTitle : labels.modalTitle}
+                </h3>
+                <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                  <span>{isAr ? 'تفعيل فوري' : 'Instant'}</span>
+                </span>
+              </div>
             </div>
           </div>
           <button
             type="button"
             onClick={() => setIsActivationModalOpen(false)}
             disabled={paymentStep === 'activating'}
-            className="w-11 h-11 flex items-center justify-center text-slate-400 hover:text-[#0B1120] hover:bg-slate-100 rounded-xl transition cursor-pointer disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-[#001639]"
+            className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-full transition cursor-pointer disabled:opacity-50"
             aria-label={isAr ? 'إغلاق النافذة' : 'Close modal'}
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="p-5 overflow-y-auto space-y-5 custom-scrollbar flex-1">
+        <div className="p-5 sm:p-6 overflow-y-auto space-y-5 custom-scrollbar flex-1">
           {paymentStep === 'payment_details' && (
             <div className="space-y-5">
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="block text-xs font-bold text-slate-800">{labels.step1Title}</label>
-                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                  <label className="block font-tajawal font-bold text-xs sm:text-sm text-slate-800">{labels.step1Title}</label>
+                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
                     {labels.oneTimeNotice}
                   </span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                    {/* Single Download Plan (50 EGP) */}
+                  {/* Single Download Plan (50 EGP) */}
                   <div
                     onClick={() => setSelectedPlan('single')}
-                    className={`p-4 rounded-2xl border-2 cursor-pointer flex flex-col justify-between payment-plan-card ${
+                    className={`p-4 rounded-2xl border-2 cursor-pointer flex flex-col justify-between payment-plan-card transition-all ${
                       selectedPlan === 'single'
-                        ? 'border-[#001639] bg-slate-50/90 shadow-sm ring-1 ring-[#001639]/20 is-selected'
+                        ? 'border-[#001639] bg-slate-50/70 shadow-sm ring-2 ring-[#001639]/10'
                         : 'border-slate-200 hover:border-slate-300 bg-white'
                     }`}
                   >
                     <div>
                       <div className="flex justify-between items-start mb-1">
                         <div>
-                          <h4 className="font-extrabold text-xs sm:text-sm text-[#001639]">
+                          <h4 className="font-tajawal font-bold text-sm text-[#001639]">
                             {labels.singleTitle}
                           </h4>
                           <p className="text-[11px] text-slate-500">{labels.singleSub}</p>
                         </div>
-                        <span className="font-black text-[#001639] text-base shrink-0 payment-amount">{labels.singlePrice}</span>
+                        <span className="font-extrabold text-[#001639] text-base shrink-0 payment-amount">{labels.singlePrice}</span>
                       </div>
 
-                      <ul className="space-y-1.5 my-3 pt-2 border-t border-slate-200/80 text-[11px] text-slate-700">
+                      <ul className="space-y-1.5 my-3 pt-2.5 border-t border-slate-100 text-xs text-slate-600">
                         {labels.singleBullets.map((bullet: string, i: number) => (
                           <li key={i} className="flex items-start gap-1.5">
                             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
@@ -672,13 +682,13 @@ export const ActivationModal: React.FC = () => {
                           e.stopPropagation();
                           setSelectedPlan('single');
                         }}
-                        className={`w-full min-h-[44px] py-2.5 px-3 rounded-xl font-extrabold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#001639] ${
+                        className={`w-full min-h-[38px] py-2 px-3 rounded-xl font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer ${
                           selectedPlan === 'single'
-                            ? 'bg-[#001639] text-white shadow-sm'
-                            : 'bg-[#001639]/10 text-[#001639] hover:bg-[#001639] hover:text-white border border-[#001639]/30'
+                            ? 'bg-[#001639] text-white shadow-xs'
+                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                         }`}
                       >
-                        {selectedPlan === 'single' && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
+                        {selectedPlan === 'single' && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
                         <span>
                           {selectedPlan === 'single'
                             ? (isAr ? 'الباقة المحددة (50 ج.م)' : 'Selected (50 EGP)')
@@ -691,32 +701,35 @@ export const ActivationModal: React.FC = () => {
                   {/* 3-Download Pack Plan (120 EGP) */}
                   <div
                     onClick={() => setSelectedPlan('bundle_3')}
-                    className={`p-4 rounded-2xl border-2 cursor-pointer relative flex flex-col justify-between payment-plan-card ${
+                    className={`p-4 rounded-2xl border-2 cursor-pointer relative flex flex-col justify-between payment-plan-card transition-all ${
                       selectedPlan === 'bundle_3'
-                        ? 'border-[#001639] bg-orange-50/40 shadow-sm ring-1 ring-[#001639]/20 is-selected'
-                        : 'border-[#FF4D2D]/40 hover:border-[#FF4D2D] bg-white'
+                        ? 'border-[#FF4D2D] bg-gradient-to-b from-orange-50/50 via-white to-white shadow-md shadow-orange-500/10 ring-2 ring-[#FF4D2D]/15'
+                        : 'border-slate-200 hover:border-[#FF4D2D]/60 bg-white'
                     }`}
                   >
-                    <span className="absolute -top-3 right-4 rtl:right-auto rtl:left-4 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-[#FF4D2D] text-white shadow-2xs">
+                    <span className="absolute -top-2.5 right-4 rtl:right-auto rtl:left-4 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-gradient-to-r from-[#FF4D2D] to-[#FF6B4A] text-white shadow-xs">
                       {labels.bundleBadge}
                     </span>
 
                     <div>
                       <div className="flex justify-between items-start mb-1 pt-1">
                         <div>
-                          <h4 className="font-extrabold text-xs sm:text-sm text-[#001639]">
+                          <h4 className="font-tajawal font-bold text-sm text-[#001639]">
                             {labels.bundleTitle}
                           </h4>
                           <p className="text-[11px] text-slate-500">{labels.bundleSub}</p>
                         </div>
-                        <span className="font-black text-[#FF4D2D] text-base shrink-0 payment-amount">{labels.bundlePrice}</span>
+                        <div className="text-end">
+                          <span className="text-[10px] text-slate-400 line-through block">150 ج.م</span>
+                          <span className="font-black text-[#FF4D2D] text-base shrink-0 payment-amount">{labels.bundlePrice}</span>
+                        </div>
                       </div>
 
-                      <ul className="space-y-1.5 my-3 pt-2 border-t border-slate-200/80 text-[11px] text-slate-700">
+                      <ul className="space-y-1.5 my-3 pt-2.5 border-t border-slate-100 text-xs text-slate-600">
                         {labels.bundleBullets.map((bullet: string, i: number) => (
                           <li key={i} className="flex items-start gap-1.5">
                             <CheckCircle2 className="w-3.5 h-3.5 text-[#FF4D2D] shrink-0 mt-0.5" />
-                            <span className="leading-tight font-medium">{bullet}</span>
+                            <span className="leading-tight">{bullet}</span>
                           </li>
                         ))}
                       </ul>
@@ -729,13 +742,13 @@ export const ActivationModal: React.FC = () => {
                           e.stopPropagation();
                           setSelectedPlan('bundle_3');
                         }}
-                        className={`w-full min-h-[44px] py-2.5 px-3 rounded-xl font-extrabold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#FF4D2D] ${
+                        className={`w-full min-h-[38px] py-2 px-3 rounded-xl font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer ${
                           selectedPlan === 'bundle_3'
-                            ? 'bg-[#FF4D2D] text-white shadow-sm'
-                            : 'bg-[#FF4D2D]/15 text-[#D03010] hover:bg-[#FF4D2D] hover:text-white border border-[#FF4D2D]/40 font-black'
+                            ? 'bg-[#FF4D2D] text-white shadow-xs'
+                            : 'bg-orange-50 text-[#FF4D2D] hover:bg-orange-100'
                         }`}
                       >
-                        {selectedPlan === 'bundle_3' && <CheckCircle2 className="w-4 h-4 text-white" />}
+                        {selectedPlan === 'bundle_3' && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
                         <span>
                           {selectedPlan === 'bundle_3'
                             ? (isAr ? 'الباقة المحددة (120 ج.م)' : 'Selected Pack (120 EGP)')
@@ -747,18 +760,18 @@ export const ActivationModal: React.FC = () => {
                 </div>
 
                 {/* Pricing Transparency FAQ Accordion */}
-                <div className="p-3.5 bg-slate-50/90 rounded-2xl border border-slate-200/90 space-y-2.5">
-                  <h5 className="font-extrabold text-xs text-[#001639] flex items-center gap-1.5">
-                    <HelpCircle className="w-4 h-4 text-[#FF4D2D]" />
+                <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/70 space-y-2">
+                  <h5 className="font-tajawal font-bold text-xs text-[#001639] flex items-center gap-1.5">
+                    <HelpCircle className="w-3.5 h-3.5 text-[#FF4D2D]" />
                     <span>{isAr ? 'تفاصيل التفعيل وما تشمله الباقة:' : 'Pricing & Plan Details FAQ:'}</span>
                   </h5>
-                  <div className="space-y-2 text-[11px] text-slate-700 leading-relaxed">
+                  <div className="space-y-1.5 text-xs text-slate-600 leading-relaxed">
                     <details className="group cursor-pointer">
-                      <summary className="font-bold text-[#001639] hover:text-[#FF4D2D] transition flex items-center justify-between gap-2 py-0.5 select-none">
+                      <summary className="font-semibold text-slate-700 hover:text-[#001639] transition flex items-center justify-between gap-2 py-0.5 select-none">
                         <span>{isAr ? 'ماذا تشمل باقة الـ 50 ج.م الفردية؟' : 'What does the 50 EGP Single plan include?'}</span>
                         <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-open:rotate-180 transition-transform shrink-0" />
                       </summary>
-                      <p className="pt-1 text-slate-600 ps-2 border-s-2 border-slate-200">
+                      <p className="pt-1 text-slate-500 ps-2.5 border-s-2 border-slate-200">
                         {isAr
                           ? 'تشمل تحميل سيرة ذاتية واحدة بصيغة PDF متوافقة 100% مع أجهزة الـ ATS وتعديلات غير محدودة في نفس الجلسة قبل التحميل النهائي وبدون أي علامات مائية.'
                           : 'Includes 1 high-resolution ATS-friendly vector PDF download without watermark. Unlimited session edits before final download.'}
@@ -766,11 +779,11 @@ export const ActivationModal: React.FC = () => {
                     </details>
 
                     <details className="group cursor-pointer">
-                      <summary className="font-bold text-[#001639] hover:text-[#FF4D2D] transition flex items-center justify-between gap-2 py-0.5 select-none">
+                      <summary className="font-semibold text-slate-700 hover:text-[#001639] transition flex items-center justify-between gap-2 py-0.5 select-none">
                         <span>{isAr ? 'هل الدفع لمرة واحدة أم اشتراك شهري؟' : 'Is this a one-time fee or monthly subscription?'}</span>
                         <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-open:rotate-180 transition-transform shrink-0" />
                       </summary>
-                      <p className="pt-1 text-slate-600 ps-2 border-s-2 border-slate-200">
+                      <p className="pt-1 text-slate-500 ps-2.5 border-s-2 border-slate-200">
                         {isAr
                           ? 'دفع لمرة واحدة فقط لا غير. لا توجد أي اشتراكات متجددة أو رسوم مخفية إطلاقاً.'
                           : '100% one-time payment. Zero recurring subscriptions or hidden charges.'}
@@ -778,11 +791,11 @@ export const ActivationModal: React.FC = () => {
                     </details>
 
                     <details className="group cursor-pointer">
-                      <summary className="font-bold text-[#001639] hover:text-[#FF4D2D] transition flex items-center justify-between gap-2 py-0.5 select-none">
+                      <summary className="font-semibold text-slate-700 hover:text-[#001639] transition flex items-center justify-between gap-2 py-0.5 select-none">
                         <span>{isAr ? 'ماذا لو أردت التعديل مجدداً بعد التحميل؟' : 'What if I want to make changes after downloading?'}</span>
                         <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-open:rotate-180 transition-transform shrink-0" />
                       </summary>
-                      <p className="pt-1 text-slate-600 ps-2 border-s-2 border-slate-200">
+                      <p className="pt-1 text-slate-500 ps-2.5 border-s-2 border-slate-200">
                         {isAr
                           ? 'تُقفل السيرة لحماية النسخة المعتمدة وإذا أردت إجراء تعديلات جديدة يمكنك فتح الملف بشراء رصيد تفعيل إضافي أو اختيار باقة الـ 3 تحميلات الموفرة (120 ج.م).'
                           : 'Your resume is locked post-download to protect your final copy. To make new edits, you can unlock using an extra download credit or choose the 3-download bundle.'}
@@ -793,50 +806,50 @@ export const ActivationModal: React.FC = () => {
               </div>
 
               <div className="space-y-3">
-                <label className="block text-xs font-bold text-slate-800">{labels.step2Title}</label>
-                <div role="tablist" className="grid grid-cols-3 gap-1 p-1 bg-slate-100 rounded-xl text-xs">
-                  <button onClick={() => setTransferMethod('instapay')} className={`py-2.5 px-2 rounded-lg min-h-[44px] flex items-center justify-center cursor-pointer transition font-bold ${transferMethod === 'instapay' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabInstapay}</button>
-                  <button onClick={() => setTransferMethod('vodafone')} className={`py-2.5 px-2 rounded-lg min-h-[44px] flex items-center justify-center cursor-pointer transition font-bold ${transferMethod === 'vodafone' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabVodafone}</button>
-                  <button onClick={() => setTransferMethod('code')} className={`py-2.5 px-2 rounded-lg min-h-[44px] flex items-center justify-center cursor-pointer transition font-bold ${transferMethod === 'code' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabCode}</button>
+                <label className="block font-tajawal font-bold text-xs sm:text-sm text-slate-800">{labels.step2Title}</label>
+                <div role="tablist" className="grid grid-cols-3 gap-1 p-1 bg-slate-100 rounded-2xl text-xs font-bold">
+                  <button onClick={() => setTransferMethod('instapay')} className={`py-2.5 px-2 rounded-xl min-h-[40px] flex items-center justify-center cursor-pointer transition font-bold ${transferMethod === 'instapay' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabInstapay}</button>
+                  <button onClick={() => setTransferMethod('vodafone')} className={`py-2.5 px-2 rounded-xl min-h-[40px] flex items-center justify-center cursor-pointer transition font-bold ${transferMethod === 'vodafone' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabVodafone}</button>
+                  <button onClick={() => setTransferMethod('code')} className={`py-2.5 px-2 rounded-xl min-h-[40px] flex items-center justify-center cursor-pointer transition font-bold ${transferMethod === 'code' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabCode}</button>
                 </div>
 
                 {transferMethod === 'code' ? (
-                  <div className="space-y-4 pt-3 border-t border-slate-200">
-                    <p className="text-xs sm:text-sm font-bold text-slate-800">{labels.enterCodeDesc}</p>
+                  <div className="space-y-4 pt-3 border-t border-slate-100">
+                    <p className="text-xs sm:text-sm font-semibold text-slate-800">{labels.enterCodeDesc}</p>
                     <input
                       type="text"
                       value={inputCode}
                       onChange={(e) => setInputCode(e.target.value)}
                       placeholder={labels.codePlaceholder}
-                      className="w-full px-4 py-3.5 bg-slate-50 border border-slate-300 rounded-xl font-mono uppercase text-base font-bold focus:ring-2 focus:ring-[#001639] outline-none min-h-[48px] payment-ltr-field"
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-mono uppercase text-sm font-bold text-slate-800 focus:bg-white focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 outline-none min-h-[44px] payment-ltr-field transition"
                     />
                     <button
                       onClick={handleVerifyExistingCode}
-                      className="w-full py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold rounded-xl min-h-[48px] shadow-sm active:scale-98 transition flex items-center justify-center gap-2"
+                      className="w-full py-3 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs sm:text-sm rounded-xl min-h-[44px] transition flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-[0.99]"
                     >
-                      <Zap className="w-4 h-4" />
+                      <Zap className="w-4 h-4 text-[#FF4D2D]" />
                       <span>{labels.verifyBtn}</span>
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmitPayment} className="space-y-4 pt-3 border-t border-slate-200">
+                  <form onSubmit={handleSubmitPayment} className="space-y-4 pt-3 border-t border-slate-100">
                     {/* How It Works Mini Banner */}
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5">
-                      <span className="text-[11px] font-bold text-[#001639] flex items-center gap-1.5">
+                    <div className="p-3 bg-slate-50 border border-slate-200/70 rounded-xl space-y-1.5">
+                      <span className="font-tajawal font-bold text-xs text-[#001639] flex items-center gap-1.5">
                         <Zap className="w-3.5 h-3.5 text-[#FF4D2D]" />
                         {labels.howItWorks}
                       </span>
-                      <div className="grid grid-cols-1 gap-1 text-[10px] text-slate-600">
-                        <p className="flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                      <div className="grid grid-cols-1 gap-1 text-[11px] text-slate-600">
+                        <p className="flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                           <span>{labels.step1Guide}</span>
                         </p>
-                        <p className="flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                        <p className="flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                           <span>{labels.step2Guide}</span>
                         </p>
-                        <p className="flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
+                        <p className="flex items-center gap-1.5">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                           <span>{labels.step3Guide}</span>
                         </p>
                       </div>
@@ -844,29 +857,29 @@ export const ActivationModal: React.FC = () => {
 
                     {/* Transfer Details Card for InstaPay */}
                     {transferMethod === 'instapay' && (
-                      <div className="p-3.5 bg-[#001639]/5 border border-[#001639]/15 rounded-2xl space-y-3">
+                      <div className="p-4 bg-gradient-to-br from-[#001639]/5 via-[#001639]/10 to-transparent border border-[#001639]/15 rounded-2xl space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-[#001639] flex items-center gap-1.5">
+                          <span className="font-tajawal font-bold text-xs text-[#001639] flex items-center gap-1.5">
                             <Smartphone className="w-4 h-4 text-[#FF4D2D]" />
                             {labels.instapayHeading}
                           </span>
-                          <span className="text-xs font-black text-[#FF4D2D] payment-amount">
+                          <span className="font-bold text-xs text-[#FF4D2D] payment-amount">
                             {selectedPlan === 'bundle_3' ? '120 ج.م' : '50 ج.م'}
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-600 leading-relaxed">
+                        <p className="text-xs text-slate-600 leading-relaxed">
                           {labels.instapayInstruction}
                         </p>
                         
                         {/* Copy Address Row */}
-                        <div className="flex items-center justify-between gap-2 p-2.5 bg-white border border-slate-200 rounded-xl">
+                        <div className="flex items-center justify-between gap-2 p-2.5 bg-white border border-slate-200 rounded-xl shadow-2xs">
                           <span className="font-mono font-bold text-xs text-[#001639] truncate select-all payment-ltr-field">
                             {INSTAPAY_ADDRESS}
                           </span>
                           <button
                             type="button"
                             onClick={() => handleCopy(INSTAPAY_ADDRESS, 'ipa')}
-                            className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-[#001639] text-xs font-bold rounded-lg flex items-center gap-1 shrink-0 transition"
+                            className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-[#001639] text-xs font-bold rounded-lg flex items-center gap-1 shrink-0 transition cursor-pointer"
                           >
                             {copiedKey === 'ipa' ? (
                               <>
@@ -875,7 +888,7 @@ export const ActivationModal: React.FC = () => {
                               </>
                             ) : (
                               <>
-                                <Copy className="w-3.5 h-3.5" />
+                                <Copy className="w-3.5 h-3.5 text-slate-600" />
                                 <span>{labels.copyBtn}</span>
                               </>
                             )}
@@ -887,7 +900,7 @@ export const ActivationModal: React.FC = () => {
                           href={INSTAPAY_LINK}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-full py-2.5 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-2xs active:scale-98 transition"
+                          className="w-full py-2.5 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 shadow-xs transition active:scale-[0.99]"
                         >
                           <ExternalLink className="w-3.5 h-3.5 text-[#FF4D2D]" />
                           <span>{labels.instapayOpenApp}</span>
@@ -897,29 +910,29 @@ export const ActivationModal: React.FC = () => {
 
                     {/* Transfer Details Card for Vodafone Cash */}
                     {transferMethod === 'vodafone' && (
-                      <div className="p-3.5 bg-rose-50/70 border border-rose-200 rounded-2xl space-y-3">
+                      <div className="p-4 bg-rose-50/70 border border-rose-200 rounded-2xl space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-rose-950 flex items-center gap-1.5">
+                          <span className="font-tajawal font-bold text-xs text-rose-950 flex items-center gap-1.5">
                             <PhoneCall className="w-4 h-4 text-[#FF4D2D]" />
                             {labels.vodafoneHeading}
                           </span>
-                          <span className="text-xs font-black text-[#FF4D2D] payment-amount">
+                          <span className="font-bold text-xs text-[#FF4D2D] payment-amount">
                             {selectedPlan === 'bundle_3' ? '120 ج.م' : '50 ج.م'}
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-600 leading-relaxed">
+                        <p className="text-xs text-slate-600 leading-relaxed">
                           {labels.vodafoneInstruction}
                         </p>
                         
                         {/* Copy Vodafone Number Row */}
-                        <div className="flex items-center justify-between gap-2 p-2.5 bg-white border border-rose-200 rounded-xl">
+                        <div className="flex items-center justify-between gap-2 p-2.5 bg-white border border-rose-200 rounded-xl shadow-2xs">
                           <span className="font-mono font-black text-sm text-[#001639] select-all payment-tabular payment-ltr-field">
                             {VODAFONE_CASH_NUMBER}
                           </span>
                           <button
                             type="button"
                             onClick={() => handleCopy(VODAFONE_CASH_NUMBER, 'voda')}
-                            className="px-3 py-1 bg-rose-100 hover:bg-rose-200 text-rose-900 text-xs font-bold rounded-lg flex items-center gap-1 shrink-0 transition"
+                            className="px-3 py-1 bg-rose-100 hover:bg-rose-200 text-rose-900 text-xs font-bold rounded-lg flex items-center gap-1 shrink-0 transition cursor-pointer"
                           >
                             {copiedKey === 'voda' ? (
                               <>
@@ -928,7 +941,7 @@ export const ActivationModal: React.FC = () => {
                               </>
                             ) : (
                               <>
-                                <Copy className="w-3.5 h-3.5" />
+                                <Copy className="w-3.5 h-3.5 text-rose-700" />
                                 <span>{labels.copyBtn}</span>
                               </>
                             )}
@@ -938,36 +951,36 @@ export const ActivationModal: React.FC = () => {
                     )}
 
                     <div className="space-y-1">
-                      <label className="block text-xs font-bold text-slate-700">{labels.senderLabel}</label>
+                      <label className="block font-bold text-xs text-slate-700">{labels.senderLabel}</label>
                       <input
                         required
                         type="text"
                         value={senderInfo}
                         onChange={(e) => setSenderInfo(e.target.value)}
                         placeholder={labels.senderPlaceholder}
-                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#001639] outline-none min-h-[44px]"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 outline-none min-h-[40px] transition"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="block text-xs font-bold text-slate-700">{labels.emailLabel}</label>
+                      <label className="block font-bold text-xs text-slate-700">{labels.emailLabel}</label>
                       <input
                         required
                         type="email"
                         value={emailInput}
                         onChange={(e) => setEmailInput(e.target.value)}
                         placeholder={labels.emailPlaceholder}
-                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#001639] outline-none min-h-[44px] payment-ltr-field"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 outline-none min-h-[40px] transition payment-ltr-field"
                       />
                     </div>
                     <div className="space-y-1">
-                      <label className="block text-xs font-bold text-slate-700">{labels.refLabel}</label>
+                      <label className="block font-bold text-xs text-slate-700">{labels.refLabel}</label>
                       <input
                         required
                         type="text"
                         value={referenceInput}
                         onChange={(e) => setReferenceInput(e.target.value)}
                         placeholder={labels.refPlaceholder}
-                        className="w-full px-3.5 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:ring-2 focus:ring-[#001639] outline-none min-h-[44px] payment-tabular payment-ltr-field"
+                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 outline-none min-h-[40px] transition payment-tabular payment-ltr-field font-mono"
                       />
                     </div>
 
@@ -975,9 +988,9 @@ export const ActivationModal: React.FC = () => {
                       <button
                         disabled={isSubmitting}
                         type="submit"
-                        className="w-full py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 min-h-[48px] shadow-sm active:scale-98 transition disabled:opacity-70 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#FF4D2D]"
+                        className="w-full py-3.5 bg-gradient-to-r from-[#FF4D2D] to-[#FF6B4A] hover:from-[#E5431F] hover:to-[#FF4D2D] text-white font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 min-h-[46px] shadow-lg shadow-orange-500/20 active:scale-[0.98] transition disabled:opacity-70 cursor-pointer"
                       >
-                        {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                        {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : <Zap className="w-4 h-4 text-white" />}
                         <span>
                           {isSubmitting
                             ? labels.submittingBtn
@@ -991,7 +1004,7 @@ export const ActivationModal: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setPaymentStep('check_status')}
-                      className="w-full py-2.5 min-h-[44px] text-slate-500 hover:text-[#001639] text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer"
+                      className="w-full py-2 min-h-[36px] text-slate-500 hover:text-[#001639] text-xs font-semibold transition flex items-center justify-center gap-1 cursor-pointer"
                     >
                       <span>{labels.alreadyHaveRef}</span>
                     </button>
@@ -1003,32 +1016,34 @@ export const ActivationModal: React.FC = () => {
 
           {paymentStep === 'submitted_pending' && (
             <div className="text-center space-y-4 py-6 animate-in fade-in">
-              <RefreshCw className="w-12 h-12 text-amber-500 mx-auto animate-spin" />
-              <h4 className="text-lg font-black text-slate-800">{labels.pendingTitle}</h4>
-              <p className="text-sm text-slate-600 max-w-xs mx-auto">{labels.pendingDesc}</p>
+              <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mx-auto ring-8 ring-amber-50/50">
+                <RefreshCw className="w-8 h-8 text-amber-500 animate-spin" />
+              </div>
+              <h4 className="text-lg font-bold text-[#001639] font-tajawal">{labels.pendingTitle}</h4>
+              <p className="text-xs sm:text-sm text-slate-600 max-w-xs mx-auto">{labels.pendingDesc}</p>
               
-              <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+              <div className="p-4 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2">
                 <div className="text-[11px] font-bold text-slate-500">{isAr ? 'رقم مرجع التحويل الخاص بك:' : 'Your Transaction Reference Number:'}</div>
-                <div className="inline-flex items-center justify-center gap-2 text-sm font-mono font-black text-[#001639] bg-white px-3 py-1.5 rounded-lg border border-slate-200 shadow-2xs payment-ref payment-ltr-field">
+                <div className="inline-flex items-center justify-center gap-2 text-sm font-mono font-bold text-[#001639] bg-white px-3.5 py-1.5 rounded-xl border border-slate-200 shadow-2xs payment-ref payment-ltr-field">
                   <span>{referenceInput}</span>
                   <button
                     type="button"
                     onClick={() => handleCopy(referenceInput, 'ref')}
-                    className="p-1 text-[#FF4D2D] hover:bg-orange-50 rounded transition flex items-center gap-1 text-xs"
+                    className="p-1 text-[#FF4D2D] hover:bg-orange-50 rounded-lg transition flex items-center gap-1 text-xs cursor-pointer"
                     title={labels.copyBtn}
                   >
-                    {copiedKey === 'ref' ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
-                    <span className="font-sans font-bold">{copiedKey === 'ref' ? labels.copiedBtn : labels.copyBtn}</span>
+                    {copiedKey === 'ref' ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span className="font-bold">{copiedKey === 'ref' ? labels.copiedBtn : labels.copyBtn}</span>
                   </button>
                 </div>
-                <p className="text-[11px] font-semibold text-amber-800 bg-amber-50/80 p-2 rounded-lg leading-relaxed">
+                <p className="text-xs text-amber-800 bg-amber-50/80 p-2.5 rounded-xl border border-amber-200/60 leading-relaxed">
                   {labels.keepRefNotice}
                 </p>
               </div>
 
               <div className="pt-2 space-y-3">
-                <button disabled={isVerifying} onClick={() => handleCheckStatus(referenceInput)} className="w-full py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold rounded-xl flex items-center justify-center gap-2 shadow-sm active:scale-98 transition">
-                  {isVerifying ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
+                <button disabled={isVerifying} onClick={() => handleCheckStatus(referenceInput)} className="w-full py-3.5 bg-gradient-to-r from-[#FF4D2D] to-[#FF6B4A] hover:from-[#E5431F] hover:to-[#FF4D2D] text-white font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 active:scale-[0.98] transition cursor-pointer min-h-[46px]">
+                  {isVerifying ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : <Zap className="w-4 h-4 text-white" />}
                   {labels.checkStatusBtn}
                 </button>
                 
@@ -1038,33 +1053,33 @@ export const ActivationModal: React.FC = () => {
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition"
+                  className="w-full py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition min-h-[40px]"
                 >
                   <PhoneCall className="w-3.5 h-3.5 text-emerald-600" />
                   <span>{isAr ? 'تأكيد فوري عبر واتساب (دعم حي)' : 'Instant Confirmation via WhatsApp'}</span>
                 </a>
 
-                <button onClick={() => setPaymentStep('check_status')} className="text-xs font-bold text-slate-500 hover:text-slate-800">{labels.alreadyHaveRef}</button>
+                <button onClick={() => setPaymentStep('check_status')} className="text-xs font-semibold text-slate-500 hover:text-slate-800 cursor-pointer">{labels.alreadyHaveRef}</button>
               </div>
             </div>
           )}
 
           {paymentStep === 'check_status' && (
             <div className="space-y-4 py-4 animate-in fade-in">
-              <h4 className="text-lg font-black text-slate-800">{labels.checkStatusTitle}</h4>
-              <p className="text-sm text-slate-600">{labels.checkStatusDesc}</p>
+              <h4 className="text-base sm:text-lg font-bold font-tajawal text-[#001639]">{labels.checkStatusTitle}</h4>
+              <p className="text-xs sm:text-sm text-slate-600">{labels.checkStatusDesc}</p>
               <div className="space-y-1">
                 <input
                   type="text"
                   value={referenceInput}
                   onChange={(e) => setReferenceInput(e.target.value)}
                   placeholder={labels.refPlaceholder}
-                  className="w-full px-4 py-3 bg-slate-50 border rounded-xl font-mono text-sm payment-ltr-field payment-tabular"
+                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-mono text-sm text-slate-800 payment-ltr-field payment-tabular focus:bg-white focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 outline-none transition"
                 />
-                <p className="text-[11px] text-slate-500 font-medium">{labels.keepRefNotice}</p>
+                <p className="text-[11px] text-slate-500">{labels.keepRefNotice}</p>
               </div>
-              <button disabled={isVerifying} onClick={() => handleCheckStatus(referenceInput)} className="w-full py-3 bg-[#001639] text-white font-bold rounded-xl flex items-center justify-center gap-2">
-                {isVerifying ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+              <button disabled={isVerifying} onClick={() => handleCheckStatus(referenceInput)} className="w-full py-3 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 cursor-pointer shadow-xs min-h-[44px]">
+                {isVerifying ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : null}
                 {labels.checkStatusBtn}
               </button>
             </div>
@@ -1072,52 +1087,52 @@ export const ActivationModal: React.FC = () => {
 
           {paymentStep === 'approved' && (
             <div className="text-center space-y-6 py-6 animate-in fade-in">
-              <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto ring-8 ring-emerald-50/50 saved-check">
+              <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto ring-8 ring-emerald-50/60 saved-check">
                 <CheckCircle2 className="w-10 h-10 text-emerald-500" />
               </div>
 
-              <div className="space-y-2">
-                <h4 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">
+              <div className="space-y-1.5">
+                <h4 className="text-xl sm:text-2xl font-black font-tajawal text-[#001639] tracking-tight">
                   {labels.approvedTitle}
                 </h4>
-                <p className="text-sm font-medium text-slate-600 max-w-sm mx-auto leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
                   {labels.approvedNote}
                 </p>
               </div>
 
-              <div className="pt-2 section-enter">
+              <div className="pt-2">
                 <button
                   disabled={isVerifying}
                   onClick={handleVerifiedDownload}
-                  className="w-full py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-sm sm:text-base rounded-xl shadow-lg hover:shadow-xl flex items-center justify-center gap-2.5 transform transition active:scale-98 disabled:opacity-75 disabled:pointer-events-none cursor-pointer"
+                  className="w-full py-4 bg-gradient-to-r from-[#FF4D2D] to-[#FF6B4A] hover:from-[#E5431F] hover:to-[#FF4D2D] text-white font-bold text-sm sm:text-base rounded-xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2.5 transition active:scale-[0.98] disabled:opacity-75 disabled:pointer-events-none cursor-pointer min-h-[48px]"
                 >
                   {isVerifying ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-5 h-5 animate-spin text-white" />
                   ) : (
-                    <Download className="w-5 h-5" />
+                    <Download className="w-5 h-5 text-white" />
                   )}
                   <span>{labels.downloadResumeBtn}</span>
                 </button>
               </div>
 
               {remainingCodes.length > 0 && (
-                <div className="mt-4 p-4 bg-slate-50 border rounded-xl space-y-3 text-start">
-                  <div className="flex items-center gap-2 text-sm font-bold text-slate-800">
-                    <KeyRound className="w-4 h-4" />
+                <div className="mt-4 p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3 text-start">
+                  <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-800">
+                    <KeyRound className="w-4 h-4 text-[#FF4D2D]" />
                     {labels.additionalCodesTitle}
                   </div>
                   <p className="text-xs text-slate-600">{labels.additionalCodesNote}</p>
                   <div className="space-y-2">
                     {remainingCodes.map((c, i) => (
-                      <div key={i} className="flex justify-between items-center p-2 bg-white border rounded-lg">
-                        <span className="font-mono font-bold text-sm">{c}</span>
-                        <button onClick={() => handleCopy(c, `rem_${i}`)} className="text-slate-500 hover:text-slate-800">
-                          {copiedKey === `rem_${i}` ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      <div key={i} className="flex justify-between items-center p-2.5 bg-white border border-slate-200 rounded-xl shadow-2xs">
+                        <span className="font-mono font-bold text-xs text-[#001639]">{c}</span>
+                        <button onClick={() => handleCopy(c, `rem_${i}`)} className="text-slate-500 hover:text-slate-800 cursor-pointer">
+                          {copiedKey === `rem_${i}` ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
                         </button>
                       </div>
                     ))}
                   </div>
-                  <p className="text-xs font-bold text-amber-700 bg-amber-50 p-2 rounded-lg">{labels.saveWarning}</p>
+                  <p className="text-xs font-bold text-amber-800 bg-amber-50 p-2.5 rounded-xl border border-amber-200/60">{labels.saveWarning}</p>
                 </div>
               )}
             </div>
@@ -1126,13 +1141,13 @@ export const ActivationModal: React.FC = () => {
           {paymentStep === 'activating' && (
             <div className="text-center space-y-5 py-8 animate-in fade-in">
               <div className="relative w-20 h-20 mx-auto flex items-center justify-center">
-                <div className="absolute inset-0 rounded-full border-4 border-amber-100 border-t-[#FF4D2D] animate-spin" />
+                <div className="absolute inset-0 rounded-full border-4 border-orange-100 border-t-[#FF4D2D] animate-spin" />
                 <span className="text-2xl font-black text-[#001639] animate-bounce">
                   {countdown > 0 ? countdown : '✓'}
                 </span>
               </div>
               <div className="space-y-1.5">
-                <h4 className="text-base font-extrabold text-[#001639]">
+                <h4 className="text-base sm:text-lg font-bold font-tajawal text-[#001639]">
                   {labels.downloadingPdf}
                 </h4>
                 <p className="text-xs text-slate-500 max-w-xs mx-auto">
@@ -1151,12 +1166,12 @@ export const ActivationModal: React.FC = () => {
               </div>
 
               <div className="space-y-1">
-                <h4 className="text-lg font-black text-slate-800">
+                <h4 className="text-base sm:text-lg font-bold font-tajawal text-slate-800">
                   {errorType === 'not_found'
                     ? (isAr ? 'لم يتم العثور على رقم المعاملة بعد' : 'Reference Not Found Yet')
                     : labels.errorTitle}
                 </h4>
-                <p className="text-xs sm:text-sm text-slate-600 bg-rose-50/70 p-3.5 rounded-xl border border-rose-200/80 leading-relaxed text-start">
+                <p className="text-xs sm:text-sm text-slate-600 bg-rose-50/70 p-3.5 rounded-2xl border border-rose-200/80 leading-relaxed text-start">
                   {errorType === 'not_found'
                     ? (isAr
                       ? 'إذا قمت بالتحويل للتو عبر إنستاباي أو فودافون كاش، يرجى تسجيل بيانات التحويل الخاصة بك لتأكيد الدفع فوراً، أو إدخال كود تفعيل إذا كان لديك كود مسبق.'
@@ -1171,9 +1186,9 @@ export const ActivationModal: React.FC = () => {
                 onClick={() => {
                   setPaymentStep('payment_details');
                 }}
-                className="w-full py-3.5 px-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 shadow-sm transition active:scale-98 cursor-pointer"
+                className="w-full py-3.5 px-4 bg-gradient-to-r from-[#FF4D2D] to-[#FF6B4A] hover:from-[#E5431F] hover:to-[#FF4D2D] text-white font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 transition active:scale-[0.98] cursor-pointer min-h-[46px]"
               >
-                <Zap className="w-4 h-4" />
+                <Zap className="w-4 h-4 text-white" />
                 <span>{isAr ? 'سجّل بيانات التحويل الآن لتأكيد الدفع والتفعيل' : 'Submit Transfer Details to Confirm Payment'}</span>
               </button>
 
@@ -1184,7 +1199,7 @@ export const ActivationModal: React.FC = () => {
                   setTransferMethod('code');
                   setPaymentStep('payment_details');
                 }}
-                className="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition cursor-pointer"
+                className="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition cursor-pointer min-h-[40px]"
               >
                 <KeyRound className="w-4 h-4 text-amber-600" />
                 <span>{isAr ? 'هل لديك كود تفعيل مباشر؟ اضغط هنا لإدخاله' : 'Have an activation code? Enter it here'}</span>
@@ -1199,7 +1214,7 @@ export const ActivationModal: React.FC = () => {
                 )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 shadow-sm transition"
+                className="w-full py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 shadow-sm transition min-h-[40px]"
               >
                 <PhoneCall className="w-4 h-4" />
                 <span>{isAr ? 'تأكيد فوري عبر واتساب (دعم حي)' : labels.whatsappSupportBtn}</span>
@@ -1210,7 +1225,7 @@ export const ActivationModal: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setPaymentStep('check_status')}
-                  className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition"
+                  className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition min-h-[40px]"
                 >
                   {isAr ? 'تعديل رقم المعاملة' : labels.backBtn}
                 </button>
@@ -1218,7 +1233,7 @@ export const ActivationModal: React.FC = () => {
                   type="button"
                   disabled={isVerifying}
                   onClick={() => handleCheckStatus(referenceInput)}
-                  className="flex-1 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5"
+                  className="flex-1 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white font-bold rounded-xl text-xs transition flex items-center justify-center gap-1.5 min-h-[40px]"
                 >
                   {isVerifying ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
                   <span>{labels.retryBtn}</span>
@@ -1232,8 +1247,8 @@ export const ActivationModal: React.FC = () => {
               <div className="w-16 h-16 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto ring-8 ring-amber-50">
                 <ShieldCheck className="w-10 h-10 text-amber-600" />
               </div>
-              <div className="space-y-2">
-                <h4 className="text-lg font-black text-slate-800">
+              <div className="space-y-1.5">
+                <h4 className="text-lg font-bold font-tajawal text-slate-800">
                   {isAr ? 'تم تحميل السيرة الذاتية وقفل التعديل' : 'Resume Downloaded & Locked for Edits'}
                 </h4>
                 <p className="text-xs sm:text-sm text-slate-600 max-w-sm mx-auto leading-relaxed">
@@ -1245,7 +1260,7 @@ export const ActivationModal: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setPaymentStep('payment_details')}
-                className="w-full py-3 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs sm:text-sm rounded-xl transition shadow-sm cursor-pointer"
+                className="w-full py-3 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs sm:text-sm rounded-xl transition shadow-sm cursor-pointer min-h-[44px]"
               >
                 {isAr ? 'شراء تفعيل جديد للتعديل' : 'Purchase New Activation to Edit'}
               </button>

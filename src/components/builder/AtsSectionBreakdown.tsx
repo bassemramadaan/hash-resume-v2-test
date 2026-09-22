@@ -264,40 +264,40 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
   };
 
   return (
-    <div className="space-y-4 text-slate-800" aria-label="Resume Readiness Breakdown">
+    <div className="space-y-4 text-ink" aria-label="Resume Readiness Breakdown">
       {/* Resume Readiness Summary Header */}
-      <div className="bg-gradient-to-r from-[#001639] to-[#00245E] text-white rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+      <div className="bg-paper border border-line rounded-none p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-orange-200 text-xs font-semibold">
-            <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
+          <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-none bg-white border border-line text-ink text-xs font-ibm-sans font-bold">
+            <Sparkles className="w-3.5 h-3.5 text-orange" />
             <span>{isAr ? 'تفصيل جاهزية السيرة الذاتية' : 'Resume readiness breakdown'}</span>
           </div>
-          <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2 flex-wrap">
+          <h3 className="text-base sm:text-lg font-tajawal font-bold text-ink flex items-center gap-2 flex-wrap">
             <span>
               {isAr
                 ? `جاهزية السيرة الذاتية: ${overallScore}/100`
                 : `Resume readiness: ${overallScore}/100`}
             </span>
-            <span className="text-white/60 font-normal text-sm">—</span>
-            <span className={`text-sm font-semibold ${statusObj.color}`}>{statusLabel}</span>
+            <span className="text-line font-normal text-sm">—</span>
+            <span className="text-sm font-ibm-sans font-bold text-ink">{statusLabel}</span>
           </h3>
-          <p className="text-xs text-slate-300">
+          <p className="text-xs font-ibm-sans text-ink-soft">
             {isAr
-              ? 'تعرف على ما يمكنك تحسينه في كل قسم.'
-              : 'See what to improve in each section.'}
+              ? 'تعرف على ما يمكنك تحسينه في كل قسم وفق المعايير الفنية لنظم الفرز الآلي.'
+              : 'See what to improve in each section based on ATS technical specifications.'}
           </p>
         </div>
 
         {/* Big Readiness Meter */}
-        <div className="flex items-center gap-3 bg-white/10 border border-white/15 px-4 py-2.5 rounded-xl self-start sm:self-auto shrink-0">
+        <div className="flex items-center gap-3 bg-white border border-line px-4 py-2.5 rounded-none self-start sm:self-auto shrink-0">
           <div className="text-end">
-            <span className="text-xs text-slate-200 block font-semibold">
-              {isAr ? 'مؤشر الجاهزية' : 'Resume readiness'}
+            <span className="font-ibm-mono text-[10px] text-ink-soft block font-bold uppercase">
+              {isAr ? 'مؤشر الجاهزية' : 'READINESS'}
             </span>
-            <span className="text-xl font-black text-white ats-score-num">{overallScore}/100</span>
-            <span className={`text-xs block font-bold ${statusObj.color}`}>{statusLabel}</span>
+            <span className="font-ibm-mono text-xl font-black text-ink ats-score-num">{overallScore}/100</span>
+            <span className="text-xs font-ibm-sans block font-bold text-ink">{statusLabel}</span>
           </div>
-          <div className="w-12 h-12 rounded-full border-4 border-emerald-400 flex items-center justify-center font-bold text-xs text-white bg-emerald-950/30 shadow-inner ats-score-num">
+          <div className="w-12 h-12 rounded-none border-2 border-ink flex items-center justify-center font-ibm-mono font-black text-xs text-ink bg-paper ats-score-num">
             {overallScore}%
           </div>
         </div>
@@ -311,60 +311,60 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
           const isGood = item.status === 'good';
 
           const scoreBadgeColor = isOptimal
-            ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+            ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
             : isGood
-            ? 'bg-amber-50 text-amber-800 border-amber-200'
-            : 'bg-rose-50 text-rose-800 border-rose-200';
+            ? 'bg-amber-50 text-amber-800 border-amber-300'
+            : 'bg-rose-50 text-rose-800 border-rose-300';
 
           const barColor = isOptimal
-            ? 'bg-emerald-500'
+            ? 'bg-emerald-600'
             : isGood
-            ? 'bg-amber-500'
-            : 'bg-rose-500';
+            ? 'bg-amber-600'
+            : 'bg-rose-600';
 
           const title = isAr ? item.titleAr : lang === 'fr' ? item.titleFr : item.titleEn;
 
           return (
             <div
               key={item.id}
-              className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-2xs hover:border-slate-300 transition space-y-3.5"
+              className="bg-white border border-line rounded-none p-4 sm:p-5 space-y-3.5"
             >
               {/* Card Header: Icon + Title + Score Bar + Jump Button */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-line pb-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-slate-100 text-[#001639] flex items-center justify-center shrink-0">
-                    <ItemIcon className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-none bg-paper border border-line text-ink flex items-center justify-center shrink-0">
+                    <ItemIcon className="w-4 h-4 text-orange" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-xs sm:text-sm text-[#001639]">{title}</h4>
+                    <h4 className="font-tajawal font-bold text-xs sm:text-sm text-ink">{title}</h4>
                     <div className="flex items-center gap-2 mt-1">
-                      <div className="w-20 sm:w-28 h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+                      <div className="w-20 sm:w-28 h-1.5 bg-paper rounded-none overflow-hidden border border-line">
                         <div
-                          className={`h-full ${barColor} transition-all duration-500 rounded-full`}
+                          className={`h-full ${barColor} transition-all duration-500 rounded-none`}
                           style={{ width: `${item.score}%` }}
                         />
                       </div>
-                      <span className="text-xs font-bold text-slate-800 ats-score-num">{item.score}%</span>
+                      <span className="font-ibm-mono text-xs font-bold text-ink ats-score-num">{item.score}%</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 self-end sm:self-center">
-                  <span className={`px-2.5 py-1 text-xs font-bold rounded-lg border ${scoreBadgeColor}`}>
+                  <span className={`px-2 py-0.5 font-ibm-mono text-[10px] font-bold rounded-none border ${scoreBadgeColor}`}>
                     {isOptimal
-                      ? isAr ? 'ممتاز ومطابق ✓' : 'Optimal'
+                      ? isAr ? 'ممتاز ومطابق ✓' : 'OPTIMAL'
                       : isGood
-                      ? isAr ? 'جيد (يحتاج تحسين)' : 'Good'
-                      : isAr ? 'بحاجة لتعديل ⚠️' : 'Needs Fix'}
+                      ? isAr ? 'جيد (يحتاج تحسين)' : 'GOOD'
+                      : isAr ? 'بحاجة لتعديل ⚠️' : 'NEEDS FIX'}
                   </span>
 
                   <button
                     type="button"
                     onClick={() => handleJump(item.sectionKey)}
-                    className="inline-flex items-center gap-1 px-3 py-1 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-lg transition cursor-pointer shrink-0 min-h-[32px] shadow-2xs"
+                    className="inline-flex items-center gap-1 px-3 py-1 bg-ink hover:bg-ink/90 text-white text-xs font-ibm-sans font-bold rounded-none border border-ink transition cursor-pointer shrink-0 min-h-[32px]"
                   >
                     <span>{isAr ? 'تعديل هذا القسم' : 'Edit Section'}</span>
-                    {isAr ? <ArrowLeft className="w-3 h-3 text-[#FF4D2D]" /> : <ArrowRight className="w-3 h-3 text-[#FF4D2D]" />}
+                    {isAr ? <ArrowLeft className="w-3 h-3 text-orange" /> : <ArrowRight className="w-3 h-3 text-orange" />}
                   </button>
                 </div>
               </div>
@@ -373,15 +373,15 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                 {/* Strengths */}
                 {item.strengths.length > 0 && (
-                  <div className="p-3 bg-emerald-50/70 border border-emerald-100 rounded-xl space-y-1.5">
-                    <span className="font-bold text-emerald-900 flex items-center gap-1.5 text-xs">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <div className="p-3 bg-paper border border-line rounded-none space-y-1.5">
+                    <span className="font-tajawal font-bold text-emerald-900 flex items-center gap-1.5 text-xs">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
                       <span>{isAr ? 'نقاط القوة المحققة:' : 'Strengths Met:'}</span>
                     </span>
-                    <ul className="space-y-1 text-xs text-emerald-950/90">
+                    <ul className="space-y-1 font-ibm-sans text-xs text-emerald-950">
                       {item.strengths.map((str, sIdx) => (
                         <li key={sIdx} className="flex items-start gap-1.5">
-                          <span className="text-emerald-600 font-bold">•</span>
+                          <span className="text-emerald-700 font-bold">•</span>
                           <span>{str}</span>
                         </li>
                       ))}
@@ -391,15 +391,15 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
 
                 {/* Actionable Fix Tips */}
                 {item.fixTips.length > 0 && (
-                  <div className="p-3 bg-orange-50/70 border border-orange-200/80 rounded-xl space-y-1.5">
-                    <span className="font-bold text-orange-900 flex items-center gap-1.5 text-xs">
-                      <Target className="w-3.5 h-3.5 text-[#FF4D2D]" />
+                  <div className="p-3 bg-paper border border-line rounded-none space-y-1.5">
+                    <span className="font-tajawal font-bold text-ink flex items-center gap-1.5 text-xs">
+                      <Target className="w-3.5 h-3.5 text-orange" />
                       <span>{isAr ? 'نصائح محددة للإصلاح الفوري:' : 'Specific Actionable Fixes:'}</span>
                     </span>
-                    <ul className="space-y-1 text-xs text-orange-950 font-medium">
+                    <ul className="space-y-1 font-ibm-sans text-xs text-ink-soft font-medium">
                       {item.fixTips.map((tip, tIdx) => (
                         <li key={tIdx} className="flex items-start gap-1.5">
-                          <span className="text-[#FF4D2D] font-bold">→</span>
+                          <span className="text-orange font-bold font-ibm-mono">→</span>
                           <span>{tip}</span>
                         </li>
                       ))}

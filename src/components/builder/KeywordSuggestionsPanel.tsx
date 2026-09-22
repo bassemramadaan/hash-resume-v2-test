@@ -32,7 +32,7 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
   const initialMatchedDomain = findMatchingIndustry(userJobTitle) || INDUSTRY_DOMAINS[0];
 
   const [selectedDomain, setSelectedDomain] = useState<DomainKeywordGroup>(initialMatchedDomain);
-  const [isOpen, setIsOpen] = useState(!compact);
+  const [isOpen, setIsOpen] = useState(false);
   const [showAll, setShowAll] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [addedChips, setAddedChips] = useState<string[]>([]);
@@ -130,33 +130,33 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
   const totalCount = filteredItems.length;
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl shadow-2xs overflow-hidden transition-all text-start">
+    <div className="bg-white border border-line rounded-none overflow-hidden transition-all text-start">
       {/* Accordion Header */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3 bg-slate-50/80 hover:bg-slate-100/90 transition cursor-pointer text-start"
+        className="w-full px-4 sm:px-5 py-3.5 flex items-center justify-between gap-3 bg-paper hover:bg-paper-2 transition cursor-pointer text-start"
         aria-expanded={isOpen}
       >
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-7 h-7 rounded-lg bg-[#001639] text-[#FF4D2D] flex items-center justify-center shadow-2xs shrink-0">
+          <div className="w-6 h-6 rounded-none border border-line bg-white text-orange flex items-center justify-center shrink-0">
             <Sparkles className="w-3.5 h-3.5" />
           </div>
           <div className="min-w-0">
-            <h3 className="text-xs sm:text-sm font-bold text-[#001639] truncate">
+            <h3 className="font-tajawal text-xs sm:text-sm font-bold text-ink truncate">
               {isAr ? 'الكلمات المفتاحية المقترحة لمجالك المستهدف' : 'Suggested keywords for your target role'}
             </h3>
-            <p className="text-xs text-slate-600 truncate hidden sm:block">
+            <p className="font-ibm-sans text-xs text-ink-soft truncate hidden sm:block">
               {isAr ? 'أضف المهارات الموصى بها بنقرة واحدة لرفع درجة التوافق مع ATS' : 'Add recommended keywords with one click to boost ATS compatibility'}
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <span className="text-xs font-semibold text-slate-600 hidden sm:inline">
+          <span className="font-ibm-sans text-xs font-semibold text-ink-soft hidden sm:inline">
             {isOpen ? (isAr ? 'إخفاء' : 'Collapse') : (isAr ? 'عرض المهارات' : 'Show skills')}
           </span>
-          <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-600">
+          <div className="w-6 h-6 rounded-none border border-line bg-white flex items-center justify-center text-ink-soft">
             {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </div>
         </div>
@@ -164,14 +164,14 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
 
       {/* Accordion Body */}
       {isOpen && (
-        <div className="p-4 sm:p-5 space-y-4 border-t border-slate-100">
+        <div className="p-4 sm:p-5 space-y-4 border-t border-line bg-paper">
           {/* Controls Row: Select Industry Dropdown + Search Input + Optional AI Trigger */}
           <div className="flex flex-col gap-2.5 w-full">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 w-full">
               {/* Select Industry */}
               <div className="flex items-center gap-1.5 w-full min-w-0">
-                <label htmlFor="industry-select" className="text-xs font-bold text-slate-700 whitespace-nowrap flex items-center gap-1.5 shrink-0">
-                  <Briefcase className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                <label htmlFor="industry-select" className="text-xs font-ibm-sans font-bold text-ink-soft whitespace-nowrap flex items-center gap-1.5 shrink-0">
+                  <Briefcase className="w-3.5 h-3.5 text-ink-soft shrink-0" />
                   <span>{isAr ? 'المجال:' : 'Industry:'}</span>
                 </label>
                 <select
@@ -185,7 +185,7 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
                       setShowAll(false);
                     }
                   }}
-                  className="flex-1 w-full min-w-0 px-2.5 py-1.5 h-9 bg-white border border-slate-200 focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs font-semibold text-slate-800 outline-none transition cursor-pointer shadow-2xs truncate"
+                  className="flex-1 w-full min-w-0 px-2.5 py-1.5 h-9 bg-white hover:bg-paper-2 focus:bg-white border border-line focus:border-ink focus:ring-1 focus:ring-ink rounded-none text-xs font-ibm-sans font-semibold text-ink outline-none transition cursor-pointer truncate"
                 >
                   {INDUSTRY_DOMAINS.map((domain) => {
                     const label = isAr ? domain.nameAr : lang === 'fr' ? domain.nameFr : domain.nameEn;
@@ -200,13 +200,13 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
 
               {/* Search Bar */}
               <div className="relative w-full min-w-0">
-                <Search className="w-3.5 h-3.5 text-slate-500 absolute start-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-3.5 h-3.5 text-ink-soft absolute start-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={isAr ? 'بحث في المهارات المقترحة...' : 'Search suggested skills...'}
-                  className="w-full ps-8 pe-3 py-1.5 h-9 bg-slate-50 border border-slate-200 focus:bg-white focus:border-[#001639] focus:ring-1 focus:ring-[#001639] rounded-xl text-xs text-slate-800 placeholder:text-slate-500 outline-none transition shadow-2xs"
+                  className="w-full ps-8 pe-3 py-1.5 h-9 bg-white hover:bg-paper-2 focus:bg-white border border-line focus:border-ink focus:ring-1 focus:ring-ink rounded-none text-xs font-ibm-sans text-ink placeholder:text-ink-soft/50 outline-none transition"
                 />
               </div>
             </div>
@@ -217,12 +217,12 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
                 type="button"
                 onClick={handleAiSuggest}
                 disabled={isAiLoading}
-                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-slate-100 hover:bg-slate-200 text-[#001639] text-xs font-bold rounded-xl border border-slate-200 transition cursor-pointer shrink-0 disabled:opacity-50 active:scale-95 w-full min-h-[36px]"
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 bg-white hover:bg-paper-2 text-ink text-xs font-ibm-sans font-bold rounded-none border border-line transition cursor-pointer shrink-0 disabled:opacity-50 active:scale-95 w-full min-h-[36px]"
               >
                 {isAiLoading ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#FF4D2D]" />
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-orange" />
                 ) : (
-                  <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
+                  <Sparkles className="w-3.5 h-3.5 text-orange" />
                 )}
                 <span className="truncate">{isAr ? `توليد لـ "${userJobTitle}"` : `AI tailored for "${userJobTitle}"`}</span>
               </button>
@@ -231,7 +231,7 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
 
           {/* Curated Skill Chips */}
           <div className="space-y-2.5">
-            <div className="flex items-center justify-between text-xs text-slate-600 font-semibold">
+            <div className="flex items-center justify-between text-xs text-ink-soft font-ibm-sans font-semibold">
               <span>
                 {query
                   ? (isAr ? `نتائج البحث (${totalCount})` : `Search results (${totalCount})`)
@@ -242,7 +242,7 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
             </div>
 
             {visibleItems.length === 0 ? (
-              <div className="p-4 bg-slate-50 rounded-xl text-center text-xs text-slate-600">
+              <div className="p-4 bg-white border border-line rounded-none text-center text-xs font-ibm-sans text-ink-soft">
                 {isAr ? 'لم يتم العثور على مهارات مطابقة للبحث.' : 'No matching skills found.'}
               </div>
             ) : (
@@ -257,10 +257,10 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
                       type="button"
                       disabled={alreadyHas}
                       onClick={() => handleAdd(item.name, item.category)}
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-2xs max-w-full ${
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-none text-xs font-ibm-sans font-medium transition max-w-full border ${
                         alreadyHas
-                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 cursor-default opacity-90'
-                          : 'bg-white hover:bg-[#001639] hover:text-white text-slate-800 border border-slate-200 cursor-pointer active:scale-95'
+                          ? 'bg-paper text-ink border-line opacity-60 cursor-default'
+                          : 'bg-white hover:bg-ink hover:text-white text-ink border-line cursor-pointer active:scale-95'
                       }`}
                     >
                       {alreadyHas ? (
@@ -270,7 +270,7 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
                         </>
                       ) : (
                         <>
-                          <Plus className="w-3.5 h-3.5 text-[#FF4D2D] shrink-0" />
+                          <Plus className="w-3.5 h-3.5 text-orange shrink-0" />
                           <span className="truncate">{item.name}</span>
                         </>
                       )}
@@ -286,7 +286,7 @@ export const KeywordSuggestionsPanel: React.FC<KeywordSuggestionsPanelProps> = (
                 <button
                   type="button"
                   onClick={() => setShowAll(!showAll)}
-                  className="text-xs font-bold text-[#001639] hover:text-[#FF4D2D] transition inline-flex items-center gap-1 cursor-pointer"
+                  className="text-xs font-ibm-sans font-bold text-ink hover:text-orange transition inline-flex items-center gap-1 cursor-pointer"
                 >
                   <span>
                     {showAll

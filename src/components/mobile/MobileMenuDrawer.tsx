@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from '../../store/useResumeStore';
@@ -35,6 +36,23 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
   const { settings, setLanguage } = useResumeStore();
   const location = useLocation();
   const isAr = settings.language === 'ar';
+
+  // Lock body scroll and handle Escape key when drawer is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') onClose();
+      };
+      window.addEventListener('keydown', handleKeyDown);
+      return () => {
+        document.body.style.overflow = '';
+        window.removeEventListener('keydown', handleKeyDown);
+      };
+    } else {
+      document.body.style.overflow = '';
+    }
+  }, [isOpen, onClose]);
 
   const handleSelectLanguage = (lang: Language) => {
     setLanguage(lang);
@@ -99,39 +117,45 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
 
   const Arrow = isAr ? ChevronLeft : ChevronRight;
 
-  return (
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 md:hidden overflow-hidden"
+          className="fixed inset-0 z-[99999] md:hidden"
           role="dialog"
           aria-modal="true"
           aria-label={isAr ? 'القائمة الجانبية' : 'Navigation Menu'}
         >
-          {/* Backdrop Overlay - Full viewport coverage */}
+          {/* Backdrop Overlay - Covers entire screen cleanly without leaking background elements */}
           <motion.div
             key="mobile-menu-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.18, ease: 'easeOut' }}
+            transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="mobile-menu-overlay"
+            className="fixed inset-0 w-full h-full bg-[#000F27]/75 backdrop-blur-xs z-[99999]"
             aria-hidden="true"
           />
 
-          {/* Drawer Panel - Logical inline end anchoring via translateX only */}
+          {/* Drawer Panel - Anchored to the edge, zero floating */}
           <motion.div
             key="mobile-drawer-content"
             initial={{ x: isAr ? '-100%' : '100%' }}
             animate={{ x: 0 }}
             exit={{ x: isAr ? '-100%' : '100%' }}
-            transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-            className="mobile-menu-drawer flex flex-col"
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className={`fixed top-0 bottom-0 ${
+              isAr ? 'left-0' : 'right-0'
+            } w-[min(86vw,380px)] h-full bg-white z-[100000] shadow-2xl flex flex-col overflow-hidden`}
             style={{ paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}
           >
             {/* Header */}
-            <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+            <div className="p-4 border-b border-slate-100 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5">
                 <div className="p-1.5 rounded-xl bg-white shadow-xs border border-slate-100 ring-2 ring-[#FF4D2D]/10 shrink-0 flex items-center justify-center">
                   <Logo variant="icon" size="sm" className="!h-7 w-auto object-contain rounded-lg" />
@@ -143,15 +167,15 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-2 text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full transition cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
+                className="w-11 h-11 min-w-[44px] min-h-[44px] text-slate-600 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-full transition cursor-pointer flex items-center justify-center active:scale-95"
                 aria-label={isAr ? 'إغلاق القائمة' : 'Close menu'}
               >
-                <X className="w-4 h-4" />
+                <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Clear Language Switcher */}
-            <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/80">
+            <div className="px-4 py-3 border-b border-slate-100 bg-slate-50/80 shrink-0">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-1.5 text-xs font-bold text-[#001639]">
                   <Globe className="w-3.5 h-3.5 text-[#FF4D2D]" />
@@ -192,7 +216,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
 
             {/* Quick Resume Actions (When in builder) */}
             {onOpenResetModal && (
-              <div className="px-3 pt-2 pb-1 space-y-1.5 border-b border-slate-100">
+              <div className="px-3 pt-2 pb-1 space-y-1.5 border-b border-slate-100 shrink-0">
                 <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider px-1">
                   {isAr ? 'أدوات السيرة الذاتية' : 'Resume Tools'}
                 </span>
@@ -214,7 +238,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
 
             {/* Primary Action CTA (Build My Resume) */}
             {!location.pathname.startsWith('/builder') && (
-              <div className="p-3 pb-1">
+              <div className="p-3 pb-1 shrink-0">
                 <Link
                   to="/builder"
                   onClick={onClose}
@@ -226,7 +250,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
               </div>
             )}
 
-            {/* Nav Links */}
+            {/* Nav Links - Scrollable */}
             <nav className="flex-1 overflow-y-auto p-3 space-y-1.5">
               {navLinks.map((item) => {
                 const active = isActive(item.path);
@@ -262,8 +286,8 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                             <span
                               className={`text-xs font-black px-1.5 py-0.5 rounded-md ${
                                 active
-                                  ? 'bg-white/20 text-white'
-                                  : 'bg-slate-100 text-slate-700 border border-slate-200'
+                                    ? 'bg-white/20 text-white'
+                                    : 'bg-slate-100 text-slate-700 border border-slate-200'
                               }`}
                             >
                               {(item as any).badge}
@@ -293,7 +317,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
             </nav>
 
             {/* Bottom Brand Footer & WhatsApp Support */}
-            <div className="p-4 border-t border-slate-100 text-center space-y-3">
+            <div className="p-4 border-t border-slate-100 text-center space-y-3 shrink-0">
               <a
                 href={`https://wa.me/201101007965?text=${encodeURIComponent(
                   isAr
@@ -318,7 +342,9 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
+
 

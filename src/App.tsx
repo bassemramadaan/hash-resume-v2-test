@@ -2,41 +2,89 @@ import React from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from './store/useResumeStore';
-import {
-  Navbar,
-  Footer,
-  WhatsAppButton,
-  GlobalUndoToast,
-  PdfExportProgressModal,
-  ErrorBoundary,
-} from './components';
 
-// Eagerly load LandingPage for fastest initial paint on root route
-import { LandingPage } from './pages';
+// Layout and Common Components directly imported
+import { Navbar } from './components/layout/Navbar';
+import { Footer } from './components/layout/Footer';
+import { WhatsAppButton } from './components/ui/WhatsAppButton';
+import { GlobalUndoToast } from './components/common/GlobalUndoToast';
+import { PdfExportProgressModal } from './components/common/PdfExportProgressModal';
+import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { ResumeOffscreenRenderer } from './components/preview/ResumeOffscreenRenderer';
 
-// Lazy-loaded route components from barrel export
-const BuilderPage = React.lazy(() => import('./pages').then((m) => ({ default: m.BuilderPage })));
-const TemplatesPage = React.lazy(() => import('./pages').then((m) => ({ default: m.TemplatesPage })));
-const AtsCheckerPage = React.lazy(() => import('./pages').then((m) => ({ default: m.AtsCheckerPage })));
-const HashHuntPage = React.lazy(() => import('./pages').then((m) => ({ default: m.HashHuntPage })));
-const PricingPage = React.lazy(() => import('./pages').then((m) => ({ default: m.PricingPage })));
-const FaqPage = React.lazy(() => import('./pages').then((m) => ({ default: m.FaqPage })));
-const PrivacyPage = React.lazy(() => import('./pages').then((m) => ({ default: m.PrivacyPage })));
-const TermsPage = React.lazy(() => import('./pages').then((m) => ({ default: m.TermsPage })));
-const PaymentSuccessPage = React.lazy(() => import('./pages').then((m) => ({ default: m.PaymentSuccessPage })));
-const PaymentDeclinedPage = React.lazy(() => import('./pages').then((m) => ({ default: m.PaymentDeclinedPage })));
-const ShowcasePage = React.lazy(() => import('./pages').then((m) => ({ default: m.ShowcasePage })));
-const NotFoundPage = React.lazy(() => import('./pages').then((m) => ({ default: m.NotFoundPage })));
+// Lazy load routes with retry for code-splitting and instant initial page load
+const LandingPage = lazyWithRetry(() => import('./pages/LandingPage'), 'LandingPage');
+const BuilderPage = lazyWithRetry(() => import('./pages/BuilderPage'), 'BuilderPage');
 
-// Lazy-loaded global modals & offscreen renderer from barrel export
-const AiAssistantModal = React.lazy(() => import('./components').then((m) => ({ default: m.AiAssistantModal })));
-const ActivationModal = React.lazy(() => import('./components').then((m) => ({ default: m.ActivationModal })));
-const PostDownloadSuccessModal = React.lazy(() => import('./components').then((m) => ({ default: m.PostDownloadSuccessModal })));
-const UnlockConfirmModal = React.lazy(() => import('./components').then((m) => ({ default: m.UnlockConfirmModal })));
-const ResumeOffscreenRenderer = React.lazy(() => import('./components').then((m) => ({ default: m.ResumeOffscreenRenderer })));
+// Background preloader for BuilderPage so transition is instant when user clicks
+if (typeof window !== 'undefined') {
+  setTimeout(() => {
+    import('./pages/BuilderPage').catch(() => {});
+  }, 2000);
+}
+
+/**
+ * Robust lazy import with automatic retry on transient chunk loading / network errors
+ */
+function lazyWithRetry<T extends React.ComponentType<any>>(
+  factory: () => Promise<{ default: T } | any>,
+  componentName?: string
+): React.LazyExoticComponent<T> {
+  return React.lazy(() =>
+    new Promise<{ default: T }>((resolve, reject) => {
+      const maxRetries = 2;
+      const attempt = (retriesLeft: number) => {
+        factory()
+          .then((module) => {
+            const comp = module.default || (componentName ? module[componentName] : null) || module;
+            resolve({ default: comp });
+          })
+          .catch((error) => {
+            if (retriesLeft > 0) {
+              setTimeout(() => attempt(retriesLeft - 1), 600);
+            } else {
+              console.error(`Failed to load chunk for ${componentName || 'component'}:`, error);
+              const isDynamicImportError =
+                error?.name === 'ChunkLoadError' ||
+                /Failed to fetch dynamically imported module|error loading dynamically imported module/i.test(
+                  error?.message || ''
+                );
+              const hasReloaded = typeof window !== 'undefined' && window.sessionStorage?.getItem('chunk_retry_reloaded');
+              if (isDynamicImportError && !hasReloaded && typeof window !== 'undefined') {
+                window.sessionStorage?.setItem('chunk_retry_reloaded', 'true');
+                window.location.reload();
+                return;
+              }
+              reject(error);
+            }
+          });
+      };
+      attempt(maxRetries);
+    })
+  );
+}
+
+// Resilient Lazy-loaded secondary route components
+const TemplatesPage = lazyWithRetry(() => import('./pages/TemplatesPage'), 'TemplatesPage');
+const AtsCheckerPage = lazyWithRetry(() => import('./pages/AtsCheckerPage'), 'AtsCheckerPage');
+const HashHuntPage = lazyWithRetry(() => import('./pages/HashHuntPage'), 'HashHuntPage');
+const PricingPage = lazyWithRetry(() => import('./pages/PricingPage'), 'PricingPage');
+const FaqPage = lazyWithRetry(() => import('./pages/FaqPage'), 'FaqPage');
+const PrivacyPage = lazyWithRetry(() => import('./pages/PrivacyPage'), 'PrivacyPage');
+const TermsPage = lazyWithRetry(() => import('./pages/TermsPage'), 'TermsPage');
+const PaymentSuccessPage = lazyWithRetry(() => import('./pages/PaymentSuccessPage'), 'PaymentSuccessPage');
+const PaymentDeclinedPage = lazyWithRetry(() => import('./pages/PaymentDeclinedPage'), 'PaymentDeclinedPage');
+const ShowcasePage = lazyWithRetry(() => import('./pages/ShowcasePage'), 'ShowcasePage');
+const NotFoundPage = lazyWithRetry(() => import('./pages/NotFoundPage'), 'NotFoundPage');
+
+// Lazy-loaded global modals
+const AiAssistantModal = lazyWithRetry(() => import('./components/builder/AiAssistantModal'), 'AiAssistantModal');
+const ActivationModal = lazyWithRetry(() => import('./components/activation/ActivationModal'), 'ActivationModal');
+const PostDownloadSuccessModal = lazyWithRetry(() => import('./components/activation/PostDownloadSuccessModal'), 'PostDownloadSuccessModal');
+const UnlockConfirmModal = lazyWithRetry(() => import('./components/modals/UnlockConfirmModal'), 'UnlockConfirmModal');
 
 const PageFallback = () => {
-  const isAr = useResumeStore.getState().settings.language === 'ar';
+  const isAr = (useResumeStore.getState().settings?.language || 'ar') === 'ar';
   return (
     <div className="w-full min-h-[65vh] bg-[#F8FAFC] flex flex-col items-center justify-center p-6 space-y-4 animate-in fade-in duration-200">
       <div className="relative flex items-center justify-center">
@@ -60,10 +108,11 @@ export default function App() {
   const shouldRenderOffscreen = isBuilderPage || isActivationModalOpen || isPostDownloadModalOpen;
 
   React.useEffect(() => {
-    const isAr = settings.language === 'ar';
-    document.documentElement.lang = settings.language;
+    const currentLang = settings?.language || 'ar';
+    const isAr = currentLang === 'ar';
+    document.documentElement.lang = currentLang;
     document.documentElement.dir = isAr ? 'rtl' : 'ltr';
-  }, [settings.language]);
+  }, [settings?.language]);
 
   // Scroll to top on every route navigation for a crisp transition
   React.useEffect(() => {
@@ -74,7 +123,7 @@ export default function App() {
     <ErrorBoundary>
       <div
         className="min-h-screen bg-[#F8FAFC] text-slate-800 flex flex-col font-sans"
-        dir={settings.language === 'ar' ? 'rtl' : 'ltr'}
+        dir={(settings?.language || 'ar') === 'ar' ? 'rtl' : 'ltr'}
       >
         <Navbar />
 
@@ -140,9 +189,7 @@ export default function App() {
         <PdfExportProgressModal />
 
         {shouldRenderOffscreen && (
-          <React.Suspense fallback={null}>
-            <ResumeOffscreenRenderer />
-          </React.Suspense>
+          <ResumeOffscreenRenderer />
         )}
 
         {!isBuilderPage && <Footer />}

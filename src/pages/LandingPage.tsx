@@ -7,7 +7,7 @@ import { PremiumCta } from '../components/landing/PremiumCta';
 
 export const LandingPage: React.FC = () => {
   const { settings } = useResumeStore();
-  const isAr = settings.language === 'ar';
+  const isAr = (settings?.language || 'ar') === 'ar';
 
   return (
     <main className="bg-white min-h-screen relative overflow-x-hidden">

@@ -15,6 +15,7 @@ export interface AiConfig {
     assistant: boolean;
     experience: boolean;
     skills: boolean;
+    parse: boolean;
   };
   geminiModel: string | null;
   geminiApiKey: string | null;
@@ -25,9 +26,10 @@ export interface AiConfig {
 // 1. Configuration & Feature Flags
 // ---------------------------------------------------------------------------
 export function getAiConfig(): AiConfig {
-  const aiEnabled = process.env.AI_ENABLED === 'true';
-  const geminiModel = process.env.GEMINI_MODEL ? process.env.GEMINI_MODEL.trim() : null;
   const geminiApiKey = process.env.GEMINI_API_KEY ? process.env.GEMINI_API_KEY.trim() : null;
+  // If GEMINI_API_KEY is present, AI features are enabled unless explicitly disabled via AI_ENABLED='false'
+  const aiEnabled = Boolean(geminiApiKey) && process.env.AI_ENABLED !== 'false';
+  const geminiModel = (process.env.GEMINI_MODEL ? process.env.GEMINI_MODEL.trim() : null) || 'gemini-3.1-flash-lite';
 
   const kvUrl = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
   const kvToken = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -41,9 +43,10 @@ export function getAiConfig(): AiConfig {
       assistant: process.env.AI_ASSISTANT_ENABLED !== 'false',
       experience: process.env.AI_EXPERIENCE_ENABLED !== 'false',
       skills: process.env.AI_SKILLS_ENABLED !== 'false',
+      parse: process.env.AI_PARSE_ENABLED !== 'false',
     },
-    geminiModel: geminiModel || null,
-    geminiApiKey: geminiApiKey || null,
+    geminiModel,
+    geminiApiKey,
     hasSharedStore,
   };
 }
@@ -212,6 +215,7 @@ export const INPUT_LIMITS = {
   summaryCombined: 2000,
   jobDescription: 2500,
   atsResumePayload: 8000,
+  resumeRawText: 15000,
 };
 
 export function sanitizeText(text: string, maxLength: number): string {
@@ -312,53 +316,60 @@ export function getClientIp(req: any): string {
 
 export async function checkRateLimit(
   clientIp: string,
-  feature: 'bullet' | 'summary' | 'skills' | 'transform' | 'ats'
+  feature: 'bullet' | 'summary' | 'skills' | 'transform' | 'ats' | 'parse' | 'chat'
 ): Promise<RateLimitResult> {
+  // In development mode or local testing, do not artificially throttle user requests
+  if (process.env.NODE_ENV !== 'production') {
+    return { allowed: true };
+  }
+
   const safeIp = clientIp.replace(/[^a-zA-Z0-9:._-]/g, '');
 
   // 1. Global Concurrent Request Lock (Max 1 in-progress per IP)
   const concurrentKey = `lock:concurrent:${safeIp}`;
-  const acquiredLock = await sharedStore.acquireLock(concurrentKey, 25);
+  const acquiredLock = await sharedStore.acquireLock(concurrentKey, 30);
   if (!acquiredLock) {
     return {
       allowed: false,
       reason: 'A previous AI request is already in progress. Please wait a moment.',
       reasonAr: 'هناك طلب ذكي قيد المعالجة حالياً. يرجى الانتظار بضع ثوانٍ قبل إرسال طلب جديد.',
-      retryAfterSeconds: 5,
+      retryAfterSeconds: 4,
     };
   }
 
-  // 2. Global Hourly Limit: Max 5 requests / hour
+  // 2. Global Hourly Limit: Max 100 requests / hour
   const globalHourKey = `ratelimit:global:hour:${safeIp}`;
   const globalHourCount = await sharedStore.incr(globalHourKey, 3600);
-  if (globalHourCount > 5) {
+  if (globalHourCount > 100) {
     return {
       allowed: false,
-      reason: 'Hourly AI request limit reached (5 requests/hour). Please try again later.',
-      reasonAr: 'لقد وصلت للحد الأقصى المسموح به من طلبات الذكاء الاصطناعي لهذه الساعة (5 طلبات). يرجى المحاولة بعد قليل أو الاستمرار بالتحرير اليدوي.',
-      retryAfterSeconds: 3600,
+      reason: 'Hourly AI request limit reached. Please try again in a few moments.',
+      reasonAr: 'لقد وصلت للحد الأقصى المسموح به من طلبات الذكاء الاصطناعي لهذه الساعة. يرجى المحاولة بعد قليل أو الاستمرار بالتحرير اليدوي.',
+      retryAfterSeconds: 1800,
     };
   }
 
-  // 3. Global Daily Limit: Max 15 requests / day
+  // 3. Global Daily Limit: Max 300 requests / day
   const globalDayKey = `ratelimit:global:day:${safeIp}`;
   const globalDayCount = await sharedStore.incr(globalDayKey, 86400);
-  if (globalDayCount > 15) {
+  if (globalDayCount > 300) {
     return {
       allowed: false,
-      reason: 'Daily AI request limit reached (15 requests/day).',
-      reasonAr: 'تم استهلاك رصيد الطلبات اليومي المتاح (15 طلباً). يتجدد الرصيد تلقائياً غداً، ويمكنك إكمال وتعديل سيرتك الذاتية يدوياً في أي وقت.',
+      reason: 'Daily AI request limit reached.',
+      reasonAr: 'تم استهلاك رصيد الطلبات اليومي المتاح. يتجدد الرصيد تلقائياً غداً، ويمكنك إكمال وتعديل سيرتك الذاتية يدوياً في أي وقت.',
       retryAfterSeconds: 86400,
     };
   }
 
   // 4. Feature-Specific Limits
   const featureLimits: Record<string, { max: number; ttl: number; nameEn: string; nameAr: string }> = {
-    bullet: { max: 5, ttl: 86400, nameEn: 'Bullet Enhancer', nameAr: 'تحسين الصياغة' },
-    summary: { max: 3, ttl: 86400, nameEn: 'Summary Generator', nameAr: 'توليد الملخص المهني' },
-    skills: { max: 3, ttl: 86400, nameEn: 'Skills Recommender', nameAr: 'اقتراح المهارات' },
-    transform: { max: 5, ttl: 86400, nameEn: 'Quick Transform', nameAr: 'التحويل السريع' },
-    ats: { max: 1, ttl: 600, nameEn: 'ATS Scan', nameAr: 'فحص ATS' },
+    bullet: { max: 50, ttl: 86400, nameEn: 'Bullet Enhancer', nameAr: 'تحسين الصياغة' },
+    summary: { max: 30, ttl: 86400, nameEn: 'Summary Generator', nameAr: 'توليد الملخص المهني' },
+    skills: { max: 30, ttl: 86400, nameEn: 'Skills Recommender', nameAr: 'اقتراح المهارات' },
+    transform: { max: 50, ttl: 86400, nameEn: 'Quick Transform', nameAr: 'التحويل السريع' },
+    ats: { max: 20, ttl: 600, nameEn: 'ATS Scan', nameAr: 'فحص ATS' },
+    parse: { max: 60, ttl: 86400, nameEn: 'CV Parser & Auto-Fill', nameAr: 'استيراد السيرة الذاتية' },
+    chat: { max: 120, ttl: 86400, nameEn: 'AI Resume Copilot', nameAr: 'مساعد المحادثة الذكي' },
   };
 
   const limitConfig = featureLimits[feature];

@@ -29,6 +29,15 @@
   --color-primary-border: #C8D5E8;
   --color-primary-text: #FFFFFF;
 
+  /* Focused Single-Flow Design Tokens */
+  --focus-bg: #fbfaf7;
+  --focus-card: #ffffff;
+  --focus-navy: #001639;
+  --focus-orange: #ff4d2d;
+  --focus-ink: #12141a;
+  --focus-ink-soft: #7a8093;
+  --focus-success: #1f8a5f;
+
   --color-background: #F8FAFC;
   --color-surface: #FFFFFF;
   --color-surface-muted: #F1F5F9;
@@ -52,6 +61,45 @@
   --lift-sm: translateY(-2px);
   --lift-md: translateY(-4px);
   --scale-tap: 0.98;
+
+  /* ==========================================================================
+     Document Engineering Design Tokens
+     ========================================================================== */
+  --paper: #f4f1e9;
+  --paper-2: #ece7da;
+  --ink: #0d1220;
+  --ink-soft: #5b5f6b;
+  --navy: #001639;
+  --orange: #ff4d2d;
+  --line: rgba(13, 18, 32, 0.14);
+  --line-strong: rgba(13, 18, 32, 0.4);
+
+  /* Typography */
+  --font-tajawal: 'Tajawal', sans-serif;
+  --font-ibm-sans: 'IBM Plex Sans Arabic', 'IBM Plex Sans', -apple-system, sans-serif;
+  --font-ibm-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #0b0e17;
+    --paper-2: #141926;
+    --ink: #eeeee6;
+    --ink-soft: #a0a4b0;
+    --navy: #7ea2ff;
+    --line: rgba(238, 238, 230, 0.15);
+    --line-strong: rgba(238, 238, 230, 0.4);
+  }
+}
+
+[data-theme="dark"] {
+  --paper: #0b0e17;
+  --paper-2: #141926;
+  --ink: #eeeee6;
+  --ink-soft: #a0a4b0;
+  --navy: #7ea2ff;
+  --line: rgba(238, 238, 230, 0.15);
+  --line-strong: rgba(238, 238, 230, 0.4);
 }
 
 /* ==========================================================================
@@ -573,31 +621,23 @@ bdi,
   inset: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 22, 57, 0.45);
+  background: rgba(0, 22, 57, 0.6);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  z-index: 60;
-  transition: opacity 180ms ease;
+  z-index: 9999;
 }
 
 .mobile-menu-drawer {
   position: fixed;
-  inset-block: 0;
   top: 0;
   bottom: 0;
-  inset-inline-end: 0;
-  width: min(88vw, 420px);
+  height: 100%;
+  width: min(86vw, 380px);
   max-width: 100%;
   background: #ffffff;
-  z-index: 61;
-  box-shadow: 0 0 25px rgba(0, 22, 57, 0.18);
-  transition: transform 320ms var(--ease-hash);
-  will-change: transform;
+  z-index: 10000;
+  box-shadow: 0 0 40px rgba(0, 22, 57, 0.25);
 }
-
-html[dir="ltr"] .mobile-menu-drawer { transform: translateX(100%); }
-html[dir="rtl"] .mobile-menu-drawer { transform: translateX(-100%); }
-.mobile-menu-open .mobile-menu-drawer { transform: translateX(0); }
 
 /* ==========================================================================
    9. PDF Export & Print Break Rules
@@ -645,6 +685,129 @@ textarea:focus-visible,
 [tabindex]:focus-visible {
   outline: 2px solid #001639 !important;
   outline-offset: 2px !important;
+}
+
+/* ==========================================================================
+   11. Document Engineering Styling & Crop Marks
+   ========================================================================== */
+.font-tajawal {
+  font-family: var(--font-tajawal);
+}
+
+.font-ibm-sans {
+  font-family: var(--font-ibm-sans);
+}
+
+.font-ibm-mono {
+  font-family: var(--font-ibm-mono);
+}
+
+.bg-paper {
+  background-color: var(--paper);
+}
+
+.bg-paper-2 {
+  background-color: var(--paper-2);
+}
+
+.text-ink {
+  color: var(--ink);
+}
+
+.text-ink-soft {
+  color: var(--ink-soft);
+}
+
+.border-line {
+  border-color: var(--line);
+}
+
+.border-line-strong {
+  border-color: var(--line-strong);
+}
+
+/* Crop marks for A4 paper preview */
+.a4-sheet-with-marks {
+  position: relative;
+  box-shadow: 0 4px 24px -2px rgba(13, 18, 32, 0.16);
+}
+
+.a4-corner-mark {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.a4-mark-tl {
+  top: -7px;
+  left: -7px;
+  border-top: 1.5px solid var(--line-strong);
+  border-left: 1.5px solid var(--line-strong);
+}
+
+.a4-mark-tr {
+  top: -7px;
+  right: -7px;
+  border-top: 1.5px solid var(--line-strong);
+  border-right: 1.5px solid var(--line-strong);
+}
+
+.a4-mark-bl {
+  bottom: -7px;
+  left: -7px;
+  border-bottom: 1.5px solid var(--line-strong);
+  border-left: 1.5px solid var(--line-strong);
+}
+
+.a4-mark-br {
+  bottom: -7px;
+  right: -7px;
+  border-bottom: 1.5px solid var(--line-strong);
+  border-right: 1.5px solid var(--line-strong);
+}
+
+/* Document-style bottom-border field */
+.doc-field {
+  position: relative;
+  border-bottom: 1px solid var(--line);
+  transition: border-color 150ms ease;
+  padding-bottom: 0.5rem;
+}
+
+.doc-field:focus-within {
+  border-bottom-color: var(--orange) !important;
+}
+
+.doc-field:focus-within .doc-label {
+  color: var(--orange) !important;
+}
+
+.doc-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-ibm-sans);
+  color: var(--ink);
+  font-size: 0.95rem;
+  padding: 0.25rem 0;
+}
+
+.doc-input::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.6;
+}
+
+/* Subtle 1.4s pulse for LIVE dot */
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.9); }
+}
+
+.animate-live-dot {
+  animation: live-pulse 1.4s infinite ease-in-out;
 }
 
 @media (max-width: 768px) {

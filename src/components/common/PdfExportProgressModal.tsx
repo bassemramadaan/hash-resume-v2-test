@@ -52,7 +52,7 @@ export const PdfExportProgressModal: React.FC = () => {
   const { isOpen, step, progressPercent, errorMessage, closeExportProgress } =
     usePdfExportProgressStore();
   const { settings } = useResumeStore();
-  const isAr = settings.language === 'ar';
+  const isAr = (settings?.language || 'ar') === 'ar';
 
   if (!isOpen) return null;
 

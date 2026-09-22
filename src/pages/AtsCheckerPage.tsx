@@ -133,30 +133,30 @@ export const AtsCheckerPage: React.FC = () => {
   const ArrowIcon = isAr ? ArrowLeft : ArrowRight;
 
   return (
-    <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-7 text-xs text-[#52627A]">
+    <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8 text-xs text-[#52627A]">
       {/* Header */}
-      <div className="text-center max-w-2xl mx-auto space-y-2.5">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-2xs">
-          <ShieldCheck className="w-4 h-4 text-emerald-600" />
+      <div className="text-center max-w-2xl mx-auto space-y-2.5 sm:space-y-3">
+        <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-2xs">
+          <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
           <span>{isAr ? 'أداة فحص التوافق مع أنظمة ATS' : 'ATS Compatibility Checker'}</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-[#0B1120]">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-[#0B1120] tracking-tight leading-tight">
           {isAr ? 'اختبر سيرتك الذاتية مقابل الوصف الوظيفي' : 'Test Your CV Against Target Job Description'}
         </h1>
-        <p className="text-xs sm:text-sm text-[#52627A]">
+        <p className="text-xs sm:text-sm text-[#52627A] leading-relaxed">
           {isAr
             ? 'احصل على تقييم لدرجة الجاهزية والتوافق واستخرج الكلمات المفتاحية الناقصة فوراً.'
             : 'Get an estimated ATS compatibility score and identify missing keyword gaps instantly.'}
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6">
         {/* Left Column: File Upload & Job Description */}
-        <div className="lg:col-span-6 space-y-5 sm:space-y-6">
+        <div className="lg:col-span-6 space-y-4 sm:space-y-6">
           {/* 1. PDF Upload Card */}
-          <div className="bg-white rounded-3xl border border-[#E2E8F0] p-5 sm:p-6 shadow-xs space-y-3.5">
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E2E8F0] p-4.5 sm:p-6 shadow-xs space-y-3.5">
             <h3 className="font-extrabold text-[#0B1120] text-sm flex items-center gap-2">
-              <FileText className="w-4 h-4 text-[#001639]" />
+              <FileText className="w-4 h-4 text-[#001639] shrink-0" />
               <span>{isAr ? '1. رفع ملف السيرة الذاتية (PDF)' : '1. Upload Resume PDF'}</span>
             </h3>
 
@@ -165,7 +165,7 @@ export const AtsCheckerPage: React.FC = () => {
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition flex flex-col items-center justify-center gap-3 ${
+              className={`border-2 border-dashed rounded-xl sm:rounded-2xl p-4 sm:p-6 text-center cursor-pointer transition flex flex-col items-center justify-center gap-2.5 sm:gap-3 ${
                 uploadedFile
                   ? 'border-emerald-300 bg-emerald-50/50'
                   : 'border-slate-300 hover:border-[#001639] bg-[#F8FAFC]'
@@ -180,17 +180,17 @@ export const AtsCheckerPage: React.FC = () => {
               />
 
               {uploadedFile ? (
-                <div className="space-y-2">
-                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+                <div className="space-y-2 w-full">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shrink-0">
                     <Check className="w-5 h-5" />
                   </div>
-                  <div className="font-extrabold text-[#0B1120] text-xs">{uploadedFile.name}</div>
-                  <div className="text-[10px] text-slate-500">
+                  <div className="font-extrabold text-[#0B1120] text-xs break-all sm:break-normal">{uploadedFile.name}</div>
+                  <div className="text-[11px] text-slate-500 font-medium">
                     {(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB • PDF Document
                   </div>
 
                   {/* Actions for uploaded file */}
-                  <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2">
+                  <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2 w-full">
                     <button
                       type="button"
                       onClick={(e) => {
@@ -198,16 +198,16 @@ export const AtsCheckerPage: React.FC = () => {
                         handleImportToBuilder();
                       }}
                       disabled={isImporting}
-                      className="w-full sm:w-auto px-4 py-2 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                      className="w-full sm:w-auto px-4 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 min-h-[42px]"
                     >
                       {isImporting ? (
                         <>
-                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <Loader2 className="w-3.5 h-3.5 animate-spin shrink-0" />
                           <span>{isAr ? 'جاري الاستخراج والتعبئة...' : 'Extracting CV Data...'}</span>
                         </>
                       ) : (
                         <>
-                          <Edit3 className="w-3.5 h-3.5 text-[#FF4D2D]" />
+                          <Edit3 className="w-3.5 h-3.5 text-[#FF4D2D] shrink-0" />
                           <span>{isAr ? 'استيراد وتعبئة البيانات في المحرر' : 'Import CV Data to Builder'}</span>
                         </>
                       )}
@@ -219,7 +219,7 @@ export const AtsCheckerPage: React.FC = () => {
                         e.stopPropagation();
                         setUploadedFile(null);
                       }}
-                      className="text-[11px] text-rose-600 font-bold hover:underline px-2 py-1 cursor-pointer"
+                      className="text-xs text-rose-600 font-bold hover:underline px-3 py-1.5 cursor-pointer min-h-[36px] flex items-center justify-center"
                     >
                       {isAr ? 'إزالة الملف' : 'Remove File'}
                     </button>
@@ -227,13 +227,13 @@ export const AtsCheckerPage: React.FC = () => {
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <div className="w-12 h-12 rounded-2xl bg-[#E8EEF7] text-[#001639] flex items-center justify-center mx-auto">
-                    <UploadCloud className="w-6 h-6" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#E8EEF7] text-[#001639] flex items-center justify-center mx-auto shrink-0">
+                    <UploadCloud className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
                   </div>
-                  <div className="font-bold text-[#0B1120] text-xs">
+                  <div className="font-bold text-[#0B1120] text-xs sm:text-sm">
                     {isAr ? 'اسحب ملف الـ PDF هنا، أو اضغط للرفع' : 'Drag & Drop PDF here, or Tap to Upload'}
                   </div>
-                  <p className="text-[10px] text-[#52627A]">
+                  <p className="text-[11px] text-[#52627A]">
                     {isAr ? 'يُقبل ملفات PDF فقط (بحد أقصى 5 ميجابايت)' : 'PDF format only (Max 5MB)'}
                   </p>
                 </div>
@@ -249,9 +249,9 @@ export const AtsCheckerPage: React.FC = () => {
           </div>
 
           {/* 2. Job Description Input */}
-          <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 shadow-xs space-y-4">
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E2E8F0] p-4.5 sm:p-6 shadow-xs space-y-3.5 sm:space-y-4">
             <h3 className="font-extrabold text-[#0B1120] text-sm flex items-center gap-2">
-              <FileSearch className="w-4 h-4 text-[#001639]" />
+              <FileSearch className="w-4 h-4 text-[#001639] shrink-0" />
               <span>
                 {isAr ? '2. الوصف الوظيفي المستهدف (Job Description)' : '2. Target Job Description'}
               </span>
@@ -266,23 +266,23 @@ export const AtsCheckerPage: React.FC = () => {
                   ? 'الصق متطلبات وشروط الوظيفة هنا (مثال: متطلبات الخبرة، لغات البرمجة، والمهارات المطلوبة)...'
                   : 'Paste the target job requirements, skills, and qualifications here...'
               }
-              className="w-full p-3.5 bg-[#F8FAFC] border border-slate-300 rounded-xl text-slate-900 font-normal outline-none focus:ring-2 focus:ring-[#001639] focus:bg-white text-xs leading-relaxed"
+              className="w-full p-3 sm:p-3.5 bg-[#F8FAFC] border border-slate-300 rounded-xl text-slate-900 font-normal outline-none focus:ring-2 focus:ring-[#001639] focus:bg-white text-xs sm:text-sm leading-relaxed"
             />
 
             <button
               type="button"
               onClick={handleRunAnalysis}
               disabled={isAnalyzing}
-              className="w-full py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] active:bg-[#CC3A1A] text-white font-extrabold text-xs rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-h-[48px]"
+              className="w-full py-3 sm:py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] active:bg-[#CC3A1A] text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-h-[48px]"
             >
               {isAnalyzing ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-4 h-4 animate-spin shrink-0" />
                   <span>{isAr ? 'جارِ تحليل السيرة الذاتية...' : 'Analyzing your resume...'}</span>
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4 fill-white" />
+                  <Sparkles className="w-4 h-4 fill-white shrink-0" />
                   <span>{isAr ? 'بدء فحص التوافق المباشر' : 'Run ATS Scan Now'}</span>
                 </>
               )}
@@ -291,16 +291,16 @@ export const AtsCheckerPage: React.FC = () => {
         </div>
 
         {/* Right Column: Analysis Results Display */}
-        <div className="lg:col-span-6 space-y-6">
+        <div className="lg:col-span-6 space-y-4 sm:space-y-6">
           {analysisResult ? (
-            <div className="bg-[#001639] text-white rounded-3xl p-6 shadow-xl border border-[#000F27] space-y-6 animate-in fade-in duration-200">
+            <div className="bg-[#001639] text-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xl border border-[#000F27] space-y-5 sm:space-y-6 animate-in fade-in duration-200">
               {/* Score Badge */}
-              <div className="flex items-center justify-between border-b border-slate-700 pb-4 ats-result-card">
+              <div className="flex items-center justify-between border-b border-slate-700 pb-4 ats-result-card gap-3">
                 <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
                     {isAr ? 'مؤشر الجاهزية والربط' : 'ESTIMATED COMPATIBILITY SCORE'}
                   </span>
-                  <h3 className="text-base font-black text-emerald-400 mt-1">
+                  <h3 className="text-sm sm:text-base font-black text-emerald-400 mt-1">
                     {analysisResult.verdict}
                   </h3>
                 </div>
@@ -309,7 +309,7 @@ export const AtsCheckerPage: React.FC = () => {
                   aria-valuenow={analysisResult.score}
                   aria-valuemin={0}
                   aria-valuemax={100}
-                  className="w-16 h-16 rounded-2xl bg-slate-900 border-2 border-emerald-500 font-black text-2xl text-emerald-400 flex items-center justify-center shadow-inner shrink-0"
+                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-900 border-2 border-emerald-500 font-black text-xl sm:text-2xl text-emerald-400 flex items-center justify-center shadow-inner shrink-0"
                 >
                   {analysisResult.score}%
                 </div>
@@ -338,7 +338,7 @@ export const AtsCheckerPage: React.FC = () => {
                         )}
                         <span className="text-slate-100">{issue.title}</span>
                       </div>
-                      <p className="text-[11px] text-slate-300 leading-relaxed pl-6 rtl:pl-0 rtl:pr-6">
+                      <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed pl-6 rtl:pl-0 rtl:pr-6">
                         {issue.description}
                       </p>
                     </div>
@@ -350,14 +350,14 @@ export const AtsCheckerPage: React.FC = () => {
               {(analysisResult.missingKeywords?.length || 0) > 0 && (
                 <div className="space-y-2 border-t border-slate-700 pt-4">
                   <h4 className="font-extrabold text-xs text-amber-300 flex items-center gap-1.5">
-                    <AlertTriangle className="w-4 h-4 text-amber-400" />
+                    <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
                     <span>{isAr ? 'الكلمات المفتاحية المقترحة للإضافة:' : 'Suggested Keywords To Include:'}</span>
                   </h4>
                   <div className="flex flex-wrap gap-1.5">
                     {(analysisResult.missingKeywords || []).map((kw, idx) => (
                       <span
                         key={idx}
-                        className="px-2.5 py-1 bg-amber-500/20 text-amber-200 border border-amber-500/30 rounded-lg font-bold text-[11px]"
+                        className="px-2.5 py-1 bg-amber-500/20 text-amber-200 border border-amber-500/30 rounded-lg font-bold text-xs"
                       >
                         + {kw}
                       </span>
@@ -371,23 +371,23 @@ export const AtsCheckerPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => navigate('/builder')}
-                  className="w-full py-3 px-5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer min-h-[44px]"
+                  className="w-full py-3 px-5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer min-h-[46px]"
                 >
                   <span>{isAr ? 'فتح المحرر وتطبيق التحسينات' : 'Open Builder & Apply Fixes'}</span>
-                  <ArrowIcon className="w-4 h-4" />
+                  <ArrowIcon className="w-4 h-4 shrink-0" />
                 </button>
               </div>
             </div>
           ) : (
-            <div className="bg-white rounded-3xl border border-slate-200 p-8 text-center space-y-4 shadow-2xs">
-              <div className="w-14 h-14 rounded-2xl bg-slate-100 text-[#001639] flex items-center justify-center mx-auto border border-slate-200 shadow-2xs">
-                <ShieldCheck className="w-7 h-7 text-[#FF4D2D]" />
+            <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 p-6 sm:p-8 text-center space-y-3.5 sm:space-y-4 shadow-2xs">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-slate-100 text-[#001639] flex items-center justify-center mx-auto border border-slate-200 shadow-2xs shrink-0">
+                <ShieldCheck className="w-6 h-6 sm:w-7 sm:h-7 text-[#FF4D2D] shrink-0" />
               </div>
               <div className="space-y-1.5">
-                <h3 className="font-bold text-slate-900 text-sm">
+                <h3 className="font-bold text-slate-900 text-sm sm:text-base">
                   {isAr ? 'لوحة تقرير توافق الـ ATS' : 'ATS Compliance Audit Output'}
                 </h3>
-                <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-500 max-w-sm mx-auto leading-relaxed">
                   {isAr
                     ? 'ارفع ملف السيرة الذاتية (PDF) وأدخل متطلبات الوظيفة للحصول على فحص دقيق لمعدل التوافق والكلمات المفتاحية الناقصة.'
                     : 'Upload your PDF resume and target job requirements to get a granular compatibility score and keyword breakdown.'}

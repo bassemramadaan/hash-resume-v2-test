@@ -355,6 +355,51 @@ export const MobileSectionEditor: React.FC<MobileSectionEditorProps> = ({
           </fieldset>
         </div>
       </div>
+
+      {/* Floating Mobile Live Preview Button (A4 Preview FAB) */}
+      {onOpenPreview && (
+        <div className="fixed bottom-20 left-4 right-4 sm:hidden z-30 flex justify-center pointer-events-none">
+          <button
+            type="button"
+            onClick={onOpenPreview}
+            className="pointer-events-auto bg-[#001639] text-white px-4 py-2.5 rounded-full shadow-lg border border-slate-700/50 font-bold text-xs flex items-center gap-2 active:scale-95 transition-transform"
+          >
+            <Eye className="w-4 h-4 text-[#FF4D2D]" />
+            <span>{isAr ? 'معاينة السيرة (A4)' : 'Live Preview (A4)'}</span>
+          </button>
+        </div>
+      )}
+
+      {/* Sticky Mobile Action Bar with Safe Area Insets */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 px-4 py-3 shadow-lg flex items-center justify-between gap-3 pb-[calc(12px+env(safe-area-inset-bottom,0px))]">
+        <button
+          type="button"
+          onClick={onBack}
+          className="px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-800 text-xs font-bold min-h-[48px] active:scale-95 transition shrink-0"
+        >
+          {isAr ? 'الأقسام' : 'Dashboard'}
+        </button>
+
+        {current?.nextSection ? (
+          <button
+            type="button"
+            onClick={() => onNavigateSection(current.nextSection!)}
+            className="flex-1 px-4 py-2.5 rounded-xl bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold min-h-[48px] flex items-center justify-center gap-2 active:scale-98 transition shadow-xs"
+          >
+            <span>{isAr ? 'الخطوة التالية' : 'Next Step'}</span>
+            <ArrowNext className="w-4 h-4 text-[#FF4D2D]" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={onBack}
+            className="flex-1 px-4 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold min-h-[48px] flex items-center justify-center gap-2 active:scale-98 transition shadow-xs"
+          >
+            <span>{isAr ? 'إلى المراجعة والتصدير' : 'Go to Export'}</span>
+            <ArrowNext className="w-4 h-4 text-emerald-300" />
+          </button>
+        )}
+      </div>
     </motion.div>
   );
 };

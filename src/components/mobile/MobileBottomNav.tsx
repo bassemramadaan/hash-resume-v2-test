@@ -49,7 +49,7 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
   return (
     <nav
       aria-label={isAr ? 'شريط التنقل السفلي' : 'Mobile Bottom Navigation'}
-      className={`fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/80 px-4 py-2.5 pb-[max(10px,env(safe-area-inset-bottom))] md:hidden shadow-[0_-4px_20px_rgba(0,0,0,0.05)] transition-all duration-200 ${
+      className={`fixed bottom-0 inset-x-0 z-40 bg-paper border-t-2 border-line-strong px-4 py-2.5 pb-[max(12px,env(safe-area-inset-bottom))] md:hidden shadow-lg transition-all duration-200 ${
         isKeyboardOpen
           ? 'translate-y-full opacity-0 pointer-events-none'
           : 'translate-y-0 opacity-100'
@@ -60,10 +60,10 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
         <button
           type="button"
           onClick={onOpenPreview}
-          className="flex-1 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition active:scale-98 min-h-[46px] cursor-pointer"
+          className="flex-1 px-4 py-2.5 bg-white hover:bg-paper-2 text-ink font-ibm-sans font-bold text-xs sm:text-sm rounded-none border border-line flex items-center justify-center gap-2 transition active:scale-98 min-h-[44px] cursor-pointer"
           aria-label={isAr ? 'معاينة السيرة الذاتية' : 'Preview Resume'}
         >
-          <Eye className="w-4 h-4 text-[#FF4D2D]" />
+          <Eye className="w-4 h-4 text-orange" />
           <span>{isAr ? 'معاينة السيرة' : 'Preview CV'}</span>
         </button>
 
@@ -71,12 +71,12 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
         <button
           type="button"
           onClick={onOpenDownload}
-          className={`flex-1 px-4 py-2.5 font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition active:scale-98 min-h-[46px] cursor-pointer shadow-xs ${
+          className={`flex-1 px-4 py-2.5 font-ibm-sans font-bold text-xs sm:text-sm rounded-none border flex items-center justify-center gap-2 transition active:scale-98 min-h-[44px] cursor-pointer ${
             isDownloadActive
-              ? 'bg-[#001639] text-white'
+              ? 'bg-ink text-white border-ink'
               : isReadyForExport
-              ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald-600/20'
-              : 'bg-[#FF4D2D] hover:bg-[#E5431F] text-white shadow-[#FF4D2D]/20'
+              ? 'bg-ink hover:bg-ink/90 text-white border-ink'
+              : 'bg-orange hover:bg-orange/90 text-white border-orange'
           }`}
           aria-label={
             isReadyForExport
@@ -89,18 +89,18 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
           }
         >
           {isReadyForExport ? (
-            <Download className="w-4 h-4 text-white" />
+            <Download className="w-4 h-4 text-orange" />
           ) : (
             <Sparkles className="w-4 h-4 text-white" />
           )}
           <span>
             {isReadyForExport
               ? isAr
-                ? 'تحميل PDF'
-                : 'Download PDF'
+                ? 'تحميل PDF ↓'
+                : 'Download PDF ↓'
               : isAr
-              ? 'مراجعة وتصدير'
-              : 'Review & Export'}
+              ? 'التالي (المراجعة)'
+              : 'Next (Review)'}
           </span>
         </button>
       </div>

@@ -437,15 +437,15 @@ export const DownloadSection: React.FC = () => {
   const templateName = settings.templateId ? settings.templateId.toUpperCase() : 'MODERN';
 
   return (
-    <div className="space-y-6 max-w-3xl mx-auto w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content" aria-label="Review & Export Section">
+    <div className="space-y-6 max-w-3xl mx-auto w-full max-w-full min-w-0 overflow-x-hidden mobile-editor-content text-ink" aria-label="Review & Export Section">
       {/* Header with Title & Subtitle */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-line">
         <div>
-          <h2 className="text-lg font-bold text-[#001639] flex items-center gap-2">
-            <Download className="w-5 h-5 text-[#FF4D2D]" />
+          <h2 className="text-base font-tajawal font-bold text-ink flex items-center gap-2">
+            <Download className="w-4 h-4 text-orange" />
             <span>{isAr ? 'المراجعة والتصدير' : 'Review & Export'}</span>
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          <p className="text-xs font-ibm-sans text-ink-soft mt-0.5">
             {isAr
               ? 'افحص محتواك وتوافق الـ ATS وحمّل سيرتك الذاتية النهائية.'
               : 'Check your content, ATS readiness, and download your final resume.'}
@@ -454,23 +454,23 @@ export const DownloadSection: React.FC = () => {
 
         {/* Lock status pill if locked */}
         {activation.isResumeLocked && (
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 border border-amber-200 text-amber-900 rounded-full text-xs font-semibold self-start sm:self-auto">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-amber-50 border border-amber-300 text-amber-900 rounded-none text-xs font-ibm-mono font-bold self-start sm:self-auto">
             <Lock className="w-3.5 h-3.5 text-amber-700" />
-            <span>{isAr ? 'النسخة مقفلة' : 'Resume Locked'}</span>
+            <span>{isAr ? 'النسخة مقفلة' : 'LOCKED'}</span>
           </div>
         )}
       </div>
 
       {/* Lock Banner Warning */}
       {activation.isResumeLocked && (
-        <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-amber-950">
+        <div className="p-3.5 bg-amber-50/50 border border-amber-300 rounded-none flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-amber-950">
           <div className="flex items-start gap-2.5">
             <Lock className="w-4 h-4 text-amber-800 shrink-0 mt-0.5" />
             <div>
-              <h4 className="font-bold text-xs">
+              <h4 className="font-tajawal font-bold text-xs">
                 {isAr ? 'تم تنزيل النسخة وقفل الحقول' : 'Resume locked after download'}
               </h4>
-              <p className="text-[11px] text-amber-900/80 mt-0.5">
+              <p className="text-xs font-ibm-sans text-amber-900/80 mt-0.5">
                 {isAr
                   ? 'يمكنك فتح التعديل لإنشاء إصدار جديد في أي وقت باستخدام رصيدك المتبقي.'
                   : 'You can unlock fields to create a new revision using your remaining credits.'}
@@ -480,63 +480,63 @@ export const DownloadSection: React.FC = () => {
           <button
             type="button"
             onClick={handleUnlockRequest}
-            className="px-3.5 py-2 bg-[#001639] hover:bg-[#00245E] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer min-h-[38px] shrink-0"
+            className="px-3.5 py-2 bg-ink hover:bg-ink/90 text-white text-xs font-ibm-sans font-bold rounded-none border border-ink flex items-center justify-center gap-1.5 transition cursor-pointer min-h-[38px] shrink-0"
           >
-            <Key className="w-3.5 h-3.5 text-amber-400" />
+            <Key className="w-3.5 h-3.5 text-orange" />
             <span>{isAr ? 'فتح التعديل الآن' : 'Unlock Editing'}</span>
           </button>
         </div>
       )}
 
       {/* 1. Main Hero Download & Export Card */}
-      <div className="bg-gradient-to-br from-[#001639] to-[#00245E] text-white rounded-2xl p-5 sm:p-6 shadow-sm space-y-4">
+      <div className="bg-white border border-line rounded-none p-5 sm:p-6 space-y-4">
         {/* Candidate & Format Snapshot */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-white/10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-line">
           <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-slate-200 text-xs font-semibold tracking-wide">
-              <FileCheck className="w-3.5 h-3.5 text-[#FF4D2D]" />
+            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-none bg-paper border border-line text-ink text-xs font-ibm-sans font-bold">
+              <FileCheck className="w-3.5 h-3.5 text-orange" />
               <span>{isAr ? 'ملف PDF عالي الدقة • تنسيق متوافق مع ATS' : 'High-resolution PDF • ATS-friendly layout'}</span>
             </div>
-            <h3 className="text-lg font-bold text-white tracking-tight">{candidateName}</h3>
-            <p className="text-xs text-slate-300 font-medium">{targetTitle}</p>
+            <h3 className="text-lg font-tajawal font-bold text-ink tracking-tight">{candidateName}</h3>
+            <p className="text-xs font-ibm-sans text-ink-soft">{targetTitle}</p>
           </div>
 
           {/* Readiness Score Chip */}
-          <div className="flex items-center justify-between sm:justify-center gap-2.5 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5">
+          <div className="flex items-center justify-between sm:justify-center gap-3 bg-paper border border-line rounded-none px-4 py-2.5">
             <div className="flex flex-col sm:items-end">
-              <span className="text-xs text-slate-200 font-bold uppercase tracking-wider">
-                {isAr ? 'توافق ATS' : 'ATS Readiness'}
+              <span className="font-ibm-mono text-[10px] text-ink-soft font-bold uppercase tracking-wider">
+                {isAr ? 'توافق ATS' : 'ATS READINESS'}
               </span>
               <span
-                className={`text-sm sm:text-base font-black ${
+                className={`font-ibm-mono text-sm sm:text-base font-black ${
                   readinessScore >= 80
-                    ? 'text-emerald-400'
+                    ? 'text-emerald-700'
                     : readinessScore >= 60
-                    ? 'text-amber-400'
-                    : 'text-[#FF4D2D]'
+                    ? 'text-amber-700'
+                    : 'text-rose-700'
                 }`}
               >
                 {readinessScore}/100 — {
                   readinessScore >= 80
-                    ? isAr ? 'جاهز للمنافسة' : 'strong match'
+                    ? isAr ? 'جاهز للمنافسة' : 'Strong Match'
                     : readinessScore >= 60
-                    ? isAr ? 'جاهزية جيدة' : 'good readiness'
-                    : isAr ? 'يحتاج تحسينات' : 'needs attention'
+                    ? isAr ? 'جاهزية جيدة' : 'Good Readiness'
+                    : isAr ? 'يحتاج تحسينات' : 'Needs Attention'
                 }
               </span>
             </div>
             <ShieldCheck className={`w-5 h-5 shrink-0 ${
-              readinessScore >= 80 ? 'text-emerald-400' : readinessScore >= 60 ? 'text-amber-400' : 'text-[#FF4D2D]'
+              readinessScore >= 80 ? 'text-emerald-700' : readinessScore >= 60 ? 'text-amber-700' : 'text-rose-700'
             }`} />
           </div>
         </div>
 
         {/* ATS Score Explanation & 3 Reasons when attention is needed */}
         {allWarnings.length > 0 && (
-          <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 space-y-2.5 text-xs">
+          <div className="p-3.5 rounded-none bg-paper border border-line space-y-2.5 text-xs">
             <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2 text-amber-300 font-bold">
-                <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+              <div className="flex items-center gap-2 text-ink font-tajawal font-bold">
+                <AlertCircle className="w-4 h-4 text-orange shrink-0" />
                 <span>
                   {isAr
                     ? 'أسباب النتيجة ونقاط التحسين المباشرة:'
@@ -549,26 +549,26 @@ export const DownloadSection: React.FC = () => {
                   const firstTab = allWarnings[0]?.actionTab || 'personal';
                   setActiveTab(firstTab);
                 }}
-                className="text-xs font-bold text-amber-300 hover:text-amber-200 underline flex items-center gap-1 cursor-pointer"
+                className="text-xs font-ibm-sans font-bold text-ink hover:text-orange underline flex items-center gap-1 cursor-pointer"
               >
                 <span>{isAr ? 'اكتشف ما يجب إصلاحه' : 'See what to fix'}</span>
-                <ArrowRight className="w-3 h-3 rtl:rotate-180" />
+                <ArrowRight className="w-3 h-3 rtl:rotate-180 text-orange" />
               </button>
             </div>
 
             {/* Up to 3 Key Reasons */}
-            <ul className="space-y-1.5 text-xs text-slate-200 ps-1 font-medium">
+            <ul className="space-y-1.5 text-xs font-ibm-sans text-ink-soft ps-1 font-medium">
               {allWarnings.slice(0, 3).map((w, idx) => (
                 <li key={idx} className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-none bg-orange shrink-0" />
                     <span className="truncate">{isAr ? w.titleAr : w.titleEn}</span>
                   </div>
                   {w.actionTab && (
                     <button
                       type="button"
                       onClick={() => setActiveTab(w.actionTab)}
-                      className="text-xs text-slate-200 hover:text-white underline shrink-0 cursor-pointer font-semibold"
+                      className="text-xs text-ink hover:text-orange underline shrink-0 cursor-pointer font-bold"
                     >
                       {isAr ? w.actionLabelAr : w.actionLabelEn}
                     </button>
@@ -581,19 +581,19 @@ export const DownloadSection: React.FC = () => {
 
         {/* Empty Resume Warning Alert */}
         {emptyWarning && (
-          <div className="p-3.5 bg-amber-500/20 border border-amber-400/50 rounded-xl flex items-center gap-3 text-amber-200 text-xs font-semibold animate-in fade-in">
-            <AlertCircle className="w-5 h-5 text-amber-400 shrink-0" />
+          <div className="p-3.5 bg-amber-50 border border-amber-300 rounded-none flex items-center gap-3 text-amber-900 text-xs font-ibm-sans font-bold animate-in fade-in">
+            <AlertCircle className="w-5 h-5 text-amber-700 shrink-0" />
             <span className="flex-1">{emptyWarning}</span>
           </div>
         )}
 
-        {/* Primary Download & Share Buttons */}
+        {/* Primary Download Button */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <button
             type="button"
             onClick={handleExport}
             disabled={isExporting}
-            className="flex-1 py-3.5 px-5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-sm rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-h-[48px] active:scale-98"
+            className="flex-1 py-3 px-5 bg-ink hover:bg-ink/90 text-white font-ibm-sans font-bold text-sm rounded-none border border-ink transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-h-[44px]"
           >
             {isExporting ? (
               <>
@@ -602,60 +602,50 @@ export const DownloadSection: React.FC = () => {
               </>
             ) : (
               <>
-                <Download className="w-4 h-4" />
+                <Download className="w-4 h-4 text-orange" />
                 <span>{isAr ? 'تحميل السيرة الذاتية (PDF)' : 'Download Resume (PDF)'}</span>
-                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <Sparkles className="w-3.5 h-3.5 text-orange" />
               </>
             )}
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setIsShareModalOpen(true)}
-            className="py-3.5 px-4 bg-white/10 hover:bg-white/15 text-white font-bold text-xs sm:text-sm rounded-xl border border-white/15 transition flex items-center justify-center gap-2 cursor-pointer min-h-[48px] active:scale-98"
-            title={isAr ? 'مشاركة السيرة' : 'Share Resume'}
-          >
-            <Share2 className="w-4 h-4 text-slate-200" />
-            <span>{isAr ? 'مشاركة سريعة' : 'Share'}</span>
           </button>
         </div>
 
         {/* Feature Guarantees Bar */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 border-t border-white/10 text-xs text-slate-200 font-medium">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-line text-xs font-ibm-sans text-ink-soft">
           <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
             <span>{isAr ? 'ملف PDF عالي الجودة' : 'High-quality PDF'}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
             <span>{isAr ? 'تنسيق صديق لأنظمة ATS' : 'Clean, ATS-friendly layout'}</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
             <span>{isAr ? 'بدون أي علامة مائية' : 'No Watermarks'}</span>
           </div>
         </div>
       </div>
 
       {/* 2. Actionable Quality & Improvement Warnings */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-4.5 shadow-2xs space-y-3">
+      <div className="bg-white border border-line rounded-none p-4 sm:p-5 space-y-3">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-3">
             <div
-              className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-2xs ${
+              className={`w-8 h-8 rounded-none flex items-center justify-center shrink-0 border ${
                 allWarnings.length === 0
-                  ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-                  : 'bg-amber-50 text-amber-600 border border-amber-200'
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                  : 'bg-amber-50 text-amber-700 border-amber-300'
               }`}
             >
               {allWarnings.length === 0 ? (
-                <CheckCircle2 className="w-5 h-5" />
+                <CheckCircle2 className="w-4 h-4" />
               ) : (
-                <AlertCircle className="w-5 h-5" />
+                <AlertCircle className="w-4 h-4" />
               )}
             </div>
             <div>
-              <h4 className="text-sm font-bold text-[#001639]">
+              <h4 className="text-xs sm:text-sm font-tajawal font-bold text-ink">
                 {allWarnings.length === 0
                   ? isAr
                     ? 'جاهز للتصدير'
@@ -664,7 +654,7 @@ export const DownloadSection: React.FC = () => {
                   ? 'أصلح هذه النقاط قبل التصدير'
                   : 'Fix these before exporting'}
               </h4>
-              <p className="text-xs text-slate-600 font-medium">
+              <p className="text-xs font-ibm-sans text-ink-soft">
                 {allWarnings.length === 0
                   ? isAr
                     ? 'سيرتك الذاتية تحتوي على الأقسام المطلوبة وجاهزة للمراجعة والتصدير.'
@@ -679,17 +669,17 @@ export const DownloadSection: React.FC = () => {
 
         {/* Actionable items with direct buttons */}
         {allWarnings.length > 0 && (
-          <div className="pt-2 border-t border-slate-100 space-y-2.5">
+          <div className="pt-2 border-t border-line space-y-2.5">
             {allWarnings.map((warn, idx) => (
               <div
                 key={idx}
-                className="p-3 rounded-xl bg-slate-50 border border-slate-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                className="p-3 rounded-none bg-paper border border-line flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
               >
                 <div className="min-w-0 space-y-0.5">
-                  <span className="font-bold text-[#001639] block">
+                  <span className="font-tajawal font-bold text-ink block">
                     {isAr ? warn.titleAr : warn.titleEn}
                   </span>
-                  <span className="text-xs text-slate-700 block leading-relaxed">
+                  <span className="text-xs font-ibm-sans text-ink-soft block leading-relaxed">
                     {isAr ? warn.descAr : warn.descEn}
                   </span>
                 </div>
@@ -697,9 +687,9 @@ export const DownloadSection: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setActiveTab(warn.actionTab)}
-                  className="px-3.5 py-2 bg-[#001639] hover:bg-[#00245E] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shrink-0 transition cursor-pointer shadow-2xs active:scale-98 min-h-[36px]"
+                  className="px-3 py-1.5 bg-ink hover:bg-ink/90 text-white font-ibm-sans font-bold rounded-none text-xs flex items-center justify-center gap-1.5 shrink-0 transition cursor-pointer border border-ink min-h-[32px]"
                 >
-                  <Edit3 className="w-3.5 h-3.5 text-[#FF4D2D]" />
+                  <Edit3 className="w-3.5 h-3.5 text-orange" />
                   <span>{isAr ? warn.actionLabelAr : warn.actionLabelEn}</span>
                 </button>
               </div>
@@ -709,21 +699,21 @@ export const DownloadSection: React.FC = () => {
       </div>
 
       {/* One-Time Payment Model Notice & Transparent Pricing Plans */}
-      <div className="bg-white border-2 border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-xs space-y-4">
+      <div className="bg-white border border-line rounded-none p-5 sm:p-6 space-y-4">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-            <ShieldCheck className="w-5 h-5" />
+          <div className="w-8 h-8 rounded-none bg-paper border border-line text-ink flex items-center justify-center shrink-0 mt-0.5">
+            <ShieldCheck className="w-4 h-4 text-orange" />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h4 className="text-sm font-black text-[#001639]">
+              <h4 className="text-xs sm:text-sm font-tajawal font-bold text-ink">
                 {isAr ? 'نموذج الدفع: لمرة واحدة فقط عند التحميل' : 'One-Time Payment Model (No Recurring Fees)'}
               </h4>
-              <span className="px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-xs font-bold">
-                {isAr ? 'بدون أي اشتراك تلقائي' : 'Zero Subscriptions'}
+              <span className="px-2 py-0.5 rounded-none bg-emerald-50 text-emerald-800 border border-emerald-300 font-ibm-mono text-[10px] font-bold">
+                {isAr ? 'بدون أي اشتراك تلقائي' : 'ZERO SUBSCRIPTIONS'}
               </span>
             </div>
-            <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+            <p className="text-xs font-ibm-sans text-ink-soft mt-1 leading-relaxed">
               {isAr
                 ? 'أنشئ وعاين سيرتك الذاتية مجاناً. ادفع لمرة واحدة فقط عندما تصبح جاهزاً لتحميل ملف الـ PDF عالي الجودة بدون أي اشتراكات متكررة.'
                 : 'Build and preview your resume for free. Pay once when you’re ready to download the high-quality PDF. No recurring subscriptions.'}
@@ -732,38 +722,38 @@ export const DownloadSection: React.FC = () => {
         </div>
 
         {/* Pricing Plans Table / Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
           {/* Plan 1: Single Download */}
-          <div className="border border-slate-200 rounded-xl p-4 bg-slate-50/70 hover:bg-slate-50 flex flex-col justify-between transition">
+          <div className="border border-line rounded-none p-4 bg-paper hover:bg-paper-2 flex flex-col justify-between transition">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-800">{isAr ? 'تحميل فردي' : 'Single Download'}</span>
-                <span className="text-xs font-bold text-slate-700 bg-white px-2 py-0.5 rounded border border-slate-200">
-                  {isAr ? 'سيرة واحدة' : '1 Resume'}
+                <span className="text-xs font-tajawal font-bold text-ink">{isAr ? 'تحميل فردي' : 'Single Download'}</span>
+                <span className="font-ibm-mono text-[10px] font-bold text-ink bg-white px-2 py-0.5 border border-line rounded-none">
+                  {isAr ? 'سيرة واحدة' : '1 RESUME'}
                 </span>
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-black text-[#001639]">50</span>
-                <span className="text-xs font-bold text-slate-600">{isAr ? 'ج.م' : 'EGP'}</span>
-                <span className="text-xs text-slate-600 font-medium ms-1">
-                  ({isAr ? 'دفعة لمرة واحدة' : 'one-time payment'})
+                <span className="font-ibm-mono text-2xl font-black text-ink">50</span>
+                <span className="font-ibm-sans text-xs font-bold text-ink-soft">{isAr ? 'ج.م' : 'EGP'}</span>
+                <span className="font-ibm-sans text-xs text-ink-soft font-medium ms-1">
+                  ({isAr ? 'دفعة لمرة واحدة' : 'one-time'})
                 </span>
               </div>
-              <ul className="text-xs text-slate-700 space-y-1.5 pt-1">
+              <ul className="text-xs font-ibm-sans text-ink-soft space-y-1.5 pt-1">
                 <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                   <span>{isAr ? 'تحميل سيرة ذاتية واحدة عالية الجودة PDF' : '1 high-quality PDF download'}</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                   <span>{isAr ? 'بدون أي علامة مائية' : 'No watermark'}</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                   <span>{isAr ? 'تنسيق متوافق مع أنظمة ATS' : 'ATS-friendly layout'}</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                   <span>{isAr ? 'دفع لمرة واحدة' : 'One-time payment'}</span>
                 </li>
               </ul>
@@ -773,46 +763,46 @@ export const DownloadSection: React.FC = () => {
               onClick={() => {
                 useResumeStore.getState().setIsActivationModalOpen(true);
               }}
-              className="mt-3 w-full py-2.5 px-3 bg-white hover:bg-slate-100 text-[#001639] border border-slate-300 font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-98"
+              className="mt-4 w-full py-2 px-3 bg-white hover:bg-paper text-ink border border-line font-ibm-sans font-bold text-xs rounded-none transition flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <span>{isAr ? 'اشترِ الآن (50 ج.م)' : 'Buy Now (50 EGP)'}</span>
             </button>
           </div>
 
           {/* Plan 2: 3-Downloads Bundle */}
-          <div className="border-2 border-[#FF4D2D] rounded-xl p-4 bg-orange-50/30 hover:bg-orange-50/50 flex flex-col justify-between transition relative">
-            <span className="absolute -top-2.5 left-4 sm:left-auto sm:right-4 px-2.5 py-0.5 bg-[#FF4D2D] text-white text-xs font-black rounded-full uppercase tracking-wider">
-              {isAr ? 'الأكثر توفيراً (توفير 30 ج.م)' : 'Save 30 EGP'}
+          <div className="border border-orange rounded-none p-4 bg-paper hover:bg-paper-2 flex flex-col justify-between transition relative">
+            <span className="absolute -top-2.5 left-4 sm:left-auto sm:right-4 px-2 py-0.2 bg-orange text-white font-ibm-mono text-[9px] font-bold uppercase tracking-wider rounded-none">
+              {isAr ? 'الأكثر توفيراً (توفير 30 ج.م)' : 'SAVE 30 EGP'}
             </span>
             <div className="space-y-2 pt-1">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-orange-950">{isAr ? 'باقة 3 تحميلات' : '3-Downloads Pack'}</span>
-                <span className="text-xs font-bold text-orange-900 bg-orange-100 px-2 py-0.5 rounded border border-orange-200">
-                  {isAr ? '3 سير ذاتية' : '3 Resumes'}
+                <span className="text-xs font-tajawal font-bold text-ink">{isAr ? 'باقة 3 تحميلات' : '3-Downloads Pack'}</span>
+                <span className="font-ibm-mono text-[10px] font-bold text-orange bg-orange/10 px-2 py-0.5 border border-orange/30 rounded-none">
+                  {isAr ? '3 سير ذاتية' : '3 RESUMES'}
                 </span>
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="text-2xl font-black text-[#001639]">120</span>
-                <span className="text-xs font-bold text-slate-600">{isAr ? 'ج.م' : 'EGP'}</span>
-                <span className="text-xs text-emerald-700 font-bold ms-1">
-                  ({isAr ? '40 ج.م للتحميل فقط' : 'Only 40 EGP/CV'})
+                <span className="font-ibm-mono text-2xl font-black text-ink">120</span>
+                <span className="font-ibm-sans text-xs font-bold text-ink-soft">{isAr ? 'ج.م' : 'EGP'}</span>
+                <span className="font-ibm-mono text-xs text-emerald-700 font-bold ms-1">
+                  ({isAr ? '40 ج.م / سيرة' : '40 EGP / CV'})
                 </span>
               </div>
-              <ul className="text-xs text-slate-700 space-y-1.5 pt-1">
+              <ul className="text-xs font-ibm-sans text-ink-soft space-y-1.5 pt-1">
                 <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                   <span>{isAr ? '3 تحميلات لنماذج أو نسخ سير ذاتية مختلفة' : '3 downloads for different resume versions'}</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                   <span>{isAr ? 'استخدم الرصيد في أي وقت تحتاجه' : 'Use them whenever you need'}</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                   <span>{isAr ? 'بدون علامة مائية ومعتمدة لـ ATS' : 'No watermark & ATS-friendly'}</span>
                 </li>
                 <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                   <span>{isAr ? 'دفع لمرة واحدة' : 'One-time payment'}</span>
                 </li>
               </ul>
@@ -822,7 +812,7 @@ export const DownloadSection: React.FC = () => {
               onClick={() => {
                 useResumeStore.getState().setIsActivationModalOpen(true);
               }}
-              className="mt-3 w-full py-2.5 px-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
+              className="mt-4 w-full py-2 px-3 bg-ink hover:bg-ink/90 text-white font-ibm-sans font-bold text-xs rounded-none border border-ink transition flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <span>{isAr ? 'اشترِ الآن (120 ج.م)' : 'Buy Now (120 EGP)'}</span>
             </button>
@@ -830,13 +820,13 @@ export const DownloadSection: React.FC = () => {
         </div>
 
         {/* Local Storage & Data Privacy Banner */}
-        <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-start gap-2.5 text-xs text-slate-700">
-          <Lock className="w-4 h-4 text-[#001639] shrink-0 mt-0.5" />
+        <div className="p-3 bg-paper border border-line rounded-none flex items-start gap-2.5 text-xs text-ink-soft">
+          <Lock className="w-4 h-4 text-ink shrink-0 mt-0.5" />
           <div className="space-y-0.5">
-            <span className="font-bold text-slate-900">
+            <span className="font-tajawal font-bold text-ink">
               {isAr ? 'خصوصية وأمان البيانات 100%:' : '100% Data Privacy & Security:'}
             </span>
-            <p>
+            <p className="font-ibm-sans">
               {isAr
                 ? 'بيانات سيرتك الذاتية مشفرة وتُخزن محلياً فقط على متصفح جهازك. لا يتم إرسال أي بيانات إلى الخادم إلا النصوص التي تختار تحسينها بالذكاء الاصطناعي.'
                 : 'Your resume is encrypted and stored locally in your browser. No data is sent to our server except specific text snippets you request for AI enhancement.'}
@@ -852,22 +842,22 @@ export const DownloadSection: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveTab('ats' as any)}
-            className="p-4 bg-white border border-slate-200 hover:border-[#FF4D2D]/60 rounded-2xl text-start transition flex items-center justify-between gap-3 shadow-2xs group cursor-pointer"
+            className="p-4 bg-white border border-line hover:border-ink rounded-none text-start transition flex items-center justify-between gap-3 group cursor-pointer"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-orange-50 text-[#FF4D2D] group-hover:bg-[#FF4D2D] group-hover:text-white flex items-center justify-center shrink-0 transition">
-                <FileSearch className="w-5 h-5" />
+              <div className="w-8 h-8 rounded-none bg-paper border border-line text-ink group-hover:bg-ink group-hover:text-white flex items-center justify-center shrink-0 transition">
+                <FileSearch className="w-4 h-4 text-orange" />
               </div>
               <div>
-                <h4 className="text-xs sm:text-sm font-bold text-[#001639]">
+                <h4 className="text-xs sm:text-sm font-tajawal font-bold text-ink">
                   {isAr ? 'فحص الكلمات المفتاحية ATS' : 'ATS Keyword Match'}
                 </h4>
-                <p className="text-xs text-slate-600 mt-0.5">
+                <p className="text-xs font-ibm-sans text-ink-soft mt-0.5">
                   {isAr ? 'مطابقة السيرة مع إعلان وظيفتك واكتشاف الكلمات الناقصة' : 'Scan missing keywords & match job requirements'}
                 </p>
               </div>
             </div>
-            <span className="text-slate-500 group-hover:text-[#FF4D2D] text-xs font-bold transition rtl:rotate-180">
+            <span className="text-ink-soft group-hover:text-ink text-xs font-ibm-mono font-bold transition rtl:rotate-180">
               →
             </span>
           </button>
@@ -876,93 +866,27 @@ export const DownloadSection: React.FC = () => {
           <button
             type="button"
             onClick={() => setActiveTab('customize')}
-            className="p-4 bg-white border border-slate-200 hover:border-[#001639]/50 rounded-2xl text-start transition flex items-center justify-between gap-3 shadow-2xs group cursor-pointer"
+            className="p-4 bg-white border border-line hover:border-ink rounded-none text-start transition flex items-center justify-between gap-3 group cursor-pointer"
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 text-[#001639] group-hover:bg-[#001639] group-hover:text-white flex items-center justify-center shrink-0 transition">
-                <Palette className="w-5 h-5" />
+              <div className="w-8 h-8 rounded-none bg-paper border border-line text-ink group-hover:bg-ink group-hover:text-white flex items-center justify-center shrink-0 transition">
+                <Palette className="w-4 h-4 text-orange" />
               </div>
               <div>
-                <h4 className="text-xs sm:text-sm font-bold text-[#001639]">
+                <h4 className="text-xs sm:text-sm font-tajawal font-bold text-ink">
                   {isAr ? 'تخصيص القالب والمظهر' : 'Template & Colors'}
                 </h4>
-                <p className="text-xs text-slate-600 mt-0.5">
+                <p className="text-xs font-ibm-sans text-ink-soft mt-0.5">
                   {isAr ? 'تغيير التصميم والألوان والخطوط' : 'Change theme, font, and layout'}
                 </p>
               </div>
             </div>
-            <span className="text-slate-500 group-hover:text-[#001639] text-xs font-bold transition rtl:rotate-180">
+            <span className="text-ink-soft group-hover:text-ink text-xs font-ibm-mono font-bold transition rtl:rotate-180">
               →
             </span>
           </button>
         </div>
-
-        {/* 3. JSON Data Backup & Restore Card */}
-        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3.5">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-[#001639] text-white flex items-center justify-center shrink-0">
-                <FileJson className="w-4 h-4 text-[#FF4D2D]" />
-              </div>
-              <div>
-                <h4 className="text-xs sm:text-sm font-bold text-[#001639]">
-                  {isAr ? 'النسخة الاحتياطية للبيانات (JSON Backup)' : 'Data Backup & Restore'}
-                </h4>
-                <p className="text-xs text-slate-600 font-medium">
-                  {isAr
-                    ? 'احفظ نسخة من بيانات سيرتك الذاتية على جهازك للخصوصية أو استعدها في أي وقت.'
-                    : 'Your backup is downloaded to your device. Keep it somewhere safe.'}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Success / Info Alert */}
-          {jsonSuccessMsg && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-2 text-emerald-800 text-xs font-bold animate-in fade-in">
-              <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-              <span>{jsonSuccessMsg}</span>
-            </div>
-          )}
-
-          <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-0.5">
-            {/* Export JSON Button */}
-            <button
-              type="button"
-              onClick={handleExportJson}
-              className="w-full sm:flex-1 py-2.5 px-4 bg-white hover:bg-slate-100 text-[#001639] border border-slate-200 font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs min-h-[40px] active:scale-98"
-            >
-              <Download className="w-3.5 h-3.5 text-[#001639]" />
-              <span>{isAr ? 'تصدير نسخة احتياطية' : 'Download Backup (JSON)'}</span>
-            </button>
-
-            {/* Restore from Backup Button */}
-            <input
-              type="file"
-              ref={jsonFileInputRef}
-              onChange={handleImportJson}
-              accept=".json,application/json"
-              className="hidden"
-            />
-            <button
-              type="button"
-              onClick={() => jsonFileInputRef.current?.click()}
-              className="w-full sm:flex-1 py-2.5 px-4 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs min-h-[40px] active:scale-98"
-            >
-              <Upload className="w-3.5 h-3.5 text-[#FF4D2D]" />
-              <span>{isAr ? 'استعادة من نسخة احتياطية' : 'Restore from backup'}</span>
-            </button>
-          </div>
-        </div>
       </div>
-
-      {/* Share Modal */}
-      <ShareModal
-        isOpen={isShareModalOpen}
-        onClose={() => setIsShareModalOpen(false)}
-        data={resumeData}
-        settings={settings}
-      />
 
       {/* Validation Modal */}
       {validationResult && (

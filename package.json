@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
+    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs && node -e \"fs.cpSync('dist','build',{recursive:true})\"",
     "start": "node dist/server.cjs",
     "test": "tsx src/test/coreFeatures.test.ts && tsx src/test/autosavePersistence.test.ts && tsx src/test/resumeParser.test.ts",
-    "clean": "rm -rf dist",
+    "clean": "rm -rf dist build",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "@vitejs/plugin-react": "^5.0.4",
     "canvas-confetti": "^1.9.4",
     "dotenv": "^17.2.3",
+    "esbuild": "^0.25.0",
     "express": "^4.21.2",
     "firebase": "^12.17.1",
     "html2canvas-pro": "2.3.9",
@@ -32,6 +33,10 @@
     "react-dom": "^19.0.1",
     "react-i18next": "^17.0.11",
     "react-router-dom": "^7.18.2",
+    "tailwindcss": "^4.1.14",
+    "tsx": "^4.21.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.3",
     "zustand": "5.0.15"
   },
   "devDependencies": {
@@ -40,12 +45,6 @@
     "@types/node": "^22.14.0",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
-    "autoprefixer": "^10.4.21",
-    "esbuild": "^0.25.0",
-    "rollup-plugin-visualizer": "^7.1.1",
-    "tailwindcss": "^4.1.14",
-    "tsx": "^4.21.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.3"
+    "autoprefixer": "^10.4.21"
   }
 }
