@@ -172,7 +172,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
             <button
               type="button"
               onClick={onExportPdf}
-              className="py-3.5 px-6 bg-[#FF4D2D] hover:bg-[#e03d1f] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer group"
+              className="btn-folded-corner py-3.5 px-6 bg-[#FF4D2D] hover:bg-[#e03d1f] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer group"
             >
               <Download className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-y-0.5 transition-transform" />
               <span>{isAr ? 'تحميل سيرتك الذاتية PDF' : 'Download Resume PDF'}</span>
@@ -288,7 +288,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
         <button
           type="button"
           onClick={() => setIsAtsOpen((prev) => !prev)}
-          className="w-full p-4 sm:p-4.5 flex items-center justify-between text-start hover:bg-[#fbfaf7] transition cursor-pointer"
+          className="w-full p-4 sm:p-4.5 flex items-center justify-between text-start hover:bg-slate-50 transition cursor-pointer"
         >
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-[#001639]/5 text-[#001639] flex items-center justify-center shrink-0">
@@ -323,7 +323,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="border-t border-[#e8e5de] p-4 sm:p-5 bg-[#fbfaf7]"
+              className="border-t border-[#e8e5de] p-4 sm:p-5 bg-slate-50/50"
             >
               <AtsAnalyzerPanel />
             </motion.div>
@@ -336,7 +336,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
         <button
           type="button"
           onClick={() => setIsAdvancedStylingOpen((prev) => !prev)}
-          className="w-full p-4 sm:p-4.5 flex items-center justify-between text-start hover:bg-[#fbfaf7] transition cursor-pointer"
+          className="w-full p-4 sm:p-4.5 flex items-center justify-between text-start hover:bg-slate-50 transition cursor-pointer"
         >
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-[#001639]/5 text-[#001639] flex items-center justify-center shrink-0">
@@ -472,7 +472,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
       </div>
 
       {/* 6. STICKY BOTTOM ACTIONS */}
-      <div className="pt-3 sm:pt-4 border-t border-[#e8e5de] flex items-center justify-between gap-2.5 sm:gap-3 sticky bottom-0 bg-[#fbfaf7]/95 backdrop-blur-xs py-3 z-10">
+      <div className="pt-3 sm:pt-4 border-t border-[#e8e5de] flex items-center justify-between gap-2.5 sm:gap-3 sticky bottom-0 bg-white/95 backdrop-blur-xs py-3 z-10">
         <button
           type="button"
           onClick={onPrevMainStep}
@@ -484,7 +484,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
         <button
           type="button"
           onClick={onExportPdf}
-          className="flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#FF4D2D] hover:bg-[#e03d1f] text-white font-extrabold text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+          className="btn-folded-corner flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#FF4D2D] hover:bg-[#e03d1f] text-white font-extrabold text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
           <Download className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
           <span className="truncate">{isAr ? 'تحميل ملف PDF' : 'Download PDF'}</span>

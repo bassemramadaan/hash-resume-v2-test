@@ -177,7 +177,7 @@ export const BuilderPage: React.FC = () => {
 
   return (
     <div
-      className="min-h-screen bg-[#fbfaf7] text-[#12141a] flex flex-col selection:bg-[#FF4D2D]/20 selection:text-[#001639]"
+      className="min-h-screen bg-white text-[#12141a] flex flex-col selection:bg-[#FF4D2D]/20 selection:text-[#001639]"
       dir={isAr ? 'rtl' : 'ltr'}
     >
       {/* 1. Thin Focused Top Bar */}

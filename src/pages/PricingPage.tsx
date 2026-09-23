@@ -236,7 +236,7 @@ export const PricingPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsActivationModalOpen(true)}
-              className="w-full py-3.5 px-5 bg-[#001639] hover:bg-[#002866] text-white font-black text-xs sm:text-sm rounded-2xl transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-98 min-h-[48px]"
+              className="btn-folded-corner w-full py-3.5 px-5 bg-[#001639] hover:bg-[#002866] text-white font-black text-xs sm:text-sm rounded-2xl transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-98 min-h-[48px]"
             >
               <span>{isAr ? 'تفعيل باقة التحميل الفردي (50 ج.م)' : 'Get Single Key — 50 EGP'}</span>
               <ArrowUpRight className="w-4 h-4 rtl:rotate-[-90deg]" />
@@ -327,7 +327,7 @@ export const PricingPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsActivationModalOpen(true)}
-              className="w-full py-3.5 px-5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-black text-xs sm:text-sm rounded-2xl transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#FF4D2D]/25 active:scale-98 min-h-[48px]"
+              className="btn-folded-corner w-full py-3.5 px-5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-black text-xs sm:text-sm rounded-2xl transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#FF4D2D]/25 active:scale-98 min-h-[48px]"
             >
               <span>{isAr ? 'تفعيل الباقة الاقتصادية (120 ج.م)' : 'Get 3-Pack Key — 120 EGP'}</span>
               <Sparkles className="w-4 h-4" />

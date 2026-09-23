@@ -123,7 +123,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ isAr }) => {
               <button
                 type="button"
                 onClick={() => handleStartBuilder()}
-                className="w-full sm:w-auto px-7 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs rounded-2xl shadow-md shadow-coral/20 hover:shadow transition flex items-center justify-center gap-2 shrink-0 cursor-pointer min-h-[44px]"
+                className="btn-folded-corner w-full sm:w-auto px-7 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs rounded-2xl shadow-md shadow-coral/20 hover:shadow transition flex items-center justify-center gap-2 shrink-0 cursor-pointer min-h-[44px]"
               >
                 <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
                 <ArrowIcon className="w-4 h-4" />

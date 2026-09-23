@@ -149,7 +149,7 @@ export const TemplatesPage: React.FC = () => {
 
                 <button
                   onClick={() => handleSelectTemplate(tpl.id)}
-                  className={`px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  className={`btn-folded-corner px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
                     isCurrentSelected
                       ? 'bg-emerald-600 text-white'
                       : 'bg-[#001639] hover:bg-[#00214F] text-white shadow-2xs'

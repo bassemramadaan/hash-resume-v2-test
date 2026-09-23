@@ -127,7 +127,7 @@ export const ShowcasePage: React.FC = () => {
               href="/site-showcase.html"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-5 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white text-xs sm:text-sm font-extrabold rounded-xl transition shadow-xs flex items-center gap-2 cursor-pointer"
+              className="btn-folded-corner px-5 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white text-xs sm:text-sm font-extrabold rounded-xl transition shadow-xs flex items-center gap-2 cursor-pointer"
             >
               <span>{isAr ? 'فتح الملف بصيغة HTML كاملة' : 'Open Full HTML Document'}</span>
               <ArrowUpRight className="w-4 h-4" />
@@ -135,7 +135,7 @@ export const ShowcasePage: React.FC = () => {
 
             <Link
               to="/builder"
-              className="px-5 py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-xs sm:text-sm font-extrabold rounded-xl transition shadow-xs flex items-center gap-2 cursor-pointer"
+              className="btn-folded-corner px-5 py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-xs sm:text-sm font-extrabold rounded-xl transition shadow-xs flex items-center gap-2 cursor-pointer"
             >
               <Sparkles className="w-4 h-4" />
               <span>{isAr ? 'تجربة المنصة الآن' : 'Launch Builder'}</span>
@@ -230,7 +230,7 @@ export const ShowcasePage: React.FC = () => {
             <div className="pt-2">
               <Link
                 to="/builder"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-sm sm:text-base font-extrabold rounded-2xl shadow-lg transition active:scale-95 cursor-pointer"
+                className="btn-folded-corner inline-flex items-center gap-2 px-8 py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-sm sm:text-base font-extrabold rounded-2xl shadow-lg transition active:scale-95 cursor-pointer"
               >
                 <Sparkles className="w-5 h-5" />
                 <span>{isAr ? 'ابدأ إنشاء سيرتي الآن مجاناً' : 'Start Building My Resume Free'}</span>

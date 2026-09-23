@@ -459,7 +459,7 @@ export const ExperienceSubStep: React.FC<ExperienceSubStepProps> = ({
             </div>
 
             {/* Action Footer for Sub-Stage 0 */}
-            <div className="pt-4 border-t border-[#e8e5de] flex items-center justify-between gap-3 sticky bottom-0 bg-[#fbfaf7]/95 backdrop-blur-xs py-3 z-10">
+            <div className="pt-4 border-t border-[#e8e5de] flex items-center justify-between gap-3 sticky bottom-0 bg-white/95 backdrop-blur-xs py-3 z-10">
               <button
                 type="button"
                 onClick={() => {
@@ -478,7 +478,7 @@ export const ExperienceSubStep: React.FC<ExperienceSubStepProps> = ({
               <button
                 type="button"
                 onClick={() => setSubStage(1)}
-                className="min-h-[48px] flex-1 max-w-sm py-3 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-sm sm:text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                className="btn-folded-corner min-h-[48px] flex-1 max-w-sm py-3 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-sm sm:text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
               >
                 <span>{isAr ? 'التالي: كتابة الإنجازات' : 'Next: Key Achievements'}</span>
                 {isAr ? <ArrowLeft className="w-5 h-5" /> : <ArrowRight className="w-5 h-5" />}
@@ -653,7 +653,7 @@ export const ExperienceSubStep: React.FC<ExperienceSubStepProps> = ({
             </div>
 
             {/* Action Footer for Sub-Stage 1 */}
-            <div className="pt-4 border-t border-[#e8e5de] flex flex-col items-center gap-3 sticky bottom-0 bg-[#fbfaf7]/95 backdrop-blur-xs py-3 z-10">
+            <div className="pt-4 border-t border-[#e8e5de] flex flex-col items-center gap-3 sticky bottom-0 bg-white/95 backdrop-blur-xs py-3 z-10">
               <div className="w-full flex items-center gap-3">
                 <button
                   type="button"
@@ -673,7 +673,7 @@ export const ExperienceSubStep: React.FC<ExperienceSubStepProps> = ({
                       onNextMainStep();
                     }
                   }}
-                  className="min-h-[48px] flex-1 py-3 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-sm sm:text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                  className="btn-folded-corner min-h-[48px] flex-1 py-3 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-sm sm:text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                 >
                   <span>
                     {activeIndex < experiences.length - 1

@@ -32,7 +32,7 @@ export const NotFoundPage: React.FC = () => {
       <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
         <Link
           to="/"
-          className="w-full sm:w-auto px-6 py-3 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs rounded-full shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
+          className="btn-folded-corner w-full sm:w-auto px-6 py-3 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs rounded-full shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
         >
           <Home className="w-4 h-4" />
           <span>{isAr ? 'الرئيسية' : 'Back to Home'}</span>
@@ -40,7 +40,7 @@ export const NotFoundPage: React.FC = () => {
 
         <Link
           to="/builder"
-          className="w-full sm:w-auto px-6 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs rounded-full shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
+          className="btn-folded-corner w-full sm:w-auto px-6 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs rounded-full shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
         >
           <FileText className="w-4 h-4" />
           <span>{isAr ? 'منشئ السيرة (9 خطوات)' : 'Resume Builder'}</span>

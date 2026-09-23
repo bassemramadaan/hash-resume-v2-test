@@ -273,7 +273,7 @@ export const AtsCheckerPage: React.FC = () => {
               type="button"
               onClick={handleRunAnalysis}
               disabled={isAnalyzing}
-              className="w-full py-3 sm:py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] active:bg-[#CC3A1A] text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-h-[48px]"
+              className="btn-folded-corner w-full py-3 sm:py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] active:bg-[#CC3A1A] text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-h-[48px]"
             >
               {isAnalyzing ? (
                 <>

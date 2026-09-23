@@ -385,7 +385,7 @@ export const EducationSubStep: React.FC<EducationSubStepProps> = ({
           </div>
 
           {/* Action Footer for Single Education Card */}
-          <div className="pt-4 border-t border-[#e8e5de] flex flex-col items-center gap-3 sticky bottom-0 bg-[#fbfaf7]/95 backdrop-blur-xs py-3 z-10">
+          <div className="pt-4 border-t border-[#e8e5de] flex flex-col items-center gap-3 sticky bottom-0 bg-white/95 backdrop-blur-xs py-3 z-10">
             <div className="w-full flex items-center gap-3">
               <button
                 type="button"
@@ -410,7 +410,7 @@ export const EducationSubStep: React.FC<EducationSubStepProps> = ({
                     onNextMainStep();
                   }
                 }}
-                className="min-h-[48px] flex-1 py-3 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-sm sm:text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+                className="btn-folded-corner min-h-[48px] flex-1 py-3 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-sm sm:text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-95"
               >
                 <span>
                   {activeIndex < educationList.length - 1

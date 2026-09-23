@@ -370,7 +370,7 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
       </div>
 
       {/* Sticky Bottom Navigation Bar */}
-      <div className="pt-3 sm:pt-4 border-t border-[#e8e5de] flex items-center justify-between gap-2.5 sm:gap-3 sticky bottom-0 bg-[#fbfaf7]/95 backdrop-blur-xs py-3 z-10">
+      <div className="pt-3 sm:pt-4 border-t border-[#e8e5de] flex items-center justify-between gap-2.5 sm:gap-3 sticky bottom-0 bg-white/95 backdrop-blur-xs py-3 z-10">
         <button
           type="button"
           onClick={onPrevMainStep}
@@ -382,7 +382,7 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
         <button
           type="button"
           onClick={onNextMainStep}
-          className="flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
+          className="btn-folded-corner flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
         >
           <span className="truncate">
             {isAr ? 'متابعة إلى المظهر والتحميل' : 'Continue to Design & Export'}

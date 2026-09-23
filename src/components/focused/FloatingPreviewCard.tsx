@@ -142,7 +142,7 @@ export const FloatingPreviewCard: React.FC<FloatingPreviewCardProps> = ({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}
               transition={{ duration: 0.2 }}
-              className="relative w-full max-w-4xl h-[90vh] bg-[#fbfaf7] rounded-3xl border border-[#e8e5de] shadow-2xl flex flex-col overflow-hidden"
+              className="relative w-full max-w-4xl h-[90vh] bg-slate-50 rounded-3xl border border-[#e8e5de] shadow-2xl flex flex-col overflow-hidden"
             >
               {/* Modal Header */}
               <div className="px-6 py-4 bg-white border-b border-[#e8e5de] flex items-center justify-between gap-4">
@@ -166,7 +166,7 @@ export const FloatingPreviewCard: React.FC<FloatingPreviewCardProps> = ({
                       type="button"
                       onClick={onExportPdf}
                       disabled={isExporting}
-                      className="flex items-center gap-2 px-4 py-2 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-xs font-bold rounded-xl shadow-xs transition"
+                      className="btn-folded-corner flex items-center gap-2 px-4 py-2 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-xs font-bold rounded-xl shadow-xs transition"
                     >
                       <Download className="w-4 h-4" />
                       <span>{isAr ? 'تحميل PDF' : 'Download PDF'}</span>

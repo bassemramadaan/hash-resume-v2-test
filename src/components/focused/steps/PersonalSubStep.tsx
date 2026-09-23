@@ -229,7 +229,7 @@ export const PersonalSubStep: React.FC<PersonalSubStepProps> = ({
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="flex-1 py-4 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="btn-folded-corner flex-1 py-4 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>{isAr ? 'التالي' : 'Continue'}</span>
                   {isAr ? <ArrowLeft className="w-5 h-5" /> : <ArrowRight className="w-5 h-5" />}
@@ -372,7 +372,7 @@ export const PersonalSubStep: React.FC<PersonalSubStepProps> = ({
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="flex-1 py-4 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="btn-folded-corner flex-1 py-4 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>{isAr ? 'التالي' : 'Continue'}</span>
                   {isAr ? <ArrowLeft className="w-5 h-5" /> : <ArrowRight className="w-5 h-5" />}
@@ -455,7 +455,7 @@ export const PersonalSubStep: React.FC<PersonalSubStepProps> = ({
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="flex-1 py-4 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="btn-folded-corner flex-1 py-4 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <span>{isAr ? 'إنهاء الخطوة الأولى والانتقال للخبرات' : 'Finish & Go to Experience'}</span>
                   {isAr ? <ArrowLeft className="w-5 h-5" /> : <ArrowRight className="w-5 h-5" />}

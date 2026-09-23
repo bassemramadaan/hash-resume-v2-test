@@ -52,7 +52,7 @@ export const PaymentSuccessPage: React.FC = () => {
           onClick={() => {
             navigate('/builder');
           }}
-          className="px-6 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+          className="btn-folded-corner px-6 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
         >
           <Sparkles className="w-4 h-4" />
           <span>{isAr ? 'العودة للمحرر وتأكيد التفعيل' : 'Return to Builder & Activate'}</span>

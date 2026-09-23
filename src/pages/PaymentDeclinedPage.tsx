@@ -37,7 +37,7 @@ export const PaymentDeclinedPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
         <button
           onClick={() => navigate('/pricing')}
-          className="px-6 py-3 bg-[#001639] hover:bg-[#00214F] text-white font-extrabold text-xs rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+          className="btn-folded-corner px-6 py-3 bg-[#001639] hover:bg-[#00214F] text-white font-extrabold text-xs rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
         >
           <RefreshCw className="w-4 h-4" />
           <span>{isAr ? 'إعادة المحاولة' : 'Try Again'}</span>

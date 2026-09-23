@@ -93,7 +93,7 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           <button
             type="button"
             onClick={() => navigate('/builder')}
-            className="w-full sm:w-auto px-6 sm:px-10 min-h-[50px] sm:min-h-[54px] bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-2xl text-sm sm:text-base md:text-lg font-extrabold shadow-md hover:shadow-lg shadow-coral/25 flex items-center justify-center gap-2.5 sm:gap-3 transition-all active:scale-98 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF4D2D]"
+            className="btn-folded-corner w-full sm:w-auto px-6 sm:px-10 min-h-[50px] sm:min-h-[54px] bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-2xl text-sm sm:text-base md:text-lg font-extrabold shadow-md hover:shadow-lg shadow-coral/25 flex items-center justify-center gap-2.5 sm:gap-3 transition-all active:scale-98 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF4D2D]"
           >
             <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 fill-white/20 shrink-0" />
             <span>{isAr ? 'ابدأ الآن مجاناً' : 'Build My Resume Now'}</span>

@@ -46,7 +46,7 @@ export const DesktopPreviewModal: React.FC<DesktopPreviewModalProps> = ({
             exit={{ opacity: 0, scale: 0.96, y: 10 }}
             transition={{ duration: 0.2 }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-4xl h-[92vh] bg-[#fbfaf7] rounded-3xl border border-[#e8e5de] shadow-2xl flex flex-col overflow-hidden"
+            className="relative w-full max-w-4xl h-[92vh] bg-slate-50 rounded-3xl border border-[#e8e5de] shadow-2xl flex flex-col overflow-hidden"
           >
             {/* Modal Header */}
             <div className="px-6 py-4 bg-white border-b border-[#e8e5de] flex items-center justify-between gap-4 shrink-0">
@@ -78,7 +78,7 @@ export const DesktopPreviewModal: React.FC<DesktopPreviewModalProps> = ({
                       onExportPdf();
                     }}
                     disabled={isExporting}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs hover:shadow-md transition active:scale-95 cursor-pointer"
+                    className="btn-folded-corner flex items-center gap-2 px-5 py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-xs sm:text-sm font-bold rounded-xl shadow-xs hover:shadow-md transition active:scale-95 cursor-pointer"
                   >
                     <Download className="w-4 h-4" />
                     <span>{isAr ? 'تحميل السيرة الذاتية (PDF)' : 'Download Resume (PDF)'}</span>

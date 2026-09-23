@@ -30,7 +30,7 @@
   --color-primary-text: #FFFFFF;
 
   /* Focused Single-Flow Design Tokens */
-  --focus-bg: #fbfaf7;
+  --focus-bg: #ffffff;
   --focus-card: #ffffff;
   --focus-navy: #001639;
   --focus-orange: #ff4d2d;
@@ -847,3 +847,123 @@ textarea:focus-visible,
     transform: none !important;
   }
 }
+
+/* ==========================================================================
+   Folded Paper Corner (Dog-Ear) Button Effect - Brand Color #FF4D2D
+   ========================================================================== */
+.btn-folded-corner {
+  position: relative;
+  overflow: hidden;
+}
+
+/* RTL (Top-Left Folded Corner in #FF4D2D) */
+[dir="rtl"] .btn-folded-corner::before,
+.rtl .btn-folded-corner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.45);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  pointer-events: none;
+  z-index: 5;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[dir="rtl"] .btn-folded-corner::after,
+.rtl .btn-folded-corner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(135deg, #FF7A5C 0%, #FF4D2D 60%, #D9381A 100%);
+  clip-path: polygon(100% 0, 0 100%, 100% 100%);
+  filter: drop-shadow(2px 2px 3.5px rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+  z-index: 6;
+  border-bottom-right-radius: 2px;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[dir="rtl"] .btn-folded-corner:hover::before,
+.rtl .btn-folded-corner:hover::before {
+  width: 28px;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+[dir="rtl"] .btn-folded-corner:hover::after,
+.rtl .btn-folded-corner:hover::after {
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.6));
+}
+
+/* LTR (Top-Right Folded Corner in #FF4D2D) */
+[dir="ltr"] .btn-folded-corner::before,
+.ltr .btn-folded-corner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  background: rgba(0, 0, 0, 0.45);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+  pointer-events: none;
+  z-index: 5;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[dir="ltr"] .btn-folded-corner::after,
+.ltr .btn-folded-corner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  background: linear-gradient(225deg, #FF7A5C 0%, #FF4D2D 60%, #D9381A 100%);
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+  filter: drop-shadow(-2px 2px 3.5px rgba(0, 0, 0, 0.5));
+  pointer-events: none;
+  z-index: 6;
+  border-bottom-left-radius: 2px;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[dir="ltr"] .btn-folded-corner:hover::before,
+.ltr .btn-folded-corner:hover::before {
+  width: 28px;
+  height: 28px;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+[dir="ltr"] .btn-folded-corner:hover::after,
+.ltr .btn-folded-corner:hover::after {
+  width: 28px;
+  height: 28px;
+  filter: drop-shadow(-3px 3px 5px rgba(0, 0, 0, 0.6));
+}
+
+/* Contrast enhancement when button itself is orange (#FF4D2D): crisp white/navy fold to remain perfectly visible */
+[dir="rtl"] .btn-folded-corner[class*="bg-[#FF4D2D]"]::after,
+[dir="rtl"] .btn-folded-corner[class*="bg-coral"]::after,
+.rtl .btn-folded-corner[class*="bg-[#FF4D2D]"]::after,
+.rtl .btn-folded-corner[class*="bg-coral"]::after {
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 60%, #cbd5e1 100%);
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.6));
+}
+
+[dir="ltr"] .btn-folded-corner[class*="bg-[#FF4D2D]"]::after,
+[dir="ltr"] .btn-folded-corner[class*="bg-coral"]::after,
+.ltr .btn-folded-corner[class*="bg-[#FF4D2D]"]::after,
+.ltr .btn-folded-corner[class*="bg-coral"]::after {
+  background: linear-gradient(225deg, #ffffff 0%, #f1f5f9 60%, #cbd5e1 100%);
+  filter: drop-shadow(-2px 2px 4px rgba(0, 0, 0, 0.6));
+}
+

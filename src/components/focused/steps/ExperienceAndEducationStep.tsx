@@ -850,7 +850,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
         </AnimatePresence>
 
         {/* Bottom Actions for Experience */}
-        <div className="pt-4 sm:pt-6 mt-6 border-t border-[#e8e5de] flex items-center justify-between gap-3 sticky bottom-0 bg-[#fbfaf7]/95 backdrop-blur-xs py-3 z-10">
+        <div className="pt-4 sm:pt-6 mt-6 border-t border-[#e8e5de] flex items-center justify-between gap-3 sticky bottom-0 bg-white/95 backdrop-blur-xs py-3 z-10">
           <button
             type="button"
             onClick={() => setStage('experience-decision')}
@@ -862,7 +862,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
           <button
             type="button"
             onClick={handleContinueToEducation}
-            className="flex-1 max-w-sm py-3 px-5 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs sm:text-sm rounded-xl shadow-2xs hover:shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
+            className="btn-folded-corner flex-1 max-w-sm py-3 px-5 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs sm:text-sm rounded-xl shadow-2xs hover:shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <span>{isAr ? 'متابعة إلى التعليم والمؤهلات' : 'Continue to Education'}</span>
             {isAr ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}
@@ -1129,7 +1129,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
       </div>
 
       {/* Bottom Actions for Education */}
-      <div className="pt-4 sm:pt-6 mt-6 border-t border-[#e8e5de] flex items-center justify-between gap-3 sticky bottom-0 bg-[#fbfaf7]/95 backdrop-blur-xs py-3 z-10">
+      <div className="pt-4 sm:pt-6 mt-6 border-t border-[#e8e5de] flex items-center justify-between gap-3 sticky bottom-0 bg-white/95 backdrop-blur-xs py-3 z-10">
         <button
           type="button"
           onClick={handleBackFromEducation}
@@ -1141,7 +1141,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
         <button
           type="button"
           onClick={onNextMainStep}
-          className="flex-1 max-w-sm py-3 px-5 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs sm:text-sm rounded-xl shadow-2xs hover:shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
+          className="btn-folded-corner flex-1 max-w-sm py-3 px-5 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs sm:text-sm rounded-xl shadow-2xs hover:shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
         >
           <span>{isAr ? 'متابعة إلى المهارات واللغات' : 'Continue to Skills'}</span>
           {isAr ? <ArrowLeft className="w-4 h-4" /> : <ArrowRight className="w-4 h-4" />}

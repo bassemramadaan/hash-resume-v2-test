@@ -36,7 +36,7 @@ export const FinalCtaSection: React.FC<FinalCtaSectionProps> = ({ isAr }) => {
             <div className="pt-2">
               <Link
                 to="/builder"
-                className="inline-flex items-center justify-center gap-2 px-10 py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-black text-sm rounded-full shadow-lg hover:shadow-xl transition transform active:scale-95 cursor-pointer"
+                className="btn-folded-corner inline-flex items-center justify-center gap-2 px-10 py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-black text-sm rounded-full shadow-lg hover:shadow-xl transition transform active:scale-95 cursor-pointer"
               >
                 <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
                 <ArrowIcon className="w-5 h-5" />
@@ -58,7 +58,7 @@ export const FinalCtaSection: React.FC<FinalCtaSectionProps> = ({ isAr }) => {
 
         <Link
           to="/builder"
-          className="px-5 py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs rounded-full shadow-md transition flex items-center gap-1.5 cursor-pointer"
+          className="btn-folded-corner px-5 py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs rounded-full shadow-md transition flex items-center gap-1.5 cursor-pointer"
         >
           <span>{isAr ? 'ابدأ مجاناً' : 'Build Free'}</span>
           <ArrowIcon className="w-3.5 h-3.5" />

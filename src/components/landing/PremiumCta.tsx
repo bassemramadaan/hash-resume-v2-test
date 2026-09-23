@@ -42,7 +42,7 @@ export const PremiumCta: React.FC<{ isAr: boolean }> = ({ isAr }) => {
         >
           <button
             onClick={() => navigate('/builder')}
-            className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 min-h-[48px] sm:min-h-[52px] bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-xl sm:rounded-2xl text-sm sm:text-base font-extrabold shadow-lg shadow-coral/20 flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
+            className="btn-folded-corner w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 min-h-[48px] sm:min-h-[52px] bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-xl sm:rounded-2xl text-sm sm:text-base font-extrabold shadow-lg shadow-coral/20 flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
           >
             <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
             <ArrowIcon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
@@ -50,7 +50,7 @@ export const PremiumCta: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           
           <button
             onClick={() => navigate('/templates')}
-            className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 min-h-[48px] sm:min-h-[52px] bg-[#00214F] hover:bg-[#002F6C] text-white rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold border border-[#002F6C] transition-all active:scale-95 cursor-pointer"
+            className="btn-folded-corner w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 min-h-[48px] sm:min-h-[52px] bg-[#00214F] hover:bg-[#002F6C] text-white rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold border border-[#002F6C] transition-all active:scale-95 cursor-pointer"
           >
             {isAr ? 'تصفح القوالب' : 'Browse Templates'}
           </button>
