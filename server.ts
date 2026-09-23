@@ -1489,6 +1489,9 @@ Raw resume text:
 // ==========================================
 async function setupServer() {
   if (process.env.NODE_ENV !== "production") {
+    // Serve public directory statically so public assets (/logo-icon.png, etc.) are instantly served
+    app.use(express.static(path.join(process.cwd(), "public")));
+
     const { createServer: createViteServer } = await import("vite");
     const vite = await createViteServer({
       server: { middlewareMode: true },
