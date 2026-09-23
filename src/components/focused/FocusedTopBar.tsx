@@ -18,30 +18,9 @@ export const FocusedTopBar: React.FC<FocusedTopBarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full bg-white/90 backdrop-blur-md border-b border-[#e8e5de] transition-colors">
-      <div className="max-w-5xl mx-auto px-3 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
-        {/* Logo & Brand */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <Link
-            to="/"
-            className="flex items-center gap-1.5 sm:gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#001639] rounded-xl p-0.5 transition shrink-0"
-            aria-label="Hash Resume"
-          >
-            <div className="p-1 sm:p-1.5 rounded-lg bg-white shadow-2xs border border-[#e2dec9] group-hover:scale-105 transition-transform flex items-center justify-center shrink-0">
-              <Logo
-                variant="icon"
-                size="sm"
-                className="h-5 sm:h-6 w-auto object-contain rounded-md shrink-0"
-              />
-            </div>
-            <span className="font-bold text-sm sm:text-lg tracking-tight text-[#001639] flex items-center gap-0.5 sm:gap-1 shrink-0">
-              Hash <span className="text-[#FF4D2D]">Resume</span>
-            </span>
-          </Link>
-
-          {/* Hashtag square dot marker */}
-          <span className="hidden sm:inline-block w-1.5 h-1.5 rounded-xs bg-[#FF4D2D]/60 shrink-0" />
-
-          {/* Autosave Status indicator: compact dot on mobile, full label on desktop */}
+      <div className="max-w-5xl mx-auto px-3 sm:px-6 h-14 sm:h-16 relative flex items-center justify-between gap-2 sm:gap-4">
+        {/* Left Side: Autosave Status indicator */}
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
           <div
             className="flex items-center gap-1 sm:gap-1.5 text-[11px] sm:text-xs text-[#7a8093] bg-white/80 px-2 sm:px-2.5 py-1 sm:py-1 rounded-full border border-[#e8e5de] shrink-0"
             title={isSaving ? (isAr ? 'جاري الحفظ...' : 'Saving...') : (isAr ? 'تم حفظ التعديلات تلقائياً' : 'All changes autosaved')}
@@ -60,6 +39,26 @@ export const FocusedTopBar: React.FC<FocusedTopBarProps> = ({
               </>
             )}
           </div>
+        </div>
+
+        {/* Center: Logo & Brand placed squarely in the middle */}
+        <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-auto">
+          <Link
+            to="/"
+            className="flex items-center gap-1.5 sm:gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#001639] rounded-xl p-0.5 transition shrink-0"
+            aria-label="Hash Resume"
+          >
+            <div className="p-1 sm:p-1.5 rounded-lg bg-white shadow-2xs border border-[#e2dec9] group-hover:scale-105 transition-transform flex items-center justify-center shrink-0">
+              <Logo
+                variant="icon"
+                size="sm"
+                className="h-5 sm:h-6 w-auto object-contain rounded-md shrink-0"
+              />
+            </div>
+            <span className="font-bold text-sm sm:text-lg tracking-tight text-[#001639] flex items-center gap-0.5 sm:gap-1 shrink-0">
+              Hash <span className="text-[#FF4D2D]">Resume</span>
+            </span>
+          </Link>
         </div>
 
         {/* Right Actions: Quick preview button (44px touch) + subtle language switcher (44px touch) */}

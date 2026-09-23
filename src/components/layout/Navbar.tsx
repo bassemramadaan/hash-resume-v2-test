@@ -196,16 +196,6 @@ export const Navbar: React.FC = () => {
             )}
           </div>
 
-          {/* Desktop Primary CTA Button */}
-          {!isBuilder && (
-            <Link
-              to="/builder"
-              className="btn-folded-corner hidden sm:inline-flex items-center justify-center px-4.5 py-2.5 bg-gradient-to-r from-[#FF4D2D] to-[#FF6B4A] hover:from-[#E5431F] hover:to-[#FF4D2D] text-white text-xs lg:text-sm font-black rounded-xl shadow-xs hover:shadow-md transition-all transform active:scale-98"
-            >
-              {isAr ? 'ابدأ الآن مجاناً' : 'Build Free CV'}
-            </Link>
-          )}
-
           {/* Mobile Menu Toggle Button (Touch Target 44x44px) */}
           <button
             type="button"

@@ -3,10 +3,12 @@ import {
   LOGO_ICON_URL,
   LOGO_FULL_URL,
   LOGO_FULL_ALT_URL,
+  LOGO_FOOTER_URL,
+  LOGO_FOOTER_BACKUP_URL,
 } from '../../lib/constants/branding';
 
 export interface LogoProps {
-  variant?: 'full' | 'icon' | 'full-alt';
+  variant?: 'full' | 'icon' | 'full-alt' | 'footer';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   loading?: 'eager' | 'lazy';
   className?: string;
@@ -21,6 +23,7 @@ export const Logo: React.FC<LogoProps> = ({
   onDark = false,
 }) => {
   const [imageError, setImageError] = useState(false);
+  const [attemptBackup, setAttemptBackup] = useState(false);
 
   // High-performance Vector Logo fallback (0ms load time, 100% compatible with Firefox ETP & adblockers)
   const renderVectorLogo = () => {
@@ -85,23 +88,33 @@ export const Logo: React.FC<LogoProps> = ({
     switch (variant) {
       case 'icon':
         return LOGO_ICON_URL;
+      case 'footer':
+        return attemptBackup ? LOGO_FOOTER_BACKUP_URL : LOGO_FOOTER_URL;
       case 'full-alt':
-        return LOGO_FULL_ALT_URL;
+        return attemptBackup ? LOGO_FOOTER_BACKUP_URL : LOGO_FULL_ALT_URL;
       case 'full':
       default:
         return LOGO_FULL_URL;
     }
   };
 
+  const handleImageError = () => {
+    if (!attemptBackup && (variant === 'footer' || variant === 'full-alt')) {
+      setAttemptBackup(true);
+    } else {
+      setImageError(true);
+    }
+  };
+
   const getSizeClasses = () => {
-    if (variant === 'icon') {
+    if (variant === 'icon' || variant === 'footer') {
       switch (size) {
         case 'sm':
           return 'h-8 w-8';
         case 'xl':
-          return 'h-16 w-16';
+          return 'h-16 w-16 sm:h-20 sm:w-20';
         case 'lg':
-          return 'h-12 w-12';
+          return 'h-12 w-12 sm:h-14 sm:w-14';
         case 'md':
         default:
           return 'h-10 w-10';
@@ -128,8 +141,7 @@ export const Logo: React.FC<LogoProps> = ({
         alt="Hash Resume"
         loading={loading}
         referrerPolicy="no-referrer"
-        crossOrigin="anonymous"
-        onError={() => setImageError(true)}
+        onError={handleImageError}
         className={`object-contain shrink-0 transition-all duration-200 ${getSizeClasses()} ${className}`}
       />
     </div>

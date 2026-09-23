@@ -50,10 +50,10 @@ export const Footer: React.FC = () => {
           <div className="space-y-4 md:col-span-1">
             <Link to="/" className="inline-block group py-1">
               <Logo
-                variant="full"
+                variant="footer"
                 size="xl"
                 onDark={true}
-                className="!h-14 sm:!h-20 min-h-[52px] w-auto max-w-[240px] sm:max-w-none object-contain transition-transform group-hover:scale-105"
+                className="!h-16 sm:!h-20 min-h-[56px] w-auto max-w-[240px] sm:max-w-none object-contain transition-transform group-hover:scale-105"
               />
             </Link>
             <p className="text-[11px] text-slate-400 leading-relaxed">
