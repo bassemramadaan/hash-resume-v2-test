@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from 'motion/react';
 import { PersonalSubStep } from './steps/PersonalSubStep';
 import { ExperienceSubStep } from './steps/ExperienceSubStep';
 import { EducationSubStep } from './steps/EducationSubStep';
+import { ExperienceAndEducationStep } from './steps/ExperienceAndEducationStep';
+import { ExtrasStep } from './steps/ExtrasStep';
+import { FinalizeStep } from './steps/FinalizeStep';
 import { SkillsForm } from '../builder/SkillsForm';
 import { CertificationsForm } from '../builder/CertificationsForm';
 import { ProjectsForm } from '../builder/ProjectsForm';
@@ -17,6 +20,8 @@ interface FocusedStepStageProps {
   onSubStepProgress?: (subIndex: number, totalSubs: number) => void;
   onOpenPreview?: () => void;
   onExportPdf?: () => void;
+  targetSubStage?: string | null;
+  onClearTargetSubStage?: () => void;
   isAr?: boolean;
 }
 
@@ -27,6 +32,8 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
   onSubStepProgress,
   onOpenPreview,
   onExportPdf,
+  targetSubStage,
+  onClearTargetSubStage,
   isAr = true,
 }) => {
   const [additionalTab, setAdditionalTab] = React.useState<'certs' | 'projects'>('certs');
@@ -46,7 +53,20 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
             />
           )}
 
-          {/* STEP 2: Experiences (One role at a time with 2 sub-stages: basics & achievements) */}
+          {/* STEP 2: Merged Experience and Education */}
+          {currentStepId === 'experience-and-education' && (
+            <ExperienceAndEducationStep
+              key="step-experience-and-education"
+              onNextMainStep={onNextMainStep}
+              onPrevMainStep={onPrevMainStep}
+              onSubStepChange={onSubStepProgress}
+              targetSubStage={targetSubStage}
+              onClearTargetSubStage={onClearTargetSubStage}
+              isAr={isAr}
+            />
+          )}
+
+          {/* Legacy fallback for individual steps if needed */}
           {currentStepId === 'experiences' && (
             <ExperienceSubStep
               key="step-experiences"
@@ -106,88 +126,42 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
                   onClick={onNextMainStep}
                   className="flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
                 >
-                  <span className="truncate">{isAr ? 'متابعة إلى الشهادات والمشاريع' : 'Continue to Additional'}</span>
+                  <span className="truncate">{isAr ? 'متابعة إلى الإضافات المميزة' : 'Continue to Extras'}</span>
                   {isAr ? <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" /> : <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />}
                 </button>
               </div>
             </motion.div>
           )}
 
-          {/* STEP 5: Additional (Certifications & Projects) */}
+          {/* STEP 4: Extras (Checklist: Certifications, Projects, Languages) */}
+          {currentStepId === 'extras' && (
+            <ExtrasStep
+              onNextMainStep={onNextMainStep}
+              onPrevMainStep={onPrevMainStep}
+              isAr={isAr}
+            />
+          )}
+
+          {/* Legacy fallback for additional */}
           {currentStepId === 'additional' && (
-            <motion.div
-              key="step-additional"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              className="w-full max-w-xl mx-auto space-y-4 sm:space-y-6"
-            >
-              <div>
-                <span className="text-[11px] sm:text-sm font-bold tracking-wide text-[#FF4D2D] block mb-1">
-                  {isAr ? 'الخطوة الخامسة: الشهادات والمشاريع' : 'Step 5: Certifications & Projects'}
-                </span>
-                <h2 className="text-xl sm:text-3xl font-black text-[#001639] tracking-tight mb-1.5 sm:mb-2">
-                  {isAr ? 'عندك شهادات مهنية أو مشاريع مميزة؟' : 'Any certifications or notable projects?'}
-                </h2>
-                <p className="text-xs sm:text-sm text-[#7a8093] leading-relaxed">
-                  {isAr
-                    ? 'الشهادات المعتمدة والمشاريع العملية تدعم خبرتك بقوة أمام مسؤولي التوظيف.'
-                    : 'Certifications and hands-on projects set your profile apart.'}
-                </p>
-              </div>
-
-              {/* Segmented Switcher */}
-              <div className="flex bg-[#f4f1e9] p-1 sm:p-1.5 rounded-xl sm:rounded-2xl gap-1 sm:gap-1.5 border border-[#e8e5de]">
-                <button
-                  type="button"
-                  onClick={() => setAdditionalTab('certs')}
-                  className={`flex-1 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
-                    additionalTab === 'certs'
-                      ? 'bg-white text-[#001639] shadow-2xs'
-                      : 'text-[#7a8093] hover:text-[#001639]'
-                  }`}
-                >
-                  <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FF4D2D] shrink-0" />
-                  <span>{isAr ? 'الشهادات المهنية' : 'Certifications'}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setAdditionalTab('projects')}
-                  className={`flex-1 py-2 sm:py-2.5 rounded-lg sm:rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer ${
-                    additionalTab === 'projects'
-                      ? 'bg-white text-[#001639] shadow-2xs'
-                      : 'text-[#7a8093] hover:text-[#001639]'
-                  }`}
-                >
-                  <FolderGit2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FF4D2D] shrink-0" />
-                  <span>{isAr ? 'المشاريع العملية' : 'Projects'}</span>
-                </button>
-              </div>
-
-              {additionalTab === 'certs' ? <CertificationsForm /> : <ProjectsForm />}
-
-              <div className="pt-3 sm:pt-4 border-t border-[#e8e5de] flex items-center justify-between gap-2.5 sm:gap-3 sticky bottom-0 bg-[#fbfaf7]/95 backdrop-blur-xs py-3 z-10">
-                <button
-                  type="button"
-                  onClick={onPrevMainStep}
-                  className="py-3 sm:py-3.5 px-4 sm:px-5 bg-white border-2 border-[#e8e5de] text-[#001639] hover:bg-[#f4f1e9] font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition cursor-pointer shrink-0"
-                >
-                  {isAr ? 'السابق' : 'Back'}
-                </button>
-                <button
-                  type="button"
-                  onClick={onNextMainStep}
-                  className="flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
-                >
-                  <span className="truncate">{isAr ? 'متابعة إلى التنسيق والتصميم' : 'Continue to Design'}</span>
-                  {isAr ? <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" /> : <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />}
-                </button>
-              </div>
-            </motion.div>
+            <ExtrasStep
+              onNextMainStep={onNextMainStep}
+              onPrevMainStep={onPrevMainStep}
+              isAr={isAr}
+            />
           )}
 
-          {/* STEP 6: Customize */}
+          {/* STEP 5: Finalize (Merged Design, Color, Templates, Download & Optional ATS) */}
+          {currentStepId === 'finalize' && (
+            <FinalizeStep
+              onPrevMainStep={onPrevMainStep}
+              onOpenPreview={onOpenPreview}
+              onExportPdf={onExportPdf}
+              isAr={isAr}
+            />
+          )}
+
+          {/* Legacy fallbacks for customize and ats */}
           {currentStepId === 'customize' && (
             <motion.div
               key="step-customize"

@@ -15,6 +15,7 @@ interface StepProgressBarProps {
   currentStepIndex: number;
   subStepIndex?: number;
   totalSubSteps?: number;
+  totalAddedItems?: number;
   isAr?: boolean;
 }
 
@@ -23,6 +24,7 @@ export const StepProgressBar: React.FC<StepProgressBarProps> = ({
   currentStepIndex,
   subStepIndex = 0,
   totalSubSteps = 1,
+  totalAddedItems = 0,
   isAr = true,
 }) => {
   const currentStep = steps[currentStepIndex] || steps[0];
@@ -33,6 +35,11 @@ export const StepProgressBar: React.FC<StepProgressBarProps> = ({
   const baseProgress = (currentStepIndex / totalSteps) * 100;
   const subStepProgress = totalSubSteps > 0 ? (subStepIndex / totalSubSteps) * (100 / totalSteps) : 0;
   const progressPercent = Math.min(Math.max(baseProgress + subStepProgress, 4), 100);
+
+  // Dynamic estimate text (Item 6.1): if items > 3, show a more accurate general text
+  const timeEstimateText = totalAddedItems > 3
+    ? (isAr ? 'خطوات قليلة متبقية' : 'Just a few steps remaining')
+    : (isAr ? 'هتخلص في أقل من دقيقتين' : 'Takes less than 2 minutes');
 
   return (
     <div className="w-full max-w-2xl mx-auto px-3.5 sm:px-4 pt-3.5 sm:pt-6 pb-1.5 sm:pb-2">
@@ -59,11 +66,11 @@ export const StepProgressBar: React.FC<StepProgressBarProps> = ({
         </div>
 
         <span className="text-[11px] sm:text-xs text-[#7a8093] hidden sm:inline font-medium">
-          {isAr ? 'هتخلص في أقل من دقيقتين' : 'Takes less than 2 minutes'}
+          {timeEstimateText}
         </span>
       </div>
 
-      {/* 7 Dot Indicators */}
+      {/* Dot Indicators */}
       <div className="flex items-center justify-center gap-1.5 sm:gap-2.5 mt-2 sm:mt-3.5">
         {steps.map((step, idx) => {
           const isActive = idx === currentStepIndex;

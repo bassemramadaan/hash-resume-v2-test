@@ -32,7 +32,12 @@ export const BuilderPage: React.FC = () => {
   const isAr = settings?.language !== 'en' && settings?.language !== 'fr';
   const { requestPdfExport } = useResumeExport();
 
-  // 7 Main Steps Configuration
+  // Visited Steps tracker for calculating completion of optional steps (e.g. extras)
+  const [visitedSteps, setVisitedSteps] = useState<Set<string>>(() => new Set());
+  // Sub-stage targeted navigation (from validation modal to specific form inside merged steps)
+  const [targetSubStage, setTargetSubStage] = useState<string | null>(null);
+
+  // 5 Main Steps Configuration (Streamlined UX)
   const STEPS: StepItem[] = useMemo(() => [
     {
       id: 'personal',
@@ -43,57 +48,55 @@ export const BuilderPage: React.FC = () => {
       isCompleted: Boolean(resumeData.personalInfo?.fullName && resumeData.personalInfo?.email),
     },
     {
-      id: 'experiences',
+      id: 'experience-and-education',
       stepNumber: '02',
-      labelAr: 'الخبرات المهنية',
-      labelEn: 'Experience',
-      kickerAr: 'تاريخك المهني',
-      isCompleted: Boolean(resumeData.experiences && resumeData.experiences.length > 0),
-    },
-    {
-      id: 'education',
-      stepNumber: '03',
-      labelAr: 'التعليم والمؤهلات',
-      labelEn: 'Education',
-      kickerAr: 'مؤهلاتك العلمية',
-      isCompleted: Boolean(resumeData.education && resumeData.education.length > 0),
+      labelAr: 'الخبرات والتعليم',
+      labelEn: 'Experience & Education',
+      kickerAr: 'مسارك المهني والتعليمي',
+      isCompleted: Boolean(
+        (resumeData.experiences && resumeData.experiences.length > 0) ||
+        (resumeData.education && resumeData.education.length > 0) ||
+        visitedSteps.has('experience-and-education')
+      ),
     },
     {
       id: 'skills',
-      stepNumber: '04',
+      stepNumber: '03',
       labelAr: 'المهارات واللغات',
-      labelEn: 'Skills',
+      labelEn: 'Skills & Languages',
       kickerAr: 'نقاط قوتك',
       isCompleted: Boolean(resumeData.skills && resumeData.skills.length > 0),
     },
     {
-      id: 'additional',
-      stepNumber: '05',
-      labelAr: 'الشهادات والمشاريع',
-      labelEn: 'Certs & Projects',
-      kickerAr: 'إنجازات إضافية',
-      isCompleted: Boolean(
+      id: 'extras',
+      stepNumber: '04',
+      labelAr: 'إضافات مميزة',
+      labelEn: 'Extras & Achievements',
+      kickerAr: 'شهادات ومشاريع',
+      // isCompleted: false by default until visited, or if items are already present
+      isCompleted: visitedSteps.has('extras') || Boolean(
         (resumeData.certifications && resumeData.certifications.length > 0) ||
         (resumeData.projects && resumeData.projects.length > 0)
       ),
     },
     {
-      id: 'customize',
-      stepNumber: '06',
-      labelAr: 'القالب والتنسيق',
-      labelEn: 'Template & Design',
-      kickerAr: 'شكل سيرتك',
+      id: 'finalize',
+      stepNumber: '05',
+      labelAr: 'المظهر والتحميل',
+      labelEn: 'Design & Download',
+      kickerAr: 'اللمسات الأخيرة والـ ATS',
       isCompleted: true,
     },
-    {
-      id: 'ats',
-      stepNumber: '07',
-      labelAr: 'فحص ATS الذكي',
-      labelEn: 'ATS Audit',
-      kickerAr: 'الفحص النهائي',
-      isCompleted: false,
-    },
-  ], [resumeData]);
+  ], [resumeData, visitedSteps]);
+
+  // Total added items across experiences, education, certs, projects for dynamic time estimation
+  const totalAddedItems = useMemo(() => {
+    const expCount = resumeData.experiences?.length || 0;
+    const eduCount = resumeData.education?.length || 0;
+    const certCount = resumeData.certifications?.length || 0;
+    const projCount = resumeData.projects?.length || 0;
+    return expCount + eduCount + certCount + projCount;
+  }, [resumeData]);
 
   // Current Step Tracker
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0);
@@ -125,9 +128,19 @@ export const BuilderPage: React.FC = () => {
   }, []);
 
   const handleNextMainStep = () => {
+    const currentStep = STEPS[currentStepIndex];
+    if (currentStep) {
+      setVisitedSteps((prev) => {
+        const next = new Set(prev);
+        next.add(currentStep.id);
+        return next;
+      });
+    }
+
     if (currentStepIndex < STEPS.length - 1) {
       setCurrentStepIndex((prev) => prev + 1);
       setCurrentSubStepIndex(0);
+      setTargetSubStage(null);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       // Final step -> trigger export check
@@ -139,6 +152,7 @@ export const BuilderPage: React.FC = () => {
     if (currentStepIndex > 0) {
       setCurrentStepIndex((prev) => prev - 1);
       setCurrentSubStepIndex(0);
+      setTargetSubStage(null);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -177,6 +191,7 @@ export const BuilderPage: React.FC = () => {
         currentStepIndex={currentStepIndex}
         subStepIndex={currentSubStepIndex}
         totalSubSteps={totalSubStepsInStage}
+        totalAddedItems={totalAddedItems}
         isAr={isAr}
       />
 
@@ -188,6 +203,8 @@ export const BuilderPage: React.FC = () => {
         onSubStepProgress={handleSubStepProgress}
         onOpenPreview={() => setIsPreviewModalOpen(true)}
         onExportPdf={handleTriggerExport}
+        targetSubStage={targetSubStage}
+        onClearTargetSubStage={() => setTargetSubStage(null)}
         isAr={isAr}
       />
 
@@ -216,11 +233,25 @@ export const BuilderPage: React.FC = () => {
           onClose={() => setIsValidationModalOpen(false)}
           validationResult={validationResult}
           onNavigateSection={(sectionKey) => {
-            const stepIdx = STEPS.findIndex((s) => s.id === sectionKey);
-            if (stepIdx !== -1) {
-              setCurrentStepIndex(stepIdx);
-            }
             setIsValidationModalOpen(false);
+            if (sectionKey === 'education') {
+              const stepIdx = STEPS.findIndex((s) => s.id === 'experience-and-education');
+              if (stepIdx !== -1) {
+                setCurrentStepIndex(stepIdx);
+                setTargetSubStage('education-form');
+              }
+            } else if (sectionKey === 'experiences') {
+              const stepIdx = STEPS.findIndex((s) => s.id === 'experience-and-education');
+              if (stepIdx !== -1) {
+                setCurrentStepIndex(stepIdx);
+                setTargetSubStage('experience-form');
+              }
+            } else {
+              const stepIdx = STEPS.findIndex((s) => s.id === sectionKey);
+              if (stepIdx !== -1) {
+                setCurrentStepIndex(stepIdx);
+              }
+            }
           }}
         />
       )}
