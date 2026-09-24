@@ -48,22 +48,17 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-start">
           {/* Brand Col */}
           <div className="space-y-4 md:col-span-1">
-            <Link to="/" className="inline-flex items-center gap-3.5 group py-1">
+            <Link
+              to="/"
+              className="inline-block group py-1 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-white rounded-xl"
+              aria-label="Hash Resume Home"
+            >
               <Logo
                 variant="footer"
-                size="xl"
+                size="md"
                 onDark={true}
-                className="!h-14 sm:!h-16 !w-14 sm:!w-16 rounded-2xl object-contain shadow-md border border-white/10 p-1 bg-white/5 transition-transform group-hover:scale-105"
+                className="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-105"
               />
-              <div className="flex flex-col justify-center select-none">
-                <div className="text-xl sm:text-2xl font-black text-white tracking-tight leading-none flex items-center gap-1">
-                  <span>Hash</span>
-                  <span className="text-[#FF4D2D]">Resume</span>
-                </div>
-                <span className="text-[10px] font-extrabold tracking-widest uppercase text-slate-400 mt-1">
-                  ATS BUILDER
-                </span>
-              </div>
             </Link>
             <p className="text-[11px] text-slate-400 leading-relaxed">
               {isAr

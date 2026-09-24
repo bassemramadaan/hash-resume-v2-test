@@ -45,19 +45,14 @@ export const FocusedTopBar: React.FC<FocusedTopBarProps> = ({
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center pointer-events-auto">
           <Link
             to="/"
-            className="flex items-center gap-1.5 sm:gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#001639] rounded-xl p-0.5 transition shrink-0"
+            className="flex items-center group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#001639] rounded-xl p-1 transition shrink-0"
             aria-label="Hash Resume"
           >
-            <div className="p-1 sm:p-1.5 rounded-lg bg-white shadow-2xs border border-[#e2dec9] group-hover:scale-105 transition-transform flex items-center justify-center shrink-0">
-              <Logo
-                variant="icon"
-                size="sm"
-                className="h-5 sm:h-6 w-auto object-contain rounded-md shrink-0"
-              />
-            </div>
-            <span className="font-bold text-sm sm:text-lg tracking-tight text-[#001639] flex items-center gap-0.5 sm:gap-1 shrink-0">
-              Hash <span className="text-[#FF4D2D]">Resume</span>
-            </span>
+            <Logo
+              variant="full"
+              size="sm"
+              className="h-6 sm:h-7 w-auto object-contain group-hover:scale-102 transition-transform shrink-0"
+            />
           </Link>
         </div>
 

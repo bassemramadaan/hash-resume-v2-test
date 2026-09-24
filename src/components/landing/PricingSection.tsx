@@ -87,12 +87,13 @@ export const PricingSection: React.FC<PricingSectionProps> = ({ isAr }) => {
         </div>
 
         {/* 3-Pass Bundle Card */}
-        <div className="bg-white text-slate-900 rounded-3xl border-2 border-[#FF4D2D] p-6 sm:p-8 shadow-md hover:shadow-xl transition space-y-6 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute top-4 left-4 sm:left-auto sm:right-4 px-3 py-1 bg-[#FF4D2D] text-white font-black text-[10px] rounded-full uppercase tracking-wider shadow-xs">
-            {isAr ? 'الأكثر توفيراً ⭐' : 'Best Value ⭐'}
+        <div className="bg-white text-slate-900 rounded-3xl border-2 border-[#FF4D2D] p-6 sm:p-8 shadow-md hover:shadow-xl transition space-y-6 flex flex-col justify-between relative mt-3 sm:mt-0">
+          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-0.5 bg-[#FF4D2D] text-white font-bold text-[11px] rounded-full uppercase tracking-wider shadow-xs whitespace-nowrap z-10 flex items-center gap-1.5 select-none">
+            <span>⭐</span>
+            <span>{isAr ? 'الأكثر توفيراً' : 'Best Value'}</span>
           </div>
 
-          <div className="space-y-4 pt-4 sm:pt-0">
+          <div className="space-y-4 pt-1">
             <div>
               <span className="text-xs font-bold text-[#001639]">{isAr ? 'حزمة 3 تفعيلات' : '3-Download Bundle'}</span>
               <div className="flex items-baseline gap-1 mt-1">

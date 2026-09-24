@@ -93,25 +93,15 @@ export const Navbar: React.FC = () => {
         <div className="flex items-center gap-3">
           <Link
             to="/"
-            className="flex items-center gap-3 group shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#001639] rounded-2xl p-1 transition"
+            className="flex items-center group shrink-0 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#001639] rounded-xl py-1 px-1 transition"
             aria-label="Hash Resume Home"
           >
-            <div className="relative p-2 rounded-xl bg-white shadow-2xs border border-slate-200/90 ring-2 ring-[#FF4D2D]/10 shrink-0 group-hover:scale-105 group-hover:shadow-xs transition-all flex items-center justify-center">
-              <Logo
-                variant="icon"
-                size="lg"
-                loading="eager"
-                className="!h-[28px] sm:!h-[32px] w-auto !max-w-none shrink-0 object-contain rounded-lg"
-              />
-            </div>
-            <div className="flex flex-col text-start">
-              <span className="font-brand font-black text-lg sm:text-xl tracking-tight text-[#001639] leading-tight flex items-center gap-1">
-                Hash <span className="text-[#FF4D2D]">Resume</span>
-              </span>
-              <span className="text-[11px] font-medium text-slate-500 hidden sm:inline whitespace-nowrap">
-                {isAr ? 'منصة بناء السيرة الذاتية الذكية' : 'Next-Gen ATS Resume Platform'}
-              </span>
-            </div>
+            <Logo
+              variant="full"
+              size="md"
+              loading="eager"
+              className="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+            />
           </Link>
         </div>
 

@@ -324,11 +324,8 @@ export const MobileResumeDashboard: React.FC<MobileResumeDashboardProps> = ({
           </div>
 
           {/* Center: Brand Mark (Absolutely Centered) */}
-          <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-2">
-            <Logo variant="icon" size="sm" className="!h-6 w-auto shrink-0" />
-            <span className="font-brand font-extrabold text-[13px] text-[#001639] tracking-tight">
-              Hash <span className="text-[#FF4D2D]">Resume</span>
-            </span>
+          <div className="absolute left-1/2 -translate-x-1/2 flex items-center">
+            <Logo variant="full" size="sm" className="h-6 w-auto object-contain shrink-0" />
           </div>
 
           {/* Right Controls: Save status */}

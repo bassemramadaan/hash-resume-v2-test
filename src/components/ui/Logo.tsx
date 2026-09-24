@@ -94,12 +94,12 @@ export const Logo: React.FC<LogoProps> = ({
         return attemptBackup ? LOGO_FOOTER_BACKUP_URL : LOGO_FULL_ALT_URL;
       case 'full':
       default:
-        return LOGO_FULL_URL;
+        return onDark ? (attemptBackup ? LOGO_FOOTER_BACKUP_URL : LOGO_FOOTER_URL) : LOGO_FULL_URL;
     }
   };
 
   const handleImageError = () => {
-    if (!attemptBackup && (variant === 'footer' || variant === 'full-alt')) {
+    if (!attemptBackup && (variant === 'footer' || variant === 'full-alt' || onDark)) {
       setAttemptBackup(true);
     } else {
       setImageError(true);
@@ -107,29 +107,30 @@ export const Logo: React.FC<LogoProps> = ({
   };
 
   const getSizeClasses = () => {
-    if (variant === 'icon' || variant === 'footer') {
+    if (variant === 'icon') {
       switch (size) {
         case 'sm':
-          return 'h-8 w-8';
-        case 'xl':
-          return 'h-16 w-16 sm:h-20 sm:w-20';
+          return 'h-6 w-6 sm:h-7 sm:w-7';
         case 'lg':
-          return 'h-12 w-12 sm:h-14 sm:w-14';
+          return 'h-10 w-10 sm:h-12 sm:w-12';
+        case 'xl':
+          return 'h-14 w-14 sm:h-16 sm:w-16';
         case 'md':
         default:
-          return 'h-10 w-10';
+          return 'h-8 w-8 sm:h-9 sm:w-9';
       }
     } else {
+      // Horizontal brand logos ('full', 'full-alt', 'footer')
       switch (size) {
         case 'sm':
-          return 'h-9 w-auto max-h-9';
-        case 'xl':
-          return 'h-20 w-auto max-h-20';
+          return 'h-6 sm:h-7 w-auto max-h-7';
         case 'lg':
-          return 'h-16 w-auto max-h-16';
+          return 'h-10 sm:h-12 w-auto max-h-12';
+        case 'xl':
+          return 'h-12 sm:h-16 w-auto max-h-16';
         case 'md':
         default:
-          return 'h-12 w-auto max-h-12';
+          return 'h-8 sm:h-9 w-auto max-h-9';
       }
     }
   };

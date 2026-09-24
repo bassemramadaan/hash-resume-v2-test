@@ -156,13 +156,8 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
           >
             {/* Header */}
             <div className="p-4 border-b border-slate-100 flex items-center justify-between shrink-0">
-              <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-xl bg-white shadow-xs border border-slate-100 ring-2 ring-[#FF4D2D]/10 shrink-0 flex items-center justify-center">
-                  <Logo variant="icon" size="sm" className="!h-7 w-auto object-contain rounded-lg" />
-                </div>
-                <span className="font-brand font-extrabold text-sm text-[#001639]">
-                  Hash <span className="text-[#FF4D2D]">Resume</span>
-                </span>
+              <div className="flex items-center">
+                <Logo variant="full" size="sm" className="h-7 w-auto object-contain shrink-0" />
               </div>
               <button
                 type="button"
