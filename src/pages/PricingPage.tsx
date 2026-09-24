@@ -71,92 +71,42 @@ export const PricingPage: React.FC = () => {
   ];
 
   return (
-    <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12">
-      {/* Header Section */}
-      <section className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-[#001639] text-xs font-black shadow-2xs">
-          <ShieldCheck className="w-4 h-4 text-[#FF4D2D]" />
-          <span>
-            {isAr
-              ? 'دفع لمرة واحدة • بدون اشتراك شهري • تفعيل فوري'
-              : 'One-Time Payment • Zero Subscriptions • Instant Unlock'}
-          </span>
-        </div>
-
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#001639] tracking-tight leading-tight">
-          {isAr ? (
-            <>
-              استثمر في مستقبلك المهني <br className="hidden sm:inline" />
-              <span className="text-[#FF4D2D]">بسعر كوب قهوة</span>
-            </>
-          ) : (
-            <>
-              Invest in Your Career <br className="hidden sm:inline" />
-              <span className="text-[#FF4D2D]">For the Cost of a Coffee</span>
-            </>
-          )}
-        </h1>
-
-        <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
-          {isAr
-            ? 'سيرة ذاتية متوافقة 100% مع أنظمة ATS ومصممة هندسياً لاجتياز لجان التوظيف بسهولة. اختر باقتك وفعّل التحميل فوراً بوسائل الدفع المصرية والعربية المتاحة.'
-            : 'Engineered for ATS parsing, human recruiters, and guaranteed clarity. Choose your one-time plan and unlock high-definition PDF downloads instantly.'}
-        </p>
-
-        {isActivated && (
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs font-bold shadow-2xs">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+    <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
+      {/* 1. Simplified Minimal Header */}
+      <section className="text-center max-w-3xl mx-auto space-y-3">
+        {isActivated ? (
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-sm font-bold shadow-xs">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
             <span>
               {isAr
                 ? 'حسابك مفعّل حالياً وجاهز للتصدير الفوري!'
                 : 'Your session is currently activated & ready for export!'}
             </span>
           </div>
+        ) : (
+          <>
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#001639] tracking-tight leading-tight">
+              {isAr
+                ? 'سيرة ذاتية احترافية — دفعة واحدة، مش اشتراك شهري'
+                : 'Professional Resume — One-Time Payment, No Subscriptions'}
+            </h1>
+            <p className="text-sm sm:text-base font-semibold text-slate-500">
+              {isAr
+                ? 'متوافقة 100% مع ATS — جاهزة للتحميل فوراً'
+                : '100% ATS-Compliant — Ready for Instant Download'}
+            </p>
+          </>
         )}
       </section>
 
-      {/* Hash Hunt Corporate Value Banner */}
-      <section className="bg-gradient-to-br from-[#001639] via-[#0B2545] to-[#000F27] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-white/10 relative overflow-hidden max-w-4xl mx-auto">
-        <div className="absolute top-0 end-0 w-80 h-80 bg-[#FF4D2D]/15 rounded-full blur-3xl pointer-events-none" />
-        
-        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-          <div className="space-y-3 max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF4D2D]/20 border border-[#FF4D2D]/30 text-[#FF4D2D] text-xs font-black">
-              <Building2 className="w-3.5 h-3.5" />
-              <span>{isAr ? 'أكثر من مجرد سيرة ذاتية 🎯' : 'More Than Just a Resume 🎯'}</span>
-            </div>
-            
-            <h2 className="text-xl sm:text-2xl font-black text-white leading-snug">
-              {isAr ? (
-                <>الـ 50 ج.م مش مجرد تمن تحميل الـ CV! 🚀</>
-              ) : (
-                <>The 50 EGP is NOT just for generating a CV! 🚀</>
-              )}
-            </h2>
-            
-            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-              {isAr
-                ? 'عند إنشاء وتفعيل سيرتك الذاتية معنا، يتم رفعها وتكشيفها تلقائياً عبر منصة Hash Hunt. نكون وسيلة وجسر مباشر لتوصيل سيرتك الذاتية لشركات ومؤسسات كبرى متعاقدين معاها تبحث عن مهارات وتخصصات محددة لوظائف مستهدفة.'
-                : 'When you create & activate your resume through us, it is automatically uploaded to Hash Hunt. We act as an active bridge connecting your CV directly to our contracted companies looking for targeted skills.'}
-            </p>
-          </div>
-
-          <div className="shrink-0 w-full md:w-auto flex flex-col gap-2">
-            <div className="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/15 text-center space-y-1">
-              <span className="text-2xl font-black text-[#FF4D2D] block">2 في 1</span>
-              <span className="text-xs font-bold text-slate-200 block">
-                {isAr ? 'سيرة ATS + توصيل للشركات' : 'ATS Resume + Job Referral'}
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Cards Grid */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto items-stretch">
-        {/* Single Plan Card */}
-        <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between relative group">
-          <div className="space-y-6">
+      {/* 2. Pricing Cards Directly After Header (50 EGP Left/Top, 120 EGP Right/Bottom - visually dominant) */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-4xl mx-auto items-center" dir="ltr">
+        {/* Single Plan Card (50 EGP) - Left on Desktop, Top on Mobile */}
+        <div
+          dir={isAr ? 'rtl' : 'ltr'}
+          className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-7 py-6 sm:py-7 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between relative group order-1"
+        >
+          <div className="space-y-5">
             <div className="flex items-start justify-between gap-4">
               <div>
                 <span className="text-xs font-black uppercase tracking-wider text-slate-400 block mb-1">
@@ -184,7 +134,7 @@ export const PricingPage: React.FC = () => {
             </p>
 
             {/* Hash Hunt Value Feature Highlight Box */}
-            <div className="p-3.5 rounded-2xl bg-orange-50/80 border border-orange-200/90 text-xs text-[#001639] space-y-1">
+            <div className="p-3 rounded-2xl bg-orange-50/80 border border-orange-200/90 text-xs text-[#001639] space-y-1">
               <div className="flex items-center gap-1.5 font-black text-[#FF4D2D]">
                 <Sparkles className="w-4 h-4 shrink-0" />
                 <span>{isAr ? 'شامل الربط والرفع على Hash Hunt 🎯' : 'Includes Hash Hunt Direct Referral 🎯'}</span>
@@ -196,7 +146,7 @@ export const PricingPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="border-t border-slate-100 pt-5 space-y-3 text-xs sm:text-sm text-slate-700">
+            <div className="border-t border-slate-100 pt-4 space-y-2.5 text-xs sm:text-sm text-slate-700">
               <div className="flex items-start gap-2.5">
                 <div className="p-0.5 rounded-full bg-emerald-100 text-emerald-700 shrink-0 mt-0.5">
                   <Check className="w-3.5 h-3.5" />
@@ -232,7 +182,7 @@ export const PricingPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="pt-8">
+          <div className="pt-6">
             <button
               type="button"
               onClick={() => setIsActivationModalOpen(true)}
@@ -244,14 +194,17 @@ export const PricingPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Bundle Plan Card (Featured) */}
-        <div className="bg-[#000F27] text-white rounded-3xl border-2 border-[#FF4D2D] p-6 sm:p-8 shadow-xl flex flex-col justify-between relative overflow-hidden group">
+        {/* Bundle Plan Card (120 EGP - Featured Best Value) - Right on Desktop, Bottom on Mobile */}
+        <div
+          dir={isAr ? 'rtl' : 'ltr'}
+          className="bg-[#000F27] text-white rounded-3xl border-2 border-[#FF4D2D] p-6 sm:p-8 py-9 sm:py-11 md:py-12 shadow-[0_20px_40px_-12px_rgba(255,77,45,0.3)] hover:shadow-[0_25px_50px_-12px_rgba(255,77,45,0.4)] transition-all flex flex-col justify-between relative overflow-hidden group order-2 md:scale-[1.02]"
+        >
           {/* Subtle Ambient Glow */}
-          <div className="absolute -top-24 -end-24 w-60 h-60 bg-[#FF4D2D]/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -top-24 -end-24 w-60 h-60 bg-[#FF4D2D]/20 rounded-full blur-3xl pointer-events-none" />
 
-          {/* Value Badge */}
-          <div className="absolute top-4 end-4 px-3 py-1 rounded-full text-[10px] font-black bg-[#FF4D2D] text-white uppercase tracking-wider shadow-sm flex items-center gap-1">
-            <Sparkles className="w-3 h-3" />
+          {/* Prominent Value Badge */}
+          <div className="absolute top-4 end-4 px-3.5 py-1.5 rounded-full text-xs font-black bg-[#FF4D2D] text-white uppercase tracking-wider shadow-md flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5" />
             <span>{isAr ? 'الأكثر طلباً وتوفيراً' : 'Best Value'}</span>
           </div>
 
@@ -327,7 +280,7 @@ export const PricingPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsActivationModalOpen(true)}
-              className="btn-folded-corner w-full py-3.5 px-5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-black text-xs sm:text-sm rounded-2xl transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#FF4D2D]/25 active:scale-98 min-h-[48px]"
+              className="btn-folded-corner w-full py-4 px-5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-black text-xs sm:text-sm rounded-2xl transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#FF4D2D]/30 active:scale-98 min-h-[48px]"
             >
               <span>{isAr ? 'تفعيل الباقة الاقتصادية (120 ج.م)' : 'Get 3-Pack Key — 120 EGP'}</span>
               <Sparkles className="w-4 h-4" />
@@ -336,39 +289,75 @@ export const PricingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Local Payment Methods Interactive Banner */}
-      <section className="bg-slate-50 border border-slate-200/80 rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto space-y-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-white border border-slate-200 text-[#001639] shadow-2xs">
-              <Smartphone className="w-5 h-5 text-[#FF4D2D]" />
+      {/* 3. Hash Hunt Reinforcement Dark Card (Directly After Pricing Cards) */}
+      <section className="bg-gradient-to-br from-[#001639] via-[#0B2545] to-[#000F27] text-white rounded-3xl p-6 sm:p-7 shadow-xl border border-white/10 relative overflow-hidden max-w-4xl mx-auto">
+        <div className="absolute top-0 end-0 w-72 h-72 bg-[#FF4D2D]/15 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+          <div className="space-y-2.5 max-w-2xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FF4D2D]/20 border border-[#FF4D2D]/30 text-[#FF4D2D] text-xs font-black">
+              <Building2 className="w-3.5 h-3.5" />
+              <span>{isAr ? 'أكثر من مجرد سيرة ذاتية 🎯' : 'More Than Just a Resume 🎯'}</span>
             </div>
-            <div>
-              <h3 className="font-extrabold text-[#001639] text-base">
-                {isAr ? 'طرق الدفع المحلية السريعة والمباشرة' : 'Instant Local Payment Methods'}
-              </h3>
-              <p className="text-xs text-slate-500">
-                {isAr
-                  ? 'حوّل في ثوانٍ عبر هاتفك بنقرة واحدة وانسخ البيانات فوراً'
-                  : 'Pay directly via your mobile banking app with 1-click copy'}
-              </p>
+            
+            <h2 className="text-lg sm:text-xl font-black text-white leading-snug">
+              {isAr ? 'ربط مباشر وترشيح للوظائف عبر Hash Hunt' : 'Direct Referral to Hiring Companies via Hash Hunt'}
+            </h2>
+            
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              {isAr
+                ? 'عند تفعيل سيرتك الذاتية، يتم إدراجها تلقائياً على منصة Hash Hunt لنوصلك مباشرةً بالشركات والمؤسسات المتعاقدة الباحثة عن تخصصك وخبراتك.'
+                : 'When you activate your resume, it is automatically indexed on Hash Hunt to connect you directly with hiring partners seeking your background.'}
+            </p>
+          </div>
+
+          <div className="shrink-0 w-full md:w-auto">
+            <div className="px-4 py-3 bg-white/10 backdrop-blur-md rounded-2xl border border-white/15 text-center flex items-center justify-center gap-2">
+              <Briefcase className="w-4 h-4 text-[#FF4D2D]" />
+              <span className="text-xs font-bold text-slate-100">
+                {isAr ? 'ربط تلقائي بالوظائف الشاغرة' : 'Auto-linked to Open Roles'}
+              </span>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={() => setIsActivationModalOpen(true)}
-            className="text-xs font-bold text-[#FF4D2D] hover:text-[#001639] transition underline underline-offset-4 cursor-pointer"
-          >
-            {isAr ? 'معي كود تفعيل جاهز؟ اضغط هنا' : 'Already have a code? Redeem here'}
-          </button>
+        </div>
+      </section>
+
+      {/* 4. Prominent Redeem Code Callout Above Payment Section */}
+      <div className="text-center max-w-4xl mx-auto pt-2">
+        <button
+          type="button"
+          onClick={() => setIsActivationModalOpen(true)}
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-orange-50 hover:bg-orange-100 border border-orange-200/80 text-sm font-bold text-[#FF4D2D] hover:text-[#001639] transition active:scale-98 cursor-pointer shadow-2xs"
+        >
+          <Sparkles className="w-4 h-4 text-[#FF4D2D]" />
+          <span>{isAr ? 'معي كود تفعيل جاهز؟ اضغط هنا لإدخاله' : 'Already have a code? Redeem here'}</span>
+        </button>
+      </div>
+
+      {/* 5. Harmonized Local Payment Methods Section */}
+      <section className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 max-w-4xl mx-auto space-y-6 shadow-xs">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-2xl bg-orange-50 border border-orange-200/80 text-[#FF4D2D] shadow-2xs">
+            <Smartphone className="w-5 h-5 text-[#FF4D2D]" />
+          </div>
+          <div>
+            <h3 className="font-extrabold text-[#001639] text-base sm:text-lg">
+              {isAr ? 'طرق الدفع المحلية السريعة والمباشرة' : 'Instant Local Payment Methods'}
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-500">
+              {isAr
+                ? 'حوّل في ثوانٍ عبر إنستاباي أو المحفظة الإلكترونية وفعّل حسابك فوراً'
+                : 'Pay directly via InstaPay or Mobile Wallets for instant code unlock'}
+            </p>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* InstaPay Quick Card */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 flex flex-col justify-between gap-3 shadow-2xs">
+          <div className="bg-slate-50/70 rounded-2xl border border-slate-200/90 p-4 sm:p-5 flex flex-col justify-between gap-3.5 shadow-2xs">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-lg">⚡</span>
+                <span className="text-xl">⚡</span>
                 <span className="font-black text-sm text-[#001639]">
                   {isAr ? 'إنستاباي (InstaPay)' : 'InstaPay App'}
                 </span>
@@ -378,25 +367,25 @@ export const PricingPage: React.FC = () => {
               </span>
             </div>
 
-            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-2">
-              <div className="overflow-hidden">
-                <span className="text-[10px] text-slate-400 font-bold block">
+            <div className="p-3 rounded-xl bg-white border border-slate-200 flex items-center justify-between gap-2.5">
+              <div className="min-w-0 flex-1">
+                <span className="text-[10px] text-slate-400 font-bold block mb-0.5">
                   {isAr ? 'عنوان الدفع (IPA):' : 'Payment Address:'}
                 </span>
-                <span className="text-xs font-mono font-bold text-[#001639] truncate block dir-ltr text-start">
+                <span className="text-xs sm:text-sm font-mono font-bold text-[#001639] break-all select-all block dir-ltr text-start">
                   {INSTAPAY_ADDRESS}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => handleCopy(INSTAPAY_ADDRESS, 'instapay')}
-                className="px-2.5 py-1.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-[#001639] transition flex items-center gap-1 shrink-0 cursor-pointer"
+                className="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-[#001639] transition flex items-center gap-1 shrink-0 cursor-pointer active:scale-95"
                 title={isAr ? 'نسخ عنوان إنستاباي' : 'Copy InstaPay address'}
               >
                 {copiedKey === 'instapay' ? (
                   <>
                     <Check className="w-3.5 h-3.5 text-emerald-600" />
-                    <span className="text-emerald-600">{isAr ? 'تم النسخ' : 'Copied'}</span>
+                    <span className="text-emerald-600">{isAr ? 'تم' : 'Copied'}</span>
                   </>
                 ) : (
                   <>
@@ -411,7 +400,7 @@ export const PricingPage: React.FC = () => {
               href={INSTAPAY_LINK}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-center py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-[#001639] transition flex items-center justify-center gap-1.5"
+              className="text-center py-2.5 bg-[#001639] hover:bg-[#002866] text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-98"
             >
               <span>{isAr ? 'فتح تطبيق إنستاباي' : 'Open InstaPay App'}</span>
               <ArrowUpRight className="w-3.5 h-3.5 rtl:rotate-[-90deg]" />
@@ -419,10 +408,10 @@ export const PricingPage: React.FC = () => {
           </div>
 
           {/* Vodafone Cash & Wallets */}
-          <div className="bg-white rounded-2xl border border-slate-200 p-4 sm:p-5 flex flex-col justify-between gap-3 shadow-2xs">
+          <div className="bg-slate-50/70 rounded-2xl border border-slate-200/90 p-4 sm:p-5 flex flex-col justify-between gap-3.5 shadow-2xs">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className="text-lg">📱</span>
+                <span className="text-xl">📱</span>
                 <span className="font-black text-sm text-[#001639]">
                   {isAr ? 'فودافون كاش ومحافظ المحمول' : 'Mobile Wallets'}
                 </span>
@@ -432,25 +421,25 @@ export const PricingPage: React.FC = () => {
               </span>
             </div>
 
-            <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between gap-2">
-              <div className="overflow-hidden">
-                <span className="text-[10px] text-slate-400 font-bold block">
+            <div className="p-3 rounded-xl bg-white border border-slate-200 flex items-center justify-between gap-2.5">
+              <div className="min-w-0 flex-1">
+                <span className="text-[10px] text-slate-400 font-bold block mb-0.5">
                   {isAr ? 'رقم المحفظة المعتمد:' : 'Wallet Number:'}
                 </span>
-                <span className="text-xs font-mono font-bold text-[#001639] truncate block dir-ltr text-start">
+                <span className="text-xs sm:text-sm font-mono font-bold text-[#001639] break-all select-all block dir-ltr text-start">
                   {VODAFONE_CASH_NUMBER}
                 </span>
               </div>
               <button
                 type="button"
                 onClick={() => handleCopy(VODAFONE_CASH_NUMBER, 'vodafone')}
-                className="px-2.5 py-1.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-bold text-[#001639] transition flex items-center gap-1 shrink-0 cursor-pointer"
+                className="px-3 py-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-[#001639] transition flex items-center gap-1 shrink-0 cursor-pointer active:scale-95"
                 title={isAr ? 'نسخ رقم المحفظة' : 'Copy Wallet Number'}
               >
                 {copiedKey === 'vodafone' ? (
                   <>
                     <Check className="w-3.5 h-3.5 text-emerald-600" />
-                    <span className="text-emerald-600">{isAr ? 'تم النسخ' : 'Copied'}</span>
+                    <span className="text-emerald-600">{isAr ? 'تم' : 'Copied'}</span>
                   </>
                 ) : (
                   <>
@@ -464,7 +453,7 @@ export const PricingPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsActivationModalOpen(true)}
-              className="py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-[#001639] transition text-center"
+              className="py-2.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-[#001639] transition text-center cursor-pointer shadow-2xs active:scale-98"
             >
               {isAr ? 'تأكيد التحويل وإدخال رقم العملية' : 'Confirm Reference & Unlock'}
             </button>

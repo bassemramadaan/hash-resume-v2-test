@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useLocation } from 'react-router-dom';
 import { useResumeStore } from '../../store/useResumeStore';
 import { MessageCircle } from 'lucide-react';
@@ -33,8 +34,9 @@ export const WhatsAppButton: React.FC = () => {
     return () => window.removeEventListener('scroll', checkScroll);
   }, [isLandingPage]);
 
-  // Don't render floating button over activation modal
+  // Don't render floating button over activation modal or during server-side/portal mounting
   if (isActivationModalOpen) return null;
+  if (typeof document === 'undefined') return null;
 
   // On landing page mobile, hide initially until user scrolls past hero by 300px
   const isVisibleOnMobile = !isLandingPage || hasScrolledPastHero;
@@ -45,15 +47,18 @@ export const WhatsAppButton: React.FC = () => {
       : 'Hello, I have an inquiry regarding Hash Resume'
   );
 
-  return (
+  return createPortal(
     <aside
       aria-label={isAr ? 'تواصل معنا عبر واتساب' : 'Chat with Hash Resume on WhatsApp'}
-      className={`fixed z-40 flex items-center group pointer-events-auto transition-all duration-300 ${
+      style={{
+        bottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))',
+      }}
+      className={`fixed z-[9000] flex items-center group pointer-events-auto transition-all duration-300 end-4 sm:end-6 ${
         isBuilderPage
-          ? 'hidden md:flex bottom-6 end-6'
+          ? 'hidden md:flex'
           : isVisibleOnMobile
-          ? 'bottom-5 end-4 sm:bottom-6 sm:end-6 opacity-100 translate-y-0'
-          : 'opacity-0 translate-y-8 pointer-events-none hidden md:flex bottom-6 end-6 md:opacity-100 md:translate-y-0 md:pointer-events-auto'
+          ? 'opacity-100 translate-y-0'
+          : 'opacity-0 translate-y-8 pointer-events-none hidden md:flex md:opacity-100 md:translate-y-0 md:pointer-events-auto'
       }`}
     >
       {/* Tooltip on hover (desktop) */}
@@ -70,7 +75,8 @@ export const WhatsAppButton: React.FC = () => {
       >
         <MessageCircle className="w-6 h-6 fill-white stroke-white" />
       </a>
-    </aside>
+    </aside>,
+    document.body
   );
 };
 
