@@ -123,7 +123,7 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ isAr }) =>
           onClick={() => navigate('/builder')}
           className="btn-folded-corner px-8 py-3.5 bg-[#001639] hover:bg-[#00245E] text-white rounded-full text-xs font-black shadow-lg transition flex items-center gap-2 mx-auto cursor-pointer"
         >
-          <span>{isAr ? 'ابدأ الخطوة الأولى الآن مجاناً' : 'Start Step 1 Free Now'}</span>
+          <span>{isAr ? 'ابدأ الخطوة الأولى الآن' : 'Start Step 1 Now'}</span>
           <ArrowIcon className="w-4 h-4" />
         </button>
       </div>

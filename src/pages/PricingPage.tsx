@@ -16,8 +16,12 @@ import {
   ArrowUpRight,
   Headphones,
   CheckCircle2,
+  QrCode,
+  ExternalLink,
 } from 'lucide-react';
+import { QRCodeSVG } from '../components/common/QRCodeSVG';
 import { INSTAPAY_ADDRESS, VODAFONE_CASH_NUMBER, INSTAPAY_LINK } from '../lib/constants/payment';
+import { HashHuntValueCard } from '../components/common/HashHuntValueCard';
 
 export const PricingPage: React.FC = () => {
   const { settings, setIsActivationModalOpen, activation } = useResumeStore();
@@ -296,6 +300,11 @@ export const PricingPage: React.FC = () => {
         </div>
       </section>
 
+      {/* Hash Hunt Value Proposition & Partner Companies Showcase */}
+      <section className="max-w-4xl mx-auto">
+        <HashHuntValueCard />
+      </section>
+
       {/* 3. Subtle Redeem Code Callout */}
       <div className="text-center max-w-4xl mx-auto">
         <button
@@ -341,6 +350,50 @@ export const PricingPage: React.FC = () => {
               </span>
             </div>
 
+            {/* Interactive QR Code & Link */}
+            <div className="p-3 bg-white border border-slate-200/90 rounded-xl flex items-center gap-3">
+              <div className="p-1.5 bg-slate-50 border border-slate-200 rounded-lg shrink-0 flex flex-col items-center">
+                <QRCodeSVG value={INSTAPAY_LINK} size={70} level="M" />
+                <span className="text-[9px] font-bold text-slate-500 mt-0.5 flex items-center gap-0.5">
+                  <QrCode className="w-2.5 h-2.5 text-[#FF4D2D]" />
+                  <span>{isAr ? 'امسح' : 'Scan'}</span>
+                </span>
+              </div>
+              <div className="flex-1 min-w-0 space-y-1.5 text-start">
+                <p className="text-[11px] text-slate-600 leading-relaxed">
+                  {isAr ? 'امسح الرمز أو افتح الرابط المباشر للتحويل في ثوانٍ:' : 'Scan QR code or click below to open InstaPay link:'}
+                </p>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <a
+                    href={INSTAPAY_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-1 px-2.5 bg-[#001639] hover:bg-[#002866] text-white rounded-lg text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer active:scale-95"
+                  >
+                    <span>{isAr ? 'فتح إنستاباي' : 'Open Link'}</span>
+                    <ArrowUpRight className="w-3 h-3 rtl:rotate-[-90deg]" />
+                  </a>
+                  <button
+                    type="button"
+                    onClick={() => handleCopy(INSTAPAY_LINK, 'link')}
+                    className="py-1 px-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 rounded-lg text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
+                  >
+                    {copiedKey === 'link' ? (
+                      <>
+                        <Check className="w-3 h-3 text-emerald-600" />
+                        <span className="text-emerald-600">{isAr ? 'تم النسخ' : 'Copied'}</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3 text-slate-500" />
+                        <span>{isAr ? 'نسخ الرابط' : 'Copy'}</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+
             <div className="p-2.5 rounded-lg bg-white border border-slate-200/90 flex items-center justify-between gap-2">
               <div className="min-w-0 flex-1">
                 <span className="text-[10px] text-slate-400 font-normal block mb-0.5">
@@ -370,15 +423,14 @@ export const PricingPage: React.FC = () => {
               </button>
             </div>
 
-            <a
-              href={INSTAPAY_LINK}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => setIsActivationModalOpen(true)}
               className="text-center py-2 bg-[#001639] hover:bg-[#002866] text-white rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-98"
             >
-              <span>{isAr ? 'فتح تطبيق إنستاباي' : 'Open InstaPay App'}</span>
+              <span>{isAr ? 'تأكيد التحويل وإدخال رقم العملية' : 'Confirm Reference & Unlock'}</span>
               <ArrowUpRight className="w-3 h-3 rtl:rotate-[-90deg]" />
-            </a>
+            </button>
           </div>
 
           {/* Vodafone Cash & Wallets */}

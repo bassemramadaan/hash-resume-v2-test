@@ -60,7 +60,7 @@ export const FinalCtaSection: React.FC<FinalCtaSectionProps> = ({ isAr }) => {
           to="/builder"
           className="btn-folded-corner px-5 py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs rounded-full shadow-md transition flex items-center gap-1.5 cursor-pointer"
         >
-          <span>{isAr ? 'ابدأ مجاناً' : 'Build Free'}</span>
+          <span>{isAr ? 'ابدأ الآن' : 'Build Now'}</span>
           <ArrowIcon className="w-3.5 h-3.5" />
         </Link>
       </div>

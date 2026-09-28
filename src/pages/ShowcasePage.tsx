@@ -233,7 +233,7 @@ export const ShowcasePage: React.FC = () => {
                 className="btn-folded-corner inline-flex items-center gap-2 px-8 py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-sm sm:text-base font-extrabold rounded-2xl shadow-lg transition active:scale-95 cursor-pointer"
               >
                 <Sparkles className="w-5 h-5" />
-                <span>{isAr ? 'ابدأ إنشاء سيرتي الآن مجاناً' : 'Start Building My Resume Free'}</span>
+                <span>{isAr ? 'ابدأ إنشاء سيرتي الآن' : 'Start Building My Resume'}</span>
               </Link>
             </div>
           </div>

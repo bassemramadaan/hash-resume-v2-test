@@ -15,6 +15,7 @@ export interface UIState {
   isAnalyzingAts: boolean;
   isSidebarCollapsed: boolean;
   focusedSection: string | null;
+  hashHuntAutoSubmit: boolean;
 
   setActiveTab: (tab: UIState['activeTab']) => void;
   openAiModal: (type: 'bullet' | 'summary' | 'skills', expId?: string) => void;
@@ -28,6 +29,7 @@ export interface UIState {
   setIsAnalyzingAts: (analyzing: boolean) => void;
   setIsSidebarCollapsed: (collapsed: boolean) => void;
   setFocusedSection: (section: string | null) => void;
+  setHashHuntAutoSubmit: (enabled: boolean) => void;
 }
 
 export const createUISlice = (set: any, get?: any): UIState => ({
@@ -44,6 +46,7 @@ export const createUISlice = (set: any, get?: any): UIState => ({
   isAnalyzingAts: false,
   isSidebarCollapsed: false,
   focusedSection: null,
+  hashHuntAutoSubmit: true,
 
   setActiveTab: (tab) => set({ activeTab: tab }),
   openAiModal: (type, expId) => set({ isAiModalOpen: true, aiModalType: type, activeExperienceIdForAi: expId || null }),
@@ -57,6 +60,7 @@ export const createUISlice = (set: any, get?: any): UIState => ({
   setIsAnalyzingAts: (analyzing) => set({ isAnalyzingAts: analyzing }),
   setIsSidebarCollapsed: (collapsed) => set({ isSidebarCollapsed: collapsed }),
   setFocusedSection: (section) => set({ focusedSection: section }),
+  setHashHuntAutoSubmit: (enabled) => set({ hashHuntAutoSubmit: enabled }),
 });
 
 export const useUIStore = create<UIState>((set) => createUISlice(set));

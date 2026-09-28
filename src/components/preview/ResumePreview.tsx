@@ -6,6 +6,7 @@ import { ClassicProfessionalTemplate } from './templates/ClassicProfessionalTemp
 import { MinimalExecTemplate } from './templates/MinimalExecTemplate';
 import { TechnicalCleanTemplate } from './templates/TechnicalCleanTemplate';
 import { CreativeCompactTemplate } from './templates/CreativeCompactTemplate';
+import { LiveAtsInspectorBar } from './LiveAtsInspectorBar';
 import {
   ZoomIn,
   ZoomOut,
@@ -388,6 +389,9 @@ export const ResumePreview: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* Interactive ATS Warnings Simulator & One-Click Fix */}
+      <LiveAtsInspectorBar />
 
       {/* Quick Customizer Bar (Expandable) */}
       <AnimatePresence>

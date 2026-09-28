@@ -34,6 +34,7 @@ import { isResumeBlank } from '../../utils/resumeFingerprint';
 import { detectResumeRedFlags } from '../../utils/redFlagDetector';
 import { validateResumeMinimumRequirements, ResumeValidationResult } from '../../utils/resumeValidation';
 import { ResumeValidationModal } from '../common/ResumeValidationModal';
+import { HashHuntValueCard } from '../common/HashHuntValueCard';
 
 interface IssueItem {
   id: 'personal' | 'experiences' | 'education' | 'skills' | 'projects' | 'certifications';
@@ -698,6 +699,9 @@ export const DownloadSection: React.FC = () => {
         )}
       </div>
 
+      {/* Hash Hunt Value Proposition & Partner Companies Showcase */}
+      <HashHuntValueCard />
+
       {/* One-Time Payment Model Notice & Transparent Pricing Plans */}
       <div className="bg-white border border-line rounded-none p-5 sm:p-6 space-y-4">
         <div className="flex items-start gap-3">
@@ -715,8 +719,8 @@ export const DownloadSection: React.FC = () => {
             </div>
             <p className="text-xs font-ibm-sans text-ink-soft mt-1 leading-relaxed">
               {isAr
-                ? 'أنشئ وعاين سيرتك الذاتية مجاناً. ادفع لمرة واحدة فقط عندما تصبح جاهزاً لتحميل ملف الـ PDF عالي الجودة بدون أي اشتراكات متكررة.'
-                : 'Build and preview your resume for free. Pay once when you’re ready to download the high-quality PDF. No recurring subscriptions.'}
+                ? 'أنشئ وعاين سيرتك الذاتية بكل مرونة. ادفع لمرة واحدة فقط عندما تصبح جاهزاً لتحميل ملف الـ PDF عالي الجودة بدون أي اشتراكات متكررة.'
+                : 'Build and preview your resume smoothly. Pay once when you’re ready to download the high-quality PDF. No recurring subscriptions.'}
             </p>
           </div>
         </div>
@@ -751,6 +755,10 @@ export const DownloadSection: React.FC = () => {
                 <li className="flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                   <span>{isAr ? 'تنسيق متوافق مع أنظمة ATS' : 'ATS-friendly layout'}</span>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                  <span className="font-semibold text-orange">{isAr ? 'الترشيح والربط التلقائي بشركات Hash Hunt الشريكة' : 'Automated referral to Hash Hunt partner companies'}</span>
                 </li>
                 <li className="flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
@@ -800,6 +808,10 @@ export const DownloadSection: React.FC = () => {
                 <li className="flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
                   <span>{isAr ? 'بدون علامة مائية ومعتمدة لـ ATS' : 'No watermark & ATS-friendly'}</span>
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
+                  <span className="font-semibold text-orange">{isAr ? 'ربط وفهرسة جميع النسخ على منصة Hash Hunt للشركات' : 'Full Hash Hunt referral for all 3 resume copies'}</span>
                 </li>
                 <li className="flex items-center gap-1.5">
                   <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />

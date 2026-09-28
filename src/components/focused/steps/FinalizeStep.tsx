@@ -5,6 +5,7 @@ import { getTranslation } from '../../../i18n/translations';
 import { AtsAnalyzerPanel } from '../../builder/AtsAnalyzerPanel';
 import { ARABIC_FONTS, ENGLISH_FONTS } from '../../../utils/resumeFonts';
 import { TemplateId, CareerFocus } from '../../../types/resume';
+import { HashHuntValueCard } from '../../common/HashHuntValueCard';
 import {
   Download,
   Eye,
@@ -470,6 +471,9 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
           )}
         </AnimatePresence>
       </div>
+
+      {/* Hash Hunt Value Proposition & Partner Companies Showcase */}
+      <HashHuntValueCard />
 
       {/* 6. STICKY BOTTOM ACTIONS */}
       <div className="pt-3 sm:pt-4 border-t border-[#e8e5de] flex items-center justify-between gap-2.5 sm:gap-3 sticky bottom-0 bg-white/95 backdrop-blur-xs py-3 z-10">
