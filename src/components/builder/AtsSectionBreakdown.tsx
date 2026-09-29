@@ -291,13 +291,13 @@ export const AtsSectionBreakdown: React.FC<AtsSectionBreakdownProps> = ({
         {/* Big Readiness Meter */}
         <div className="flex items-center gap-3 bg-white border border-line px-4 py-2.5 rounded-none self-start sm:self-auto shrink-0">
           <div className="text-end">
-            <span className="font-ibm-mono text-[10px] text-ink-soft block font-bold uppercase">
+            <span className="font-ibm-mono text-[10px] text-ink-soft block font-medium uppercase">
               {isAr ? 'مؤشر الجاهزية' : 'READINESS'}
             </span>
-            <span className="font-ibm-mono text-xl font-black text-ink ats-score-num">{overallScore}/100</span>
-            <span className="text-xs font-ibm-sans block font-bold text-ink">{statusLabel}</span>
+            <span className="font-ibm-mono text-xl font-bold text-ink ats-score-num">{overallScore}/100</span>
+            <span className="text-xs font-ibm-sans block font-medium text-ink">{statusLabel}</span>
           </div>
-          <div className="w-12 h-12 rounded-none border-2 border-ink flex items-center justify-center font-ibm-mono font-black text-xs text-ink bg-paper ats-score-num">
+          <div className="w-12 h-12 rounded-none border-2 border-ink flex items-center justify-center font-ibm-mono font-bold text-xs text-ink bg-paper ats-score-num">
             {overallScore}%
           </div>
         </div>

@@ -99,13 +99,13 @@ export const Footer: React.FC = () => {
 
           {/* Product Links */}
           <div className="space-y-3">
-            <h4 className="font-extrabold text-white text-xs uppercase tracking-wider">
+            <h4 className="font-medium text-slate-300 text-xs uppercase tracking-wider">
               {isAr ? 'المنتج والخيارات' : 'Product'}
             </h4>
-            <ul className="space-y-2 text-slate-400 font-medium">
+            <ul className="space-y-2 text-slate-400 font-normal">
               <li>
                 <Link to="/builder" className="hover:text-white transition">
-                  {isAr ? 'منشئ السيرة (9 خطوات)' : 'Resume Builder'}
+                  {isAr ? 'منشئ السيرة الذاتية' : 'Resume Builder'}
                 </Link>
               </li>
               <li>
@@ -119,8 +119,8 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/hash-hunt" className="hover:text-white transition text-amber-300 font-bold">
-                  {isAr ? 'وظائف هاش هنت 🎯' : 'Hash Hunt Jobs 🎯'}
+                <Link to="/hash-hunt" className="hover:text-white transition text-amber-300 font-medium">
+                  {isAr ? 'وظائف هاش هنت' : 'Hash Hunt Jobs'}
                 </Link>
               </li>
             </ul>
@@ -128,10 +128,10 @@ export const Footer: React.FC = () => {
 
           {/* Platform Links */}
           <div className="space-y-3">
-            <h4 className="font-extrabold text-white text-xs uppercase tracking-wider">
+            <h4 className="font-medium text-slate-300 text-xs uppercase tracking-wider">
               {isAr ? 'المنصة والدعم' : 'Platform'}
             </h4>
-            <ul className="space-y-2 text-slate-400 font-medium">
+            <ul className="space-y-2 text-slate-400 font-normal">
               <li>
                 <Link to="/pricing" className="hover:text-white transition">
                   {isAr ? 'خطط التسعير والدفع' : 'Pricing Plans'}
@@ -143,14 +143,14 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/showcase" className="hover:text-white transition text-orange-400 font-bold">
-                  {isAr ? 'معاينة شاشات الموقع 📸' : 'UI Showcase & Preview 📸'}
+                <Link to="/showcase" className="hover:text-white transition text-orange-400 font-medium">
+                  {isAr ? 'معاينة شاشات الموقع' : 'UI Showcase & Preview'}
                 </Link>
               </li>
               <li>
                 <a
                   href="tel:+201101007965"
-                  className="min-h-[40px] inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-bold transition py-1"
+                  className="min-h-[40px] inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-normal transition py-1"
                 >
                   <Phone className="w-4 h-4" />
                   <span>{isAr ? 'اتصال مباشر: 011 01007965' : 'Direct Call: 011 01007965'}</span>
@@ -161,7 +161,7 @@ export const Footer: React.FC = () => {
                   href="https://wa.me/201101007965"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="min-h-[40px] inline-flex items-center gap-2 text-[#25D366] hover:text-emerald-300 transition py-1"
+                  className="min-h-[40px] inline-flex items-center gap-2 text-[#25D366] hover:text-emerald-300 transition py-1 font-normal"
                 >
                   <MessageCircle className="w-4 h-4" />
                   <span>{isAr ? 'واتساب الدعم: 011 01007965' : 'WhatsApp Support: 011 01007965'}</span>
@@ -170,7 +170,7 @@ export const Footer: React.FC = () => {
               <li>
                 <button
                   onClick={() => setLanguage(isAr ? 'en' : 'ar')}
-                  className="min-h-[40px] inline-flex items-center gap-2 hover:text-white transition text-slate-400 cursor-pointer py-1"
+                  className="min-h-[40px] inline-flex items-center gap-2 hover:text-white transition text-slate-400 cursor-pointer py-1 font-normal"
                 >
                   <Globe className="w-4 h-4" />
                   <span>{isAr ? 'تغيير اللغة إلى English' : 'Switch to العربية'}</span>
@@ -181,10 +181,10 @@ export const Footer: React.FC = () => {
 
           {/* Legal Links */}
           <div className="space-y-3">
-            <h4 className="font-extrabold text-white text-xs uppercase tracking-wider">
+            <h4 className="font-medium text-slate-300 text-xs uppercase tracking-wider">
               {isAr ? 'القانوني والسياسات' : 'Legal'}
             </h4>
-            <ul className="space-y-2 text-slate-400 font-medium">
+            <ul className="space-y-2 text-slate-400 font-normal">
               <li>
                 <Link to="/privacy" className="hover:text-white transition inline-block py-1">
                   {isAr ? 'سياسة الخصوصية' : 'Privacy Policy'}

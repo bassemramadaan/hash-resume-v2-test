@@ -18,7 +18,7 @@ export const PaymentDeclinedPage: React.FC = () => {
       </div>
 
       <div className="space-y-2">
-        <h1 className="text-2xl font-black text-[#0B1120]">
+        <h1 className="text-2xl font-semibold text-slate-900">
           {isAr ? 'تعذر إتمام عملية الدفع' : 'Payment Could Not Be Completed'}
         </h1>
         <p className="text-xs text-[#52627A] max-w-sm mx-auto">{reason}</p>
@@ -37,7 +37,7 @@ export const PaymentDeclinedPage: React.FC = () => {
       <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
         <button
           onClick={() => navigate('/pricing')}
-          className="btn-folded-corner px-6 py-3 bg-[#001639] hover:bg-[#00214F] text-white font-extrabold text-xs rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+          className="btn-folded-corner px-6 py-3 bg-[#001639] hover:bg-[#00214F] text-white font-semibold text-xs rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
         >
           <RefreshCw className="w-4 h-4" />
           <span>{isAr ? 'إعادة المحاولة' : 'Try Again'}</span>

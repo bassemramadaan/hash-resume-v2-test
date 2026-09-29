@@ -25,10 +25,10 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
         <header className="mb-5 border-b pb-4 border-gray-200">
           <div className="flex justify-between items-start gap-4">
             <div className="flex-1">
-              <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
+              <h1 className="text-2xl font-bold tracking-tight text-gray-900">
                 {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
               </h1>
-              <p className="text-sm font-bold mt-0.5 text-[#001639]" style={{ color: primaryColor }}>
+              <p className="text-sm font-semibold mt-0.5 text-[#001639]" style={{ color: primaryColor }}>
                 {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
               </p>
             </div>
@@ -55,10 +55,10 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
       return (
         <header className="mb-4 border-b pb-2.5 border-gray-200">
           <div className="flex flex-wrap items-baseline justify-between gap-2 mb-1">
-            <h1 className="text-xl font-extrabold tracking-tight text-gray-900">
+            <h1 className="text-xl font-bold tracking-tight text-gray-900">
               {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
             </h1>
-            <p className="text-xs font-bold text-[#001639]" style={{ color: primaryColor }}>
+            <p className="text-xs font-semibold text-[#001639]" style={{ color: primaryColor }}>
               {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
             </p>
           </div>
@@ -83,10 +83,10 @@ export const MinimalExecTemplate: React.FC<TemplateProps> = React.memo(({ data, 
             style={{ borderColor: primaryColor }}
           />
         )}
-        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">
+        <h1 className="text-2xl font-bold tracking-tight text-gray-900">
           {personalInfo.fullName || (isArabic ? 'الاسم الكامل' : 'Full Name')}
         </h1>
-        <p className="text-sm font-bold text-[#001639] mt-0.5" style={{ color: primaryColor }}>
+        <p className="text-sm font-semibold text-[#001639] mt-0.5" style={{ color: primaryColor }}>
           {personalInfo.jobTitle || (isArabic ? 'مطور واجهات أمامية' : 'Frontend Developer')}
         </p>
 

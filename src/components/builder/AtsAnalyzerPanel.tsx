@@ -217,7 +217,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
               <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-black text-[#001639] leading-tight">
+              <h3 className="text-base sm:text-lg font-semibold text-[#001639] leading-tight">
                 {isAr ? 'فحص جاهزية ATS ومطابقة الوظيفة' : 'ATS Compatibility & Job Alignment Audit'}
               </h3>
               <p className="text-[11px] sm:text-xs text-[#7a8093] mt-0.5 leading-relaxed">
@@ -229,7 +229,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
           </div>
 
           <div>
-            <label htmlFor="ats-job-desc-input" className="block text-[11px] sm:text-xs font-bold text-[#12141a] mb-1.5 sm:mb-2">
+            <label htmlFor="ats-job-desc-input" className="block text-[11px] sm:text-xs font-semibold text-[#12141a] mb-1.5 sm:mb-2">
               {isAr ? 'نص الوصف الوظيفي (اختياري ولكن يُنصح به):' : 'Job Description text (optional but recommended):'}
             </label>
             <textarea
@@ -281,7 +281,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
         <div className="w-14 h-14 rounded-2xl bg-[#001639]/5 text-[#001639] flex items-center justify-center mx-auto">
           <Loader2 className="w-7 h-7 animate-spin text-[#FF4D2D]" />
         </div>
-        <h3 className="text-base font-black text-[#001639]">
+        <h3 className="text-base font-semibold text-[#001639]">
           {isAr ? 'جارِ فحص السيرة الذاتية عبر خوارزميات ATS...' : 'Auditing resume with ATS parsers...'}
         </h3>
         <p className="text-xs text-[#7a8093] max-w-sm mx-auto">
@@ -303,7 +303,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
             {atsResult.score}%
           </div>
           <div>
-            <div className="text-xs font-black text-[#001639]">{atsResult.verdict}</div>
+            <div className="text-xs font-semibold text-[#001639]">{atsResult.verdict}</div>
             <div className="text-[11px] text-[#7a8093]">
               {targetJobDescription
                 ? (isAr ? 'مطابقة مع الوصف الوظيفي المُدخل' : 'Matched against target Job Description')

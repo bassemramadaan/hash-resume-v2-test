@@ -91,7 +91,7 @@ export const FloatingPreviewCard: React.FC<FloatingPreviewCardProps> = ({
         >
           {/* Mock Miniature Header */}
           <div className="border-b border-slate-100 pb-1.5 mb-2">
-            <div className="h-2 w-3/4 bg-[#001639] rounded-xs font-black text-[7px] text-white px-1 leading-2 overflow-hidden truncate">
+            <div className="h-2 w-3/4 bg-[#001639] rounded-xs font-semibold text-[7px] text-white px-1 leading-2 overflow-hidden truncate">
               {fullName}
             </div>
             <div className="h-1.5 w-1/2 bg-[#FF4D2D]/30 rounded-xs mt-1" />

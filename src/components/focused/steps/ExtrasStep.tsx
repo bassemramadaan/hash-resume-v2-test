@@ -119,10 +119,10 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
     >
       {/* Header */}
       <div>
-        <span className="text-[11px] sm:text-sm font-bold tracking-wide text-[#FF4D2D] block mb-1">
+        <span className="text-[11px] sm:text-sm font-medium tracking-wide text-[#FF4D2D] block mb-1">
           {isAr ? 'الخطوة 04: إضافات مميزة (اختيارية)' : 'Step 04: Extras & Achievements (Optional)'}
         </span>
-        <h2 className="text-xl sm:text-3xl font-black text-[#001639] tracking-tight mb-1.5 sm:mb-2">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#001639] tracking-tight mb-1.5 sm:mb-2">
           {isAr ? 'عايز تضيف حاجة من دول؟' : 'Would you like to add any of these?'}
         </h2>
         <p className="text-xs sm:text-sm text-[#7a8093] leading-relaxed">
@@ -159,7 +159,7 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
             )}
           </div>
           <div>
-            <h4 className="text-xs sm:text-sm font-bold">
+            <h4 className="text-xs sm:text-sm font-semibold">
               {isAr ? 'شهادات معتمدة' : 'Certifications'}
             </h4>
             <span
@@ -197,7 +197,7 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
             )}
           </div>
           <div>
-            <h4 className="text-xs sm:text-sm font-bold">
+            <h4 className="text-xs sm:text-sm font-semibold">
               {isAr ? 'مشاريع عملية' : 'Projects'}
             </h4>
             <span
@@ -235,7 +235,7 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
             )}
           </div>
           <div>
-            <h4 className="text-xs sm:text-sm font-bold">
+            <h4 className="text-xs sm:text-sm font-semibold">
               {isAr ? 'لغات إضافية' : 'Languages'}
             </h4>
             <span
@@ -252,7 +252,7 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
       {/* When none selected, show empty reassurance banner */}
       {selectedExtras.size === 0 && (
         <div className="p-4 sm:p-5 bg-white border border-[#e8e5de] rounded-2xl text-center space-y-1.5">
-          <p className="text-xs font-bold text-[#001639]">
+          <p className="text-xs font-semibold text-[#001639]">
             {isAr
               ? '✓ لم يتم تحديد أي أقسام إضافية — يمكنك المتابعة مباشرة للتحميل والتنسيق.'
               : '✓ No extra sections selected — you can proceed straight to design & download.'}
@@ -274,7 +274,7 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
               <div className="w-7 h-7 rounded-lg bg-[#FF4D2D]/10 text-[#FF4D2D] flex items-center justify-center">
                 <Award className="w-4 h-4" />
               </div>
-              <h3 className="text-sm font-bold text-[#001639]">
+              <h3 className="text-sm font-semibold text-slate-900">
                 {isAr ? 'الشهادات والدورات المهنية' : 'Certifications & Courses'}
               </h3>
             </div>
@@ -289,7 +289,7 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
               <div className="w-7 h-7 rounded-lg bg-[#FF4D2D]/10 text-[#FF4D2D] flex items-center justify-center">
                 <FolderGit2 className="w-4 h-4" />
               </div>
-              <h3 className="text-sm font-bold text-[#001639]">
+              <h3 className="text-sm font-semibold text-slate-900">
                 {isAr ? 'المشاريع العملية والنماذج' : 'Notable Projects'}
               </h3>
             </div>
@@ -304,7 +304,7 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
               <div className="w-7 h-7 rounded-lg bg-[#FF4D2D]/10 text-[#FF4D2D] flex items-center justify-center">
                 <LangIcon className="w-4 h-4" />
               </div>
-              <h3 className="text-sm font-bold text-[#001639]">
+              <h3 className="text-sm font-semibold text-slate-900">
                 {isAr ? 'اللغات ومستوى الإتقان' : 'Languages & Proficiency'}
               </h3>
             </div>
@@ -322,7 +322,7 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
                   <select
                     value={newLangProf}
                     onChange={(e) => setNewLangProf(e.target.value as any)}
-                    className="flex-1 sm:w-40 px-3 py-2.5 bg-white border border-[#e8e5de] focus:border-[#FF4D2D] rounded-xl text-xs font-semibold text-[#001639] outline-hidden cursor-pointer"
+                    className="flex-1 sm:w-40 px-3 py-2.5 bg-white border border-[#e8e5de] focus:border-[#FF4D2D] rounded-xl text-xs font-medium text-[#001639] outline-hidden cursor-pointer"
                   >
                     <option value="native">{isAr ? 'اللغة الأم' : 'Native'}</option>
                     <option value="fluent">{isAr ? 'طلاقة تامة' : 'Fluent'}</option>
@@ -332,7 +332,7 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
                   </select>
                   <button
                     type="submit"
-                    className="py-2.5 px-4 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs rounded-xl transition flex items-center gap-1 cursor-pointer shrink-0"
+                    className="py-2.5 px-4 bg-[#001639] hover:bg-[#00214F] text-white font-semibold text-xs rounded-xl transition flex items-center gap-1 cursor-pointer shrink-0"
                   >
                     <Plus className="w-3.5 h-3.5 text-[#FF4D2D]" />
                     <span>{isAr ? 'إضافة' : 'Add'}</span>
@@ -349,8 +349,8 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
                     key={lang.id || lIdx}
                     className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#f4f1e9] border border-[#e8e5de] rounded-xl text-xs text-[#001639] font-medium"
                   >
-                    <span className="font-bold">{lang.language}</span>
-                    <span className="text-[10px] px-1.5 py-0.5 bg-white text-[#7a8093] rounded-md font-semibold">
+                    <span className="font-semibold">{lang.language}</span>
+                    <span className="text-[10px] px-1.5 py-0.5 bg-white text-[#7a8093] rounded-md font-medium">
                       {getProficiencyLabel(lang.proficiency)}
                     </span>
                     <button
@@ -374,7 +374,7 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
         <button
           type="button"
           onClick={onPrevMainStep}
-          className="py-3 sm:py-3.5 px-4 sm:px-5 bg-white border-2 border-[#e8e5de] text-[#001639] hover:bg-[#f4f1e9] font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition cursor-pointer shrink-0"
+          className="py-3 sm:py-3.5 px-4 sm:px-5 bg-white border-2 border-[#e8e5de] text-[#001639] hover:bg-[#f4f1e9] font-semibold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition cursor-pointer shrink-0"
         >
           {isAr ? 'السابق' : 'Back'}
         </button>
@@ -382,7 +382,7 @@ export const ExtrasStep: React.FC<ExtrasStepProps> = ({
         <button
           type="button"
           onClick={onNextMainStep}
-          className="btn-folded-corner flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
+          className="btn-folded-corner flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#001639] hover:bg-[#00214F] text-white font-semibold text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
         >
           <span className="truncate">
             {isAr ? 'متابعة إلى المظهر والتحميل' : 'Continue to Design & Export'}

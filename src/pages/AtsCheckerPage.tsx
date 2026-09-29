@@ -136,11 +136,11 @@ export const AtsCheckerPage: React.FC = () => {
     <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-6 sm:space-y-8 text-xs text-[#52627A]">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto space-y-2.5 sm:space-y-3">
-        <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-2xs">
+        <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium shadow-2xs">
           <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
           <span>{isAr ? 'أداة فحص التوافق مع أنظمة ATS' : 'ATS Compatibility Checker'}</span>
         </div>
-        <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-[#0B1120] tracking-tight leading-tight">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-slate-900 tracking-tight leading-tight">
           {isAr ? 'اختبر سيرتك الذاتية مقابل الوصف الوظيفي' : 'Test Your CV Against Target Job Description'}
         </h1>
         <p className="text-xs sm:text-sm text-[#52627A] leading-relaxed">
@@ -155,7 +155,7 @@ export const AtsCheckerPage: React.FC = () => {
         <div className="lg:col-span-6 space-y-4 sm:space-y-6">
           {/* 1. PDF Upload Card */}
           <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E2E8F0] p-4.5 sm:p-6 shadow-xs space-y-3.5">
-            <h3 className="font-extrabold text-[#0B1120] text-sm flex items-center gap-2">
+            <h3 className="font-semibold text-slate-900 text-sm flex items-center gap-2">
               <FileText className="w-4 h-4 text-[#001639] shrink-0" />
               <span>{isAr ? '1. رفع ملف السيرة الذاتية (PDF)' : '1. Upload Resume PDF'}</span>
             </h3>
@@ -184,7 +184,7 @@ export const AtsCheckerPage: React.FC = () => {
                   <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shrink-0">
                     <Check className="w-5 h-5" />
                   </div>
-                  <div className="font-extrabold text-[#0B1120] text-xs break-all sm:break-normal">{uploadedFile.name}</div>
+                  <div className="font-medium text-slate-800 text-xs break-all sm:break-normal">{uploadedFile.name}</div>
                   <div className="text-[11px] text-slate-500 font-medium">
                     {(uploadedFile.size / (1024 * 1024)).toFixed(2)} MB • PDF Document
                   </div>
@@ -250,7 +250,7 @@ export const AtsCheckerPage: React.FC = () => {
 
           {/* 2. Job Description Input */}
           <div className="bg-white rounded-2xl sm:rounded-3xl border border-[#E2E8F0] p-4.5 sm:p-6 shadow-xs space-y-3.5 sm:space-y-4">
-            <h3 className="font-extrabold text-[#0B1120] text-sm flex items-center gap-2">
+            <h3 className="font-semibold text-slate-900 text-sm flex items-center gap-2">
               <FileSearch className="w-4 h-4 text-[#001639] shrink-0" />
               <span>
                 {isAr ? '2. الوصف الوظيفي المستهدف (Job Description)' : '2. Target Job Description'}
@@ -273,7 +273,7 @@ export const AtsCheckerPage: React.FC = () => {
               type="button"
               onClick={handleRunAnalysis}
               disabled={isAnalyzing}
-              className="btn-folded-corner w-full py-3 sm:py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] active:bg-[#CC3A1A] text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-h-[48px]"
+              className="btn-folded-corner w-full py-3 sm:py-3.5 bg-[#FF4D2D] hover:bg-[#E5431F] active:bg-[#CC3A1A] text-white font-semibold text-xs sm:text-sm rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 min-h-[48px]"
             >
               {isAnalyzing ? (
                 <>
@@ -297,10 +297,10 @@ export const AtsCheckerPage: React.FC = () => {
               {/* Score Badge */}
               <div className="flex items-center justify-between border-b border-slate-700 pb-4 ats-result-card gap-3">
                 <div>
-                  <span className="text-[10px] font-black uppercase tracking-wider text-slate-400 block">
+                  <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400 block">
                     {isAr ? 'مؤشر الجاهزية والربط' : 'ESTIMATED COMPATIBILITY SCORE'}
                   </span>
-                  <h3 className="text-sm sm:text-base font-black text-emerald-400 mt-1">
+                  <h3 className="text-sm sm:text-base font-semibold text-emerald-400 mt-1">
                     {analysisResult.verdict}
                   </h3>
                 </div>
@@ -309,7 +309,7 @@ export const AtsCheckerPage: React.FC = () => {
                   aria-valuenow={analysisResult.score}
                   aria-valuemin={0}
                   aria-valuemax={100}
-                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-900 border-2 border-emerald-500 font-black text-xl sm:text-2xl text-emerald-400 flex items-center justify-center shadow-inner shrink-0"
+                  className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-900 border-2 border-emerald-500 font-bold text-xl sm:text-2xl text-emerald-400 flex items-center justify-center shadow-inner shrink-0"
                 >
                   {analysisResult.score}%
                 </div>
@@ -317,7 +317,7 @@ export const AtsCheckerPage: React.FC = () => {
 
               {/* Issues & Strengths */}
               <div className="space-y-3 ats-result-card">
-                <h4 className="font-extrabold text-xs uppercase tracking-wider text-slate-300">
+                <h4 className="font-semibold text-xs uppercase tracking-wider text-slate-300">
                   {isAr ? 'نتائج الفحص الهيكلي:' : 'Structural Audit Results:'}
                 </h4>
                 <div className="space-y-2">
@@ -326,7 +326,7 @@ export const AtsCheckerPage: React.FC = () => {
                       key={issue.id}
                       className="p-3 bg-slate-900/80 border border-slate-700 rounded-xl space-y-1 ats-result-card"
                     >
-                      <div className="flex items-center gap-2 font-bold text-xs">
+                      <div className="flex items-center gap-2 font-medium text-xs">
                         {issue.type === 'success' && (
                           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                         )}
@@ -338,7 +338,7 @@ export const AtsCheckerPage: React.FC = () => {
                         )}
                         <span className="text-slate-100">{issue.title}</span>
                       </div>
-                      <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed pl-6 rtl:pl-0 rtl:pr-6">
+                      <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed pl-6 rtl:pl-0 rtl:pr-6 font-normal">
                         {issue.description}
                       </p>
                     </div>
@@ -349,7 +349,7 @@ export const AtsCheckerPage: React.FC = () => {
               {/* Missing Keywords */}
               {(analysisResult.missingKeywords?.length || 0) > 0 && (
                 <div className="space-y-2 border-t border-slate-700 pt-4">
-                  <h4 className="font-extrabold text-xs text-amber-300 flex items-center gap-1.5">
+                  <h4 className="font-semibold text-xs text-amber-300 flex items-center gap-1.5">
                     <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
                     <span>{isAr ? 'الكلمات المفتاحية المقترحة للإضافة:' : 'Suggested Keywords To Include:'}</span>
                   </h4>
@@ -357,7 +357,7 @@ export const AtsCheckerPage: React.FC = () => {
                     {(analysisResult.missingKeywords || []).map((kw, idx) => (
                       <span
                         key={idx}
-                        className="px-2.5 py-1 bg-amber-500/20 text-amber-200 border border-amber-500/30 rounded-lg font-bold text-xs"
+                        className="px-2.5 py-1 bg-amber-500/20 text-amber-200 border border-amber-500/30 rounded-lg font-medium text-xs"
                       >
                         + {kw}
                       </span>
@@ -371,7 +371,7 @@ export const AtsCheckerPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => navigate('/builder')}
-                  className="w-full py-3 px-5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs sm:text-sm rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer min-h-[46px]"
+                  className="w-full py-3 px-5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer min-h-[46px]"
                 >
                   <span>{isAr ? 'فتح المحرر وتطبيق التحسينات' : 'Open Builder & Apply Fixes'}</span>
                   <ArrowIcon className="w-4 h-4 shrink-0" />

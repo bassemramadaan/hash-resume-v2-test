@@ -7,10 +7,10 @@ export const BentoFeatures: React.FC<{ isAr: boolean }> = ({ isAr }) => {
     <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-white">
       <div className="max-w-6xl mx-auto space-y-8 sm:space-y-12 md:space-y-16">
         <div className="text-center max-w-2xl mx-auto space-y-2.5 sm:space-y-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-[#001639] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-slate-900 tracking-tight">
             {isAr ? 'كل ما تحتاجه في مكان واحد' : 'Everything you need in one place'}
           </h2>
-          <p className="text-[#52627A] font-medium text-sm sm:text-base md:text-lg leading-relaxed">
+          <p className="text-slate-600 font-normal text-sm sm:text-base md:text-lg leading-relaxed">
             {isAr ? 'تصميم ذكي يختصر عليك ساعات من العمل ويضمن وصول سيرتك لمديري التوظيف.' : 'Smart design that saves you hours and ensures your resume reaches hiring managers.'}
           </p>
         </div>
@@ -29,14 +29,14 @@ export const BentoFeatures: React.FC<{ isAr: boolean }> = ({ isAr }) => {
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white shadow-2xs border border-slate-200/60 flex items-center justify-center text-[#FF4D2D] shrink-0">
                 <Target className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
               </div>
-              <h3 className="text-lg sm:text-2xl font-black text-[#001639]">{isAr ? 'مُحسّن لأنظمة ATS' : 'ATS Optimized'}</h3>
-              <p className="text-[#52627A] font-medium text-xs sm:text-sm md:text-base max-w-sm leading-relaxed">
+              <h3 className="text-lg sm:text-2xl font-semibold text-slate-900">{isAr ? 'مُحسّن لأنظمة ATS' : 'ATS Optimized'}</h3>
+              <p className="text-slate-600 font-normal text-xs sm:text-sm md:text-base max-w-sm leading-relaxed">
                 {isAr 
                   ? 'قوالب مبنية برمجياً لتمر بسلام من أنظمة الفلترة الآلية دون فقدان أي بيانات.' 
                   : 'Templates built programmatically to pass safely through automated filtering systems without losing data.'}
               </p>
             </div>
-            <div className="relative z-10 mt-5 sm:mt-6 inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white rounded-xl border border-[#E2E8F0] shadow-2xs w-fit font-bold text-xs sm:text-sm text-[#001639]">
+            <div className="relative z-10 mt-5 sm:mt-6 inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white rounded-xl border border-[#E2E8F0] shadow-2xs w-fit font-medium text-xs sm:text-sm text-slate-800">
               <span className="w-2 h-2 rounded-full bg-[#16A36A] animate-pulse shrink-0"></span>
               <span>98% ATS Parse Rate</span>
             </div>
@@ -55,8 +55,8 @@ export const BentoFeatures: React.FC<{ isAr: boolean }> = ({ isAr }) => {
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#00214F] flex items-center justify-center text-[#FF4D2D] shrink-0">
                 <Cpu className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
               </div>
-              <h3 className="text-lg sm:text-2xl font-black text-white">{isAr ? 'مساعد ذكي' : 'AI Assistant'}</h3>
-              <p className="text-[#8793A6] font-medium text-xs sm:text-sm md:text-base leading-relaxed">
+              <h3 className="text-lg sm:text-2xl font-semibold text-white">{isAr ? 'مساعد ذكي' : 'AI Assistant'}</h3>
+              <p className="text-slate-300 font-normal text-xs sm:text-sm md:text-base leading-relaxed">
                 {isAr 
                   ? 'صغ إنجازاتك بطريقة احترافية بضغطة زر باستخدام Gemini.' 
                   : 'Draft your achievements professionally with one click using Gemini.'}
@@ -76,8 +76,8 @@ export const BentoFeatures: React.FC<{ isAr: boolean }> = ({ isAr }) => {
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white shadow-2xs border border-slate-200/60 flex items-center justify-center text-[#001639] shrink-0">
                 <Globe className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
               </div>
-              <h3 className="text-lg sm:text-xl font-black text-[#001639]">{isAr ? 'عربي وإنجليزي' : 'Bilingual'}</h3>
-              <p className="text-[#52627A] font-medium text-xs sm:text-sm leading-relaxed">
+              <h3 className="text-lg sm:text-xl font-semibold text-slate-900">{isAr ? 'عربي وإنجليزي' : 'Bilingual'}</h3>
+              <p className="text-slate-600 font-normal text-xs sm:text-sm leading-relaxed">
                 {isAr 
                   ? 'دعم كامل للكتابة من اليمين لليسار، بضغطة زر واحدة.' 
                   : 'Full RTL support and seamless translation with one click.'}
@@ -97,16 +97,16 @@ export const BentoFeatures: React.FC<{ isAr: boolean }> = ({ isAr }) => {
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white shadow-2xs border border-slate-200/60 flex items-center justify-center text-[#001639] shrink-0">
                 <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
               </div>
-              <h3 className="text-lg sm:text-2xl font-black text-[#001639]">{isAr ? 'خصوصية بياناتك 100%' : '100% Data Privacy'}</h3>
-              <p className="text-[#52627A] font-medium text-xs sm:text-sm md:text-base leading-relaxed">
+              <h3 className="text-lg sm:text-2xl font-semibold text-slate-900">{isAr ? 'خصوصية بياناتك 100%' : '100% Data Privacy'}</h3>
+              <p className="text-slate-600 font-normal text-xs sm:text-sm md:text-base leading-relaxed">
                 {isAr 
                   ? 'بياناتك لا تغادر متصفحك. لا نقوم بتخزين معلوماتك الشخصية على خوادمنا نهائياً.' 
                   : 'Your data never leaves your browser. We never store your personal info on our servers.'}
               </p>
             </div>
             <div className="w-full sm:w-auto px-5 sm:px-6 py-3.5 sm:py-4 bg-white rounded-xl sm:rounded-2xl border border-[#E2E8F0] shadow-2xs text-center shrink-0">
-              <div className="text-2xl sm:text-3xl font-black text-[#16A36A]">100%</div>
-              <div className="text-[11px] sm:text-xs font-bold text-[#8793A6] uppercase mt-0.5">Local Storage</div>
+              <div className="text-2xl sm:text-3xl font-semibold text-[#16A36A]">100%</div>
+              <div className="text-[11px] sm:text-xs font-medium text-slate-500 uppercase mt-0.5">Local Storage</div>
             </div>
           </motion.div>
 

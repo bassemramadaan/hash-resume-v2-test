@@ -66,7 +66,7 @@ export const GlobalUndoToast: React.FC = () => {
               <div className="w-8 h-8 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center shrink-0">
                 <Trash2 className="w-4 h-4" />
               </div>
-              <span className="text-xs sm:text-sm font-bold text-white truncate">
+              <span className="text-xs sm:text-sm font-medium text-white truncate">
                 {isAr ? currentToast.messageAr : currentToast.messageEn}
               </span>
             </div>
@@ -76,7 +76,7 @@ export const GlobalUndoToast: React.FC = () => {
               <button
                 type="button"
                 onClick={triggerUndo}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-black shadow-xs transition active:scale-95 cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-semibold shadow-xs transition active:scale-95 cursor-pointer"
                 title={isAr ? 'تراجع عن الحذف' : 'Undo deletion'}
               >
                 <RotateCcw className="w-3.5 h-3.5 text-slate-950 shrink-0" />

@@ -70,10 +70,10 @@ const ResumeSkeletonPreview: React.FC<ResumeSkeletonPreviewProps> = ({
     >
       {/* Header Skeleton */}
       <header className="border-b-2 pb-5 text-center" style={{ borderColor: primaryColor }}>
-        <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 mb-1 uppercase">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 mb-1 uppercase">
           {isAr ? 'اسمك الكامل (YOUR NAME)' : 'YOUR NAME'}
         </h1>
-        <p className="text-sm sm:text-base font-bold mb-2" style={{ color: primaryColor }}>
+        <p className="text-sm sm:text-base font-semibold mb-2" style={{ color: primaryColor }}>
           {isAr ? 'مطور واجهات أمامية (Frontend Developer)' : 'Frontend Developer'}
         </p>
         <p className="text-xs text-slate-500 font-medium">
@@ -84,7 +84,7 @@ const ResumeSkeletonPreview: React.FC<ResumeSkeletonPreviewProps> = ({
       {/* Professional Summary Skeleton */}
       <section className="space-y-2 text-start">
         <h2
-          className="text-xs sm:text-sm font-extrabold uppercase tracking-wider pb-1 border-b"
+          className="text-xs sm:text-sm font-semibold uppercase tracking-wider pb-1 border-b"
           style={{ color: primaryColor, borderColor: `${primaryColor}30` }}
         >
           {isAr ? 'الملخص المهني' : 'PROFESSIONAL SUMMARY'}
@@ -99,13 +99,13 @@ const ResumeSkeletonPreview: React.FC<ResumeSkeletonPreviewProps> = ({
       {/* Experience Skeleton */}
       <section className="space-y-2.5 text-start">
         <h2
-          className="text-xs sm:text-sm font-extrabold uppercase tracking-wider pb-1 border-b"
+          className="text-xs sm:text-sm font-semibold uppercase tracking-wider pb-1 border-b"
           style={{ color: primaryColor, borderColor: `${primaryColor}30` }}
         >
           {isAr ? 'الخبرات المهنية' : 'EXPERIENCE'}
         </h2>
         <div className="space-y-1.5">
-          <div className="flex justify-between items-baseline text-xs font-bold text-slate-700">
+          <div className="flex justify-between items-baseline text-xs font-semibold text-slate-700">
             <span>{isAr ? 'المسمى الوظيفي المستهدف  |  اسم الشركة' : 'Senior Job Title  |  Company Name'}</span>
             <span className="text-slate-400 font-normal">{isAr ? '٢٠٢٢ – حتى الآن' : '2022 – Present'}</span>
           </div>
@@ -127,12 +127,12 @@ const ResumeSkeletonPreview: React.FC<ResumeSkeletonPreviewProps> = ({
       {/* Education Skeleton */}
       <section className="space-y-2 text-start">
         <h2
-          className="text-xs sm:text-sm font-extrabold uppercase tracking-wider pb-1 border-b"
+          className="text-xs sm:text-sm font-semibold uppercase tracking-wider pb-1 border-b"
           style={{ color: primaryColor, borderColor: `${primaryColor}30` }}
         >
           {isAr ? 'التعليم والمؤهلات' : 'EDUCATION'}
         </h2>
-        <div className="flex justify-between items-baseline text-xs font-bold text-slate-700">
+        <div className="flex justify-between items-baseline text-xs font-semibold text-slate-700">
           <span>{isAr ? 'درجة البكالوريوس في التخصص  |  اسم الجامعة' : "Bachelor's Degree  |  University Name"}</span>
           <span className="text-slate-400 font-normal">{isAr ? '٢٠١٨ – ٢٠٢٢' : '2018 – 2022'}</span>
         </div>
@@ -141,7 +141,7 @@ const ResumeSkeletonPreview: React.FC<ResumeSkeletonPreviewProps> = ({
       {/* Skills Skeleton */}
       <section className="space-y-2 text-start">
         <h2
-          className="text-xs sm:text-sm font-extrabold uppercase tracking-wider pb-1 border-b"
+          className="text-xs sm:text-sm font-semibold uppercase tracking-wider pb-1 border-b"
           style={{ color: primaryColor, borderColor: `${primaryColor}30` }}
         >
           {isAr ? 'المهارات والقدرات' : 'KEY SKILLS'}

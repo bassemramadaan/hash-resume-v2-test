@@ -386,12 +386,12 @@ export const HashHuntPage: React.FC = () => {
             
             {/* Text Content */}
             <div className={`${isAr ? 'lg:text-right' : 'lg:text-left'} space-y-4 sm:space-y-5`}>
-              <div className="inline-flex items-center justify-center lg:justify-start px-3 py-1.5 mb-1 bg-white text-coral text-xs font-bold rounded-full border border-coral/20 shadow-2xs mx-auto lg:mx-0">
+              <div className="inline-flex items-center justify-center lg:justify-start px-3 py-1.5 mb-1 bg-white text-coral text-xs font-medium rounded-full border border-coral/20 shadow-2xs mx-auto lg:mx-0">
                 <Briefcase className={`w-3.5 h-3.5 shrink-0 ${isAr ? 'ml-1.5' : 'mr-1.5'}`} />
                 <span>{isAr ? "فرص حصرية لمستخدمي Hash Resume" : "Exclusive opportunities for Hash Resume users"}</span>
               </div>
               
-              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-navy leading-tight md:leading-[1.1] tracking-tight">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-navy leading-tight md:leading-[1.1] tracking-tight">
                 {isAr ? (
                   <>وظيفتك القادمة <br />تبدأ من <span className="text-coral underline decoration-coral/30 underline-offset-4 md:underline-offset-8">هنا.</span></>
                 ) : (
@@ -407,11 +407,11 @@ export const HashHuntPage: React.FC = () => {
 
               {/* Hash Hunt Bridge Value Callout */}
               <div className="p-3.5 bg-white/80 backdrop-blur-xs border border-coral/30 rounded-2xl shadow-2xs max-w-xl text-xs space-y-1">
-                <span className="font-extrabold text-navy flex items-center gap-1.5">
+                <span className="font-semibold text-navy flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   {isAr ? 'جسر الربط المباشر مع الشركات المتعاقدة' : 'Direct Bridge with Contracted Companies'}
                 </span>
-                <p className="text-[#52627A] leading-relaxed">
+                <p className="text-[#52627A] leading-relaxed font-normal">
                   {isAr
                     ? 'الـ 50 ج.م لا تقتصر على تحميل السيرة الذاتية بصيغة ATS المحترفة فحسب، بل تشمل رفع وتوجيه ملفك لشبكة الشركات المتعاقدة معنا والمؤسسات الباحثة عن كفاءات محددة.'
                     : 'The 50 EGP payment is not just for downloading an ATS CV—it includes uploading and delivering your profile directly to our network of hiring partners.'}
@@ -421,14 +421,14 @@ export const HashHuntPage: React.FC = () => {
               <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row justify-center lg:justify-start gap-3">
                 <button
                   onClick={() => scrollToSection('jobs')}
-                  className="min-h-[46px] sm:min-h-[48px] w-full rounded-xl bg-coral px-5 text-sm sm:text-base font-bold text-white transition hover:bg-coral-hover focus:outline-none focus:ring-2 focus:ring-coral focus:ring-offset-2 sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                  className="min-h-[46px] sm:min-h-[48px] w-full rounded-xl bg-coral px-5 text-sm sm:text-base font-semibold text-white transition hover:bg-coral-hover focus:outline-none focus:ring-2 focus:ring-coral focus:ring-offset-2 sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                 >
                   <span>{isAr ? "استعرض الوظائف" : "Explore Jobs"}</span>
                   {isAr ? <ArrowLeft className="w-4 h-4 shrink-0" /> : <ArrowRight className="w-4 h-4 shrink-0" />}
                 </button>
                 <button
                   onClick={() => scrollToSection('apply-now')}
-                  className="min-h-[46px] sm:min-h-[48px] w-full rounded-xl bg-white border border-[#E5E7EB] px-5 text-sm sm:text-base font-bold text-navy transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:ring-offset-2 sm:w-auto flex items-center justify-center cursor-pointer shadow-2xs"
+                  className="min-h-[46px] sm:min-h-[48px] w-full rounded-xl bg-white border border-[#E5E7EB] px-5 text-sm sm:text-base font-semibold text-navy transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:ring-offset-2 sm:w-auto flex items-center justify-center cursor-pointer shadow-2xs"
                 >
                   {isAr ? "تقديم طلب مفتوح" : "General Application"}
                 </button>
@@ -455,12 +455,12 @@ export const HashHuntPage: React.FC = () => {
                     </span>
                   </div>
                   <div>
-                    <h3 className="text-xl font-black text-navy">Frontend Developer</h3>
+                    <h3 className="text-xl font-semibold text-navy">Frontend Developer</h3>
                     <p className="text-slate-600 text-sm mt-1 font-medium">{isAr ? "شركة شريكة" : "Partner Company"}</p>
                   </div>
                   <button
                     onClick={() => handleApplyClick('Frontend Developer')}
-                    className="min-h-[48px] w-full rounded-xl bg-[#F8FAFC] border border-[#E5E7EB] px-5 text-sm font-bold text-coral transition hover:bg-coral-soft hover:border-coral/30 focus:outline-none focus:ring-2 focus:ring-coral/20 focus:ring-offset-2 flex items-center justify-center gap-2 cursor-pointer"
+                    className="min-h-[48px] w-full rounded-xl bg-[#F8FAFC] border border-[#E5E7EB] px-5 text-sm font-semibold text-coral transition hover:bg-coral-soft hover:border-coral/30 focus:outline-none focus:ring-2 focus:ring-coral/20 focus:ring-offset-2 flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <span>{isAr ? "عرض الوظيفة" : "View Job"}</span>
                     {isAr ? <ArrowLeft className="w-4 h-4 shrink-0" /> : <ArrowRight className="w-4 h-4 shrink-0" />}
@@ -478,7 +478,7 @@ export const HashHuntPage: React.FC = () => {
           
           {/* Section Header & Filters */}
           <div className="flex flex-col gap-3 sm:gap-4">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-navy tracking-tight">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-navy tracking-tight">
               {isAr ? "الفرص المتاحة" : "Available Opportunities"}
             </h2>
             
@@ -523,19 +523,19 @@ export const HashHuntPage: React.FC = () => {
                   )}
                   
                   <div className="mb-2.5 sm:mb-3">
-                    <h3 className="text-base sm:text-lg md:text-xl font-black text-navy leading-tight">{job.title}</h3>
-                    <p className="text-xs sm:text-sm font-semibold text-coral mt-1">{isAr ? job.company : job.companyEn}</p>
+                    <h3 className="text-base sm:text-lg md:text-xl font-semibold text-navy leading-tight">{job.title}</h3>
+                    <p className="text-xs sm:text-sm font-medium text-coral mt-1">{isAr ? job.company : job.companyEn}</p>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-3 text-xs font-semibold text-slate-600">
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-3 text-xs font-medium text-slate-600">
                     <span className="flex items-center gap-1 bg-[#F8FAFC] px-2 py-1 rounded-md border border-slate-100"><MapPin className="w-3.5 h-3.5 shrink-0" /> {isAr ? job.location : job.locationEn}</span>
                     <span className="flex items-center gap-1 bg-[#F8FAFC] px-2 py-1 rounded-md border border-slate-100">{job.workType}</span>
                   </div>
 
-                  <p className="hidden md:block text-xs sm:text-sm text-slate-600 leading-relaxed mb-4 flex-1">
+                  <p className="hidden md:block text-xs sm:text-sm text-slate-600 leading-relaxed mb-4 flex-1 font-normal">
                     {isAr ? job.description : job.descriptionEn}
                   </p>
-                  <p className="md:hidden text-xs sm:text-sm text-slate-600 leading-relaxed mb-3 line-clamp-2">
+                  <p className="md:hidden text-xs sm:text-sm text-slate-600 leading-relaxed mb-3 line-clamp-2 font-normal">
                     {isAr ? job.description : job.descriptionEn}
                   </p>
 
@@ -554,7 +554,7 @@ export const HashHuntPage: React.FC = () => {
 
                   <button
                     onClick={() => handleApplyClick(job.title)}
-                    className={`min-h-[44px] sm:min-h-[48px] w-full rounded-xl px-4 sm:px-5 text-sm sm:text-base font-bold transition focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-2 mt-auto cursor-pointer ${
+                    className={`min-h-[44px] sm:min-h-[48px] w-full rounded-xl px-4 sm:px-5 text-sm sm:text-base font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-2 mt-auto cursor-pointer ${
                       job.isFeatured 
                         ? 'bg-coral text-white hover:bg-coral-hover focus:ring-coral shadow-xs' 
                         : 'bg-[#F8FAFC] text-navy border border-[#E5E7EB] hover:bg-slate-50 focus:ring-slate-200 shadow-2xs'
@@ -574,10 +574,10 @@ export const HashHuntPage: React.FC = () => {
         <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 relative z-10">
           
           <div className="mb-5 sm:mb-8 md:mb-10 text-center" ref={formTopRef}>
-            <div className="inline-flex items-center justify-center px-3 py-1 mb-2 sm:mb-3 bg-coral-soft text-coral text-xs font-bold rounded-full uppercase tracking-wider">
+            <div className="inline-flex items-center justify-center px-3 py-1 mb-2 sm:mb-3 bg-coral-soft text-coral text-xs font-medium rounded-full uppercase tracking-wider">
               {isAr ? "التقديم السريع" : "Quick Apply"}
             </div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-navy">{isAr ? "قدّم الآن" : "Apply Now"}</h2>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-navy">{isAr ? "قدّم الآن" : "Apply Now"}</h2>
             
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-6 mt-3 sm:mt-4 text-xs sm:text-sm font-semibold text-slate-600">
               <span className="flex items-center justify-center gap-1"><CheckCircle2 className="w-4 h-4 text-coral shrink-0" /> {isAr ? "بدون حساب" : "No Account"}</span>

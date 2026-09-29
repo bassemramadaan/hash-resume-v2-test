@@ -18,8 +18,8 @@ export const NotFoundPage: React.FC = () => {
       </div>
 
       <div className="space-y-2">
-        <span className="text-4xl font-black text-[#001639]">404</span>
-        <h1 className="text-2xl sm:text-3xl font-black text-[#0B1120]">
+        <span className="text-4xl font-semibold text-[#001639]">404</span>
+        <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900">
           {isAr ? 'عذراً! الصفحة المطلوبة غير موجودة' : 'Page Not Found'}
         </h1>
         <p className="text-xs text-[#52627A] max-w-sm mx-auto leading-relaxed">
@@ -32,7 +32,7 @@ export const NotFoundPage: React.FC = () => {
       <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
         <Link
           to="/"
-          className="btn-folded-corner w-full sm:w-auto px-6 py-3 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs rounded-full shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
+          className="btn-folded-corner w-full sm:w-auto px-6 py-3 bg-[#001639] hover:bg-[#00214F] text-white font-semibold text-xs rounded-full shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
         >
           <Home className="w-4 h-4" />
           <span>{isAr ? 'الرئيسية' : 'Back to Home'}</span>
@@ -40,7 +40,7 @@ export const NotFoundPage: React.FC = () => {
 
         <Link
           to="/builder"
-          className="btn-folded-corner w-full sm:w-auto px-6 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs rounded-full shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
+          className="btn-folded-corner w-full sm:w-auto px-6 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-semibold text-xs rounded-full shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
         >
           <FileText className="w-4 h-4" />
           <span>{isAr ? 'منشئ السيرة (9 خطوات)' : 'Resume Builder'}</span>

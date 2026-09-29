@@ -56,11 +56,11 @@ export const StepProgressBar: React.FC<StepProgressBarProps> = ({
       {/* Progress Meta Row */}
       <div className="mt-2 sm:mt-3 flex items-center justify-between text-[11px] sm:text-sm text-[#7a8093]">
         <div className="flex items-center gap-1.5 sm:gap-2">
-          <span className="font-bold text-[#12141a]">
+          <span className="font-medium text-[#12141a]">
             {isAr ? `خطوة ${stepNumber} من ${totalSteps}` : `Step ${stepNumber} of ${totalSteps}`}
           </span>
           <span className="text-[#e2dec9]">•</span>
-          <span className="font-semibold text-[#001639] truncate max-w-[160px] sm:max-w-none">
+          <span className="font-medium text-[#001639] truncate max-w-[160px] sm:max-w-none">
             {isAr ? currentStep.labelAr : currentStep.labelEn}
           </span>
         </div>

@@ -30,9 +30,9 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
       <div className="relative z-10 w-full max-w-5xl mx-auto text-center space-y-4 sm:space-y-6 md:space-y-8">
         {/* Hero Headline */}
         <h1
-          className={`text-[#001639] hero-reveal hero-reveal-title tracking-tight font-black ${
+          className={`text-[#001639] hero-reveal hero-reveal-title tracking-tight font-semibold ${
             isAr
-              ? 'hero-headline-ar text-3xl sm:text-5xl md:text-7xl lg:text-8xl leading-[1.2]'
+              ? 'hero-headline-ar text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.25]'
               : 'hero-headline-en text-3xl sm:text-5xl md:text-6xl lg:text-7xl leading-[1.15]'
           }`}
         >
@@ -45,7 +45,7 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
 
         {/* Hero Body Text */}
         <p
-          className="text-sm sm:text-lg md:text-xl text-[#52627A] max-w-2xl mx-auto font-medium leading-relaxed px-2 hero-reveal hero-reveal-desc"
+          className="text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed px-2 hero-reveal hero-reveal-desc"
         >
           {isFrench
             ? 'Nous avons conçu Hash Resume pour être le seul outil de concentration dont vous avez besoin. Créez un CV clair, professionnel et optimisé pour les systèmes ATS.'
@@ -93,17 +93,17 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           <button
             type="button"
             onClick={() => navigate('/builder')}
-            className="btn-folded-corner w-full sm:w-auto px-6 sm:px-10 min-h-[50px] sm:min-h-[54px] bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-2xl text-sm sm:text-base md:text-lg font-extrabold shadow-md hover:shadow-lg shadow-coral/25 flex items-center justify-center gap-2.5 sm:gap-3 transition-all active:scale-98 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF4D2D]"
+            className="btn-folded-corner w-full sm:w-auto px-6 sm:px-9 min-h-[48px] sm:min-h-[52px] bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold shadow-md hover:shadow-lg shadow-coral/20 flex items-center justify-center gap-2.5 transition-all active:scale-98 cursor-pointer focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF4D2D]"
           >
-            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 fill-white/20 shrink-0" />
+            <Sparkles className="w-4 h-4 fill-white/20 shrink-0" />
             <span>{isAr ? 'ابدأ الآن' : 'Build My Resume Now'}</span>
-            <ArrowIcon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+            <ArrowIcon className="w-4 h-4 shrink-0" />
           </button>
         </div>
 
         {/* Small Trust Row below CTA (No account required • ATS-friendly • Pay once to download) */}
         <div
-          className="flex flex-wrap items-center justify-center gap-x-2 sm:gap-x-3 gap-y-1.5 pt-2 sm:pt-3 text-xs sm:text-sm font-semibold text-[#8793A6] hero-reveal hero-reveal-footer"
+          className="flex flex-wrap items-center justify-center gap-x-2.5 sm:gap-x-3.5 gap-y-1.5 pt-2 sm:pt-3 text-xs sm:text-sm font-normal text-slate-500 hero-reveal hero-reveal-footer"
         >
           <span className="flex items-center gap-1"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 sm:hidden" />{isAr ? 'بدون إنشاء حساب' : 'No account required'}</span>
           <span className="text-slate-300 select-none hidden sm:inline">•</span>

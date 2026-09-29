@@ -16,7 +16,7 @@ export const PremiumCta: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight"
+          className="text-2xl sm:text-4xl md:text-5xl font-semibold text-white tracking-tight leading-tight"
         >
           {isAr ? 'مستعد للحصول على وظيفتك القادمة؟' : 'Ready to land your next job?'}
         </motion.h2>
@@ -26,7 +26,7 @@ export const PremiumCta: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.1 }}
-          className="text-sm sm:text-lg md:text-xl text-[#8793A6] font-medium max-w-2xl mx-auto leading-relaxed"
+          className="text-sm sm:text-base md:text-lg text-slate-300 font-normal max-w-2xl mx-auto leading-relaxed"
         >
           {isAr 
             ? 'انضم لآلاف المحترفين الذين بنوا سيرهم الذاتية بسهولة تامة.' 
@@ -42,7 +42,7 @@ export const PremiumCta: React.FC<{ isAr: boolean }> = ({ isAr }) => {
         >
           <button
             onClick={() => navigate('/builder')}
-            className="btn-folded-corner w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 min-h-[48px] sm:min-h-[52px] bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-xl sm:rounded-2xl text-sm sm:text-base font-extrabold shadow-lg shadow-coral/20 flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
+            className="btn-folded-corner w-full sm:w-auto px-6 sm:px-8 py-3.5 min-h-[48px] bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-xl sm:rounded-2xl text-sm sm:text-base font-semibold shadow-lg shadow-coral/20 flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer"
           >
             <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
             <ArrowIcon className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
@@ -50,7 +50,7 @@ export const PremiumCta: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           
           <button
             onClick={() => navigate('/templates')}
-            className="btn-folded-corner w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 min-h-[48px] sm:min-h-[52px] bg-[#00214F] hover:bg-[#002F6C] text-white rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold border border-[#002F6C] transition-all active:scale-95 cursor-pointer"
+            className="btn-folded-corner w-full sm:w-auto px-6 sm:px-8 py-3.5 min-h-[48px] bg-[#00214F] hover:bg-[#002F6C] text-white rounded-xl sm:rounded-2xl text-sm sm:text-base font-medium border border-[#002F6C] transition-all active:scale-95 cursor-pointer"
           >
             {isAr ? 'تصفح القوالب' : 'Browse Templates'}
           </button>

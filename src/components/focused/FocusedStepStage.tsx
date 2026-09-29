@@ -98,10 +98,10 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
               className="w-full max-w-xl mx-auto space-y-4 sm:space-y-6"
             >
               <div>
-                <span className="text-[11px] sm:text-sm font-bold tracking-wide text-[#FF4D2D] block mb-1">
+                <span className="text-[11px] sm:text-sm font-medium tracking-wide text-[#FF4D2D] block mb-1">
                   {isAr ? 'الخطوة الرابعة: المهارات واللغات' : 'Step 4: Skills & Languages'}
                 </span>
-                <h2 className="text-xl sm:text-3xl font-black text-[#001639] tracking-tight mb-1.5 sm:mb-2">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#001639] tracking-tight mb-1.5 sm:mb-2">
                   {isAr ? 'إيه المهارات والأدوات اللي بتتقنها؟' : 'What are your core skills?'}
                 </h2>
                 <p className="text-xs sm:text-sm text-[#7a8093] leading-relaxed">
@@ -117,14 +117,14 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
                 <button
                   type="button"
                   onClick={onPrevMainStep}
-                  className="py-3 sm:py-3.5 px-4 sm:px-5 bg-white border-2 border-[#e8e5de] text-[#001639] hover:bg-[#f4f1e9] font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition cursor-pointer shrink-0"
+                  className="py-3 sm:py-3.5 px-4 sm:px-5 bg-white border border-[#e8e5de] text-[#001639] hover:bg-[#f4f1e9] font-medium text-xs sm:text-sm rounded-xl sm:rounded-2xl transition cursor-pointer shrink-0"
                 >
                   {isAr ? 'السابق' : 'Back'}
                 </button>
                 <button
                   type="button"
                   onClick={onNextMainStep}
-                  className="btn-folded-corner flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
+                  className="btn-folded-corner flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#001639] hover:bg-[#00214F] text-white font-medium text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
                 >
                   <span className="truncate">{isAr ? 'متابعة إلى الإضافات المميزة' : 'Continue to Extras'}</span>
                   {isAr ? <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" /> : <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />}
@@ -171,10 +171,10 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
               className="w-full max-w-xl mx-auto space-y-4 sm:space-y-6"
             >
               <div>
-                <span className="text-[11px] sm:text-sm font-bold tracking-wide text-[#FF4D2D] block mb-1">
+                <span className="text-[11px] sm:text-sm font-medium tracking-wide text-[#FF4D2D] block mb-1">
                   {isAr ? 'الخطوة السادسة: مظهر السيرة' : 'Step 6: Visual Template & Style'}
                 </span>
-                <h2 className="text-xl sm:text-3xl font-black text-[#001639] tracking-tight mb-1.5 sm:mb-2">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#001639] tracking-tight mb-1.5 sm:mb-2">
                   {isAr ? 'اختر القالب والألوان المناسبة' : 'Choose your template & accent color'}
                 </h2>
                 <p className="text-xs sm:text-sm text-[#7a8093] leading-relaxed">
@@ -190,14 +190,14 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
                 <button
                   type="button"
                   onClick={onPrevMainStep}
-                  className="py-3 sm:py-3.5 px-4 sm:px-5 bg-white border-2 border-[#e8e5de] text-[#001639] hover:bg-[#f4f1e9] font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition cursor-pointer shrink-0"
+                  className="py-3 sm:py-3.5 px-4 sm:px-5 bg-white border border-[#e8e5de] text-[#001639] hover:bg-[#f4f1e9] font-medium text-xs sm:text-sm rounded-xl sm:rounded-2xl transition cursor-pointer shrink-0"
                 >
                   {isAr ? 'السابق' : 'Back'}
                 </button>
                 <button
                   type="button"
                   onClick={onNextMainStep}
-                  className="flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
+                  className="btn-folded-corner flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#001639] hover:bg-[#00214F] text-white font-medium text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer"
                 >
                   <span className="truncate">{isAr ? 'متابعة إلى فحص ATS والتحميل' : 'Continue to ATS Audit'}</span>
                   {isAr ? <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" /> : <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />}
@@ -216,13 +216,13 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
               className="w-full max-w-xl mx-auto space-y-4 sm:space-y-6"
             >
               <div>
-                <span className="text-[11px] sm:text-sm font-bold tracking-wide text-[#FF4D2D] block mb-1">
+                <span className="text-[11px] sm:text-sm font-medium tracking-wide text-[#FF4D2D] block mb-1">
                   {isAr ? 'الخطوة السابعة: الفحص النهائي' : 'Step 7: Final ATS Audit'}
                 </span>
-                <h2 className="text-xl sm:text-3xl font-black text-[#001639] tracking-tight mb-1.5 sm:mb-2">
+                <h2 className="text-xl sm:text-3xl font-semibold text-[#001639] tracking-tight mb-1.5 sm:mb-2">
                   {isAr ? 'افحص تطابق سيرتك مع إعلان الوظيفة' : 'Audit your resume for job alignment'}
                 </h2>
-                <p className="text-xs sm:text-sm text-[#7a8093] leading-relaxed">
+                <p className="text-xs sm:text-sm text-[#7a8093] leading-relaxed font-normal">
                   {isAr
                     ? 'الصق نص الوصف الوظيفي لتحليل الكلمات المفتاحية ومطابقة النسبة المئوية فوراً.'
                     : 'Paste the target job description to verify keyword density.'}
@@ -235,7 +235,7 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
                 <button
                   type="button"
                   onClick={onPrevMainStep}
-                  className="py-3 sm:py-3.5 px-3.5 sm:px-5 bg-white border-2 border-[#e8e5de] text-[#001639] hover:bg-[#f4f1e9] font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition cursor-pointer shrink-0"
+                  className="py-3 sm:py-3.5 px-3.5 sm:px-5 bg-white border-2 border-[#e8e5de] text-[#001639] hover:bg-[#f4f1e9] font-semibold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition cursor-pointer shrink-0"
                 >
                   {isAr ? 'السابق' : 'Back'}
                 </button>
@@ -245,7 +245,7 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
                     <button
                       type="button"
                       onClick={onOpenPreview}
-                      className="py-3 sm:py-3.5 px-3.5 sm:px-5 bg-white border-2 border-[#001639] hover:bg-[#001639]/5 text-[#001639] font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                      className="py-3 sm:py-3.5 px-3.5 sm:px-5 bg-white border-2 border-[#001639] hover:bg-[#001639]/5 text-[#001639] font-semibold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
                     >
                       <Eye className="w-4 h-4 text-[#FF4D2D] shrink-0" />
                       <span className="truncate">{isAr ? 'معاينة الـ CV والتحميل' : 'Preview & Download'}</span>
@@ -256,7 +256,7 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
                     <button
                       type="button"
                       onClick={onExportPdf}
-                      className="py-3 sm:py-3.5 px-4 sm:px-6 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-xs hover:shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                      className="py-3 sm:py-3.5 px-4 sm:px-6 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-semibold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-xs hover:shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
                     >
                       <Download className="w-4 h-4 shrink-0" />
                       <span className="truncate">{isAr ? 'تحميل PDF الآن' : 'Download PDF Now'}</span>

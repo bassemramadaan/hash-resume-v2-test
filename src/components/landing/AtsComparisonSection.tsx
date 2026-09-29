@@ -14,7 +14,7 @@ export const AtsComparisonSection: React.FC<AtsComparisonSectionProps> = ({ isAr
         <span className="px-3.5 py-1 rounded-full text-xs font-bold bg-[#E8EEF7] text-[#001639] border border-[#CBD5E1]">
           {isAr ? 'مقارنة الفلترة الآلية' : 'ATS Benchmark Comparison'}
         </span>
-        <h2 className="text-2xl sm:text-3xl font-black text-[#0B1120]">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-[#0B1120]">
           {isAr ? 'لماذا تُرفض 75% من السير الذاتية التقليدية؟' : 'Why 75% of Standard Resumes Get Auto-Rejected'}
         </h2>
         <p className="text-xs text-[#52627A]">
@@ -30,25 +30,25 @@ export const AtsComparisonSection: React.FC<AtsComparisonSectionProps> = ({ isAr
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b border-rose-100 pb-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center font-bold shrink-0">
+                <div className="w-10 h-10 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center font-semibold shrink-0">
                   <XCircle className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-black text-sm text-slate-900">
+                  <h3 className="font-semibold text-sm text-slate-900">
                     {isAr ? 'سيرة ذاتية تقليدية (تصميم Canva/Word)' : 'Traditional Graphic CV'}
                   </h3>
-                  <span className="text-[11px] text-rose-600 font-bold">
+                  <span className="text-[11px] text-rose-600 font-medium">
                     {isAr ? 'معدل استبعاد مرتفع جداً' : 'High Rejection Rate by Scanners'}
                   </span>
                 </div>
               </div>
 
-              <span className="px-3 py-1 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-black rounded-full shrink-0">
+              <span className="px-3 py-1 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold rounded-full shrink-0">
                 ATS: 42% ❌
               </span>
             </div>
 
-            <ul className="space-y-3 text-xs text-slate-700 font-medium">
+            <ul className="space-y-3 text-xs text-slate-700 font-normal">
               <li className="flex items-start gap-2.5">
                 <XCircle className="w-4 h-4 text-rose-500 shrink-0 mt-0.5" />
                 <span>
@@ -84,7 +84,7 @@ export const AtsComparisonSection: React.FC<AtsComparisonSectionProps> = ({ isAr
             </ul>
           </div>
 
-          <div className="p-3 bg-rose-50/80 rounded-2xl border border-rose-200 text-[11px] text-rose-800 font-bold">
+          <div className="p-3 bg-rose-50/80 rounded-2xl border border-rose-200 text-[11px] text-rose-800 font-medium">
             {isAr ? '⚠️ النتيجة: استبعاد أوتوماتيكي قبل وصول الملف لمسؤول التوظيف.' : '⚠️ Outcome: Filtered out before human review.'}
           </div>
         </div>
@@ -94,20 +94,20 @@ export const AtsComparisonSection: React.FC<AtsComparisonSectionProps> = ({ isAr
           <div className="space-y-4">
             <div className="flex items-center justify-between border-b border-emerald-100 pb-4">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold shrink-0">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-semibold shrink-0">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="font-black text-sm text-slate-900">
+                  <h3 className="font-semibold text-sm text-slate-900">
                     {isAr ? 'سيرة Hash Resume (المحسنة لـ ATS)' : 'Hash Resume (ATS Engineered)'}
                   </h3>
-                  <span className="text-[11px] text-emerald-700 font-bold">
+                  <span className="text-[11px] text-emerald-700 font-medium">
                     {isAr ? 'مطابقة قياسية لأنظمة Taleo, Workday, Greenhouse' : '100% Parser Compliant'}
                   </span>
                 </div>
               </div>
 
-              <span className="px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-black rounded-full shrink-0">
+              <span className="px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-semibold rounded-full shrink-0">
                 ATS: 98% ✅
               </span>
             </div>

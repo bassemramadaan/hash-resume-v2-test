@@ -47,11 +47,11 @@ export const FaqPage: React.FC = () => {
     <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-7">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto space-y-2.5">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8EEF7] border border-[#CBD5E1] text-[#001639] text-xs font-bold shadow-2xs">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8EEF7] border border-[#CBD5E1] text-[#001639] text-xs font-medium shadow-2xs">
           <HelpCircle className="w-4 h-4 text-[#001639]" />
           <span>{isAr ? 'الأسئلة الأكثر شيوعاً' : 'Frequently Asked Questions'}</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-[#0B1120]">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900">
           {isAr ? 'كل ما تحتاج معرفته عن المنصة والدفع' : 'Everything You Need to Know'}
         </h1>
         <p className="text-xs sm:text-sm text-[#52627A]">
@@ -73,7 +73,7 @@ export const FaqPage: React.FC = () => {
               <button
                 onClick={() => setOpenIndex(isOpen ? null : idx)}
                 aria-expanded={isOpen}
-                className="w-full p-4 sm:p-5 text-start flex items-center justify-between gap-4 font-extrabold text-xs sm:text-sm text-[#0B1120] hover:bg-slate-50 cursor-pointer"
+                className="w-full p-4 sm:p-5 text-start flex items-center justify-between gap-4 font-medium sm:font-semibold text-xs sm:text-sm text-slate-800 hover:bg-slate-50 cursor-pointer"
               >
                 <span>{isAr ? faq.qAr : faq.qEn}</span>
                 {isOpen ? (
@@ -95,7 +95,7 @@ export const FaqPage: React.FC = () => {
         <div className="p-6 bg-slate-900 text-white rounded-3xl border border-slate-800 space-y-4 text-center sm:text-start shadow-md">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="space-y-1">
-              <h3 className="text-sm font-bold text-white flex items-center justify-center sm:justify-start gap-2">
+              <h3 className="text-sm font-semibold text-white flex items-center justify-center sm:justify-start gap-2">
                 <MessageCircle className="w-4 h-4 text-[#25D366]" />
                 <span>{isAr ? 'هل لديك سؤال أو تحتاج لمساعدة فورية؟' : 'Need Further Assistance or Have Questions?'}</span>
               </h3>

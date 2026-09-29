@@ -115,13 +115,13 @@ export const EducationSubStep: React.FC<EducationSubStepProps> = ({
         </div>
 
         <div>
-          <span className="text-xs sm:text-sm font-bold tracking-wide text-[#FF4D2D] block mb-2">
+          <span className="text-xs sm:text-sm font-medium tracking-wide text-[#FF4D2D] block mb-2">
             {isAr ? 'الخطوة 03: مؤهلاتك العلمية' : 'Step 03: Education & Degrees'}
           </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#001639] tracking-tight mb-2">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#001639] tracking-tight mb-2">
             {isAr ? 'درست إيه وفين؟' : 'What is your educational background?'}
           </h1>
-          <p className="text-sm text-[#7a8093] max-w-md mx-auto">
+          <p className="text-sm text-[#7a8093] max-w-md mx-auto font-normal">
             {isAr
               ? 'أضف شهادتك الجامعية، كليتك، أو مدرستك لتعزيز مصداقية وتوازن سيرتك الذاتية.'
               : 'Add your university, college, or school credentials to complete your profile.'}
@@ -132,7 +132,7 @@ export const EducationSubStep: React.FC<EducationSubStepProps> = ({
           <button
             type="button"
             onClick={handleAddNewEducation}
-            className="w-full py-4 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2"
+            className="w-full py-4 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-semibold text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <Plus className="w-5 h-5 text-[#FF4D2D]" />
             <span>{isAr ? 'إضافة أول مؤهل تعليمي' : 'Add First Education Entry'}</span>
@@ -142,14 +142,14 @@ export const EducationSubStep: React.FC<EducationSubStepProps> = ({
             <button
               type="button"
               onClick={onPrevMainStep}
-              className="text-xs text-[#7a8093] hover:text-[#001639] font-medium transition"
+              className="text-xs text-[#7a8093] hover:text-[#001639] font-medium transition cursor-pointer"
             >
               {isAr ? '← رجوع للخبرات المهنية' : '← Back to Experience'}
             </button>
             <button
               type="button"
               onClick={onNextMainStep}
-              className="text-xs text-[#7a8093] hover:text-[#001639] font-medium transition underline-offset-4 hover:underline"
+              className="text-xs text-[#7a8093] hover:text-[#001639] font-medium transition underline-offset-4 hover:underline cursor-pointer"
             >
               {isAr ? 'تخطي إلى المهارات واللغات' : 'Skip to Skills'}
             </button>
@@ -178,7 +178,7 @@ export const EducationSubStep: React.FC<EducationSubStepProps> = ({
               >
                 {isAr ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
               </button>
-              <span className="text-xs font-black text-[#001639] px-1 tracking-tight">
+              <span className="text-xs font-semibold text-[#001639] px-1 tracking-tight">
                 {activeIndex + 1} / {educationList.length}
               </span>
               <button
@@ -193,13 +193,13 @@ export const EducationSubStep: React.FC<EducationSubStepProps> = ({
               </button>
             </div>
           ) : (
-            <span className="text-xs font-black text-[#7a8093] bg-[#f4f1e9] px-2.5 py-1 rounded-lg shrink-0">
+            <span className="text-xs font-semibold text-[#7a8093] bg-[#f4f1e9] px-2.5 py-1 rounded-lg shrink-0">
               {isAr ? 'مؤهل 1' : 'Degree 1'}
             </span>
           )}
 
           {currentEdu.degree && (
-            <span className="text-xs font-bold text-[#7a8093] truncate max-w-[140px] sm:max-w-[200px]">
+            <span className="text-xs font-medium text-[#7a8093] truncate max-w-[140px] sm:max-w-[200px]">
               {currentEdu.degree}
             </span>
           )}
@@ -243,10 +243,10 @@ export const EducationSubStep: React.FC<EducationSubStepProps> = ({
         >
           {/* Header */}
           <div>
-            <span className="text-xs sm:text-sm font-bold tracking-wide text-[#FF4D2D] block mb-1">
+            <span className="text-xs sm:text-sm font-medium tracking-wide text-[#FF4D2D] block mb-1">
               {isAr ? 'المؤهل العلمي والمؤسسة' : 'Degree & Institution'}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-black text-[#001639] tracking-tight mb-2">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-[#001639] tracking-tight mb-2">
               {currentEdu.degree || currentEdu.institution
                 ? `${currentEdu.degree || ''} ${currentEdu.institution ? `(${currentEdu.institution})` : ''}`
                 : isAr

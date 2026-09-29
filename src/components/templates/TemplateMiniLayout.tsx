@@ -80,10 +80,10 @@ export const TemplateMiniLayout: React.FC<TemplateMiniLayoutProps> = ({
           {/* Modern Header: Name + Accent Title + Contact Stack */}
           <div className="border-b-2 border-[#001639] pb-1.5 mb-1.5 flex justify-between items-start text-start">
             <div>
-              <div className="font-black text-[12px] text-[#001639] tracking-tight">
+              <div className="font-bold text-[12px] text-[#001639] tracking-tight">
                 {isAr ? 'باسم رمضان' : 'BASSAM RAMADAN'}
               </div>
-              <div className="text-[8px] font-bold text-slate-700 mt-0.5 flex items-center gap-1">
+              <div className="text-[8px] font-semibold text-slate-700 mt-0.5 flex items-center gap-1">
                 <span>{isAr ? 'مطور واجهات ومصمم منتجات' : 'Full-Stack Developer & UI Architect'}</span>
               </div>
             </div>
@@ -96,14 +96,14 @@ export const TemplateMiniLayout: React.FC<TemplateMiniLayoutProps> = ({
 
           {/* Section 1: Work Experience */}
           <div className="space-y-1 mb-1.5 text-start">
-            <div className="text-[8px] font-black text-[#001639] uppercase tracking-wider flex items-center gap-1">
+            <div className="text-[8px] font-bold text-[#001639] uppercase tracking-wider flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#001639]"></span>
               <span>{isAr ? 'الخبرة المهنية' : 'WORK EXPERIENCE'}</span>
             </div>
             <div className="space-y-0.5 pl-2 border-l border-slate-200">
               <div className="flex justify-between items-center text-[7.5px]">
-                <span className="font-bold text-slate-900">Senior Frontend Engineer @ Alpha Co</span>
-                <span className="text-[6.5px] font-semibold text-slate-500 bg-slate-100 px-1 rounded">2022 - Now</span>
+                <span className="font-semibold text-slate-900">Senior Frontend Engineer @ Alpha Co</span>
+                <span className="text-[6.5px] font-medium text-slate-500 bg-slate-100 px-1 rounded">2022 - Now</span>
               </div>
               <p className="text-[6.5px] text-slate-600 line-clamp-1">
                 Led frontend team to deliver high-velocity web portals using React & Tailwind.
@@ -113,13 +113,13 @@ export const TemplateMiniLayout: React.FC<TemplateMiniLayoutProps> = ({
 
           {/* Section 2: Core Skills with modern pills */}
           <div className="space-y-1 mb-1 text-start">
-            <div className="text-[8px] font-black text-[#001639] uppercase tracking-wider flex items-center gap-1">
+            <div className="text-[8px] font-bold text-[#001639] uppercase tracking-wider flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#001639]"></span>
               <span>{isAr ? 'المهارات' : 'CORE SKILLS'}</span>
             </div>
             <div className="flex flex-wrap gap-1">
               {['React', 'Next.js', 'TypeScript', 'Node', 'GraphQL', 'Tailwind'].map((sk) => (
-                <span key={sk} className="px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded text-[6.5px] font-bold border border-slate-200/80">
+                <span key={sk} className="px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded text-[6.5px] font-semibold border border-slate-200/80">
                   {sk}
                 </span>
               ))}
@@ -128,7 +128,7 @@ export const TemplateMiniLayout: React.FC<TemplateMiniLayoutProps> = ({
 
           {/* Section 3: Education */}
           <div className="space-y-0.5 text-start">
-            <div className="text-[8px] font-black text-[#001639] uppercase tracking-wider flex items-center gap-1">
+            <div className="text-[8px] font-bold text-[#001639] uppercase tracking-wider flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-[#001639]"></span>
               <span>{isAr ? 'المؤهل الدراسي' : 'EDUCATION'}</span>
             </div>
@@ -268,10 +268,10 @@ export const TemplateMiniLayout: React.FC<TemplateMiniLayoutProps> = ({
         <div className="w-full h-full bg-white p-3 rounded-lg border border-slate-200/90 text-slate-900 font-sans flex flex-col justify-between select-none overflow-hidden text-[9px] leading-tight shadow-2xs">
           {/* Executive Header: Bold name, sleek subtitle */}
           <div className="border-b border-slate-200 pb-1.5 mb-1 text-start">
-            <div className="font-black text-[13px] text-slate-900 tracking-tight">
+            <div className="font-bold text-[13px] text-slate-900 tracking-tight">
               {isAr ? 'طارق المنشاوي' : 'MARCUS V. STERLING'}
             </div>
-            <div className="text-[8px] font-bold text-slate-600 mt-0.5">
+            <div className="text-[8px] font-semibold text-slate-600 mt-0.5">
               {isAr ? 'نائب الرئيس التنفيذي للعمليات | CTO' : 'Chief Technology Officer & Executive Partner'}
             </div>
             <div className="text-[6.5px] text-slate-400 mt-0.5">
@@ -288,12 +288,12 @@ export const TemplateMiniLayout: React.FC<TemplateMiniLayoutProps> = ({
 
           {/* Section 1: Executive Experience */}
           <div className="space-y-1 mb-1 text-start">
-            <div className="text-[7.5px] font-black uppercase tracking-widest text-slate-900">
+            <div className="text-[7.5px] font-semibold uppercase tracking-widest text-slate-900">
               {isAr ? 'المناصب القيادية والتنفيذية' : 'EXECUTIVE LEADERSHIP'}
             </div>
             <div className="space-y-0.5">
               <div className="flex justify-between items-baseline text-[7.5px]">
-                <span className="font-bold text-slate-900">Apex Global Holdings — Group CTO</span>
+                <span className="font-semibold text-slate-900">Apex Global Holdings — Group CTO</span>
                 <span className="text-[6.5px] font-mono text-slate-500">2019 – Present</span>
               </div>
               <p className="text-[6.5px] text-slate-600 line-clamp-1">
@@ -304,7 +304,7 @@ export const TemplateMiniLayout: React.FC<TemplateMiniLayoutProps> = ({
 
           {/* Section 2: Core Competencies Matrix */}
           <div className="space-y-0.5 text-start">
-            <div className="text-[7.5px] font-black uppercase tracking-widest text-slate-900">
+            <div className="text-[7.5px] font-semibold uppercase tracking-widest text-slate-900">
               {isAr ? 'مجالات الكفاءة الاستراتيجية' : 'CORE CAPABILITIES'}
             </div>
             <div className="grid grid-cols-2 gap-x-2 text-[6.5px] text-slate-600">
@@ -326,14 +326,14 @@ export const TemplateMiniLayout: React.FC<TemplateMiniLayoutProps> = ({
           <div className="w-[36%] bg-[#001639] text-white p-2 flex flex-col justify-between shrink-0 text-start">
             <div>
               {/* Mini Avatar Circle */}
-              <div className="w-8 h-8 rounded-full bg-slate-700 border border-[#FF4D2D] mx-auto mb-1.5 flex items-center justify-center text-[8px] font-bold text-white shadow-2xs">
+              <div className="w-8 h-8 rounded-full bg-slate-700 border border-[#FF4D2D] mx-auto mb-1.5 flex items-center justify-center text-[8px] font-semibold text-white shadow-2xs">
                 {isAr ? 'س' : 'CR'}
               </div>
               <div className="text-center">
-                <div className="font-black text-[9px] text-white leading-tight">
+                <div className="font-bold text-[9px] text-white leading-tight">
                   {isAr ? 'سارة كمال' : 'SARAH K.'}
                 </div>
-                <div className="text-[6.5px] font-bold text-[#FF4D2D] mt-0.5">
+                <div className="text-[6.5px] font-semibold text-[#FF4D2D] mt-0.5">
                   {isAr ? 'مصممة إبداعية' : 'Creative Director'}
                 </div>
               </div>
@@ -347,7 +347,7 @@ export const TemplateMiniLayout: React.FC<TemplateMiniLayoutProps> = ({
 
               {/* Sidebar Skill Bars */}
               <div className="mt-2 space-y-1">
-                <div className="text-[6px] font-bold uppercase tracking-wider text-[#FF4D2D]">
+                <div className="text-[6px] font-semibold uppercase tracking-wider text-[#FF4D2D]">
                   {isAr ? 'المهارات' : 'SKILLS'}
                 </div>
                 {['Figma', 'UI/UX', 'Branding'].map((sk) => (
@@ -373,7 +373,7 @@ export const TemplateMiniLayout: React.FC<TemplateMiniLayoutProps> = ({
           <div className="w-[64%] p-2.5 flex flex-col justify-between text-start bg-white">
             {/* About Me */}
             <div className="space-y-0.5">
-              <div className="text-[7.5px] font-black uppercase tracking-wider text-[#FF4D2D] border-b border-slate-200 pb-0.5">
+              <div className="text-[7.5px] font-semibold uppercase tracking-wider text-[#FF4D2D] border-b border-slate-200 pb-0.5">
                 {isAr ? 'نبذة إبداعية' : 'ABOUT ME'}
               </div>
               <p className="text-[6.5px] text-slate-600 line-clamp-2 leading-tight">
@@ -383,12 +383,12 @@ export const TemplateMiniLayout: React.FC<TemplateMiniLayoutProps> = ({
 
             {/* Experience with timeline dots */}
             <div className="space-y-0.5">
-              <div className="text-[7.5px] font-black uppercase tracking-wider text-[#FF4D2D] border-b border-slate-200 pb-0.5">
+              <div className="text-[7.5px] font-semibold uppercase tracking-wider text-[#FF4D2D] border-b border-slate-200 pb-0.5">
                 {isAr ? 'الخبرات' : 'EXPERIENCE'}
               </div>
               <div className="space-y-0.5">
                 <div className="flex justify-between items-baseline text-[7px]">
-                  <span className="font-bold text-slate-900">Lead Product Designer</span>
+                  <span className="font-semibold text-slate-900">Lead Product Designer</span>
                   <span className="text-[6px] text-slate-400 font-mono">2022-Now</span>
                 </div>
                 <div className="text-[6px] font-semibold text-[#FF4D2D]">Studio Hive Co.</div>
@@ -400,18 +400,18 @@ export const TemplateMiniLayout: React.FC<TemplateMiniLayoutProps> = ({
 
             {/* Featured Projects */}
             <div className="space-y-0.5">
-              <div className="text-[7.5px] font-black uppercase tracking-wider text-[#FF4D2D] border-b border-slate-200 pb-0.5">
+              <div className="text-[7.5px] font-semibold uppercase tracking-wider text-[#FF4D2D] border-b border-slate-200 pb-0.5">
                 {isAr ? 'المشاريع' : 'FEATURED WORK'}
               </div>
               <div className="text-[6.5px] text-slate-700 flex justify-between">
-                <span className="font-bold">Fintech App 2.0</span>
+                <span className="font-semibold">Fintech App 2.0</span>
                 <span className="text-[#FF4D2D] font-mono">Design Award &apos;23</span>
               </div>
             </div>
 
             {/* Education */}
             <div className="space-y-0.5">
-              <div className="text-[7.5px] font-black uppercase tracking-wider text-[#FF4D2D] border-b border-slate-200 pb-0.5">
+              <div className="text-[7.5px] font-semibold uppercase tracking-wider text-[#FF4D2D] border-b border-slate-200 pb-0.5">
                 {isAr ? 'التعليم' : 'EDUCATION'}
               </div>
               <div className="text-[6.5px] text-slate-700">

@@ -56,10 +56,10 @@ export const DesktopPreviewModal: React.FC<DesktopPreviewModalProps> = ({
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-base sm:text-lg font-black text-[#001639]">
+                    <h2 className="text-base sm:text-lg font-semibold text-[#001639]">
                       {isAr ? 'معاينة السيرة الذاتية النهائية (A4)' : 'Final Resume Preview (A4 Standard)'}
                     </h2>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1f8a5f] bg-[#1f8a5f]/10 px-2 py-0.5 rounded-full">
+                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-[#1f8a5f] bg-[#1f8a5f]/10 px-2 py-0.5 rounded-full">
                       <CheckCircle2 className="w-3 h-3" />
                       {isAr ? 'جاهزة للتحميل' : 'Ready to Download'}
                     </span>

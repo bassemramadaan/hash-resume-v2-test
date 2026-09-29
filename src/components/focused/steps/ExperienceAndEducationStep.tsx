@@ -427,10 +427,10 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
         </div>
 
         <div>
-          <span className="text-xs sm:text-sm font-bold tracking-wide text-[#FF4D2D] block mb-2">
+          <span className="text-xs sm:text-sm font-medium tracking-wide text-[#FF4D2D] block mb-2">
             {isAr ? 'الخطوة 02: مسارك المهني والتعليمي' : 'Step 02: Experience & Education'}
           </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#001639] tracking-tight mb-2">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-semibold text-[#001639] tracking-tight mb-2">
             {isAr ? 'عندك خبرة عملية سابقة؟' : 'Do you have prior work experience?'}
           </h1>
           <p className="text-xs sm:text-sm text-[#7a8093] max-w-md mx-auto leading-relaxed">
@@ -517,7 +517,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
           <div className="w-14 h-14 rounded-2xl bg-[#FF4D2D]/10 text-[#FF4D2D] flex items-center justify-center mx-auto">
             <Briefcase className="w-7 h-7" />
           </div>
-          <h2 className="text-xl sm:text-2xl font-black text-[#001639]">
+          <h2 className="text-xl sm:text-2xl font-semibold text-[#001639]">
             {isAr ? 'أضف أول خبرة مهنية' : 'Add your first work experience'}
           </h2>
           <div className="flex flex-col items-center gap-3">
@@ -640,7 +640,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
               className="space-y-4"
             >
               <div>
-                <h2 className="text-xl sm:text-2xl font-black text-[#001639] tracking-tight mb-1">
+                <h2 className="text-xl sm:text-2xl font-semibold text-[#001639] tracking-tight mb-1">
                   {currentExp.position || (isAr ? 'ما هو مسماك الوظيفي؟' : 'What was your title?')}
                 </h2>
                 <p className="text-xs text-[#7a8093]">
@@ -652,7 +652,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-xs font-bold text-[#001639] mb-1">
+                  <label className="block text-xs font-medium text-slate-700 mb-1">
                     {isAr ? 'المسمى الوظيفي' : 'Job Title'}
                     <span className="text-[#FF4D2D] mr-1">*</span>
                   </label>
@@ -666,7 +666,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#001639] mb-1">
+                  <label className="block text-xs font-medium text-slate-700 mb-1">
                     {isAr ? 'اسم الشركة أو الجهة' : 'Company'}
                     <span className="text-[#FF4D2D] mr-1">*</span>
                   </label>
@@ -680,7 +680,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold text-[#001639] mb-1">
+                  <label className="block text-xs font-medium text-slate-700 mb-1">
                     {isAr ? 'الموقع الجغرافي (اختياري)' : 'Location'}
                   </label>
                   <input
@@ -693,7 +693,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#001639] mb-1">
+                  <label className="block text-xs font-medium text-slate-700 mb-1">
                     {isAr ? 'تاريخ البدء' : 'Start Date'}
                   </label>
                   <input
@@ -707,7 +707,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-[#001639] mb-1">
+                  <label className="block text-xs font-medium text-slate-700 mb-1">
                     {isAr ? 'تاريخ الانتهاء' : 'End Date'}
                   </label>
                   <input
@@ -761,7 +761,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
             >
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <h2 className="text-xl sm:text-2xl font-black text-[#001639] tracking-tight mb-1">
+                  <h2 className="text-xl sm:text-2xl font-semibold text-[#001639] tracking-tight mb-1">
                     {isAr ? 'أهم إنجازاتك ومهامك اليومية' : 'Key Responsibilities & Achievements'}
                   </h2>
                   <p className="text-xs text-[#7a8093]">
@@ -1007,7 +1007,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
 
       {/* Intro Header: "كمّل ببيانات تعليمك" */}
       <div className="mb-4">
-        <h2 className="text-xl sm:text-2xl font-black text-[#001639] tracking-tight mb-1">
+        <h2 className="text-xl sm:text-2xl font-semibold text-[#001639] tracking-tight mb-1">
           {isAr ? 'كمّل ببيانات تعليمك' : 'Continue with your education'}
         </h2>
         <p className="text-xs text-[#7a8093]">
@@ -1046,7 +1046,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
       {/* Form Fields */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
         <div>
-          <label className="block text-xs font-bold text-[#001639] mb-1">
+          <label className="block text-xs font-medium text-slate-700 mb-1">
             {isAr ? 'الدرجة العلمية' : 'Degree / Certificate'}
             <span className="text-[#FF4D2D] mr-1">*</span>
           </label>
@@ -1060,7 +1060,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-[#001639] mb-1">
+          <label className="block text-xs font-medium text-slate-700 mb-1">
             {isAr ? 'الجامعة أو المؤسسة التعليمية' : 'Institution / University'}
             <span className="text-[#FF4D2D] mr-1">*</span>
           </label>
@@ -1074,7 +1074,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-[#001639] mb-1">
+          <label className="block text-xs font-medium text-slate-700 mb-1">
             {isAr ? 'التخصص أو الكلية (اختياري)' : 'Field of Study'}
           </label>
           <input
@@ -1087,7 +1087,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-[#001639] mb-1">
+          <label className="block text-xs font-medium text-slate-700 mb-1">
             {isAr ? 'التقدير أو المعدل (اختياري)' : 'GPA / Grade'}
           </label>
           <input
@@ -1100,7 +1100,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-[#001639] mb-1">
+          <label className="block text-xs font-medium text-slate-700 mb-1">
             {isAr ? 'سنة البدء' : 'Start Year'}
           </label>
           <input
@@ -1114,7 +1114,7 @@ export const ExperienceAndEducationStep: React.FC<ExperienceAndEducationStepProp
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-[#001639] mb-1">
+          <label className="block text-xs font-medium text-slate-700 mb-1">
             {isAr ? 'سنة التخرج' : 'Graduation Year'}
           </label>
           <input

@@ -198,13 +198,13 @@ export const ExperienceSubStep: React.FC<ExperienceSubStepProps> = ({
         </div>
 
         <div>
-          <span className="text-xs sm:text-sm font-bold tracking-wide text-[#FF4D2D] block mb-2">
+          <span className="text-xs sm:text-sm font-medium tracking-wide text-[#FF4D2D] block mb-2">
             {isAr ? 'الخطوة 02: مسارك المهني' : 'Step 02: Work Experience'}
           </span>
-          <h1 className="text-2xl sm:text-3xl font-black text-[#001639] tracking-tight mb-2">
+          <h1 className="text-2xl sm:text-3xl font-semibold text-[#001639] tracking-tight mb-2">
             {isAr ? 'إيه أهم المحطات في مسارك المهني؟' : 'Add your professional experience'}
           </h1>
-          <p className="text-sm text-[#7a8093] max-w-md mx-auto">
+          <p className="text-sm text-[#7a8093] max-w-md mx-auto font-normal">
             {isAr
               ? 'أضف خبراتك السابقة أو الحالية. لو كنت خريج جديد وبدون خبرات عملية، تقدر تتخطى الخطوة دي مباشرة.'
               : 'Add your current or past work roles. If you are a fresh graduate, you can skip this step.'}
@@ -215,7 +215,7 @@ export const ExperienceSubStep: React.FC<ExperienceSubStepProps> = ({
           <button
             type="button"
             onClick={handleAddNewExperience}
-            className="w-full py-4 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-bold text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-4 px-6 bg-[#001639] hover:bg-[#00214F] text-white font-semibold text-base rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             <Plus className="w-5 h-5 text-[#FF4D2D]" />
             <span>{isAr ? 'إضافة أول خبرة مهنية' : 'Add First Experience'}</span>
@@ -261,7 +261,7 @@ export const ExperienceSubStep: React.FC<ExperienceSubStepProps> = ({
               >
                 {isAr ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
               </button>
-              <span className="text-xs font-black text-[#001639] px-1 tracking-tight">
+              <span className="text-xs font-semibold text-[#001639] px-1 tracking-tight">
                 {activeIndex + 1} / {experiences.length}
               </span>
               <button
@@ -276,13 +276,13 @@ export const ExperienceSubStep: React.FC<ExperienceSubStepProps> = ({
               </button>
             </div>
           ) : (
-            <span className="text-xs font-black text-[#7a8093] bg-[#f4f1e9] px-2.5 py-1 rounded-lg shrink-0">
+            <span className="text-xs font-semibold text-[#7a8093] bg-[#f4f1e9] px-2.5 py-1 rounded-lg shrink-0">
               {isAr ? 'خبرة 1' : 'Role 1'}
             </span>
           )}
 
           {currentExp.company && (
-            <span className="text-xs font-bold text-[#7a8093] truncate max-w-[120px] sm:max-w-[180px]">
+            <span className="text-xs font-medium text-[#7a8093] truncate max-w-[120px] sm:max-w-[180px]">
               {currentExp.company}
             </span>
           )}
@@ -349,13 +349,13 @@ export const ExperienceSubStep: React.FC<ExperienceSubStepProps> = ({
           >
             {/* Header */}
             <div>
-              <span className="text-xs sm:text-sm font-bold tracking-wide text-[#FF4D2D] block mb-1">
+              <span className="text-xs sm:text-sm font-medium tracking-wide text-[#FF4D2D] block mb-1">
                 {isAr ? 'بيانات الوظيفة والشركة' : 'Role & Company Basics'}
               </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-[#001639] tracking-tight mb-2">
+              <h2 className="text-2xl sm:text-3xl font-semibold text-[#001639] tracking-tight mb-2">
                 {isAr ? 'أين عملت وما كان دورك؟' : 'Where did you work & what was your title?'}
               </h2>
-              <p className="text-sm text-[#7a8093]">
+              <p className="text-sm text-[#7a8093] font-normal">
                 {isAr
                   ? 'اكتب اسم الشركة والمسمى الوظيفي وفترة العمل.'
                   : 'Specify company name, job title, and employment dates.'}
@@ -365,7 +365,7 @@ export const ExperienceSubStep: React.FC<ExperienceSubStepProps> = ({
             {/* Inputs Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label htmlFor={`exp-company-${currentExp.id}`} className="block text-xs font-bold text-[#12141a] mb-1.5">
+                <label htmlFor={`exp-company-${currentExp.id}`} className="block text-xs font-medium text-slate-700 mb-1.5">
                   {isAr ? 'اسم الشركة / المؤسسة' : 'Company / Organization'}
                 </label>
                 <input
@@ -498,17 +498,17 @@ export const ExperienceSubStep: React.FC<ExperienceSubStepProps> = ({
           >
             {/* Header */}
             <div>
-              <span className="text-xs sm:text-sm font-bold tracking-wide text-[#FF4D2D] block mb-1">
+              <span className="text-xs sm:text-sm font-medium tracking-wide text-[#FF4D2D] block mb-1">
                 {isAr ? 'المسؤوليات والإنجازات' : 'Responsibilities & Achievements'}
               </span>
-              <h2 className="text-2xl sm:text-3xl font-black text-[#001639] tracking-tight mb-2">
+              <h2 className="text-2xl sm:text-3xl font-semibold text-[#001639] tracking-tight mb-2">
                 {currentExp.position || currentExp.company
                   ? `${currentExp.position || ''} ${currentExp.company ? `(${currentExp.company})` : ''}`
                   : isAr
                   ? 'إنجازاتك في هذا الدور'
                   : 'Your Key Achievements'}
               </h2>
-              <p className="text-sm text-[#7a8093]">
+              <p className="text-sm text-[#7a8093] font-normal">
                 {isAr
                   ? 'اكتب نقاط إنجاز قوية مدعومة بأرقام ونسب مئوية لرفع نسبة قبولك في الـ ATS.'
                   : 'Describe measurable impact and results using strong action verbs.'}
@@ -519,7 +519,7 @@ export const ExperienceSubStep: React.FC<ExperienceSubStepProps> = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-[#12141a]">
+                  <span className="text-xs font-semibold text-[#12141a]">
                     {isAr ? 'نقاط الإنجاز والمسؤوليات' : 'Bullet Points'}
                   </span>
                   <span

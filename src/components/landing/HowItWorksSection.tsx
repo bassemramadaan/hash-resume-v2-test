@@ -57,10 +57,10 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ isAr }) =>
   return (
     <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 py-6 scroll-mt-20">
       <div className="text-center max-w-2xl mx-auto space-y-2">
-        <span className="px-3.5 py-1 rounded-full text-xs font-bold bg-[#E8EEF7] text-[#001639] border border-[#CBD5E1]">
+        <span className="px-3.5 py-1 rounded-full text-xs font-medium bg-[#E8EEF7] text-[#001639] border border-[#CBD5E1]">
           {isAr ? 'آلية العمل البسيطة' : 'How It Works'}
         </span>
-        <h2 className="text-2xl sm:text-3xl font-black text-[#0B1120]">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
           {isAr ? '4 خطوات سهلة للحصول على سيرة متكاملة' : '4 Steps to Your Dream Resume'}
         </h2>
         <p className="text-xs text-[#52627A]">
@@ -87,7 +87,7 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ isAr }) =>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <div
-                    className={`w-10 h-10 rounded-2xl font-black text-base flex items-center justify-center shadow-xs transition ${
+                    className={`w-10 h-10 rounded-2xl font-semibold text-base flex items-center justify-center shadow-xs transition ${
                       item.step === 3
                         ? 'bg-[#FF4D2D] text-white'
                         : isSelected
@@ -100,16 +100,16 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ isAr }) =>
                   <Icon className={`w-5 h-5 ${item.step === 3 ? 'text-[#FF4D2D]' : 'text-[#001639]'}`} />
                 </div>
 
-                <h3 className="font-extrabold text-sm text-[#0B1120]">
+                <h3 className="font-semibold text-sm text-slate-900">
                   {isAr ? item.titleAr : item.titleEn}
                 </h3>
 
-                <p className="text-xs text-[#52627A] leading-relaxed">
+                <p className="text-xs text-[#52627A] leading-relaxed font-normal">
                   {isAr ? item.descAr : item.descEn}
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-slate-100 text-[11px] text-slate-500 font-medium">
+              <div className="pt-3 border-t border-slate-100 text-[11px] text-slate-500 font-normal">
                 {isAr ? item.detailAr : item.detailEn}
               </div>
             </div>
@@ -121,7 +121,7 @@ export const HowItWorksSection: React.FC<HowItWorksSectionProps> = ({ isAr }) =>
         <button
           type="button"
           onClick={() => navigate('/builder')}
-          className="btn-folded-corner px-8 py-3.5 bg-[#001639] hover:bg-[#00245E] text-white rounded-full text-xs font-black shadow-lg transition flex items-center gap-2 mx-auto cursor-pointer"
+          className="btn-folded-corner px-8 py-3.5 bg-[#001639] hover:bg-[#00245E] text-white rounded-full text-xs font-semibold shadow-lg transition flex items-center gap-2 mx-auto cursor-pointer"
         >
           <span>{isAr ? 'ابدأ الخطوة الأولى الآن' : 'Start Step 1 Now'}</span>
           <ArrowIcon className="w-4 h-4" />

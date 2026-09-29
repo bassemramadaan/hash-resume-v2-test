@@ -505,11 +505,11 @@ export const DownloadSection: React.FC = () => {
           {/* Readiness Score Chip */}
           <div className="flex items-center justify-between sm:justify-center gap-3 bg-paper border border-line rounded-none px-4 py-2.5">
             <div className="flex flex-col sm:items-end">
-              <span className="font-ibm-mono text-[10px] text-ink-soft font-bold uppercase tracking-wider">
+              <span className="font-ibm-mono text-[10px] text-ink-soft font-semibold uppercase tracking-wider">
                 {isAr ? 'توافق ATS' : 'ATS READINESS'}
               </span>
               <span
-                className={`font-ibm-mono text-sm sm:text-base font-black ${
+                className={`font-ibm-mono text-sm sm:text-base font-bold ${
                   readinessScore >= 80
                     ? 'text-emerald-700'
                     : readinessScore >= 60
@@ -737,8 +737,8 @@ export const DownloadSection: React.FC = () => {
                 </span>
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="font-ibm-mono text-2xl font-black text-ink">50</span>
-                <span className="font-ibm-sans text-xs font-bold text-ink-soft">{isAr ? 'ج.م' : 'EGP'}</span>
+                <span className="font-ibm-mono text-2xl font-bold text-ink">50</span>
+                <span className="font-ibm-sans text-xs font-semibold text-ink-soft">{isAr ? 'ج.م' : 'EGP'}</span>
                 <span className="font-ibm-sans text-xs text-ink-soft font-medium ms-1">
                   ({isAr ? 'دفعة لمرة واحدة' : 'one-time'})
                 </span>
@@ -790,9 +790,9 @@ export const DownloadSection: React.FC = () => {
                 </span>
               </div>
               <div className="flex items-baseline gap-1">
-                <span className="font-ibm-mono text-2xl font-black text-ink">120</span>
-                <span className="font-ibm-sans text-xs font-bold text-ink-soft">{isAr ? 'ج.م' : 'EGP'}</span>
-                <span className="font-ibm-mono text-xs text-emerald-700 font-bold ms-1">
+                <span className="font-ibm-mono text-2xl font-bold text-ink">120</span>
+                <span className="font-ibm-sans text-xs font-semibold text-ink-soft">{isAr ? 'ج.م' : 'EGP'}</span>
+                <span className="font-ibm-mono text-xs text-emerald-700 font-semibold ms-1">
                   ({isAr ? '40 ج.م / سيرة' : '40 EGP / CV'})
                 </span>
               </div>

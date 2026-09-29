@@ -81,12 +81,12 @@ const PageFallback = () => {
   return (
     <div className="w-full min-h-[65vh] bg-[#F8FAFC] flex flex-col items-center justify-center p-6 space-y-4 animate-in fade-in duration-200">
       <div className="relative flex items-center justify-center">
-        <div className="w-12 h-12 rounded-2xl bg-[#001639] animate-pulse flex items-center justify-center text-white font-extrabold text-xl shadow-md">
+        <div className="w-12 h-12 rounded-2xl bg-[#001639] animate-pulse flex items-center justify-center text-white font-semibold text-xl shadow-md">
           #
         </div>
         <div className="absolute -inset-1.5 rounded-2xl border-2 border-[#FF4D2D] animate-ping opacity-25 pointer-events-none" />
       </div>
-      <p className="text-xs font-extrabold text-[#001639] tracking-wide animate-pulse">
+      <p className="text-xs font-medium text-slate-700 tracking-wide animate-pulse">
         {isAr ? 'جاري التحميل...' : 'Loading Hash Resume...'}
       </p>
     </div>

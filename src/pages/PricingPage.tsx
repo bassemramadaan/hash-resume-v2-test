@@ -107,22 +107,22 @@ export const PricingPage: React.FC = () => {
           dir={isAr ? 'rtl' : 'ltr'}
           className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-2xs hover:shadow-xs transition-shadow flex flex-col justify-between relative group order-1"
         >
-          <div className="space-y-3.5">
+          <div className="space-y-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 block mb-0.5">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-slate-400 block mb-0.5">
                   {isAr ? 'الباقة الفردية' : 'Single Plan'}
                 </span>
-                <h2 className="text-base sm:text-lg font-bold text-slate-800">
+                <h2 className="text-base sm:text-lg font-semibold text-slate-800">
                   {t.planSingleTitle}
                 </h2>
               </div>
               <div className="text-end shrink-0">
                 <div className="flex items-baseline justify-end gap-1">
-                  <span className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+                  <span className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">
                     50
                   </span>
-                  <span className="text-xs font-semibold text-slate-500">
+                  <span className="text-xs font-medium text-slate-500">
                     {isAr ? 'ج.م' : 'EGP'}
                   </span>
                 </div>
@@ -140,26 +140,13 @@ export const PricingPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsActivationModalOpen(true)}
-              className="btn-folded-corner w-full py-2.5 sm:py-3 px-4 bg-[#001639] hover:bg-[#002866] text-white font-semibold text-xs sm:text-sm rounded-xl transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer shadow-2xs active:scale-98 min-h-[44px]"
+              className="btn-folded-corner w-full py-2.5 sm:py-3 px-4 bg-[#001639] hover:bg-[#002866] text-white font-medium text-xs sm:text-sm rounded-xl transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer shadow-2xs active:scale-98 min-h-[44px]"
             >
               <span>{isAr ? 'تفعيل الآن (50 ج.م فقط)' : 'Get Single Key — 50 EGP'}</span>
               <ArrowUpRight className="w-4 h-4 rtl:rotate-[-90deg]" />
             </button>
 
-            {/* Hash Hunt Value Feature Highlight Box */}
-            <div className="p-3 rounded-xl bg-orange-50/70 border border-orange-100 text-xs text-slate-700 space-y-1">
-              <div className="flex items-center gap-1.5 font-semibold text-[#FF4D2D] text-xs">
-                <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                <span>{isAr ? 'الـ 50 ج.م ليست فقط لتحميل الـ CV! 🎯' : 'The 50 EGP is NOT just for a CV! 🎯'}</span>
-              </div>
-              <p className="text-[11px] leading-relaxed text-slate-600 font-normal">
-                {isAr
-                  ? 'تشمل الرفع والربط التلقائي على منصة Hash Hunt لترشيحك وتوصيل سيرتك الذاتية مباشرة لشركات التوظيف المتعاقدة.'
-                  : 'Includes automated indexing on Hash Hunt connecting your resume directly with contracted companies hiring for specialized roles.'}
-              </p>
-            </div>
-
-            <div className="border-t border-slate-100 pt-3.5 space-y-2 text-xs text-slate-600 font-normal">
+            <div className="border-t border-slate-100 pt-3.5 space-y-2.5 text-xs text-slate-600 font-normal">
               <div className="flex items-start gap-2">
                 <div className="p-0.5 rounded-full bg-emerald-50 text-emerald-600 shrink-0 mt-0.5">
                   <Check className="w-3.5 h-3.5" />
@@ -173,6 +160,12 @@ export const PricingPage: React.FC = () => {
                   <Check className="w-3.5 h-3.5" />
                 </div>
                 <span>{isAr ? 'تنسيق معتمد 100% لأنظمة فحص ATS العالمية' : '100% ATS-Friendly Structure'}</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <div className="p-0.5 rounded-full bg-emerald-50 text-emerald-600 shrink-0 mt-0.5">
+                  <Check className="w-3.5 h-3.5" />
+                </div>
+                <span>{isAr ? 'ترشيح وفهرسة تلقائية على منصة Hash Hunt للتوظيف' : 'Automated referral on Hash Hunt Platform'}</span>
               </div>
               <div className="flex items-start gap-2">
                 <div className="p-0.5 rounded-full bg-emerald-50 text-emerald-600 shrink-0 mt-0.5">
@@ -202,28 +195,28 @@ export const PricingPage: React.FC = () => {
           className="bg-white rounded-2xl border-2 border-[#FF4D2D] p-5 sm:p-6 shadow-xs hover:shadow-md transition-shadow flex flex-col justify-between relative group order-2 mt-3 md:mt-0"
         >
           {/* Prominent Floating Best Value Badge — perfectly placed on the top border, never overlapping prices */}
-          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full text-[11px] font-bold bg-[#FF4D2D] text-white shadow-xs flex items-center gap-1.5 whitespace-nowrap z-10 select-none">
+          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3.5 py-0.5 rounded-full text-[11px] font-medium bg-[#FF4D2D] text-white shadow-xs flex items-center gap-1.5 whitespace-nowrap z-10 select-none">
             <Sparkles className="w-3 h-3 shrink-0" />
             <span>{isAr ? 'الأكثر طلباً وتوفيراً' : 'Best Value'}</span>
           </div>
 
-          <div className="space-y-3.5">
+          <div className="space-y-4">
             <div className="flex items-start justify-between gap-3">
               <div>
-                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#FF4D2D] block mb-0.5">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-[#FF4D2D] block mb-0.5">
                   {isAr ? 'الباقة الاقتصادية الشاملة' : '3-Resume Pack'}
                 </span>
-                <h2 className="text-base sm:text-lg font-bold text-slate-800">
+                <h2 className="text-base sm:text-lg font-semibold text-slate-800">
                   {t.planBundleTitle}
                 </h2>
               </div>
               <div className="text-end shrink-0">
                 <div className="flex items-baseline justify-end gap-1.5">
                   <span className="text-xs line-through text-slate-400 font-normal">150</span>
-                  <span className="text-2xl sm:text-3xl font-bold text-[#FF4D2D] tracking-tight">
+                  <span className="text-2xl sm:text-3xl font-semibold text-[#FF4D2D] tracking-tight">
                     120
                   </span>
-                  <span className="text-xs font-semibold text-slate-500">
+                  <span className="text-xs font-medium text-slate-500">
                     {isAr ? 'ج.م' : 'EGP'}
                   </span>
                 </div>
@@ -241,26 +234,13 @@ export const PricingPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsActivationModalOpen(true)}
-              className="btn-folded-corner w-full py-2.5 sm:py-3 px-4 bg-[#FF4D2D] hover:bg-[#e5431f] text-white font-semibold text-xs sm:text-sm rounded-xl transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-98 min-h-[44px]"
+              className="btn-folded-corner w-full py-2.5 sm:py-3 px-4 bg-[#FF4D2D] hover:bg-[#e5431f] text-white font-medium text-xs sm:text-sm rounded-xl transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-98 min-h-[44px]"
             >
               <span>{isAr ? 'تفعيل الباقة الاقتصادية (120 ج.م)' : 'Get 3-Pack Key — 120 EGP'}</span>
               <Sparkles className="w-3.5 h-3.5" />
             </button>
 
-            {/* Hash Hunt Value Feature Highlight Box for Bundle */}
-            <div className="p-3 rounded-xl bg-orange-50/70 border border-orange-100 text-xs text-slate-700 space-y-1">
-              <div className="flex items-center gap-1.5 font-semibold text-[#FF4D2D] text-xs">
-                <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                <span>{isAr ? 'ترشيح الـ 3 نسخ تلقائياً على Hash Hunt 🎯' : 'All 3 Resumes Auto-Referred on Hash Hunt 🎯'}</span>
-              </div>
-              <p className="text-[11px] leading-relaxed text-slate-600 font-normal">
-                {isAr
-                  ? 'ترشيح كل سيرة ذاتية لوظائف وشركات مختلفة لمضاعفة فرصك في المقابلات والتوظيف.'
-                  : 'Every resume variation is indexed for different job profiles to multiply your interview chances.'}
-              </p>
-            </div>
-
-            <div className="border-t border-slate-100 pt-3.5 space-y-2 text-xs text-slate-600 font-normal">
+            <div className="border-t border-slate-100 pt-3.5 space-y-2.5 text-xs text-slate-600 font-normal">
               <div className="flex items-start gap-2">
                 <div className="p-0.5 rounded-full bg-emerald-50 text-emerald-600 shrink-0 mt-0.5">
                   <Check className="w-3.5 h-3.5" />
@@ -273,6 +253,12 @@ export const PricingPage: React.FC = () => {
                 <div className="p-0.5 rounded-full bg-emerald-50 text-emerald-600 shrink-0 mt-0.5">
                   <Check className="w-3.5 h-3.5" />
                 </div>
+                <span>{isAr ? 'ترشيح الـ 3 نسخ تلقائياً لشركات مختلفة عبر Hash Hunt' : 'All 3 copies auto-referred on Hash Hunt'}</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <div className="p-0.5 rounded-full bg-emerald-50 text-emerald-600 shrink-0 mt-0.5">
+                  <Check className="w-3.5 h-3.5" />
+                </div>
                 <span>{isAr ? 'مثالية للتقديم على وظائف متعددة أو بلغتين' : 'Target Different Job Titles or Bilingual CVs'}</span>
               </div>
               <div className="flex items-start gap-2">
@@ -280,12 +266,6 @@ export const PricingPage: React.FC = () => {
                   <Check className="w-3.5 h-3.5" />
                 </div>
                 <span>{isAr ? 'أكوادك صالحة للاستخدام في أي وقت بدون تاريخ انتهاء' : 'Credits Never Expire — Use Whenever You Need'}</span>
-              </div>
-              <div className="flex items-start gap-2">
-                <div className="p-0.5 rounded-full bg-emerald-50 text-emerald-600 shrink-0 mt-0.5">
-                  <Check className="w-3.5 h-3.5" />
-                </div>
-                <span>{isAr ? 'فحص وتحليل ATS غير محدود لكل النسخ' : 'Unlimited ATS Checker Access for All Copies'}</span>
               </div>
               <div className="flex items-start gap-2">
                 <div className="p-0.5 rounded-full bg-emerald-50 text-emerald-600 shrink-0 mt-0.5">
@@ -324,7 +304,7 @@ export const PricingPage: React.FC = () => {
             <Smartphone className="w-4 h-4 text-[#FF4D2D]" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 text-sm sm:text-base">
+            <h3 className="font-semibold text-slate-900 text-sm sm:text-base">
               {isAr ? 'طرق الدفع المحلية المباشرة' : 'Direct Local Payment Methods'}
             </h3>
             <p className="text-xs text-slate-500 font-normal">
@@ -341,11 +321,11 @@ export const PricingPage: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <span className="text-base">⚡</span>
-                <span className="font-semibold text-xs sm:text-sm text-slate-800">
+                <span className="font-medium text-xs sm:text-sm text-slate-800">
                   {isAr ? 'إنستاباي (InstaPay)' : 'InstaPay App'}
                 </span>
               </div>
-              <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
+              <span className="text-[10px] font-normal px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
                 {isAr ? 'تحويل لحظي' : 'Instant'}
               </span>
             </div>
@@ -354,13 +334,13 @@ export const PricingPage: React.FC = () => {
             <div className="p-3 bg-white border border-slate-200/90 rounded-xl flex items-center gap-3">
               <div className="p-1.5 bg-slate-50 border border-slate-200 rounded-lg shrink-0 flex flex-col items-center">
                 <QRCodeSVG value={INSTAPAY_LINK} size={70} level="M" />
-                <span className="text-[9px] font-bold text-slate-500 mt-0.5 flex items-center gap-0.5">
+                <span className="text-[9px] font-normal text-slate-500 mt-0.5 flex items-center gap-0.5">
                   <QrCode className="w-2.5 h-2.5 text-[#FF4D2D]" />
                   <span>{isAr ? 'امسح' : 'Scan'}</span>
                 </span>
               </div>
               <div className="flex-1 min-w-0 space-y-1.5 text-start">
-                <p className="text-[11px] text-slate-600 leading-relaxed">
+                <p className="text-[11px] text-slate-600 leading-relaxed font-normal">
                   {isAr ? 'امسح الرمز أو افتح الرابط المباشر للتحويل في ثوانٍ:' : 'Scan QR code or click below to open InstaPay link:'}
                 </p>
                 <div className="flex items-center gap-1.5 flex-wrap">
@@ -368,7 +348,7 @@ export const PricingPage: React.FC = () => {
                     href={INSTAPAY_LINK}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="py-1 px-2.5 bg-[#001639] hover:bg-[#002866] text-white rounded-lg text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer active:scale-95"
+                    className="py-1 px-2.5 bg-[#001639] hover:bg-[#002866] text-white rounded-lg text-[11px] font-medium transition flex items-center gap-1 cursor-pointer active:scale-95"
                   >
                     <span>{isAr ? 'فتح إنستاباي' : 'Open Link'}</span>
                     <ArrowUpRight className="w-3 h-3 rtl:rotate-[-90deg]" />
@@ -376,7 +356,7 @@ export const PricingPage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleCopy(INSTAPAY_LINK, 'link')}
-                    className="py-1 px-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 rounded-lg text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
+                    className="py-1 px-2 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 rounded-lg text-[11px] font-medium transition flex items-center gap-1 cursor-pointer"
                   >
                     {copiedKey === 'link' ? (
                       <>
@@ -406,7 +386,7 @@ export const PricingPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleCopy(INSTAPAY_ADDRESS, 'instapay')}
-                className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 transition flex items-center gap-1 shrink-0 cursor-pointer active:scale-95"
+                className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition flex items-center gap-1 shrink-0 cursor-pointer active:scale-95"
                 title={isAr ? 'نسخ عنوان إنستاباي' : 'Copy InstaPay address'}
               >
                 {copiedKey === 'instapay' ? (
@@ -426,7 +406,7 @@ export const PricingPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsActivationModalOpen(true)}
-              className="text-center py-2 bg-[#001639] hover:bg-[#002866] text-white rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-98"
+              className="text-center py-2 bg-[#001639] hover:bg-[#002866] text-white rounded-lg text-xs font-medium transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs active:scale-98"
             >
               <span>{isAr ? 'تأكيد التحويل وإدخال رقم العملية' : 'Confirm Reference & Unlock'}</span>
               <ArrowUpRight className="w-3 h-3 rtl:rotate-[-90deg]" />
@@ -438,11 +418,11 @@ export const PricingPage: React.FC = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5">
                 <span className="text-base">📱</span>
-                <span className="font-semibold text-xs sm:text-sm text-slate-800">
+                <span className="font-medium text-xs sm:text-sm text-slate-800">
                   {isAr ? 'فودافون كاش ومحافظ المحمول' : 'Mobile Wallets'}
                 </span>
               </div>
-              <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200">
+              <span className="text-[10px] font-normal px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200">
                 {isAr ? 'متاح 24/7' : 'Available 24/7'}
               </span>
             </div>
@@ -459,7 +439,7 @@ export const PricingPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleCopy(VODAFONE_CASH_NUMBER, 'vodafone')}
-                className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 transition flex items-center gap-1 shrink-0 cursor-pointer active:scale-95"
+                className="px-2.5 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition flex items-center gap-1 shrink-0 cursor-pointer active:scale-95"
                 title={isAr ? 'نسخ رقم المحفظة' : 'Copy Wallet Number'}
               >
                 {copiedKey === 'vodafone' ? (
@@ -479,7 +459,7 @@ export const PricingPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setIsActivationModalOpen(true)}
-              className="py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-semibold text-slate-700 transition text-center cursor-pointer shadow-2xs active:scale-98"
+              className="py-2 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-xs font-medium text-slate-700 transition text-center cursor-pointer shadow-2xs active:scale-98"
             >
               {isAr ? 'تأكيد التحويل وإدخال رقم العملية' : 'Confirm Reference & Unlock'}
             </button>
@@ -494,7 +474,7 @@ export const PricingPage: React.FC = () => {
             <Lock className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="font-semibold text-xs text-slate-800">
+            <h4 className="font-medium text-xs text-slate-800">
               {isAr ? 'أمان وخصوصية تامة' : '100% Client Privacy'}
             </h4>
             <p className="text-[11px] text-slate-500 font-normal">
@@ -508,7 +488,7 @@ export const PricingPage: React.FC = () => {
             <Clock className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="font-semibold text-xs text-slate-800">
+            <h4 className="font-medium text-xs text-slate-800">
               {isAr ? 'تفعيل واستلام فوري' : 'Instant Code Delivery'}
             </h4>
             <p className="text-[11px] text-slate-500 font-normal">
@@ -522,7 +502,7 @@ export const PricingPage: React.FC = () => {
             <Headphones className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="font-semibold text-xs text-slate-800">
+            <h4 className="font-medium text-xs text-slate-800">
               {isAr ? 'دعم فني عبر واتساب' : 'Direct WhatsApp Help'}
             </h4>
             <p className="text-[11px] text-slate-500 font-normal">
@@ -535,7 +515,7 @@ export const PricingPage: React.FC = () => {
       {/* 6. Frequently Asked Questions */}
       <section className="max-w-3xl mx-auto space-y-3 pt-2">
         <div className="text-center space-y-1 mb-4">
-          <h3 className="text-base sm:text-lg font-bold text-slate-800">
+          <h3 className="text-base sm:text-lg font-semibold text-slate-800">
             {isAr ? 'الأسئلة الشائعة حول التسعير والتفعيل' : 'Frequently Asked Questions'}
           </h3>
           <p className="text-xs text-slate-500 font-normal">
@@ -549,7 +529,7 @@ export const PricingPage: React.FC = () => {
               key={idx}
               className="group bg-white rounded-xl border border-slate-200/90 p-3.5 transition-all duration-200 open:shadow-xs"
             >
-              <summary className="font-semibold text-xs sm:text-[13px] text-slate-800 cursor-pointer list-none flex items-center justify-between gap-3">
+              <summary className="font-medium text-xs sm:text-[13px] text-slate-800 cursor-pointer list-none flex items-center justify-between gap-3">
                 <span>{faq.q}</span>
                 <span className="text-slate-400 group-open:rotate-180 transition-transform duration-200 text-sm">
                   ▾

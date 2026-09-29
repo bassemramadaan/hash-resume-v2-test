@@ -38,11 +38,11 @@ export const TemplatesPage: React.FC = () => {
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-7">
       {/* Page Header */}
       <div className="text-center max-w-2xl mx-auto space-y-2.5">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8EEF7] border border-[#CBD5E1] text-[#001639] text-xs font-bold shadow-2xs">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8EEF7] border border-[#CBD5E1] text-[#001639] text-xs font-medium shadow-2xs">
           <Layout className="w-4 h-4 text-[#001639]" />
           <span>{isAr ? 'معرض القوالب الاحترافية' : 'Professional Template Gallery'}</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-[#0B1120]">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900">
           {isAr ? 'اختر القالب المثالي لسيرتك الذاتية' : 'Choose Your ATS-Optimized Template'}
         </h1>
         <p className="text-xs sm:text-sm text-[#52627A]">
@@ -58,7 +58,7 @@ export const TemplatesPage: React.FC = () => {
           <button
             key={cat.id}
             onClick={() => setFilterCategory(cat.id)}
-            className={`px-3.5 py-2 rounded-full text-xs font-bold transition cursor-pointer shrink-0 whitespace-nowrap min-h-[38px] ${
+            className={`px-3.5 py-2 rounded-full text-xs font-medium transition cursor-pointer shrink-0 whitespace-nowrap min-h-[38px] ${
               filterCategory === cat.id
                 ? 'bg-[#001639] text-white shadow-xs'
                 : 'bg-white text-[#52627A] border border-[#E2E8F0] hover:bg-slate-50'
@@ -86,10 +86,10 @@ export const TemplatesPage: React.FC = () => {
                 {/* Header */}
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h3 className="font-extrabold text-[#0B1120] text-sm">
+                    <h3 className="font-semibold text-slate-900 text-sm">
                       {isAr ? tpl.nameAr : tpl.nameEn}
                     </h3>
-                    <span className="inline-block mt-1 px-2.5 py-0.5 text-[10px] font-bold rounded-full bg-[#E8EEF7] text-[#001639] border border-[#CBD5E1]">
+                    <span className="inline-block mt-1 px-2.5 py-0.5 text-[10px] font-medium rounded-full bg-[#E8EEF7] text-[#001639] border border-[#CBD5E1]">
                       {isAr ? tpl.badgeAr : tpl.badgeEn}
                     </span>
                   </div>
@@ -114,7 +114,7 @@ export const TemplatesPage: React.FC = () => {
                   />
 
                   {/* Layout Architecture Badge Overlay */}
-                  <div className="absolute bottom-3 end-3 px-2 py-0.5 bg-white/95 backdrop-blur-xs text-slate-800 rounded-md text-[9px] font-bold border border-slate-200/90 shadow-xs flex items-center gap-1">
+                  <div className="absolute bottom-3 end-3 px-2 py-0.5 bg-white/95 backdrop-blur-xs text-slate-800 rounded-md text-[9px] font-medium border border-slate-200/90 shadow-xs flex items-center gap-1">
                     {tpl.id === 'creative-compact' ? (
                       <span>{isAr ? 'تخطيط عمودين جانبي' : '2-Column Sidebar'}</span>
                     ) : tpl.id === 'bassux' ? (
@@ -134,7 +134,7 @@ export const TemplatesPage: React.FC = () => {
 
               {/* Action Footer */}
               <div className="p-4 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between gap-2">
-                <div className={`flex items-center gap-1 text-[11px] font-bold ${
+                <div className={`flex items-center gap-1 text-[11px] font-medium ${
                   tpl.category === 'ats'
                     ? 'text-emerald-700'
                     : 'text-slate-600'
@@ -149,7 +149,7 @@ export const TemplatesPage: React.FC = () => {
 
                 <button
                   onClick={() => handleSelectTemplate(tpl.id)}
-                  className={`btn-folded-corner px-4 py-2 rounded-full text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                  className={`btn-folded-corner px-4 py-2 rounded-full text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer ${
                     isCurrentSelected
                       ? 'bg-emerald-600 text-white'
                       : 'bg-[#001639] hover:bg-[#00214F] text-white shadow-2xs'

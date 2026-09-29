@@ -69,10 +69,10 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ isAr }) => {
   return (
     <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 text-start py-6">
       <div className="text-center space-y-2">
-        <span className="px-3.5 py-1 rounded-full text-xs font-bold bg-[#E8EEF7] text-[#001639] border border-[#CBD5E1]">
+        <span className="px-3.5 py-1 rounded-full text-xs font-medium bg-[#E8EEF7] text-[#001639] border border-[#CBD5E1]">
           {isAr ? 'إجابات سريعة' : 'Frequently Asked Questions'}
         </span>
-        <h2 className="text-2xl sm:text-3xl font-black text-[#0B1120]">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-[#0B1120]">
           {isAr ? 'الأسئلة الشائعة حول المنصة والخدمة' : 'Everything You Need to Know'}
         </h2>
       </div>
@@ -105,7 +105,7 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ isAr }) => {
                 <button
                   type="button"
                   onClick={() => toggleFaq(idx)}
-                  className="w-full p-5 text-start font-extrabold text-xs sm:text-sm text-[#0B1120] flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50"
+                  className="w-full p-5 text-start font-semibold text-xs sm:text-sm text-[#0B1120] flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50"
                 >
                   <span>{item.q}</span>
                   {isOpen ? (

@@ -79,7 +79,7 @@ export const PostDownloadSuccessModal: React.FC = () => {
                 <FileCheck2 className="w-8 h-8 text-emerald-600" />
               </div>
 
-              <h2 className="font-tajawal font-black text-xl sm:text-2xl text-[#001639] leading-snug">
+              <h2 className="font-tajawal font-semibold text-xl sm:text-2xl text-[#001639] leading-snug">
                 {isAr ? 'تم تحميل سيرتك الذاتية بنجاح!' : 'Your resume is downloaded!'}
               </h2>
             </div>
@@ -93,7 +93,7 @@ export const PostDownloadSuccessModal: React.FC = () => {
                     : 'Your high-quality PDF has been saved to your device. We wish you the best of luck in your career!'}
                 </p>
                 <div>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full text-xs font-bold">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-full text-xs font-medium">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                     <span>{isAr ? 'جاهزة 100% للتقديم على أنظمة ATS' : '100% ATS Ready'}</span>
                   </span>
@@ -102,7 +102,7 @@ export const PostDownloadSuccessModal: React.FC = () => {
 
               {/* Hash Hunt Referral Notice */}
               <div className="p-3.5 bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl border border-orange-200/90 text-start space-y-1">
-                <span className="font-extrabold text-[#001639] text-xs flex items-center gap-1.5">
+                <span className="font-semibold text-[#001639] text-xs flex items-center gap-1.5">
                   <Building2 className="w-4 h-4 text-[#FF4D2D] shrink-0" />
                   {isAr ? 'تم ربط سيرتك الذاتية بـ Hash Hunt 🎯' : 'Resume Connected to Hash Hunt 🎯'}
                 </span>

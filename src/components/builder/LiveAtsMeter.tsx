@@ -142,9 +142,9 @@ export const LiveAtsMeter: React.FC = () => {
       >
         <div className="flex items-center gap-1.5">
           <span className={`w-2 h-2 rounded-full ${metrics.score >= 80 ? 'bg-emerald-500 ring-2 ring-emerald-200' : 'bg-orange-500 ring-2 ring-orange-200'}`} />
-          <span className="text-[11px] font-bold text-slate-700">ATS</span>
+          <span className="text-[11px] font-semibold text-slate-700">ATS</span>
         </div>
-        <span className={`text-xs font-black px-1.5 py-0.5 rounded-md ${metrics.score >= 80 ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-[#FF4D2D]'}`}>
+        <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-md ${metrics.score >= 80 ? 'bg-emerald-50 text-emerald-700' : 'bg-orange-50 text-[#FF4D2D]'}`}>
           {metrics.score}%
         </span>
       </button>

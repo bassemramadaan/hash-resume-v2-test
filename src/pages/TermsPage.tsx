@@ -12,11 +12,11 @@ export const TermsPage: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 text-xs text-[#52627A]">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8EEF7] border border-[#CBD5E1] text-[#001639] text-xs font-bold shadow-2xs">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#E8EEF7] border border-[#CBD5E1] text-[#001639] text-xs font-medium shadow-2xs">
           <FileText className="w-4 h-4 text-[#001639]" />
           <span>{isAr ? 'الشروط والأحكام التنظيمية' : 'Terms & Conditions'}</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-[#0B1120]">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900">
           {isAr ? 'شروط الاستخدام وأحكام الخدمة' : 'Terms of Service Agreement'}
         </h1>
         <p className="text-xs text-[#52627A]">
@@ -26,7 +26,7 @@ export const TermsPage: React.FC = () => {
 
       <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-6 text-start">
         <section className="space-y-2">
-          <h2 className="text-sm font-extrabold text-[#0B1120]">
+          <h2 className="text-sm font-semibold text-slate-900">
             {isAr ? '1. قبول الشروط' : '1. Acceptance of Terms'}
           </h2>
           <p className="leading-relaxed">
@@ -37,7 +37,7 @@ export const TermsPage: React.FC = () => {
         </section>
 
         <section className="space-y-2 border-t border-slate-100 pt-4">
-          <h2 className="text-sm font-extrabold text-[#0B1120]">
+          <h2 className="text-sm font-semibold text-slate-900">
             {isAr ? '2. أحكام أكواد التفعيل والتصدير' : '2. Activation Codes & Downloads'}
           </h2>
           <p className="leading-relaxed">
@@ -48,7 +48,7 @@ export const TermsPage: React.FC = () => {
         </section>
 
         <section className="space-y-2 border-t border-slate-100 pt-4">
-          <h2 className="text-sm font-extrabold text-[#0B1120]">
+          <h2 className="text-sm font-semibold text-slate-900">
             {isAr ? '3. سياسة الاسترجاع والاستبدال' : '3. Refund Policy'}
           </h2>
           <p className="leading-relaxed">

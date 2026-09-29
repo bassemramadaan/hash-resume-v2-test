@@ -107,16 +107,16 @@ export const ShowcasePage: React.FC = () => {
       <div className="max-w-6xl mx-auto space-y-12">
         {/* Header Title */}
         <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-50 border border-orange-200 text-[#FF4D2D] text-xs font-black">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-50 border border-orange-200 text-[#FF4D2D] text-xs font-medium">
             <Eye className="w-3.5 h-3.5" />
             <span>{isAr ? 'معاينة واجهات المنصة' : 'Platform UI Showcase'}</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-black text-[#001639] tracking-tight">
+          <h1 className="text-3xl sm:text-5xl font-semibold text-[#001639] tracking-tight">
             {isAr ? 'صور ومعاينة كل جزء في الموقع' : 'Screenshots & UI Showcase Guide'}
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-600 font-medium leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
             {isAr
               ? 'استعراض بصري مفصل لجميع شاشات وأركان منصة Hash Resume، مع شرح دقيق لأهم الوظائف والمزايا المدمجة في كل شاشة.'
               : 'Detailed visual breakdown of all Hash Resume platform sections, featuring high-resolution captures and functional highlights.'}
@@ -127,7 +127,7 @@ export const ShowcasePage: React.FC = () => {
               href="/site-showcase.html"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-folded-corner px-5 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white text-xs sm:text-sm font-extrabold rounded-xl transition shadow-xs flex items-center gap-2 cursor-pointer"
+              className="btn-folded-corner px-5 py-2.5 bg-[#001639] hover:bg-[#00245E] text-white text-xs sm:text-sm font-semibold rounded-xl transition shadow-xs flex items-center gap-2 cursor-pointer"
             >
               <span>{isAr ? 'فتح الملف بصيغة HTML كاملة' : 'Open Full HTML Document'}</span>
               <ArrowUpRight className="w-4 h-4" />
@@ -135,7 +135,7 @@ export const ShowcasePage: React.FC = () => {
 
             <Link
               to="/builder"
-              className="btn-folded-corner px-5 py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-xs sm:text-sm font-extrabold rounded-xl transition shadow-xs flex items-center gap-2 cursor-pointer"
+              className="btn-folded-corner px-5 py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-xs sm:text-sm font-semibold rounded-xl transition shadow-xs flex items-center gap-2 cursor-pointer"
             >
               <Sparkles className="w-4 h-4" />
               <span>{isAr ? 'تجربة المنصة الآن' : 'Launch Builder'}</span>
@@ -155,18 +155,18 @@ export const ShowcasePage: React.FC = () => {
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center text-[#001639] font-black shrink-0">
+                    <div className="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center text-[#001639] font-semibold shrink-0">
                       <Icon className="w-5 h-5 text-[#001639]" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="text-[11px] font-black text-[#FF4D2D] uppercase tracking-wider">
+                        <span className="text-[11px] font-semibold text-[#FF4D2D] uppercase tracking-wider">
                           0{idx + 1}
                         </span>
-                        <span className="text-xs font-bold text-slate-400">•</span>
-                        <span className="text-xs font-bold text-slate-500">{item.badge}</span>
+                        <span className="text-xs font-medium text-slate-400">•</span>
+                        <span className="text-xs font-medium text-slate-500">{item.badge}</span>
                       </div>
-                      <h2 className="text-xl sm:text-2xl font-black text-[#001639]">{item.title}</h2>
+                      <h2 className="text-xl sm:text-2xl font-semibold text-[#001639]">{item.title}</h2>
                     </div>
                   </div>
 
@@ -219,10 +219,10 @@ export const ShowcasePage: React.FC = () => {
         <div className="bg-[#001639] rounded-3xl p-8 sm:p-12 text-center text-white space-y-6 shadow-xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-[#FF4D2D]/20 rounded-full blur-3xl pointer-events-none"></div>
           <div className="relative z-10 max-w-2xl mx-auto space-y-4">
-            <h2 className="text-2xl sm:text-4xl font-black">
+            <h2 className="text-2xl sm:text-4xl font-semibold">
               {isAr ? 'جاهز لتجربة السيرة الذاتية بدون أي تعقيد؟' : 'Ready to build your ATS-ready resume?'}
             </h2>
-            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed font-normal">
               {isAr
                 ? 'أنشئ سيرتك الذاتية في دقائق، افحص مطابقتها مع إعلان الوظيفة، وحمّلها بصيغة PDF نقية.'
                 : 'Create your professional resume in minutes, match job keywords with ATS scanning, and download clean vector PDF.'}
@@ -230,7 +230,7 @@ export const ShowcasePage: React.FC = () => {
             <div className="pt-2">
               <Link
                 to="/builder"
-                className="btn-folded-corner inline-flex items-center gap-2 px-8 py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-sm sm:text-base font-extrabold rounded-2xl shadow-lg transition active:scale-95 cursor-pointer"
+                className="btn-folded-corner inline-flex items-center gap-2 px-8 py-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white text-sm sm:text-base font-semibold rounded-2xl shadow-lg transition active:scale-95 cursor-pointer"
               >
                 <Sparkles className="w-5 h-5" />
                 <span>{isAr ? 'ابدأ إنشاء سيرتي الآن' : 'Start Building My Resume'}</span>

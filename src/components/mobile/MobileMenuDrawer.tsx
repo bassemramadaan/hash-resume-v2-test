@@ -237,7 +237,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                 <Link
                   to="/builder"
                   onClick={onClose}
-                  className="w-full py-3 px-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-xs flex items-center justify-center gap-2 active:scale-98 transition"
+                  className="w-full py-3 px-4 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-semibold text-xs sm:text-sm rounded-xl shadow-xs flex items-center justify-center gap-2 active:scale-98 transition"
                 >
                   <Sparkles className="w-4 h-4" />
                   <span>{isAr ? 'ابدأ إنشاء سيرتي' : 'Build My Resume'}</span>
@@ -256,7 +256,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                     key={item.path}
                     to={item.path}
                     onClick={onClose}
-                    className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-bold transition min-h-[46px] ${
+                    className={`flex items-center justify-between p-2.5 rounded-xl text-xs font-semibold transition min-h-[46px] ${
                       active
                         ? 'bg-[#001639] text-white shadow-xs'
                         : 'text-slate-700 hover:bg-slate-100'
@@ -276,10 +276,10 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                       </div>
                       <div className="flex flex-col text-start">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold">{item.label}</span>
+                          <span className="text-xs font-semibold">{item.label}</span>
                           {(item as any).badge && (
                             <span
-                              className={`text-xs font-black px-1.5 py-0.5 rounded-md ${
+                              className={`text-xs font-medium px-1.5 py-0.5 rounded-md ${
                                 active
                                     ? 'bg-white/20 text-white'
                                     : 'bg-slate-100 text-slate-700 border border-slate-200'
@@ -322,7 +322,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={onClose}
-                className="w-full py-2.5 px-4 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs transition active:scale-95"
+                className="w-full py-2.5 px-4 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition active:scale-95"
               >
                 <MessageCircle className="w-4 h-4 fill-white stroke-white" />
                 <span>{isAr ? 'الدعم الفني عبر واتساب' : 'WhatsApp Support'}</span>

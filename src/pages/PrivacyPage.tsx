@@ -12,11 +12,11 @@ export const PrivacyPage: React.FC = () => {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 text-xs text-[#52627A]">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-2xs">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium shadow-2xs">
           <ShieldCheck className="w-4 h-4 text-emerald-600" />
           <span>{isAr ? 'سياسة الخصوصية وأمان البيانات' : 'Privacy Policy & Data Protection'}</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-black text-[#0B1120]">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-slate-900">
           {isAr ? 'بياناتك ملك لك وحدك' : 'Your Privacy is Fully Protected'}
         </h1>
         <p className="text-xs text-[#52627A]">
@@ -26,7 +26,7 @@ export const PrivacyPage: React.FC = () => {
 
       <div className="bg-white rounded-3xl border border-[#E2E8F0] p-6 sm:p-8 shadow-xs space-y-6 text-start">
         <section className="space-y-2">
-          <h2 className="text-sm font-extrabold text-[#0B1120] flex items-center gap-2">
+          <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
             <Lock className="w-4 h-4 text-[#001639]" />
             <span>{isAr ? '1. تخزين البيانات محلياً (Local Browser Storage)' : '1. Client-Side Data Storage'}</span>
           </h2>
@@ -38,7 +38,7 @@ export const PrivacyPage: React.FC = () => {
         </section>
 
         <section className="space-y-2 border-t border-slate-100 pt-4">
-          <h2 className="text-sm font-extrabold text-[#0B1120] flex items-center gap-2">
+          <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
             <EyeOff className="w-4 h-4 text-[#001639]" />
             <span>{isAr ? '2. عدم مشاركة أو بيع البيانات' : '2. Zero Data Selling'}</span>
           </h2>
@@ -50,7 +50,7 @@ export const PrivacyPage: React.FC = () => {
         </section>
 
         <section className="space-y-2 border-t border-slate-100 pt-4">
-          <h2 className="text-sm font-extrabold text-[#0B1120] flex items-center gap-2">
+          <h2 className="text-sm font-semibold text-slate-900 flex items-center gap-2">
             <Database className="w-4 h-4 text-[#001639]" />
             <span>{isAr ? '3. معالجة طلبات الذكاء الاصطناعي' : '3. Gemini AI Processing'}</span>
           </h2>

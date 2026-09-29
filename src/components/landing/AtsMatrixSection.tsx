@@ -136,10 +136,10 @@ export const AtsMatrixSection: React.FC<AtsMatrixSectionProps> = ({ isAr }) => {
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 py-6">
       <div className="text-center max-w-2xl mx-auto space-y-2">
-        <span className="px-3.5 py-1 rounded-full text-xs font-bold bg-[#E8EEF7] text-[#001639] border border-[#CBD5E1]">
+        <span className="px-3.5 py-1 rounded-full text-xs font-medium bg-[#E8EEF7] text-[#001639] border border-[#CBD5E1]">
           {isAr ? 'مصفوفة الكلمات المفتاحية التنافسية' : 'ATS Keyword & Action Matrix'}
         </span>
-        <h2 className="text-2xl sm:text-3xl font-black text-[#0B1120]">
+        <h2 className="text-2xl sm:text-3xl font-semibold text-slate-900">
           {isAr ? 'كيف يُعزز الذكاء الاصطناعي Gemini سيرتك الذاتية؟' : 'How Gemini AI Optimizes Your Field-Specific CV'}
         </h2>
         <p className="text-xs text-[#52627A]">
@@ -158,7 +158,7 @@ export const AtsMatrixSection: React.FC<AtsMatrixSectionProps> = ({ isAr }) => {
               key={cat.id}
               type="button"
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-4 py-2.5 rounded-2xl text-xs font-extrabold transition flex items-center gap-2 cursor-pointer border ${
+              className={`px-4 py-2.5 rounded-2xl text-xs font-semibold transition flex items-center gap-2 cursor-pointer border ${
                 isActive
                   ? 'bg-[#001639] text-white border-[#001639] shadow-md'
                   : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'
@@ -181,11 +181,11 @@ export const AtsMatrixSection: React.FC<AtsMatrixSectionProps> = ({ isAr }) => {
         >
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
             <div>
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-800 rounded-full text-xs font-bold border border-emerald-200">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-800 rounded-full text-xs font-medium border border-emerald-200">
                 <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
                 <span>{isAr ? `توليد تلقائي لمجال: ${currentCategoryData.roleTitle}` : `Automated for: ${currentCategoryData.roleTitle}`}</span>
               </div>
-              <h3 className="text-lg font-black text-[#0B1120] mt-1.5">
+              <h3 className="text-lg font-semibold text-slate-900 mt-1.5">
                 {isAr ? 'الكلمات المفتاحية المطلوبة في برامج الفلترة (ATS Keywords)' : 'Recommended High-Impact ATS Keywords'}
               </h3>
             </div>
@@ -193,7 +193,7 @@ export const AtsMatrixSection: React.FC<AtsMatrixSectionProps> = ({ isAr }) => {
             <button
               type="button"
               onClick={handleApplyMatrixRole}
-              className="px-5 py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-md cursor-pointer shrink-0"
+              className="px-5 py-2.5 bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-md cursor-pointer shrink-0"
             >
               <span>{isAr ? 'استخدم هذه الكلمات في سيرتك' : 'Build Resume with these terms'}</span>
               <ArrowIcon className="w-4 h-4" />
@@ -203,14 +203,14 @@ export const AtsMatrixSection: React.FC<AtsMatrixSectionProps> = ({ isAr }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Keywords */}
             <div className="space-y-3">
-              <h4 className="text-xs font-black uppercase text-[#001639] tracking-wider">
+              <h4 className="text-xs font-semibold uppercase text-[#001639] tracking-wider">
                 {isAr ? 'المهارات التقنية والكلمات المفتاحية الأساسية:' : 'Core Technical & Functional Skills:'}
               </h4>
               <div className="flex flex-wrap gap-2">
                 {currentCategoryData.keywords.map((kw) => (
                   <span
                     key={kw}
-                    className="px-3 py-1.5 bg-[#E8EEF7] text-[#001639] text-xs font-bold rounded-xl border border-blue-200/60 flex items-center gap-1.5"
+                    className="px-3 py-1.5 bg-[#E8EEF7] text-[#001639] text-xs font-medium rounded-xl border border-blue-200/60 flex items-center gap-1.5"
                   >
                     <Check className="w-3.5 h-3.5 text-blue-600" />
                     <span>{kw}</span>
@@ -221,7 +221,7 @@ export const AtsMatrixSection: React.FC<AtsMatrixSectionProps> = ({ isAr }) => {
 
             {/* Action Verbs */}
             <div className="space-y-3">
-              <h4 className="text-xs font-black uppercase text-[#001639] tracking-wider">
+              <h4 className="text-xs font-semibold uppercase text-[#001639] tracking-wider">
                 {isAr ? 'أفعال الصياغة الإنجازية القوية (Action Verbs):' : 'Quantifiable Action Phrases:'}
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

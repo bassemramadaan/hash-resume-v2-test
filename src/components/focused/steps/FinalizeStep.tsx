@@ -154,16 +154,16 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
         <div className="absolute top-0 right-0 -mt-8 -mr-8 w-36 h-36 bg-[#FF4D2D]/15 rounded-full blur-2xl pointer-events-none" />
 
         <div className="relative z-10 space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white text-[11px] font-bold border border-white/15">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white text-[11px] font-medium border border-white/15">
             <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
             <span>{isAr ? 'الخطوة 05: سيرتك الذاتية مكتملة' : 'Step 05: Your Resume is Complete'}</span>
           </div>
 
-          <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
+          <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-white">
             {isAr ? 'جاهز لتحميل سيرتك الذاتية؟' : 'Ready to download your resume?'}
           </h2>
 
-          <p className="text-xs sm:text-sm text-slate-200 leading-relaxed max-w-md">
+          <p className="text-xs sm:text-sm text-slate-200 leading-relaxed max-w-md font-normal">
             {isAr
               ? 'تم تنسيق بياناتك وفق أفضل معايير أنظمة الـ ATS والتصميم الاحترافي. يمكنك تحميل الـ PDF مباشرة الآن.'
               : 'Your data is formatted according to international ATS standards. Download your PDF instantly.'}
@@ -173,7 +173,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
             <button
               type="button"
               onClick={onExportPdf}
-              className="btn-folded-corner py-3.5 px-6 bg-[#FF4D2D] hover:bg-[#e03d1f] active:scale-[0.98] text-white font-extrabold text-sm sm:text-base rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer group"
+              className="btn-folded-corner py-3.5 px-6 bg-[#FF4D2D] hover:bg-[#e03d1f] active:scale-[0.98] text-white font-semibold text-sm sm:text-base rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer group"
             >
               <Download className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-y-0.5 transition-transform" />
               <span>{isAr ? 'تحميل سيرتك الذاتية PDF' : 'Download Resume PDF'}</span>
@@ -198,11 +198,11 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Layout className="w-4 h-4 text-[#FF4D2D]" />
-            <h3 className="text-sm font-bold text-[#001639]">
+            <h3 className="text-sm font-semibold text-slate-900">
               {isAr ? 'اختيار القالب (6 قوالب معتمدة)' : 'Choose Template (6 ATS Templates)'}
             </h3>
           </div>
-          <span className="text-[11px] text-[#7a8093] font-medium">
+          <span className="text-[11px] text-[#7a8093] font-normal">
             {isAr ? 'تغيير القالب لا يمس بياناتك' : 'Content is preserved'}
           </span>
         </div>
@@ -224,7 +224,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-1.5">
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${tpl.badgeColor}`}
+                      className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${tpl.badgeColor}`}
                     >
                       {isAr ? tpl.badgeAr : tpl.badgeEn}
                     </span>
@@ -236,10 +236,10 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
                     )}
                   </div>
 
-                  <h4 className="text-xs sm:text-sm font-bold text-[#001639] mb-1">
+                  <h4 className="text-xs sm:text-sm font-semibold text-[#001639] mb-1">
                     {isAr ? tpl.titleAr : tpl.titleEn}
                   </h4>
-                  <p className="text-[11px] text-[#7a8093] leading-relaxed">
+                  <p className="text-[11px] text-[#7a8093] leading-relaxed font-normal">
                     {isAr ? tpl.descAr : tpl.descEn}
                   </p>
                 </div>
@@ -253,7 +253,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
       <div className="space-y-3 p-4 sm:p-5 bg-white border border-[#e8e5de] rounded-2xl">
         <div className="flex items-center gap-2 pb-2 border-b border-[#e8e5de]">
           <Palette className="w-4 h-4 text-[#FF4D2D]" />
-          <h3 className="text-xs sm:text-sm font-bold text-[#001639]">
+          <h3 className="text-xs sm:text-sm font-semibold text-slate-900">
             {isAr ? 'اللون الرئيسي للعناوين والخطوط' : 'Primary Brand Color'}
           </h3>
         </div>
@@ -376,7 +376,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
             >
               {/* Font Family Selection */}
               <div>
-                <label className="block text-xs font-bold text-[#001639] mb-1.5">
+                <label className="block text-xs font-medium text-slate-700 mb-1.5">
                   {isAr ? 'نوع الخط (عربي / إنجليزي)' : 'Font Family'}
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -385,7 +385,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
                       key={font.id}
                       type="button"
                       onClick={() => setFontFamily(font.id)}
-                      className={`p-2 rounded-xl text-center border text-xs font-bold transition cursor-pointer ${
+                      className={`p-2 rounded-xl text-center border text-xs font-medium transition cursor-pointer ${
                         currentFont === font.id
                           ? 'bg-[#001639] text-white border-[#001639]'
                           : 'bg-white text-[#001639] border-[#e8e5de] hover:border-[#FF4D2D]'
@@ -399,7 +399,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
 
               {/* Font Size Selection */}
               <div>
-                <label className="block text-xs font-bold text-[#001639] mb-1.5">
+                <label className="block text-xs font-medium text-slate-700 mb-1.5">
                   {isAr ? 'حجم الخط العام بالسيرة' : 'Resume Font Size'}
                 </label>
                 <div className="grid grid-cols-3 gap-2 bg-[#f4f1e9] p-1 rounded-xl border border-[#e8e5de]">
@@ -408,7 +408,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
                       key={size}
                       type="button"
                       onClick={() => setFontSize(size)}
-                      className={`py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
+                      className={`py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
                         currentFontSize === size
                           ? 'bg-white text-[#001639] shadow-2xs'
                           : 'text-[#7a8093] hover:text-[#001639]'
@@ -432,7 +432,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
 
               {/* Career Focus */}
               <div>
-                <label className="block text-xs font-bold text-[#001639] mb-1.5">
+                <label className="block text-xs font-medium text-slate-700 mb-1.5">
                   {isAr ? 'مستوى الخبرة وترتيب الأقسام' : 'Career Focus'}
                 </label>
                 <div className="grid grid-cols-2 gap-2">
@@ -441,11 +441,11 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
                     onClick={() => setCareerFocus('experienced')}
                     className={`p-3 rounded-xl border text-start transition cursor-pointer ${
                       currentCareerFocus === 'experienced'
-                        ? 'bg-[#001639]/5 border-[#001639] font-bold text-[#001639]'
+                        ? 'bg-[#001639]/5 border-[#001639] font-semibold text-[#001639]'
                         : 'bg-white border-[#e8e5de] text-[#7a8093]'
                     }`}
                   >
-                    <div className="text-xs font-bold">{isAr ? 'ذوو الخبرة' : 'Experienced'}</div>
+                    <div className="text-xs font-semibold">{isAr ? 'ذوو الخبرة' : 'Experienced'}</div>
                     <div className="text-[10px] text-[#7a8093] mt-0.5">
                       {isAr ? 'إبراز الخبرات أولاً' : 'Experience first'}
                     </div>
@@ -456,11 +456,11 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
                     onClick={() => setCareerFocus('fresh-grad')}
                     className={`p-3 rounded-xl border text-start transition cursor-pointer ${
                       currentCareerFocus === 'fresh-grad'
-                        ? 'bg-[#001639]/5 border-[#001639] font-bold text-[#001639]'
+                        ? 'bg-[#001639]/5 border-[#001639] font-semibold text-[#001639]'
                         : 'bg-white border-[#e8e5de] text-[#7a8093]'
                     }`}
                   >
-                    <div className="text-xs font-bold">{isAr ? 'حديث تخرج' : 'Fresh Graduate'}</div>
+                    <div className="text-xs font-semibold">{isAr ? 'حديث تخرج' : 'Fresh Graduate'}</div>
                     <div className="text-[10px] text-[#7a8093] mt-0.5">
                       {isAr ? 'إبراز التعليم أولاً' : 'Education first'}
                     </div>
@@ -480,7 +480,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
         <button
           type="button"
           onClick={onPrevMainStep}
-          className="py-3 sm:py-3.5 px-4 sm:px-5 bg-white border-2 border-[#e8e5de] text-[#001639] hover:bg-[#f4f1e9] font-bold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition cursor-pointer shrink-0"
+          className="py-3 sm:py-3.5 px-4 sm:px-5 bg-white border-2 border-[#e8e5de] text-[#001639] hover:bg-[#f4f1e9] font-semibold text-xs sm:text-sm rounded-xl sm:rounded-2xl transition cursor-pointer shrink-0"
         >
           {isAr ? 'السابق' : 'Back'}
         </button>
@@ -488,7 +488,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
         <button
           type="button"
           onClick={onExportPdf}
-          className="btn-folded-corner flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#FF4D2D] hover:bg-[#e03d1f] text-white font-extrabold text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+          className="btn-folded-corner flex-1 max-w-sm py-3 sm:py-3.5 px-4 sm:px-6 bg-[#FF4D2D] hover:bg-[#e03d1f] text-white font-semibold text-xs sm:text-base rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
           <Download className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
           <span className="truncate">{isAr ? 'تحميل ملف PDF' : 'Download PDF'}</span>

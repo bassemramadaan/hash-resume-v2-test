@@ -68,11 +68,11 @@ export const Logo: React.FC<LogoProps> = ({
         </div>
 
         <div className="flex flex-col justify-center leading-none">
-          <div className={`font-black tracking-tight flex items-center gap-1 ${textColor} ${getFullTextSize()}`}>
+          <div className={`font-bold tracking-tight flex items-center gap-1 ${textColor} ${getFullTextSize()}`}>
             <span>Hash</span>
             <span className="text-[#FF4D2D]">Resume</span>
           </div>
-          <span className={`text-[10px] font-extrabold tracking-widest uppercase mt-0.5 ${subtextColor}`}>
+          <span className={`text-[10px] font-semibold tracking-widest uppercase mt-0.5 ${subtextColor}`}>
             ATS BUILDER
           </span>
         </div>

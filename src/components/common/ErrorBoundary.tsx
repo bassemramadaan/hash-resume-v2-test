@@ -61,7 +61,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
             <div className="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl font-bold">
               ⚠️
             </div>
-            <h2 className="text-xl font-black text-[#001639]">
+            <h2 className="text-xl font-semibold text-[#001639]">
               {isChunkError ? 'تعذر تحميل الصفحة تلقائياً' : 'حدث خطأ غير متوقع'}
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
@@ -73,7 +73,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
               <button
                 type="button"
                 onClick={this.handleReset}
-                className="w-full py-3 px-5 bg-[#001639] hover:bg-[#00245a] text-white font-extrabold text-sm rounded-xl transition shadow-md cursor-pointer"
+                className="w-full py-3 px-5 bg-[#001639] hover:bg-[#00245a] text-white font-semibold text-sm rounded-xl transition shadow-md cursor-pointer"
               >
                 {isChunkError ? 'إعادة المحاولة وتحديث الصفحة' : 'العودة إلى محرر السيرة الذاتية'}
               </button>
@@ -81,7 +81,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
                 <button
                   type="button"
                   onClick={this.handleReload}
-                  className="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition cursor-pointer"
+                  className="w-full py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs rounded-xl transition cursor-pointer"
                 >
                   الذهاب إلى الصفحة الرئيسية
                 </button>

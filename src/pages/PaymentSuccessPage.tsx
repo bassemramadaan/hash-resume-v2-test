@@ -26,7 +26,7 @@ export const PaymentSuccessPage: React.FC = () => {
       </div>
 
       <div className="space-y-2">
-        <h1 className="text-2xl font-black text-[#0B1120]">
+        <h1 className="text-2xl font-semibold text-slate-900">
           {isAr ? 'تم إتمام عملية الدفع بنجاح!' : 'Payment Completed Successfully!'}
         </h1>
         <p className="text-xs text-[#52627A]">
@@ -39,11 +39,11 @@ export const PaymentSuccessPage: React.FC = () => {
       <div className="bg-white border border-[#E2E8F0] rounded-2xl p-4 text-xs space-y-2 shadow-2xs max-w-sm mx-auto">
         <div className="flex justify-between text-slate-500">
           <span>{isAr ? 'رقم المعاملة:' : 'Transaction ID:'}</span>
-          <span className="font-mono font-bold text-[#0B1120]">{tx}</span>
+          <span className="font-mono font-medium text-slate-800">{tx}</span>
         </div>
         <div className="flex justify-between text-slate-500">
           <span>{isAr ? 'الباقة المختارة:' : 'Selected Package:'}</span>
-          <span className="font-bold text-[#001639]">{pkg === 'triple' ? (isAr ? 'باقة 3 تفعيلات' : 'Triple Credits') : (isAr ? 'تفعيل فردي' : 'Single Credit')}</span>
+          <span className="font-semibold text-[#001639]">{pkg === 'triple' ? (isAr ? 'باقة 3 تفعيلات' : 'Triple Credits') : (isAr ? 'تفعيل فردي' : 'Single Credit')}</span>
         </div>
       </div>
 
@@ -52,7 +52,7 @@ export const PaymentSuccessPage: React.FC = () => {
           onClick={() => {
             navigate('/builder');
           }}
-          className="btn-folded-corner px-6 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-extrabold text-xs rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+          className="btn-folded-corner px-6 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-semibold text-xs rounded-full shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
         >
           <Sparkles className="w-4 h-4" />
           <span>{isAr ? 'العودة للمحرر وتأكيد التفعيل' : 'Return to Builder & Activate'}</span>

@@ -116,15 +116,15 @@ export const Navbar: React.FC = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`relative px-3.5 py-1.5 text-xs lg:text-sm font-bold rounded-xl transition-all duration-200 flex items-center gap-1.5 ${
+                className={`relative px-3.5 py-1.5 text-xs lg:text-sm font-medium rounded-xl transition-all duration-200 flex items-center gap-1.5 ${
                   active
-                    ? 'text-[#001639] bg-white shadow-xs'
+                    ? 'text-[#001639] font-semibold bg-white shadow-2xs'
                     : 'text-slate-600 hover:text-[#001639] hover:bg-white/60'
                 }`}
               >
                 <span>{link.label}</span>
                 {link.badge && (
-                  <span className="text-[10px] font-black px-1.5 py-0.5 rounded-md bg-[#FF4D2D]/10 text-[#FF4D2D] border border-[#FF4D2D]/20 leading-none">
+                  <span className="text-[10px] font-medium px-1.5 py-0.5 rounded-md bg-[#FF4D2D]/10 text-[#FF4D2D] border border-[#FF4D2D]/20 leading-none">
                     {link.badge}
                   </span>
                 )}
@@ -140,7 +140,7 @@ export const Navbar: React.FC = () => {
             <button
               type="button"
               onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-              className="h-10 px-3 bg-white hover:bg-slate-50 text-[#001639] text-xs font-bold rounded-xl border border-slate-200 shadow-2xs transition-colors flex items-center gap-2 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#001639]"
+              className="h-10 px-3 bg-white hover:bg-slate-50 text-[#001639] text-xs font-medium rounded-xl border border-slate-200 shadow-2xs transition-colors flex items-center gap-2 cursor-pointer focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#001639]"
               aria-expanded={langDropdownOpen}
               aria-haspopup="true"
               aria-label={isAr ? 'تغيير اللغة' : 'Change language'}

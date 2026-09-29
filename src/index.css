@@ -401,7 +401,7 @@ bdi,
 .font-brand,
 .brand-name {
   font-family: var(--font-ui-en) !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
 }
 
 .font-display-en { font-family: var(--font-display-en); }
@@ -409,38 +409,38 @@ bdi,
 
 .hero-headline-en {
   font-family: var(--font-display-en);
-  font-weight: 800;
-  letter-spacing: -0.045em;
-  line-height: 1.04;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
 }
 
 .hero-headline-ar {
   font-family: var(--font-display-ar);
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0;
-  line-height: 1.25;
+  line-height: 1.35;
 }
 
 .builder-page-title-ar {
   font-family: var(--font-display-ar);
-  font-weight: 700;
-  line-height: 1.3;
+  font-weight: 600;
+  line-height: 1.35;
 }
 
 .builder-page-title-en {
   font-family: var(--font-display-en);
-  font-weight: 800;
-  line-height: 1.2;
+  font-weight: 600;
+  line-height: 1.25;
 }
 
 .builder-section-title-en {
   font-family: var(--font-ui-en);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .builder-section-title-ar {
   font-family: var(--font-ui-ar);
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.45;
 }
 
