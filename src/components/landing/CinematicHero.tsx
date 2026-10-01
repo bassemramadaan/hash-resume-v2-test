@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { Sparkles, ArrowRight, ArrowLeft, CheckCircle2, FileText, Check, ShieldCheck } from 'lucide-react';
 import { useResumeStore } from '../../store/useResumeStore';
 
@@ -105,15 +106,46 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
             </div>
           </div>
 
-          {/* The Pristine A4 Paper Document with soft, natural ambient shadow */}
-          <div
+          {/* The Pristine A4 Paper Document with soft, natural ambient shadow and gentle breathing & rotation animation */}
+          <motion.div
             onClick={() => navigate('/builder')}
-            className="group relative bg-white rounded-2xl border border-slate-200/70 p-6 sm:p-10 shadow-[0_12px_40px_-10px_rgba(0,0,0,0.04)] hover:shadow-[0_16px_50px_-10px_rgba(0,0,0,0.07)] transition-all duration-300 text-start cursor-pointer select-none"
+            animate={{
+              y: [0, -5, 0],
+              rotate: [-0.9, 0.9, -0.9],
+              boxShadow: [
+                '0 12px 35px -10px rgba(0,0,0,0.04)',
+                '0 20px 48px -12px rgba(0,0,0,0.065)',
+                '0 12px 35px -10px rgba(0,0,0,0.04)',
+              ],
+            }}
+            transition={{
+              duration: 8,
+              repeat: Infinity,
+              ease: 'easeInOut',
+            }}
+            whileHover={{
+              y: -7,
+              rotate: 0,
+              boxShadow: '0 24px 55px -12px rgba(0,0,0,0.08)',
+              transition: { duration: 0.35, ease: 'easeOut' },
+            }}
+            className="group relative bg-white rounded-2xl border border-slate-200/70 p-6 sm:p-10 text-start cursor-pointer select-none will-change-transform transform-gpu origin-center"
             title={isAr ? 'انقر للبدء في إنشاء سيرتك الذاتية' : 'Click to start creating your resume'}
           >
-            {/* نقطة خضراء صغيرة هادئة في الزاوية: معتمد لأنظمة ATS */}
-            <div className="absolute top-4 sm:top-6 end-4 sm:end-6 flex items-center gap-1.5 text-[11px] font-normal text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full border border-slate-200/60">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+            {/* نقطة خضراء صغيرة هادئة في الزاوية: معتمد لأنظمة ATS مع نبض بطيء ناعم */}
+            <div className="absolute top-4 sm:top-6 end-4 sm:end-6 flex items-center gap-1.5 text-[11px] font-normal text-slate-500 bg-slate-50/90 backdrop-blur-xs px-2.5 py-1 rounded-full border border-slate-200/60">
+              <motion.span
+                animate={{
+                  opacity: [0.55, 1, 0.55],
+                  scale: [0.92, 1.08, 0.92],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                }}
+                className="w-2 h-2 rounded-full bg-emerald-500 shrink-0"
+              />
               <span>{isAr ? 'معتمد لأنظمة ATS' : 'ATS-Compliant'}</span>
             </div>
 
@@ -261,7 +293,7 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
                 <ArrowIcon className="w-3 h-3" />
               </span>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
