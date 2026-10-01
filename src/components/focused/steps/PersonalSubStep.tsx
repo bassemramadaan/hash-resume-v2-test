@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from '../../../store/useResumeStore';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Sparkles, Loader2, Check } from 'lucide-react';
+import { aiApi } from '../../../lib/api';
 
 interface PersonalSubStepProps {
   onNextMainStep: () => void;
@@ -40,7 +41,31 @@ export const PersonalSubStep: React.FC<PersonalSubStepProps> = ({
   // 3: Professional Summary (2-3 lines focus)
   const [subStage, setSubStage] = useState<number>(0);
   const [showExtraLinks, setShowExtraLinks] = useState<boolean>(Boolean(info.github || info.website));
+  const [isGeneratingSummary, setIsGeneratingSummary] = useState<boolean>(false);
+  const [summaryTone, setSummaryTone] = useState<'executive' | 'entry' | 'technical' | 'concise'>('executive');
+  const [summaryError, setSummaryError] = useState<string | null>(null);
   const TOTAL_SUB_STAGES = 4;
+
+  const handleGenerateSummary = async (toneToUse?: 'executive' | 'entry' | 'technical' | 'concise') => {
+    const activeTone = toneToUse || summaryTone;
+    if (toneToUse) setSummaryTone(toneToUse);
+    setIsGeneratingSummary(true);
+    setSummaryError(null);
+    try {
+      const res = await aiApi.generateSummary({
+        jobTitle: info.jobTitle || (isAr ? 'محترف' : 'Professional'),
+        tone: activeTone,
+        language: isAr ? 'ar' : 'en',
+      });
+      if (res?.summary) {
+        updateField('summary', res.summary);
+      }
+    } catch (err: any) {
+      setSummaryError(isAr ? 'تعذر التوليد مؤقتاً، يمكنك الكتابة يدوياً.' : 'AI generation unavailable, please write manually.');
+    } finally {
+      setIsGeneratingSummary(false);
+    }
+  };
 
   const handleSubStageChange = (newStage: number) => {
     setSubStage(newStage);
@@ -412,6 +437,68 @@ export const PersonalSubStep: React.FC<PersonalSubStepProps> = ({
                   ? 'خبراء التوظيف والـ ATS يفضلون ملخصاً قصيراً ومركزاً (2-3 أسطر) يوضح سنوات الخبرة وأهم المهارات المحورية، دون حشو إنشائي.'
                   : 'Recruiters prefer a concise 2-3 line snapshot highlighting years of experience and top domain skills.'}
               </p>
+            </div>
+
+            {/* AI Generator & Tone Bar */}
+            <div className="p-3.5 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-2.5">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <span className="text-xs font-medium text-slate-700 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
+                  <span>{isAr ? 'اختر النبرة المناسبة لملخصك:' : 'Select Summary Tone:'}</span>
+                </span>
+
+                <button
+                  type="button"
+                  onClick={() => handleGenerateSummary()}
+                  disabled={isGeneratingSummary}
+                  className="px-3.5 py-1.5 bg-[#001639] hover:bg-[#002866] text-white text-xs font-medium rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50 shrink-0 shadow-2xs active:scale-98"
+                >
+                  {isGeneratingSummary ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>{isAr ? 'جاري التوليد...' : 'Generating...'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-3.5 h-3.5 text-[#FF4D2D]" />
+                      <span>{isAr ? 'توليد بالذكاء الاصطناعي ✨' : 'Generate with AI ✨'}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Tone Selection Pills */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                {[
+                  { id: 'executive', labelAr: '👔 تنفيذي', labelEn: 'Executive' },
+                  { id: 'entry', labelAr: '🎓 خريج جديد', labelEn: 'Entry-Level' },
+                  { id: 'technical', labelAr: '💻 تقني وهندسي', labelEn: 'Technical' },
+                  { id: 'concise', labelAr: '⚡ فائق الاختصار', labelEn: 'Concise' },
+                ].map((toneItem) => {
+                  const isSelected = summaryTone === toneItem.id;
+                  return (
+                    <button
+                      key={toneItem.id}
+                      type="button"
+                      onClick={() => {
+                        setSummaryTone(toneItem.id as any);
+                        handleGenerateSummary(toneItem.id as any);
+                      }}
+                      className={`px-2.5 py-1.5 rounded-lg text-xs transition font-medium cursor-pointer text-center border ${
+                        isSelected
+                          ? 'bg-white border-[#001639] text-[#001639] shadow-2xs'
+                          : 'bg-white/60 border-slate-200 text-slate-600 hover:bg-white'
+                      }`}
+                    >
+                      {isAr ? toneItem.labelAr : toneItem.labelEn}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {summaryError && (
+                <p className="text-xs text-rose-600 pt-0.5">{summaryError}</p>
+              )}
             </div>
 
             <div className="space-y-2">

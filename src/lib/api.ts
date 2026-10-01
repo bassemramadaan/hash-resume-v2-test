@@ -37,8 +37,20 @@ export const aiApi = {
       body: JSON.stringify(body),
     }),
 
-  generateSummary: (body: { jobTitle?: string; yearsOfExperience?: string; keySkills?: string; targetIndustry?: string; language?: string }) =>
+  generateResponsibilities: (body: { jobTitle: string; company?: string; language?: string }) =>
+    apiRequest<{ responsibilities: string[]; error?: string; errorEn?: string }>('/api/ai/generate-responsibilities', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+
+  generateSummary: (body: { jobTitle?: string; yearsOfExperience?: string; keySkills?: string; targetIndustry?: string; tone?: string; language?: string }) =>
     apiRequest<{ summary: string; error?: string; errorEn?: string }>('/api/ai/generate-summary', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+
+  describeProject: (body: { title: string; technologies?: string[]; language?: string }) =>
+    apiRequest<{ description: string; error?: string; errorEn?: string }>('/api/ai/describe-project', {
       method: 'POST',
       body: JSON.stringify(body),
     }),

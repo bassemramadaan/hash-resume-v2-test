@@ -418,8 +418,9 @@ app.post("/api/ai/generate-summary", aiMiddleware({
 
 
   // 3. Input Validation & Restrictions
-  const { jobTitle = "", yearsOfExperience = "", keySkills = "", targetIndustry = "", language = "ar" } = req.body;
+  const { jobTitle = "", yearsOfExperience = "", keySkills = "", targetIndustry = "", tone = "executive", language = "ar" } = req.body;
   const lang = language === "en" ? "en" : "ar";
+  const safeTone = ["executive", "entry", "technical", "concise"].includes(tone) ? tone : "executive";
 
   const totalInputLength =
     String(jobTitle).length + String(yearsOfExperience).length + String(keySkills).length + String(targetIndustry).length;
@@ -443,6 +444,7 @@ app.post("/api/ai/generate-summary", aiMiddleware({
     e: cleanExp,
     s: cleanSkills,
     i: cleanIndustry,
+    tone: safeTone,
     l: lang,
   });
 
@@ -458,16 +460,28 @@ app.post("/api/ai/generate-summary", aiMiddleware({
     return res.json(cached);
   }
 
-
-
   try {
     const ai = getGeminiClient(config.geminiApiKey);
     if (!ai) throw new Error("Failed to initialize AI client");
 
+    const toneInstructionsAr: Record<string, string> = {
+      executive: "بنبرة قيادية وتنفيذية رفيعة تركز على القيادة الاستراتيجية وتحقيق النتائج والأهداف الكبرى.",
+      entry: "بنبرة طموحة وحيوية مناسبة لخريج جديد أو مبتدئ تركز على الشغف والقدرة على التعلم السريع والتفاني.",
+      technical: "بنبرة تقنية وهندسية تركز على حل المشكلات والخبرة البرمجية والهيكلية الدقيقة.",
+      concise: "بنبرة مركزة وفائقة الاختصار في جملتين قويتين فقط دون أي حشو إضافي."
+    };
+
+    const toneInstructionsEn: Record<string, string> = {
+      executive: "with an executive, high-impact tone focusing on strategic leadership and driving scalable results.",
+      entry: "with an ambitious entry-level tone focusing on high learning agility, core foundation, and dedication.",
+      technical: "with a deep technical engineering tone focusing on problem-solving, clean architecture, and systems proficiency.",
+      concise: "with a sharp, ultra-concise 2-sentence tone eliminating all filler words."
+    };
+
     const isArabic = lang === "ar";
     const prompt = isArabic
       ? `أنت خبير في كتابة السير الذاتية ومجال الموارد البشرية.
-اكتب ملخصاً مهنياً (Professional Summary) جذاباً ومحسناً لنظام ATS في 3 أسطر قصيرة ومباشرة باللغة العربية.
+اكتب ملخصاً مهنياً (Professional Summary) جذاباً ومحسناً لنظام ATS في 2 إلى 3 أسطر قصيرة ومباشرة باللغة العربية ${toneInstructionsAr[safeTone] || toneInstructionsAr.executive}
 المسمى الوظيفي: ${cleanJobTitle || 'محترف'}
 سنوات الخبرة: ${cleanExp || '1-3'}
 أبرز المهارات: ${cleanSkills || 'التواصل، إدارة المشاريع، حل المشكلات'}
@@ -478,7 +492,7 @@ app.post("/api/ai/generate-summary", aiMiddleware({
   "summary": "الملخص المهني المقترح..."
 }`
       : `You are a professional resume writer and HR specialist.
-Write a compelling, ATS-optimized 3-sentence professional summary for:
+Write a compelling, ATS-optimized 2 to 3-sentence professional summary ${toneInstructionsEn[safeTone] || toneInstructionsEn.executive}
 Job Title: ${cleanJobTitle || 'Professional'}
 Years of Experience: ${cleanExp || '1-3'}
 Key Skills: ${cleanSkills || 'Communication, Project Management'}
@@ -516,6 +530,184 @@ Return JSON format:
       cached: false,
       error: err instanceof Error ? err.message : String(err),
     });
+    return res.status(errorInfo.status).json({
+      error: errorInfo.error,
+      errorEn: errorInfo.errorEn,
+    });
+  } finally {
+    await releaseConcurrencyLock(clientIp);
+  }
+});
+
+// 3.5 AI: Generate Job Responsibilities
+app.post("/api/ai/generate-responsibilities", aiMiddleware({
+  featureKey: "experience",
+  rateLimitFeature: "bullet",
+  unavailableMessageAr: "ميزة توليد مهام الوظيفة غير مفعلة حالياً.",
+  unavailableMessageEn: "Job Responsibilities generator is currently disabled.",
+  fallbackData: (req) => ({
+    responsibilities: req.body.language === "en" ? [
+      "Led end-to-end execution of operational workflows, improving overall delivery efficiency by 25%.",
+      "Collaborated with cross-functional team members to deliver core project milestones on schedule.",
+      "Identified process bottlenecks and implemented standardized quality assurance guidelines."
+    ] : [
+      "قيادة وتنفيذ العمليات التشغيلية الأساسية بكفاءة عالية، مما ساهم في رفع الإنتاجية بنسبة 25%.",
+      "التعاون مع فرق العمل المختلفة لتحقيق أهداف ومراحل المشروع وفق الجدول الزمني المحدد.",
+      "تطوير وتطبيق معايير وإجراءات الجودة لتحسين دقة المخرجات وتقليل الأخطاء."
+    ]
+  })
+}), async (req, res) => {
+  const startTime = (req as any).aiStartTime || Date.now();
+  const clientIp = (req as any).clientIp || getClientIp(req);
+  const config = (req as any).aiConfig || getAiConfig();
+
+  const { jobTitle = "", company = "", language = "ar" } = req.body;
+  const cleanJobTitle = sanitizeText(String(jobTitle), 100);
+  const cleanCompany = sanitizeText(String(company), 100);
+  const lang = language === "en" ? "en" : "ar";
+
+  if (!cleanJobTitle.trim()) {
+    return res.status(400).json({ error: "المسمى الوظيفي مطلوب لتوليد المهام", errorEn: "jobTitle is required" });
+  }
+
+  const cacheKey = computeAiCacheKey("responsibilities", config.geminiModel, {
+    j: cleanJobTitle,
+    c: cleanCompany,
+    l: lang,
+  });
+
+  const cached = await getCachedAiResponse(cacheKey);
+  if (cached) {
+    logAiMetric({
+      feature: "generate-responsibilities",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: true,
+    });
+    return res.json(cached);
+  }
+
+  try {
+    const ai = getGeminiClient(config.geminiApiKey);
+    if (!ai) throw new Error("Failed to initialize AI client");
+
+    const isArabic = lang === "ar";
+    const prompt = isArabic
+      ? `أنت خبير صياغة سير ذاتية ATS. اقترح 3 إلى 4 نقاط مسؤوليات وإنجازات نموذجية ومحسنة لـ ATS للمسمى الوظيفي: "${cleanJobTitle}" ${cleanCompany ? `في شركة: "${cleanCompany}"` : ''}.
+يجب أن تبدأ كل نقطة بفعل مبني للمعلوم قوي وتتضمن نسباً مئوية أو أرقاماً واقعية ملموسة (KPIs).
+أعد النتيجة بتنسيق JSON حصراً بالشكل التالي:
+{
+  "responsibilities": [
+    "النقطة الأولى مع إنجاز ورقم...",
+    "النقطة الثانية...",
+    "النقطة الثالثة..."
+  ]
+}`
+      : `You are an expert ATS resume writer. Generate 3 to 4 high-impact, quantified, action-oriented bullet points for the role of "${cleanJobTitle}" ${cleanCompany ? `at "${cleanCompany}"` : ''}.
+Each bullet must start with a strong action verb and include measurable metrics or KPIs.
+Return JSON strictly:
+{
+  "responsibilities": [
+    "First action bullet with metrics...",
+    "Second action bullet...",
+    "Third action bullet..."
+  ]
+}`;
+
+    const responseText = await callGeminiWithFallback(ai, config.geminiModel, prompt, true);
+    const parsed = safeParseGeminiJson(responseText, {});
+    if (!parsed.responsibilities || !Array.isArray(parsed.responsibilities)) {
+      throw new Error("Invalid structure returned by AI");
+    }
+
+    await setCachedAiResponse(cacheKey, parsed, 86400);
+
+    logAiMetric({
+      feature: "generate-responsibilities",
+      model: config.geminiModel,
+      httpStatus: 200,
+      latencyMs: Date.now() - startTime,
+      cached: false,
+    });
+
+    return res.json(parsed);
+  } catch (err: unknown) {
+    const errorInfo = formatAiServerError(err, "تعذر توليد مهام الوظيفة حالياً.", "Failed to generate job responsibilities.");
+    return res.status(errorInfo.status).json({
+      error: errorInfo.error,
+      errorEn: errorInfo.errorEn,
+    });
+  } finally {
+    await releaseConcurrencyLock(clientIp);
+  }
+});
+
+// 3.6 AI: Describe Project
+app.post("/api/ai/describe-project", aiMiddleware({
+  featureKey: "assistant",
+  rateLimitFeature: "bullet",
+  unavailableMessageAr: "ميزة وصف المشاريع غير مفعلة حالياً.",
+  unavailableMessageEn: "Project describer is currently disabled.",
+  fallbackData: (req) => ({
+    description: req.body.language === "en"
+      ? "Architected and delivered a responsive application incorporating modern design principles, reducing loading latency by 30%."
+      : "تصميم وتنفيذ نظام تطبيقي متكامل وفق أحدث المعايير البرمجية، مما ساهم في تحسين سرعة الأداء وتجربة المستخدم بنسبة 30%."
+  })
+}), async (req, res) => {
+  const startTime = (req as any).aiStartTime || Date.now();
+  const clientIp = (req as any).clientIp || getClientIp(req);
+  const config = (req as any).aiConfig || getAiConfig();
+
+  const { title = "", technologies = [], language = "ar" } = req.body;
+  const cleanTitle = sanitizeText(String(title), 100);
+  const cleanTech = Array.isArray(technologies) ? technologies.map(t => sanitizeText(String(t), 30)).join(', ') : '';
+  const lang = language === "en" ? "en" : "ar";
+
+  if (!cleanTitle.trim()) {
+    return res.status(400).json({ error: "اسم المشروع مطلوب", errorEn: "title is required" });
+  }
+
+  const cacheKey = computeAiCacheKey("project-desc", config.geminiModel, {
+    t: cleanTitle,
+    tech: cleanTech,
+    l: lang,
+  });
+
+  const cached = await getCachedAiResponse(cacheKey);
+  if (cached) {
+    return res.json(cached);
+  }
+
+  try {
+    const ai = getGeminiClient(config.geminiApiKey);
+    if (!ai) throw new Error("Failed to initialize AI client");
+
+    const isArabic = lang === "ar";
+    const prompt = isArabic
+      ? `أنت خبير صياغة سير ذاتية ATS. اكتب وصفاً مهنياً مختصراً ودقيقاً في سطرين لمشروع عملي بعنوان: "${cleanTitle}" ${cleanTech ? `باستخدام التقنيات: (${cleanTech})` : ''}.
+وضح الهدف والتقنيات المستخدمة والنتيجة الملموسة بصيغة إنجاز قوية لـ ATS.
+أعد النتيجة بتنسيق JSON حصراً:
+{
+  "description": "وصف المشروع في سطرين..."
+}`
+      : `You are an expert ATS resume writer. Write a concise, 2-sentence description for the project "${cleanTitle}" ${cleanTech ? `utilizing (${cleanTech})` : ''}.
+Highlight the objective, technical stack, and measurable impact in professional ATS format.
+Return JSON strictly:
+{
+  "description": "2-sentence project description..."
+}`;
+
+    const responseText = await callGeminiWithFallback(ai, config.geminiModel, prompt, true);
+    const parsed = safeParseGeminiJson(responseText, {});
+    if (!parsed.description) {
+      throw new Error("Invalid structure returned by AI");
+    }
+
+    await setCachedAiResponse(cacheKey, parsed, 86400);
+    return res.json(parsed);
+  } catch (err: unknown) {
+    const errorInfo = formatAiServerError(err, "تعذر توليد وصف المشروع حالياً.", "Failed to generate project description.");
     return res.status(errorInfo.status).json({
       error: errorInfo.error,
       errorEn: errorInfo.errorEn,
