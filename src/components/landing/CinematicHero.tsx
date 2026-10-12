@@ -7,6 +7,7 @@ import { useResumeStore } from '../../store/useResumeStore';
 export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
   const navigate = useNavigate();
   const { settings } = useResumeStore();
+  const currentLang = settings?.language || (isAr ? 'ar' : 'en');
   const [activeLangPreview, setActiveLangPreview] = useState<'ar' | 'en'>(isAr ? 'ar' : 'en');
 
   const ArrowIcon = isAr ? ArrowLeft : ArrowRight;
@@ -22,7 +23,11 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-slate-200/60 text-xs text-slate-500 shadow-2xs">
           <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D2D]" />
           <span className="font-normal">
-            {isAr ? 'متوافق مع أنظمة ATS • بدون تسجيل' : 'ATS-friendly • No sign-up required'}
+            {isAr
+              ? 'متوافق مع أنظمة ATS • بدون تسجيل'
+              : currentLang === 'fr'
+              ? 'Compatible ATS • Sans inscription requise'
+              : 'ATS-friendly • No sign-up required'}
           </span>
         </div>
 
@@ -33,6 +38,11 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
               سيرتك الذاتية..<br />
               <span className="text-[#FF4D2D] font-normal">بهدوء</span> وبدون أي تعقيد.
             </>
+          ) : currentLang === 'fr' ? (
+            <>
+              Votre CV..<br />
+              <span className="text-[#FF4D2D] font-normal">En toute sérénité</span> et sans friction.
+            </>
           ) : (
             <>
               Your Resume..<br />
@@ -41,12 +51,96 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           )}
         </h1>
 
-        {/* 3. Hero Body Text */}
-        <p className="text-xs sm:text-sm md:text-base text-slate-500 max-w-2xl mx-auto font-normal leading-relaxed px-2">
-          {isAr
-            ? 'مساحات بيضاء واسعة، خطوط رقيقة وهادئة، وإحساس فوري بالسكينة. صممنا Hash Resume لتمنحك سيرة ذاتية قياسية مقروءة بأعلى دقة لدى مديري التوظيف وخوارزميات الفرز.'
-            : 'Generous whitespace, quiet typography, and instant peace of mind. Build an ATS-friendly resume recruiters and algorithms can read effortlessly.'}
-        </p>
+        {/* 3. Hero Slogan & Founder's Signature (باسم رمضان) */}
+        <div className="max-w-3xl mx-auto px-2 space-y-3.5">
+          <p className="text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed text-center max-w-2xl mx-auto">
+            {currentLang === 'ar'
+              ? '«صُممت لتتخطى خوارزميات الفرز (ATS) بدقة متناهية، وتلفت أنظار مديري التوظيف من النظرة الأولى. خطوتك الموثوقة للمقابلة القادمة.»'
+              : currentLang === 'fr'
+              ? '«Conçu pour franchir les filtres ATS avec une précision absolue et capter l’attention des recruteurs dès le premier regard. Votre passerelle vers votre prochain entretien.»'
+              : '“Engineered to pass ATS screening with pinpoint accuracy and captivate hiring managers at first glance. Your trusted path to your next interview.”'}
+          </p>
+
+          {/* Founder Signature Element (Executive Pen Autograph - رقعة خفيف شكل إمضاء القلم) */}
+          <div className="flex flex-col items-center justify-center pt-0.5 select-none">
+            <div className="inline-flex flex-col items-center">
+              {/* Autograph Script */}
+              <div className="relative flex flex-col items-center justify-center">
+                {currentLang === 'ar' ? (
+                  <div className="relative inline-flex flex-col items-center py-0.5">
+                    {/* Arabic Signature in regular light Ruq'ah - رقعة عادي خفيف قلم */}
+                    <span
+                      className="text-2xl sm:text-3xl md:text-[32px] font-normal text-[#162e56] tracking-wide leading-tight -rotate-1 inline-block"
+                      style={{
+                        fontFamily: "'Aref Ruqaa Ink', 'Aref Ruqaa', cursive, serif",
+                        fontWeight: 400,
+                      }}
+                    >
+                      باسم رمضان
+                    </span>
+
+                    {/* Realistic Pen-drawn flourish (شحطة قلم الحبر الأنيقة) */}
+                    <svg
+                      className="w-28 sm:w-36 h-3 text-[#162e56]/75 -mt-0.5 shrink-0"
+                      viewBox="0 0 140 14"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M132 3C98 8 55 10 8 8C30 6 72 4 112 6C124 7 130 10 122 12C104 13 76 11 58 10"
+                        stroke="currentColor"
+                        strokeWidth="1.15"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </div>
+                ) : (
+                  <div className="relative inline-flex flex-col items-center py-0.5">
+                    {/* Latin Signature in natural light pen stroke */}
+                    <span
+                      className="text-2xl sm:text-3xl md:text-[34px] font-normal text-[#162e56] leading-tight -rotate-2 inline-block"
+                      style={{
+                        fontFamily: "'Caveat', 'Pinyon Script', cursive",
+                        fontWeight: 400,
+                      }}
+                    >
+                      Bassem Ramadan
+                    </span>
+
+                    {/* Pen flourish for Latin Signature */}
+                    <svg
+                      className="w-28 sm:w-36 h-3 text-[#162e56]/75 -mt-0.5 shrink-0"
+                      viewBox="0 0 140 14"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M8 8C40 3 80 2 122 5C132 6 135 9 130 11C114 12 84 10 62 9C34 8 16 11 10 12"
+                        stroke="currentColor"
+                        strokeWidth="1.15"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </div>
+
+              {/* Founder Title */}
+              <div className="mt-1 flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-500 font-light tracking-wide">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D2D]" />
+                <span className="font-normal text-slate-600">
+                  {currentLang === 'ar'
+                    ? 'باسم رمضان • مؤسس Hash Resume'
+                    : currentLang === 'fr'
+                    ? 'Bassem Ramadan • Fondateur, Hash Resume'
+                    : 'Bassem Ramadan • Founder, Hash Resume'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* 4. Action Buttons (زران هادئان: زر كورال هادئ ومريح ابدأ الآن بجانبه زر أبيض بإطار خفيف استكشف النماذج) */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1 max-w-sm sm:max-w-md mx-auto w-full">
@@ -55,7 +149,7 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
             onClick={() => navigate('/builder')}
             className="w-full sm:w-auto px-7 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white rounded-xl text-xs sm:text-sm font-medium shadow-xs hover:shadow-sm transition-all active:scale-98 cursor-pointer flex items-center justify-center gap-2"
           >
-            <span>{isAr ? 'ابدأ الآن' : 'Start Now'}</span>
+            <span>{isAr ? 'ابدأ الآن' : currentLang === 'fr' ? 'Commencer' : 'Start Now'}</span>
             <ArrowIcon className="w-3.5 h-3.5 shrink-0" />
           </button>
 
@@ -65,7 +159,7 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
             className="w-full sm:w-auto px-6 py-3 bg-white hover:bg-slate-50/80 border border-slate-200 text-slate-600 rounded-xl text-xs sm:text-sm font-normal transition cursor-pointer flex items-center justify-center gap-1.5"
           >
             <FileText className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-            <span>{isAr ? 'استكشف النماذج' : 'Explore Templates'}</span>
+            <span>{isAr ? 'استكشف النماذج' : currentLang === 'fr' ? 'Explorer les modèles' : 'Explore Templates'}</span>
           </button>
         </div>
 

@@ -78,6 +78,8 @@
   --font-tajawal: 'Tajawal', sans-serif;
   --font-ibm-sans: 'IBM Plex Sans Arabic', 'IBM Plex Sans', -apple-system, sans-serif;
   --font-ibm-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-ruqaa: 'Aref Ruqaa Ink', 'Aref Ruqaa', cursive, serif;
+  --font-signature: 'Caveat', 'Pinyon Script', 'Great Vibes', 'Allura', cursive, system-ui;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -700,6 +702,14 @@ textarea:focus-visible,
 
 .font-ibm-mono {
   font-family: var(--font-ibm-mono);
+}
+
+.font-ruqaa {
+  font-family: var(--font-ruqaa);
+}
+
+.font-signature {
+  font-family: var(--font-signature);
 }
 
 .bg-paper {
