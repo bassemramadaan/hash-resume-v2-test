@@ -77,7 +77,7 @@ export const MobilePreviewSheet: React.FC<MobilePreviewSheetProps> = ({
             </div>
 
             {/* Scrollable Preview Canvas */}
-            <div className="flex-1 overflow-hidden p-0 sm:p-2 bg-slate-100 touch-pan-y">
+            <div className="flex-1 min-h-0 overflow-hidden p-0 sm:p-2 bg-slate-100 touch-pan-y flex flex-col">
               <ResumePreview />
             </div>
 

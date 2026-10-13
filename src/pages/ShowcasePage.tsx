@@ -13,7 +13,7 @@ export const ShowcasePage: React.FC = () => {
       title: isAr ? 'الصفحة الرئيسية وقسم البداية' : 'Landing Page & Hero',
       badge: isAr ? 'الواجهة الرئيسية' : 'Hero UI',
       icon: Sparkles,
-      image: '/landing_hero_preview_1788097529363.jpg',
+      image: '/images/landing_hero_preview_1788097529363.jpg',
       description: isAr
         ? 'تصميم نظيف وعصري يركز على إدخال المسمى الوظيفي والزر الرئيسي البرتقالي مع شريط الثقة (بدون حساب • متوافق مع ATS • دفع لمرة واحدة).'
         : 'Clean and modern hero focused on single job title input, bold orange CTA button, and clear trust signals (No account required • ATS-friendly • Pay once).',
@@ -36,7 +36,7 @@ export const ShowcasePage: React.FC = () => {
       title: isAr ? 'محرر السيرة الذاتية والشاشة المنقسمة' : 'Split-Screen Resume Builder',
       badge: isAr ? 'المحرر الحي' : 'Live Editor',
       icon: Layers,
-      image: '/builder_ui_preview_1788097555233.jpg',
+      image: '/images/builder_ui_preview_1788097555233.jpg',
       description: isAr
         ? 'بيئة عمل تفاعلية تجمع بين حقول الإدخال المنظمة على اليسار والمعاينة الحية فوراً للصفحة A4 على اليمين مع دعم أنظمة ATS.'
         : 'Split-screen workspace pairing structured input form fields on the left with live high-fidelity A4 page rendering on the right.',
@@ -59,7 +59,7 @@ export const ShowcasePage: React.FC = () => {
       title: isAr ? 'نافذة الدفع والتفعيل (InstaPay & فودافون كاش)' : 'Payment & Activation Modal',
       badge: isAr ? 'الدفع المحلي' : 'Local Payments',
       icon: ShieldCheck,
-      image: '/payment_modal_preview_1788097573048.jpg',
+      image: '/images/payment_modal_preview_1788097573048.jpg',
       description: isAr
         ? 'شاشة دفع محلية مخصصة للسوق المصري بدون أي تعقيد ببطاقات الائتمان الأجنبية، تدعم إنستاباي والمحافظ الإلكترونية.'
         : 'Frictionless local payment modal tailored for Egyptian payment methods including InstaPay and mobile wallets (Vodafone Cash).',
@@ -82,7 +82,7 @@ export const ShowcasePage: React.FC = () => {
       title: isAr ? 'تجربة الهاتف المتجاوبة وشريط الإجراءات' : 'Mobile Experience & Bottom Bar',
       badge: isAr ? 'موبايل فرست' : 'Mobile-First',
       icon: Smartphone,
-      image: '/mobile_view_preview_1788097594618.jpg',
+      image: '/images/mobile_view_preview_1788097594618.jpg',
       description: isAr
         ? 'تجربة مستخدم مصممة خصيصاً للشاشات التي تقل عن 768px، مع شريط إجراءات سفلي ثابت ومساحات لمس لا تقل عن 44px.'
         : 'Engineered mobile experience for sub-768px screens featuring fixed bottom action bar and ≥44px touch targets.',

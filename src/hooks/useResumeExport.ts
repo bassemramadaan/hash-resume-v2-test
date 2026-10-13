@@ -56,6 +56,18 @@ export const useResumeExport = () => {
       }
     };
 
+    // ✅ احفظ السيرة في Supabase قبل فتح مودال الدفع
+    // كده حتى لو المستخدم مدفعش، الداتا بتتحفظ
+    saveResumeToSupabase(resumeData)
+      .then((saved) => {
+        if (saved) {
+          console.log('[Export] Resume pre-saved to Supabase:', saved.id);
+        }
+      })
+      .catch((err) => {
+        console.error('[Export] Pre-save failed (non-blocking):', err);
+      });
+
     // Store intent and open PaymentModal (ActivationModal)
     requestExport({ execute: performPdfExport, source });
     setIsActivationModalOpen(true);
