@@ -6,7 +6,8 @@ import { PaymentStatusResponse } from '../types/payment';
 import { paymentApi } from '../lib/api';
 
 const PAYMENT_API_URL =
-  (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_PAYMENT_API_URL) || '';
+  (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_PAYMENT_API_URL) ||
+  'https://script.google.com/macros/s/AKfycbxDgoppNmlIpwCSSoXGlyQfeqUS0VvkcdqVJloVnvvwIpMP2sneO9_HW3oEE2L5nLcI/exec';
 
 export async function callPaymentApi(
   params: Record<string, string>,

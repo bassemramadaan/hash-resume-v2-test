@@ -1485,15 +1485,8 @@ app.post("/api/verify-code", async (req, res) => {
     const gasUrl =
       process.env.PAYMENT_API_URL ||
       process.env.VITE_PAYMENT_API_URL ||
-      process.env.GAS_VERIFY_URL;
-
-    if (!gasUrl) {
-      return res.status(500).json({
-        success: false,
-        valid: false,
-        message: "خدمة التحقق من الدفع غير مهيأة في متغيرات الخادم.",
-      });
-    }
+      process.env.GAS_VERIFY_URL ||
+      "https://script.google.com/macros/s/AKfycbxDgoppNmlIpwCSSoXGlyQfeqUS0VvkcdqVJloVnvvwIpMP2sneO9_HW3oEE2L5nLcI/exec";
 
     try {
       const gasResponse = await fetch(gasUrl, {
