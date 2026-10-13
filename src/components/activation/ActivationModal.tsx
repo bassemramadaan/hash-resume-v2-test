@@ -559,22 +559,11 @@ export const ActivationModal: React.FC = () => {
         );
       }
 
-      const verifyResult: any = await verifyActivationCode(activatedCode, currentRef);
+      // ✅ checkStatus تحقق مسبقاً من الدفع والكود
+      // ✅ نروح مباشرة للتحميل بدون verify-code
+      // (checkStatus في Apps Script عمل التحقق وخصص الكود للمستخدم)
 
-      const isVerifySuccess =
-        verifyResult &&
-        (verifyResult.success === true ||
-          verifyResult.valid === true ||
-          verifyResult.status === 'USED' ||
-          verifyResult.status === 'APPROVED' ||
-          verifyResult.status === 'ACTIVE');
-
-      if (!isVerifySuccess) {
-        clearDownloadCompletionFlags();
-        throw new Error(verifyResult?.message || (isAr ? 'تعذر تأكيد الدفع وتحميل السيرة الذاتية.' : 'Unable to confirm payment and download resume.'));
-      }
-
-      // Unlock temporarily for export, then grant export and consume intent
+      // 2. فك القفل مؤقتاً وتنفيذ دالة التحميل المخزنة في البوابة
       unlockResumeWithNewApproval();
       await grantAndConsumeExport();
 
