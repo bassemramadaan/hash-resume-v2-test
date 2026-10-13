@@ -25,6 +25,7 @@ export const createEmptyResume = (): ResumeData => ({
   certifications: [],
   languages: [],
   customSections: [],
+  allowSharing: false,
 });
 
 export interface ResumeDataSlice {
@@ -71,11 +72,20 @@ export interface ResumeDataSlice {
   setResumeData: (data: ResumeData) => void;
   resetResume: () => void;
   createEmptyResume?: () => ResumeData;
+  setAllowSharing: (value: boolean) => void;
 }
 
 export const createResumeDataSlice = (set: any, get: any): ResumeDataSlice => ({
   resumeData: createEmptyResume(),
   createEmptyResume,
+
+  setAllowSharing: (value: boolean) => {
+    set((state: any) => {
+      const updated = { ...state.resumeData, allowSharing: value };
+      saveResumeDirectly(updated);
+      return { resumeData: updated };
+    });
+  },
 
   setPersonalInfo: (info) => {
     set((state: any) => {

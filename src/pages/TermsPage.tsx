@@ -49,7 +49,35 @@ export const TermsPage: React.FC = () => {
 
         <section className="space-y-2 border-t border-slate-100 pt-4">
           <h2 className="text-sm font-semibold text-slate-900">
-            {isAr ? '3. سياسة الاسترجاع والاستبدال' : '3. Refund Policy'}
+            {isAr ? '3. مشاركة السيرة الذاتية مع الشركات الشريكة' : '3. Resume Sharing with Partner Companies'}
+          </h2>
+          <p className="leading-relaxed">
+            {isAr
+              ? 'عند تحميل سيرتك الذاتية PDF، سيُطلب منك الموافقة على عرض سيرتك الذاتية (بدون بيانات التواصل الشخصية) على الشركات الشريكة في منصة Hash Resume. هذه الموافقة إجبارية لتحميل السيرة الذاتية.'
+              : 'When downloading your resume PDF, you will be asked to consent to having your resume (without personal contact details) displayed to partner companies on Hash Resume. This consent is required to download your resume.'}
+          </p>
+          <ul className="list-disc list-inside mt-2 space-y-1 leading-relaxed ps-2">
+            <li>
+              {isAr
+                ? 'بيانات التواصل (البريد الإلكتروني والهاتف) لا تُعرض للشركات — تبقى خاصة.'
+                : 'Contact details (email, phone) are never shown to companies — they remain private.'}
+            </li>
+            <li>
+              {isAr
+                ? 'الشركات الشريكة يمكنها رؤية: الاسم، المسمى الوظيفي، الخبرات، المهارات، والمؤهلات.'
+                : 'Partner companies may see: name, job title, experience, skills, and qualifications.'}
+            </li>
+            <li>
+              {isAr
+                ? 'يمكنك طلب حذف بياناتك في أي وقت كما هو موضح في سياسة الخصوصية.'
+                : 'You may request deletion of your data at any time as described in the Privacy Policy.'}
+            </li>
+          </ul>
+        </section>
+
+        <section className="space-y-2 border-t border-slate-100 pt-4">
+          <h2 className="text-sm font-semibold text-slate-900">
+            {isAr ? '4. سياسة الاسترجاع والاستبدال' : '4. Refund Policy'}
           </h2>
           <p className="leading-relaxed">
             {isAr

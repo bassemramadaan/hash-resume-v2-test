@@ -40,7 +40,7 @@ export async function saveResumeToSupabase(
         country,
         city,
         resume_data: resumeData as unknown as Record<string, unknown>,
-        allow_sharing: true, // ⚠️ مهم: غيّرها لموافقة حقيقية من المستخدم لاحقاً
+        allow_sharing: resumeData.allowSharing || false,
         status: 'active',
       })
       .select('id')

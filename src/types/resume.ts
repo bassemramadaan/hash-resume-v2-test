@@ -97,6 +97,7 @@ export interface ResumeData {
   certifications: Certification[];
   languages: LanguageItem[];
   customSections?: CustomSection[];
+  allowSharing?: boolean;
 }
 
 export type HeaderLayout = 'centered' | 'two-column' | 'compact';

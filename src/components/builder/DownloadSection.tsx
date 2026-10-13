@@ -57,6 +57,7 @@ export const DownloadSection: React.FC = () => {
     resetResume,
     setIsActivationModalOpen,
     setActiveTab,
+    setAllowSharing,
   } = useResumeStore();
 
   const t = getTranslation(settings.language);
@@ -398,6 +399,16 @@ export const DownloadSection: React.FC = () => {
       return;
     }
 
+    if (!resumeData.allowSharing) {
+      setEmptyWarning(
+        isAr
+          ? 'يجب الموافقة على مشاركة سيرتك الذاتية مع الشركات الشريكة قبل التحميل.'
+          : 'You must agree to share your resume with partner companies before downloading.'
+      );
+      setTimeout(() => setEmptyWarning(null), 6000);
+      return;
+    }
+
     setEmptyWarning(null);
     setIsExporting(true);
     try {
@@ -587,6 +598,25 @@ export const DownloadSection: React.FC = () => {
             <span className="flex-1">{emptyWarning}</span>
           </div>
         )}
+
+        {/* Consent Checkbox (Required) */}
+        <div className="p-3.5 bg-blue-50/50 border border-blue-200 rounded-none flex items-start gap-3">
+          <input
+            type="checkbox"
+            id="allow-sharing-checkbox"
+            checked={resumeData.allowSharing || false}
+            onChange={(e) => setAllowSharing(e.target.checked)}
+            className="mt-0.5 w-4 h-4 cursor-pointer accent-orange shrink-0"
+          />
+          <label
+            htmlFor="allow-sharing-checkbox"
+            className="text-xs font-ibm-sans text-ink leading-relaxed cursor-pointer"
+          >
+            {isAr
+              ? 'أوافق على عرض سيرتي الذاتية (بدون بيانات التواصل الشخصية) على الشركات الشريكة في منصة Hash Resume، ليتواصلوا معي بخصوص فرص عمل مناسبة. *'
+              : 'I agree to have my resume (without personal contact details) shown to partner companies on Hash Resume, so they may contact me about suitable job opportunities. *'}
+          </label>
+        </div>
 
         {/* Primary Download Button */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
