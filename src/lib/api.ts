@@ -116,6 +116,51 @@ export const paymentApi = {
     }),
 };
 
+// ==================== CV Management Endpoints ====================
+export const cvApi = {
+  /**
+   * يجيب سيرة بالـ id
+   */
+  get: (id: string) =>
+    apiRequest<{
+      success: boolean;
+      data?: {
+        id: string;
+        created_at: string;
+        full_name: string;
+        job_title: string | null;
+        years_experience: number | null;
+        field: string | null;
+        country: string | null;
+        city: string | null;
+        allow_sharing: boolean;
+        status: string;
+      };
+      message?: string;
+    }>(`/api/cv/${id}`),
+
+  /**
+   * يحدّث allow_sharing
+   */
+  updateSharing: (id: string, allowSharing: boolean) =>
+    apiRequest<{
+      success: boolean;
+      data?: { id: string; allow_sharing: boolean };
+      message?: string;
+    }>(`/api/cv/${id}/sharing`, {
+      method: 'PATCH',
+      body: JSON.stringify({ allowSharing }),
+    }),
+
+  /**
+   * يحذف السيرة (soft delete)
+   */
+  delete: (id: string) =>
+    apiRequest<{ success: boolean; message?: string }>(`/api/cv/${id}`, {
+      method: 'DELETE',
+    }),
+};
+
 // ==================== Health Check ====================
 export const healthApi = {
   check: () =>
