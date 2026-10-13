@@ -123,11 +123,13 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
 }) => {
   const {
     settings,
+    resumeData,
     setTemplate,
     setPrimaryColor,
     setFontFamily,
     setFontSize,
     setCareerFocus,
+    setAllowSharing,
   } = useResumeStore();
 
   const currentTemplate = settings?.templateId || 'bassux';
@@ -169,26 +171,44 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
               : 'Your data is formatted according to international ATS standards. Download your PDF instantly.'}
           </p>
 
-          <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
-            <button
-              type="button"
-              onClick={onExportPdf}
-              className="btn-folded-corner py-3.5 px-6 bg-[#FF4D2D] hover:bg-[#e03d1f] active:scale-[0.98] text-white font-semibold text-sm sm:text-base rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer group"
-            >
-              <Download className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-y-0.5 transition-transform" />
-              <span>{isAr ? 'تحميل سيرتك الذاتية PDF' : 'Download Resume PDF'}</span>
-            </button>
+          <div className="pt-2 space-y-3">
+            {/* Mandatory Partner Resume Sharing Consent Checkbox */}
+            <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-white/10 border border-white/20 text-start">
+              <input
+                type="checkbox"
+                id="allow-sharing-checkbox"
+                checked={resumeData.allowSharing || false}
+                onChange={(e) => setAllowSharing(e.target.checked)}
+                className="mt-0.5 w-4 h-4 rounded text-[#FF4D2D] focus:ring-[#FF4D2D] border-white/30 bg-white/10 cursor-pointer shrink-0"
+              />
+              <label htmlFor="allow-sharing-checkbox" className="text-[11px] sm:text-xs text-slate-100 cursor-pointer leading-relaxed select-none">
+                {isAr
+                  ? 'أوافق على عرض سيرتي الذاتية (بدون بيانات التواصل الشخصية) على الشركات الشريكة في منصة Hash Resume، ليتواصلوا معي بخصوص فرص عمل مناسبة. *'
+                  : 'I agree to have my resume (without personal contact details) shown to partner companies on Hash Resume, so they may contact me about suitable job opportunities. *'}
+              </label>
+            </div>
 
-            {onOpenPreview && (
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
               <button
                 type="button"
-                onClick={onOpenPreview}
-                className="py-3.5 px-5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm rounded-2xl border border-white/20 transition flex items-center justify-center gap-2 cursor-pointer"
+                onClick={onExportPdf}
+                className="btn-folded-corner py-3.5 px-6 bg-[#FF4D2D] hover:bg-[#e03d1f] active:scale-[0.98] text-white font-semibold text-sm sm:text-base rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer group"
               >
-                <Eye className="w-4 h-4 text-slate-300" />
-                <span>{isAr ? 'معاينة ملء الشاشة' : 'Full Preview'}</span>
+                <Download className="w-4 h-4 sm:w-5 sm:h-5 group-hover:-translate-y-0.5 transition-transform" />
+                <span>{isAr ? 'تحميل سيرتك الذاتية PDF' : 'Download Resume PDF'}</span>
               </button>
-            )}
+
+              {onOpenPreview && (
+                <button
+                  type="button"
+                  onClick={onOpenPreview}
+                  className="py-3.5 px-5 bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm rounded-2xl border border-white/20 transition flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Eye className="w-4 h-4 text-slate-300" />
+                  <span>{isAr ? 'معاينة ملء الشاشة' : 'Full Preview'}</span>
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

@@ -170,6 +170,20 @@ export const BuilderPage: React.FC = () => {
       setIsValidationModalOpen(true);
       return;
     }
+    if (!resumeData.allowSharing) {
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(
+          new CustomEvent('resume:empty-download-warning', {
+            detail: {
+              message: isAr
+                ? 'يجب الموافقة على مشاركة سيرتك الذاتية مع الشركات الشريكة قبل التحميل.'
+                : 'You must agree to share your resume with partner companies before downloading.',
+            },
+          })
+        );
+      }
+      return;
+    }
     requestPdfExport('builder');
   };
 
