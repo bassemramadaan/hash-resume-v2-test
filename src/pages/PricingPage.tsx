@@ -213,7 +213,7 @@ export const PricingPage: React.FC = () => {
         </section>
 
         {/* 2. Main Pricing Cards Grid */}
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto items-stretch" dir="ltr">
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-4xl mx-auto items-stretch" dir={isAr ? 'rtl' : 'ltr'}>
           
           {/* Plan 1: Single Pass (50 EGP) */}
           <div

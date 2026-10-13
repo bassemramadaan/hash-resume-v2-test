@@ -12,10 +12,27 @@ import {
   FileText,
   X,
   AlertCircle,
-  Briefcase
+  Briefcase,
+  Building2,
+  Sparkles,
+  Clock,
+  ShieldCheck,
+  Zap,
+  TrendingUp,
+  Headphones,
+  Laptop,
+  Landmark,
+  ChevronDown,
+  HelpCircle
 } from 'lucide-react';
 
-const HASH_HUNT_ENDPOINT = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_HASH_HUNT_API_URL) || '';
+const EXTERNAL_HASH_HUNT_URL =
+  (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_HASH_HUNT_API_URL) || '';
+
+const HASH_HUNT_ENDPOINT =
+  EXTERNAL_HASH_HUNT_URL && !EXTERNAL_HASH_HUNT_URL.includes('PLACEHOLDER')
+    ? EXTERNAL_HASH_HUNT_URL
+    : '/api/hash-hunt/apply';
 
 interface Job {
   id: string;
@@ -36,62 +53,92 @@ interface Job {
 const jobsData: Job[] = [
   {
     id: '1',
-    title: 'Frontend Developer',
-    company: 'شركة شريكة',
-    companyEn: 'Partner Company',
+    title: 'Frontend Developer (React / Next.js)',
+    company: 'شركة تقنية شريكة',
+    companyEn: 'Partner Tech Company',
     category: 'Development',
-    location: 'القاهرة',
-    locationEn: 'Cairo',
+    location: 'القاهرة / هجين',
+    locationEn: 'Cairo / Hybrid',
     workType: 'Hybrid',
     experienceLevel: 'Mid Level',
-    description: 'نبحث عن مطور واجهات أمامية بخبرة ممتازة في React و Next.js لبناء تجارب مستخدم استثنائية.',
-    descriptionEn: 'Looking for a Frontend Developer with excellent React and Next.js experience to build exceptional user experiences.',
+    description: 'نبحث عن مطور واجهات أمامية بخبرة عملية في React و Next.js و TypeScript لبناء منصات ويب متطورة وسريعة.',
+    descriptionEn: 'Looking for a Frontend Developer experienced in React, Next.js, and TypeScript to build high-performance web applications.',
     tags: ['React', 'Next.js', 'TypeScript', 'Tailwind'],
     isFeatured: true
   },
   {
     id: '2',
-    title: 'Backend Developer',
-    company: 'شركة شريكة',
-    companyEn: 'Partner Company',
+    title: 'Backend Developer (Node.js / Express)',
+    company: 'منصة دفع وتجارة إلكترونية',
+    companyEn: 'FinTech Partner',
     category: 'Development',
-    location: 'Remote',
+    location: 'عن بُعد (Remote)',
     locationEn: 'Remote',
-    workType: 'Full Time',
-    experienceLevel: 'Mid Level',
-    description: 'انضم لفريق هندسة النظم لتطوير واجهات برمجة تطبيقات قوية وقابلة للتوسع باستخدام Node.js.',
-    descriptionEn: 'Join the systems engineering team to develop robust and scalable APIs using Node.js.',
-    tags: ['Node.js', 'Express', 'PostgreSQL', 'AWS'],
-    isFeatured: false
+    workType: 'Remote',
+    experienceLevel: 'Mid-Senior',
+    description: 'انضم لبنية النظم الخلفية لتطوير واجهات برمجة تطبيقات (APIs) مرنة ومستقرة مع تكامل قواعد بيانات PostgreSQL.',
+    descriptionEn: 'Develop robust, scalable backend APIs using Node.js, Express, and PostgreSQL for high-traffic financial platforms.',
+    tags: ['Node.js', 'PostgreSQL', 'REST APIs', 'Cloud'],
+    isFeatured: true
   },
   {
     id: '3',
-    title: 'UI/UX Designer',
-    company: 'شركة شريكة',
-    companyEn: 'Partner Company',
+    title: 'UI/UX Product Designer',
+    company: 'وكالة تصميم برمجيات',
+    companyEn: 'Design Studio Partner',
     category: 'Design',
-    location: 'الجيزة',
-    locationEn: 'Giza',
-    workType: 'On-site',
-    experienceLevel: 'Junior / Mid Level',
-    description: 'مطلوب مصمم مبدع لتصميم واجهات منتجات SaaS B2B مع التركيز على تجربة مستخدم سلسة.',
-    descriptionEn: 'Creative designer wanted to design B2B SaaS product interfaces with a focus on seamless user experience.',
-    tags: ['Figma', 'Prototyping', 'User Research'],
+    location: 'الجيزة / المعادي',
+    locationEn: 'Giza / Maadi',
+    workType: 'Full Time',
+    experienceLevel: 'Junior / Mid',
+    description: 'تصميم تجارب مستخدم ممتازة وتطوير أنظمة تصميم (Design Systems) لمنتجات SaaS وتطبيقات الهواتف الذكية.',
+    descriptionEn: 'Design seamless SaaS user journeys and craft design systems across mobile and web interfaces with Figma.',
+    tags: ['Figma', 'Design Systems', 'User Research'],
     isFeatured: false
   },
   {
     id: '4',
-    title: 'Customer Support Specialist',
-    company: 'شركة شريكة',
-    companyEn: 'Partner Company',
+    title: 'Customer Success & Support Specialist',
+    company: 'مجموعة خدمات دولية',
+    companyEn: 'Global Support Partner',
     category: 'Support',
-    location: 'القاهرة',
-    locationEn: 'Cairo',
+    location: 'القاهرة / التجمع الخامس',
+    locationEn: 'New Cairo',
     workType: 'On-site',
-    experienceLevel: 'Entry Level',
-    description: 'ممثل خدمة عملاء شغوف بمساعدة المستخدمين وحل المشكلات التقنية الأولية بكفاءة.',
-    descriptionEn: 'Customer service representative passionate about helping users and efficiently resolving tier 1 technical issues.',
-    tags: ['Communication', 'Zendesk', 'Problem Solving'],
+    experienceLevel: 'Entry / Mid',
+    description: 'أخصائي خدمة عملاء ودعم فني للتواصل مع العملاء عبر الشات والبريد الإلكتروني وحل المشكلات التشغيلية بكفاءة.',
+    descriptionEn: 'Customer Support and Success representative resolving client queries via chat and email with high empathy.',
+    tags: ['Customer Care', 'Zendesk', 'Communication'],
+    isFeatured: false
+  },
+  {
+    id: '5',
+    title: 'Digital Marketing & Growth Specialist',
+    company: 'شركة تسويق رقمي شريكة',
+    companyEn: 'Growth Marketing Partner',
+    category: 'Marketing',
+    location: 'القاهرة / المعادي',
+    locationEn: 'Cairo',
+    workType: 'Hybrid',
+    experienceLevel: 'Mid Level',
+    description: 'إدارة حملات الإعلانات الممولة (Meta & Google Ads) وتحليل أداء التحويلات الرقمية للعملاء والشركاء.',
+    descriptionEn: 'Manage paid media campaigns across Meta and Google, optimizing funnel conversion and tracking metrics.',
+    tags: ['Google Ads', 'Meta Ads', 'Analytics'],
+    isFeatured: false
+  },
+  {
+    id: '6',
+    title: 'B2B Sales Account Executive',
+    company: 'شركة حلول أعمال B2B',
+    companyEn: 'B2B Solutions Partner',
+    category: 'Sales',
+    location: 'الجيزة / الدقي',
+    locationEn: 'Giza',
+    workType: 'On-site',
+    experienceLevel: 'Mid Level',
+    description: 'مسؤول مبيعات للشركات لبناء علاقات تعاقدية مع العملاء من المؤسسات وتقديم العروض التقديمية وإغلاق الصفقات.',
+    descriptionEn: 'B2B corporate sales executive prospecting, pitching, and closing contracts with enterprise clients.',
+    tags: ['B2B Sales', 'CRM', 'Negotiation'],
     isFeatured: false
   }
 ];
@@ -128,7 +175,7 @@ export const HashHuntPage: React.FC = () => {
   const [searchParams] = useSearchParams();
 
   const [activeFilter, setActiveFilter] = useState('All');
-  
+
   // Form State
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -137,13 +184,23 @@ export const HashHuntPage: React.FC = () => {
   const [experience, setExperience] = useState('');
   const [location, setLocation] = useState('');
   const [openTo, setOpenTo] = useState('Any');
-  const [skills, setSkills] = useState('');
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [prefilledBanner, setPrefilledBanner] = useState<{
     jobTitle?: string;
     location?: string;
     skills?: string;
   } | null>(null);
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
+  const [highlightField, setHighlightField] = useState<string | null>(null);
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const jobTitleInputRef = useRef<HTMLInputElement>(null);
+  const formTopRef = useRef<HTMLDivElement>(null);
+  const applySectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const paramJobTitle = searchParams.get('jobTitle');
@@ -155,62 +212,55 @@ export const HashHuntPage: React.FC = () => {
       if (paramJobTitle) setJobTitle(paramJobTitle);
       if (paramLocation) setLocation(paramLocation);
       if (paramExp) setExperience(paramExp);
-      if (paramSkills) setSkills(paramSkills);
 
       setPrefilledBanner({
         jobTitle: paramJobTitle || '',
         location: paramLocation || '',
-        skills: paramSkills || '',
+        skills: paramSkills || ''
       });
+    }
 
-      // Auto-prefill contact details from resume data if present
-      if (resumeData?.personalInfo) {
-        if (resumeData.personalInfo.fullName) setFullName(resumeData.personalInfo.fullName);
-        if (resumeData.personalInfo.email) setEmail(resumeData.personalInfo.email);
-        if (resumeData.personalInfo.phone) setPhoneNumber(resumeData.personalInfo.phone);
+    // Auto-prefill contact details from resume data if present
+    if (resumeData?.personalInfo) {
+      if (resumeData.personalInfo.fullName && !fullName) {
+        setFullName(resumeData.personalInfo.fullName);
+      }
+      if (resumeData.personalInfo.email && !email) {
+        setEmail(resumeData.personalInfo.email);
+      }
+      if (resumeData.personalInfo.phone && !phoneNumber) {
+        setPhoneNumber(resumeData.personalInfo.phone);
+      }
+      if (resumeData.personalInfo.jobTitle && !jobTitle && !paramJobTitle) {
+        setJobTitle(resumeData.personalInfo.jobTitle);
+      }
+      if (resumeData.personalInfo.location && !location && !paramLocation) {
+        setLocation(resumeData.personalInfo.location);
       }
     }
   }, [searchParams, resumeData]);
 
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
-
-  const [isApplyVisible, setIsApplyVisible] = useState(false);
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const jobTitleInputRef = useRef<HTMLInputElement>(null);
-  const applySectionRef = useRef<HTMLElement>(null);
-  const formTopRef = useRef<HTMLDivElement>(null);
-
-  const filteredJobs = jobsData.filter(job => activeFilter === 'All' || job.category === activeFilter);
-
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      const yOffset = -72; // header offset
+      const yOffset = -80;
       const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
       window.scrollTo({ top: y, behavior: 'smooth' });
     }
   };
-
-  useEffect(() => {
-    if (window.location.hash === "#apply-now") {
-      document.getElementById("apply-now")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, []);
 
   const handleApplyClick = (title?: string) => {
     if (title) {
       setJobTitle(title);
     }
     scrollToSection('apply-now');
-    if (title && jobTitleInputRef.current) {
-      setTimeout(() => jobTitleInputRef.current?.focus(), 500);
-    }
+    setHighlightField('jobTitle');
+    setTimeout(() => {
+      jobTitleInputRef.current?.focus();
+    }, 400);
+    setTimeout(() => {
+      setHighlightField(null);
+    }, 2000);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -230,19 +280,23 @@ export const HashHuntPage: React.FC = () => {
 
   const validateAndSetFile = (file: File) => {
     setErrorMsg('');
-    const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const validTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
     if (!validTypes.includes(file.type) && !file.name.match(/\.(pdf|doc|docx)$/i)) {
-      setErrorMsg(isAr ? 'نوع الملف غير مدعوم. يرجى رفع PDF أو DOC أو DOCX.' : 'Unsupported file type. Please upload PDF, DOC, or DOCX.');
-      if (formTopRef.current) {
-        formTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      setErrorMsg(
+        isAr
+          ? 'نوع الملف غير مدعوم. يرجى رفع ملف بصيغة PDF أو DOC أو DOCX.'
+          : 'Unsupported file format. Please upload PDF, DOC, or DOCX.'
+      );
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      setErrorMsg(isAr ? 'حجم الملف يتجاوز 5 ميجابايت.' : 'File size exceeds 5MB.');
-      if (formTopRef.current) {
-        formTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      setErrorMsg(
+        isAr ? 'حجم الملف يتجاوز الحد المسموح (5 ميجابايت).' : 'File size exceeds the 5MB limit.'
+      );
       return;
     }
     setResumeFile(file);
@@ -254,18 +308,20 @@ export const HashHuntPage: React.FC = () => {
     setSuccessMsg('');
 
     if (!HASH_HUNT_ENDPOINT) {
-      setErrorMsg(isAr ? 'خدمة التقديم غير متاحة حالياً (VITE_HASH_HUNT_API_URL غير مهيأة).' : 'Application service is currently unavailable.');
-      if (formTopRef.current) {
-        formTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      setErrorMsg(
+        isAr
+          ? 'خدمة التقديم غير متاحة حالياً (VITE_HASH_HUNT_API_URL غير مهيأة).'
+          : 'Application submission endpoint is not configured.'
+      );
       return;
     }
 
     if (!fullName || !phoneNumber || !email || !jobTitle || !location || !openTo || !resumeFile) {
-      setErrorMsg(isAr ? 'يرجى تعبئة جميع الحقول المطلوبة وإرفاق السيرة الذاتية.' : 'Please fill all required fields and attach your resume.');
-      if (formTopRef.current) {
-        formTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      setErrorMsg(
+        isAr
+          ? 'يرجى استكمال جميع الحقول المطلوبة (*) وإرفاق ملف السيرة الذاتية.'
+          : 'Please fill all required fields (*) and upload your resume.'
+      );
       return;
     }
 
@@ -284,33 +340,60 @@ export const HashHuntPage: React.FC = () => {
         resumeFile: {
           name: resumeFile.name,
           type: resumeFile.type,
-          data: fileDataUrl,
-        },
+          data: fileDataUrl
+        }
       };
 
-      const response = await fetch(HASH_HUNT_ENDPOINT, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'text/plain;charset=utf-8',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      const result = await response.json();
-
-      if (!result.success) {
-        throw new Error(result.error || (isAr ? 'تعذر إرسال طلبك. حاول مرة أخرى.' : 'Could not submit your application. Please try again.'));
+      let response: Response;
+      const isInternal = HASH_HUNT_ENDPOINT.startsWith('/');
+      try {
+        response = await fetch(HASH_HUNT_ENDPOINT, {
+          method: 'POST',
+          headers: {
+            'Content-Type': isInternal ? 'application/json' : 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
+      } catch (networkErr) {
+        if (!isInternal) {
+          // If external call failed due to CORS or network, retry via internal server endpoint
+          response = await fetch('/api/hash-hunt/apply', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        } else {
+          throw networkErr;
+        }
       }
 
-      setSuccessMsg(isAr ? 'تم استلام طلبك بنجاح. نتمنى لك التوفيق.' : 'Your application was received successfully. Best of luck!');
-      // Clear form on success
-      setFullName('');
-      setPhoneNumber('');
-      setEmail('');
+      let result: any;
+      try {
+        result = await response.json();
+      } catch {
+        if (response.ok) {
+          result = { success: true };
+        } else {
+          throw new Error(isAr ? 'تعذر قراءة رد الخادم.' : 'Could not parse server response.');
+        }
+      }
+
+      if (result.success === false) {
+        throw new Error(
+          result.error ||
+            (isAr ? 'تعذر إرسال الطلب. يرجى إعادة المحاولة.' : 'Could not submit your application.')
+        );
+      }
+
+      setSuccessMsg(
+        isAr
+          ? 'تم استلام طلبك وسيرتك الذاتية بنجاح! سيقوم فريق التوظيف بمطابقة ملفك والتواصل معك عند توفر فرصة مناسبة.'
+          : 'Your application has been received! Our hiring team will review your profile and reach out with matching opportunities.'
+      );
+
+      // Clear non-contact fields
       setJobTitle('');
       setExperience('');
-      setLocation('');
-      setOpenTo('Any');
       setResumeFile(null);
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
@@ -320,193 +403,694 @@ export const HashHuntPage: React.FC = () => {
       }
     } catch (err: any) {
       console.error(err);
-      setErrorMsg(err.message || (isAr ? 'حدث خطأ أثناء إرسال الطلب. يرجى المحاولة لاحقاً.' : 'An error occurred while submitting. Please try again later.'));
-      if (formTopRef.current) {
-        formTopRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      setErrorMsg(
+        err.message ||
+          (isAr
+            ? 'حدث خطأ أثناء إرسال الطلب. يرجى التحقق من اتصالك والمحاولة لاحقاً.'
+            : 'An error occurred while submitting. Please try again.')
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsApplyVisible(entry.isIntersecting);
-      },
-      { threshold: 0.1 }
-    );
+  const filteredJobs = jobsData.filter(
+    (job) => activeFilter === 'All' || job.category === activeFilter
+  );
 
-    if (applySectionRef.current) {
-      observer.observe(applySectionRef.current);
+  const quickJobPicks = [
+    'Frontend Developer',
+    'Backend Engineer',
+    'UI/UX Designer',
+    'Customer Care',
+    'Sales Executive',
+    'Accountant'
+  ];
+
+  const faqs = [
+    {
+      qAr: 'هل التقديم عبر Hash Hunt مجاني للباحثين عن عمل؟',
+      qEn: 'Is applying via Hash Hunt free for job seekers?',
+      aAr: 'نعم، التقديم عبر هذا النموذج مجاني تماماً. يمكنك إرسال سيرتك الذاتية وتحديد تخصصك ليتم ترشيحك للشركات الشريكة دون أي رسوم.',
+      aEn: 'Yes, submitting your application through this form is 100% free for candidates.'
+    },
+    {
+      qAr: 'ما هي قيمة الـ 50 ج.م في Hash Resume؟',
+      qEn: 'What is the 50 EGP fee in Hash Resume?',
+      aAr: 'الـ 50 ج.م مخصصة لبناء وتصدير سيرتك الذاتية الاحترافية بصيغة ATS متوافقة مع أنظمة الفحص، وتشمل توجيه ملفك لقاعدة الكفاءات المباشرة المرشحة لشبكة شركاء التوظيف.',
+      aEn: 'The 50 EGP covers generating your certified ATS-compliant PDF resume and prioritizing your CV into our talent pool forwarded to hiring partners.'
+    },
+    {
+      qAr: 'متى يتم التواصل معي بعد إرسال الطلب؟',
+      qEn: 'When will I hear back after submitting?',
+      aAr: 'تتم مراجعة الملفات ومطابقتها خلال 24 إلى 48 ساعة من تاريخ التقديم. يتم التواصل مباشرة عبر الهاتف أو البريد الإلكتروني في حال توافق مؤهلاتك مع الشواغر المتاحة.',
+      aEn: 'Profiles are matched within 24-48 hours. Hiring managers will contact you directly via phone or email for interview scheduling.'
+    },
+    {
+      qAr: 'هل أحتاج لإنشاء حساب أو كلمة مرور؟',
+      qEn: 'Do I need to create an account or password?',
+      aAr: 'لا، وفرنا تجربة "التقديم السريع" دون الحاجة لتسجيل حساب أو تذكر كلمات مرور، كل ما عليك هو إدخال بيانات الاتصال ورفع سيرتك الذاتية في أقل من دقيقة.',
+      aEn: 'No account needed! The Quick Apply flow lets you submit in under a minute without sign-ups or passwords.'
     }
-
-    return () => {
-      if (applySectionRef.current) {
-        observer.unobserve(applySectionRef.current);
-      }
-    };
-  }, []);
+  ];
 
   return (
-    <main dir={isAr ? "rtl" : "ltr"} className="overflow-x-hidden bg-[#F8FAFC] min-h-screen font-sans text-navy selection:bg-coral/20 selection:text-coral">
-      {/* 1. Sub-Banner Context Bar */}
-      <div className="bg-white/95 border-b border-[#E5E7EB] py-2 sm:py-2.5 transition-all">
+    <main
+      dir={isAr ? 'rtl' : 'ltr'}
+      className="overflow-x-hidden bg-[#F8FAFC] min-h-screen font-sans text-navy selection:bg-coral/20 selection:text-coral"
+    >
+      {/* 1. Header Navigation Context Bar */}
+      <nav aria-label={isAr ? 'مسار التنقل' : 'Breadcrumb'} className="bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40 py-2.5 transition-all shadow-xs">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 sm:gap-4">
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            <Link to="/" className="inline-flex items-center gap-1 text-xs text-slate-500 hover:text-coral transition-colors font-medium">
+          <div className="flex items-center gap-2">
+            <Link
+              to="/"
+              className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-coral transition-colors font-medium"
+            >
               {isAr ? <ArrowRight className="w-3.5 h-3.5 shrink-0" /> : <ArrowLeft className="w-3.5 h-3.5 shrink-0" />}
-              <span>{isAr ? "الرئيسية" : "Home"}</span>
+              <span>{isAr ? 'الرئيسية' : 'Home'}</span>
             </Link>
             <span className="text-slate-300">/</span>
-            <span className="text-xs font-bold text-navy flex items-center gap-1">
-              <span>Hash</span>
-              <span className="text-coral">Hunt</span>
-            </span>
-            <span className="inline-flex items-center justify-center px-1.5 py-0.5 bg-coral-soft text-coral text-[10px] font-bold uppercase tracking-wider rounded-md shrink-0">
-              {isAr ? "وظائف" : "Jobs"}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-xs font-bold text-navy flex items-center gap-0.5">
+                <span>Hash</span>
+                <span className="text-coral">Hunt</span>
+              </span>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-coral-soft text-coral text-[10px] font-bold uppercase tracking-wider rounded-full shrink-0 border border-coral/20">
+                <span className="w-1.5 h-1.5 rounded-full bg-coral animate-ping" />
+                {isAr ? 'التقديم المباشر' : 'Direct Apply'}
+              </span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              onClick={() => scrollToSection('jobs')}
+              className="hidden sm:inline-flex text-xs font-semibold text-slate-600 hover:text-navy transition-colors px-3 py-1.5 rounded-lg hover:bg-slate-100 cursor-pointer"
+            >
+              {isAr ? 'الوظائف المتاحة' : 'View Jobs'}
+            </button>
             <button
               onClick={() => scrollToSection('apply-now')}
-              className="min-h-[36px] px-3.5 rounded-lg bg-coral text-xs font-bold text-white transition hover:bg-coral-hover focus:outline-none flex items-center justify-center gap-1.5 shadow-2xs cursor-pointer"
+              className="min-h-[36px] px-3.5 sm:px-4 rounded-xl bg-coral text-xs font-bold text-white transition hover:bg-coral-hover focus:outline-none flex items-center justify-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
             >
-              {isAr ? "قدّم الآن" : "Apply Now"}
+              <Zap className="w-3.5 h-3.5 shrink-0 fill-current" />
+              <span>{isAr ? 'التقديم السريع' : 'Quick Apply'}</span>
             </button>
           </div>
         </div>
-      </div>
+      </nav>
 
-      {/* 2. Hero Section - Short & Direct */}
-      <section className="relative bg-gradient-to-b from-coral-soft/50 to-[#F8FAFC] pt-8 pb-10 sm:pt-14 sm:pb-14 md:pt-20 md:pb-16 overflow-hidden">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 text-center lg:text-start">
-          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 items-center">
+      {/* 2. TOP SECTION: HERO & QUICK APPLY CARD IN FIRST VIEWPORT */}
+      <section
+        id="apply-now"
+        ref={applySectionRef}
+        className="relative bg-gradient-to-b from-white via-[#FDF7F5] to-[#F8FAFC] pt-6 pb-12 sm:pt-10 sm:pb-16 lg:pt-12 lg:pb-20 border-b border-slate-200/60 overflow-hidden"
+      >
+        {/* Subtle Ambient Background Gradients */}
+        <div className="absolute top-0 start-1/4 w-[500px] h-[500px] bg-coral/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-1/3 end-0 w-[400px] h-[400px] bg-navy/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          {/* Top Announcement Badge */}
+          <div className="flex justify-center lg:justify-start mb-4 sm:mb-6">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white text-coral text-xs font-bold shadow-2xs border border-coral/25 backdrop-blur-sm">
+              <Sparkles className="w-3.5 h-3.5 text-coral shrink-0" />
+              <span>{isAr ? '⚡ التقديم السريع والربط الوظيفي المباشر' : '⚡ Quick Apply & Direct Job Bridge'}</span>
+            </div>
+          </div>
+
+          {/* Grid Layout: Left Pitch & Value / Right High-Conversion Form */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
             
-            {/* Text Content */}
-            <div className={`${isAr ? 'lg:text-right' : 'lg:text-left'} space-y-4 sm:space-y-5`}>
-              <div className="inline-flex items-center justify-center lg:justify-start px-3 py-1.5 mb-1 bg-white text-coral text-xs font-medium rounded-full border border-coral/20 shadow-2xs mx-auto lg:mx-0">
-                <Briefcase className={`w-3.5 h-3.5 shrink-0 ${isAr ? 'ml-1.5' : 'mr-1.5'}`} />
-                <span>{isAr ? "فرص حصرية لمستخدمي Hash Resume" : "Exclusive opportunities for Hash Resume users"}</span>
-              </div>
-              
-              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-semibold text-navy leading-tight md:leading-[1.1] tracking-tight">
-                {isAr ? (
-                  <>وظيفتك القادمة <br />تبدأ من <span className="text-coral underline decoration-coral/30 underline-offset-4 md:underline-offset-8">هنا.</span></>
-                ) : (
-                  <>Your next job <br />starts <span className="text-coral underline decoration-coral/30 underline-offset-4 md:underline-offset-8">here.</span></>
-                )}
-              </h1>
+            {/* Column 1: Value Proposition, Trust & Bridge Info (5 cols on lg) */}
+            <div className="lg:col-span-5 space-y-5 sm:space-y-6 text-center lg:text-start">
+              <div className="space-y-3 sm:space-y-4">
+                <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-navy leading-[1.2] tracking-tight">
+                  {isAr ? (
+                    <>
+                      وظيفتك القادمة <br />
+                      <span className="text-coral underline decoration-coral/20 decoration-wavy underline-offset-8">
+                        تبدأ بنقرة واحدة.
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      Your next career move <br />
+                      <span className="text-coral underline decoration-coral/20 decoration-wavy underline-offset-8">
+                        starts right here.
+                      </span>
+                    </>
+                  )}
+                </h1>
 
-              <p className="text-sm sm:text-base md:text-lg text-slate-600 max-w-xl mx-auto lg:mx-0 font-medium leading-relaxed">
-                {isAr 
-                  ? "تصفّح الفرص الحصرية لشركاتنا المتعاقدة. عندما تصمم سيرتك الذاتية عبر Hash Resume، نكون وسيلة لتوصيلك مباشرة بمسؤولي التوظيف في الشركات الشريكة."
-                  : "Explore exclusive opportunities with our contracted partner companies. When you create your ATS resume with Hash Resume, we directly connect your CV to partner hiring managers."}
-              </p>
-
-              {/* Hash Hunt Bridge Value Callout */}
-              <div className="p-3.5 bg-white/80 backdrop-blur-xs border border-coral/30 rounded-2xl shadow-2xs max-w-xl text-xs space-y-1">
-                <span className="font-semibold text-navy flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                  {isAr ? 'جسر الربط المباشر مع الشركات المتعاقدة' : 'Direct Bridge with Contracted Companies'}
-                </span>
-                <p className="text-[#52627A] leading-relaxed font-normal">
+                <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-xl mx-auto lg:mx-0">
                   {isAr
-                    ? 'الـ 50 ج.م لا تقتصر على تحميل السيرة الذاتية بصيغة ATS المحترفة فحسب، بل تشمل رفع وتوجيه ملفك لشبكة الشركات المتعاقدة معنا والمؤسسات الباحثة عن كفاءات محددة.'
-                    : 'The 50 EGP payment is not just for downloading an ATS CV—it includes uploading and delivering your profile directly to our network of hiring partners.'}
+                    ? 'قدّم سيرتك الذاتية في أقل من 60 ثانية بدون إنشاء حساب. نقوم بمطابقة ملفك وتوصيله مباشرةً لمسؤولي التوظيف في كبرى الشركات الشريكة المتعاقدة معنا.'
+                    : 'Submit your CV in under 60 seconds with zero signup hassle. We match and route your profile directly to verified hiring managers at partner companies.'}
                 </p>
               </div>
 
-              <div className="pt-2 sm:pt-4 flex flex-col sm:flex-row justify-center lg:justify-start gap-3">
-                <button
-                  onClick={() => scrollToSection('jobs')}
-                  className="min-h-[46px] sm:min-h-[48px] w-full rounded-xl bg-coral px-5 text-sm sm:text-base font-semibold text-white transition hover:bg-coral-hover focus:outline-none focus:ring-2 focus:ring-coral focus:ring-offset-2 sm:w-auto flex items-center justify-center gap-2 cursor-pointer shadow-xs"
-                >
-                  <span>{isAr ? "استعرض الوظائف" : "Explore Jobs"}</span>
-                  {isAr ? <ArrowLeft className="w-4 h-4 shrink-0" /> : <ArrowRight className="w-4 h-4 shrink-0" />}
-                </button>
-                <button
-                  onClick={() => scrollToSection('apply-now')}
-                  className="min-h-[46px] sm:min-h-[48px] w-full rounded-xl bg-white border border-[#E5E7EB] px-5 text-sm sm:text-base font-semibold text-navy transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-slate-200 focus:ring-offset-2 sm:w-auto flex items-center justify-center cursor-pointer shadow-2xs"
-                >
-                  {isAr ? "تقديم طلب مفتوح" : "General Application"}
-                </button>
+              {/* Quick Perks / Bullets */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
+                <div className="p-3 bg-white rounded-xl border border-slate-200/90 shadow-2xs text-center flex flex-col items-center justify-center gap-1">
+                  <div className="w-7 h-7 rounded-lg bg-coral-soft text-coral flex items-center justify-center">
+                    <Zap className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-xs font-bold text-navy">{isAr ? 'بدون حساب' : 'No Account'}</span>
+                  <span className="text-[10px] text-slate-500">{isAr ? 'تقديم فوري' : 'Instant Apply'}</span>
+                </div>
+
+                <div className="p-3 bg-white rounded-xl border border-slate-200/90 shadow-2xs text-center flex flex-col items-center justify-center gap-1">
+                  <div className="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                    <Clock className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-xs font-bold text-navy">{isAr ? 'أقل من دقيقة' : '< 1 Minute'}</span>
+                  <span className="text-[10px] text-slate-500">{isAr ? 'نموذج موحد' : 'One Simple Form'}</span>
+                </div>
+
+                <div className="p-3 bg-white rounded-xl border border-slate-200/90 shadow-2xs text-center flex flex-col items-center justify-center gap-1 col-span-2 sm:col-span-1">
+                  <div className="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+                    <Building2 className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-xs font-bold text-navy">{isAr ? 'شركاء معتمدون' : 'Verified Partners'}</span>
+                  <span className="text-[10px] text-slate-500">{isAr ? 'وصول مباشر' : 'Direct Reach'}</span>
+                </div>
               </div>
-              
-              {/* Trust Signals (Mobile Friendly Grid) */}
-              <div className="pt-2 sm:pt-4 grid grid-cols-2 sm:flex items-center justify-center lg:justify-start gap-3 sm:gap-6 text-xs sm:text-sm font-semibold text-slate-500">
-                <div className="flex items-center justify-center lg:justify-start gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> {isAr ? "شركات موثوقة" : "Verified Companies"}</div>
-                <div className="flex items-center justify-center lg:justify-start gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" /> {isAr ? "رد سريع" : "Fast Response"}</div>
+
+              {/* Hash Hunt Bridge Value Box */}
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-white to-[#FFF9F6] border border-coral/30 rounded-2xl shadow-sm text-start space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-coral text-white flex items-center justify-center text-xs font-bold shrink-0">
+                    ✓
+                  </div>
+                  <h3 className="font-bold text-xs sm:text-sm text-navy">
+                    {isAr ? 'جسر الربط مع مسؤولي التوظيف (Bridge)' : 'Direct Talent Bridge to Hiring Network'}
+                  </h3>
+                </div>
+                <p className="text-xs sm:text-[13px] text-slate-600 leading-relaxed font-normal">
+                  {isAr
+                    ? 'عند استخدامك منصة Hash Resume وسداد رسوم السيرة الذاتية (50 ج.م)، لا تحصل فقط على ملف ATS احترافي معتمد، بل يتم رفع ملفك تلقائياً لشبكة الشركات الشريكة الباحثة عن تخصصك.'
+                    : 'Using Hash Resume not only creates an ATS-ready PDF—your profile is also indexed into our priority partner network for hiring managers seeking top candidates.'}
+                </p>
+                <div className="pt-1 flex items-center gap-3 text-[11px] font-semibold text-slate-500">
+                  <span className="inline-flex items-center gap-1 text-emerald-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    {isAr ? 'تحديث ومطابقة مستمرة' : 'Continuous Matching'}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-emerald-700">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    {isAr ? 'رد وتنسيق مقابلات' : 'Direct Interviews'}
+                  </span>
+                </div>
+              </div>
+
+              {/* Action Buttons to Explore Jobs Below */}
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3">
+                <button
+                  type="button"
+                  onClick={() => scrollToSection('jobs')}
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white border border-slate-300 text-xs sm:text-sm font-bold text-navy hover:bg-slate-50 hover:border-slate-400 transition-colors shadow-2xs flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Briefcase className="w-4 h-4 text-coral shrink-0" />
+                  <span>{isAr ? 'استعرض الوظائف المتاحة حالياً' : 'Browse Open Roles'}</span>
+                  {isAr ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
+                </button>
               </div>
             </div>
 
-            {/* Job Spotlight Card - Hidden on Mobile to save space */}
-            <div className={`hidden lg:flex justify-end`}>
-              <div className="w-full max-w-sm bg-white rounded-3xl p-8 shadow-xl shadow-navy/5 border border-coral-soft relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-coral-soft rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-150 duration-700 pointer-events-none"></div>
-                <div className="relative z-10 space-y-6">
-                  <div className="flex justify-between items-start">
-                    <div className="w-12 h-12 rounded-2xl bg-coral-soft flex items-center justify-center text-coral font-bold text-lg border border-coral/20 shrink-0">
-                      FD
+            {/* Column 2: The Quick Apply Form Card (7 cols on lg) */}
+            <div className="lg:col-span-7">
+              <div
+                ref={formTopRef}
+                className="bg-white rounded-3xl border-2 border-coral/25 shadow-xl shadow-coral/5 p-5 sm:p-7 md:p-8 relative overflow-hidden"
+              >
+                {/* Visual Top Ribbon */}
+                <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-coral via-coral-hover to-navy" />
+
+                {/* Form Header */}
+                <div className="mb-5 sm:mb-6">
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 rounded-xl bg-coral-soft text-coral flex items-center justify-center shrink-0">
+                        <Zap className="w-4 h-4 fill-current" />
+                      </div>
+                      <h2 className="text-lg sm:text-xl font-bold text-navy">
+                        {isAr ? 'نموذج التقديم السريع (Quick Apply)' : 'Quick Apply Application Form'}
+                      </h2>
                     </div>
-                    <span className="px-2.5 py-1 bg-amber-50 text-[#F59E0B] text-[10px] font-bold uppercase tracking-wider rounded-lg border border-amber-100 shrink-0">
-                      New
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-bold border border-emerald-200">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      {isAr ? 'متاح للتقديم الفوري' : 'Open for Submission'}
                     </span>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-navy">Frontend Developer</h3>
-                    <p className="text-slate-600 text-sm mt-1 font-medium">{isAr ? "شركة شريكة" : "Partner Company"}</p>
-                  </div>
-                  <button
-                    onClick={() => handleApplyClick('Frontend Developer')}
-                    className="min-h-[48px] w-full rounded-xl bg-[#F8FAFC] border border-[#E5E7EB] px-5 text-sm font-semibold text-coral transition hover:bg-coral-soft hover:border-coral/30 focus:outline-none focus:ring-2 focus:ring-coral/20 focus:ring-offset-2 flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <span>{isAr ? "عرض الوظيفة" : "View Job"}</span>
-                    {isAr ? <ArrowLeft className="w-4 h-4 shrink-0" /> : <ArrowRight className="w-4 h-4 shrink-0" />}
-                  </button>
+                  <p className="text-xs text-slate-500 font-normal">
+                    {isAr
+                      ? 'املأ بياناتك الأساسية وارفع سيرتك الذاتية؛ سنقوم بتوصيلها لشركاتنا الشريكة فوراً.'
+                      : 'Fill in your details and upload your CV; we route your profile to our hiring network.'}
+                  </p>
                 </div>
+
+                {/* Status Messages */}
+                <div aria-live="polite">
+                  {prefilledBanner && (
+                    <div className="mb-4 p-3 bg-emerald-50/90 border border-emerald-200 rounded-xl text-xs flex items-start gap-2.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="font-bold text-emerald-900">
+                          {isAr ? 'تم ضبط البيانات المحددة للوظيفة:' : 'Job preferences preloaded:'}
+                        </p>
+                        <p className="text-emerald-800 text-[11px] mt-0.5">
+                          {prefilledBanner.jobTitle && <span>{prefilledBanner.jobTitle} </span>}
+                          {prefilledBanner.location && <span>({prefilledBanner.location})</span>}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setPrefilledBanner(null)}
+                        className="text-emerald-700 hover:text-emerald-950 text-xs font-bold"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+
+                  {successMsg && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mb-5 p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-start gap-3 shadow-2xs"
+                    >
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-sm font-bold text-emerald-900">
+                          {isAr ? 'تم استلام طلبك بنجاح!' : 'Application Successfully Sent!'}
+                        </h4>
+                        <p className="text-xs text-emerald-800 leading-relaxed mt-0.5">{successMsg}</p>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {errorMsg && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="mb-5 p-4 bg-red-50 border border-red-200 rounded-2xl flex items-start gap-3 shadow-2xs"
+                    >
+                      <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-sm font-bold text-red-900">
+                          {isAr ? 'تعذر إرسال الطلب' : 'Failed to Submit'}
+                        </h4>
+                        <p className="text-xs text-red-800 leading-relaxed mt-0.5">{errorMsg}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* The Form */}
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Name & Phone */}
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div className="space-y-1">
+                      <label htmlFor="fullName" className="block text-xs font-bold text-navy">
+                        {isAr ? 'الاسم بالكامل' : 'Full Name'} <span className="text-coral">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="fullName"
+                        autoComplete="name"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        required
+                        placeholder={isAr ? 'مثال: أحمد محمود علي' : 'e.g. John Doe'}
+                        className={`h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-xs sm:text-sm text-navy outline-none transition focus:border-coral focus:ring-4 focus:ring-coral/10 ${
+                          isAr ? 'text-right' : 'text-left'
+                        }`}
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label htmlFor="phoneNumber" className="block text-xs font-bold text-navy">
+                        {isAr ? 'رقم الهاتف / واتساب' : 'Phone / WhatsApp'} <span className="text-coral">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        id="phoneNumber"
+                        inputMode="tel"
+                        autoComplete="tel"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        required
+                        dir="ltr"
+                        placeholder="+20 100 000 0000"
+                        className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-xs sm:text-sm text-navy outline-none transition focus:border-coral focus:ring-4 focus:ring-coral/10 text-left font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Email */}
+                  <div className="space-y-1">
+                    <label htmlFor="email" className="block text-xs font-bold text-navy">
+                      {isAr ? 'البريد الإلكتروني' : 'Email Address'} <span className="text-coral">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      inputMode="email"
+                      autoComplete="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      dir="ltr"
+                      placeholder="your.email@example.com"
+                      className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-xs sm:text-sm text-navy outline-none transition focus:border-coral focus:ring-4 focus:ring-coral/10 text-left font-mono"
+                    />
+                  </div>
+
+                  {/* Job Title & Quick Suggestions */}
+                  <div className="space-y-1">
+                    <label htmlFor="jobTitle" className="block text-xs font-bold text-navy">
+                      {isAr ? 'المسمى الوظيفي المطلوب' : 'Desired Job Title'} <span className="text-coral">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="jobTitle"
+                      ref={jobTitleInputRef}
+                      value={jobTitle}
+                      onChange={(e) => setJobTitle(e.target.value)}
+                      required
+                      placeholder={isAr ? 'مثال: Frontend Developer أو محاسب عام' : 'e.g. Frontend Developer'}
+                      className={`h-11 w-full rounded-xl border ${
+                        highlightField === 'jobTitle'
+                          ? 'border-coral ring-4 ring-coral/20'
+                          : 'border-slate-200'
+                      } bg-white px-3.5 text-xs sm:text-sm text-navy outline-none transition focus:border-coral focus:ring-4 focus:ring-coral/10 ${
+                        isAr ? 'text-right' : 'text-left'
+                      }`}
+                    />
+                    {/* Quick Pick Chips */}
+                    <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                      <span className="text-[10px] text-slate-500 font-medium">
+                        {isAr ? 'اقتراحات شائعة:' : 'Quick picks:'}
+                      </span>
+                      {quickJobPicks.map((pick) => (
+                        <button
+                          key={pick}
+                          type="button"
+                          onClick={() => setJobTitle(pick)}
+                          className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-100 hover:bg-coral-soft hover:text-coral text-slate-600 transition-colors cursor-pointer"
+                        >
+                          {pick}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Location & Experience */}
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                    <div className="space-y-1">
+                      <label htmlFor="location" className="block text-xs font-bold text-navy">
+                        {isAr ? 'مكان الإقامة / المدينة' : 'Location / City'} <span className="text-coral">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        id="location"
+                        value={location}
+                        onChange={(e) => setLocation(e.target.value)}
+                        required
+                        placeholder={isAr ? 'القاهرة، مصر' : 'Cairo, Egypt'}
+                        className={`h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-xs sm:text-sm text-navy outline-none transition focus:border-coral focus:ring-4 focus:ring-coral/10 ${
+                          isAr ? 'text-right' : 'text-left'
+                        }`}
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label htmlFor="experience" className="block text-xs font-bold text-navy">
+                        {isAr ? 'سنوات الخبرة' : 'Years of Experience'}
+                      </label>
+                      <input
+                        type="text"
+                        id="experience"
+                        value={experience}
+                        onChange={(e) => setExperience(e.target.value)}
+                        placeholder={isAr ? 'مثال: حديث تخرج أو 3 سنوات' : 'e.g. Entry level or 3 years'}
+                        className={`h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-xs sm:text-sm text-navy outline-none transition focus:border-coral focus:ring-4 focus:ring-coral/10 ${
+                          isAr ? 'text-right' : 'text-left'
+                        }`}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Work Type Preference */}
+                  <div className="space-y-1">
+                    <label htmlFor="openTo" className="block text-xs font-bold text-navy">
+                      {isAr ? 'طبيعة العمل المفضلة' : 'Preferred Work Type'} <span className="text-coral">*</span>
+                    </label>
+                    <select
+                      id="openTo"
+                      value={openTo}
+                      onChange={(e) => setOpenTo(e.target.value)}
+                      required
+                      className={`h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-xs sm:text-sm text-navy outline-none transition focus:border-coral focus:ring-4 focus:ring-coral/10 cursor-pointer ${
+                        isAr ? 'text-right' : 'text-left'
+                      }`}
+                    >
+                      <option value="Any">{isAr ? 'أي نوع (عن بُعد، هجين، أو من المقر)' : 'Any (Remote, Hybrid, or On-site)'}</option>
+                      <option value="Remote">{isAr ? 'عن بُعد فقط (Remote Only)' : 'Remote Only'}</option>
+                      <option value="Hybrid">{isAr ? 'هجين (Hybrid - يومان من المقر والباقي عن بعد)' : 'Hybrid'}</option>
+                      <option value="On-site">{isAr ? 'من مقر الشركة بالكامل (On-site)' : 'On-site'}</option>
+                    </select>
+                  </div>
+
+                  {/* Resume Upload Dropzone */}
+                  <div className="space-y-1 pt-1">
+                    <div className="flex items-center justify-between">
+                      <label className="block text-xs font-bold text-navy">
+                        {isAr ? 'ملف السيرة الذاتية (CV)' : 'Resume File (CV)'} <span className="text-coral">*</span>
+                      </label>
+                      <span className="text-[10px] text-slate-500 font-medium">
+                        {isAr ? 'PDF, DOC, DOCX — حتى 5MB' : 'PDF, DOC, DOCX — Up to 5MB'}
+                      </span>
+                    </div>
+
+                    <div
+                      onDragOver={(e) => e.preventDefault()}
+                      onDrop={handleDrop}
+                      className={`relative border-2 border-dashed rounded-2xl p-4 text-center transition-all ${
+                        resumeFile
+                          ? 'border-coral bg-coral-soft/40'
+                          : 'border-slate-300 bg-slate-50/60 hover:bg-slate-100/70 hover:border-slate-400'
+                      }`}
+                    >
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileChange}
+                        accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                        className="hidden"
+                        id="resume-upload"
+                      />
+
+                      {resumeFile ? (
+                        <div className="flex items-center justify-between gap-3 p-1">
+                          <div className="flex items-center gap-3 overflow-hidden">
+                            <div className="w-10 h-10 rounded-xl bg-coral text-white flex items-center justify-center shrink-0">
+                              <FileText className="w-5 h-5" />
+                            </div>
+                            <div className="text-start truncate">
+                              <p className="text-xs font-bold text-navy truncate" dir="ltr">
+                                {resumeFile.name}
+                              </p>
+                              <p className="text-[10px] text-slate-500">
+                                {(resumeFile.size / 1024 / 1024).toFixed(2)} MB • {isAr ? 'جاهز للإرسال' : 'Ready'}
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setResumeFile(null);
+                              if (fileInputRef.current) fileInputRef.current.value = '';
+                            }}
+                            className="px-2.5 py-1.5 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold transition-colors shrink-0 flex items-center gap-1 cursor-pointer"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                            <span>{isAr ? 'حذف' : 'Remove'}</span>
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center gap-2 py-2">
+                          <div className="w-10 h-10 rounded-xl bg-white shadow-2xs border border-slate-200 flex items-center justify-center text-slate-500">
+                            <UploadCloud className="w-5 h-5 text-coral" />
+                          </div>
+                          <div>
+                            <p className="text-xs font-bold text-navy">
+                              {isAr ? 'اسحب وأفلت سيرتك الذاتية هنا' : 'Drag and drop your CV here'}
+                            </p>
+                            <p className="text-[11px] text-slate-500 mt-0.5">
+                              {isAr ? 'أو اضغط لاختيار ملف من جهازك' : 'or click to browse from device'}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            className="px-3.5 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-bold text-navy hover:bg-slate-50 transition-colors shadow-2xs cursor-pointer"
+                          >
+                            {isAr ? 'اختيار ملف السيرة الذاتية' : 'Browse File'}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="pt-2">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="min-h-[48px] w-full rounded-xl bg-coral px-6 text-sm sm:text-base font-bold text-white transition hover:bg-coral-hover focus:outline-none focus:ring-4 focus:ring-coral/20 flex items-center justify-center gap-2 shadow-md active:scale-[0.99] disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                          <span>{isAr ? 'جاري إرسال الطلب والسيرة الذاتية...' : 'Submitting Application...'}</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>{isAr ? 'إرسال طلب التقديم السريع الآن' : 'Submit Quick Apply Now'}</span>
+                          {isAr ? <ArrowLeft className="w-4 h-4 shrink-0" /> : <Send className="w-4 h-4 shrink-0" />}
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  <p className="text-[11px] text-center text-slate-400 font-normal">
+                    {isAr
+                      ? '🔒 بياناتك محمية وتُرسل مباشرةً لمسؤولي التوظيف المعتمدين في الشركات الشريكة.'
+                      : '🔒 Your data is private and forwarded strictly to verified partner recruiters.'}
+                  </p>
+                </form>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4. Jobs Section */}
-      <section id="jobs" className="py-10 sm:py-14 md:py-20 scroll-mt-16 md:scroll-mt-[72px]">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 space-y-5 sm:space-y-6 md:space-y-8">
-          
-          {/* Section Header & Filters */}
-          <div className="flex flex-col gap-3 sm:gap-4">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-navy tracking-tight">
-              {isAr ? "الفرص المتاحة" : "Available Opportunities"}
+      {/* 3. HOW IT WORKS: 3 STEPS */}
+      <section className="py-12 sm:py-16 bg-white border-b border-slate-200">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-coral">
+              {isAr ? 'خطوات بسيطة وسريعة' : 'Simple & Transparent'}
+            </span>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-navy">
+              {isAr ? 'كيف تعمل منظومة التقديم في Hash Hunt؟' : 'How Hash Hunt Bridge Works'}
             </h2>
-            
-            {/* Filters - Scrollable on mobile */}
-            <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-2 whitespace-nowrap [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {['All', 'Development', 'Design', 'Support'].map(filter => (
+            <p className="text-xs sm:text-sm text-slate-600 font-normal">
+              {isAr
+                ? 'رحلة سلسة من إرسال السيرة الذاتية وحتى تلقي عروض المقابلات من شركائنا'
+                : 'A smooth journey from CV submission to interview calls from partner companies'}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 rounded-2xl bg-[#F8FAFC] border border-slate-200/80 hover:border-coral/40 transition-all space-y-3 relative group">
+              <div className="w-10 h-10 rounded-xl bg-coral-soft text-coral font-extrabold flex items-center justify-center text-sm border border-coral/20">
+                1
+              </div>
+              <h3 className="text-base font-bold text-navy">
+                {isAr ? '١. تقديم بياناتك وسيرتك' : '1. Submit CV & Details'}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
+                {isAr
+                  ? 'املأ النموذج في أول الصفحة بأقل من دقيقة وارفع سيرتك الذاتية (بصيغة ATS للحصول على أعلى فرصة قبول).'
+                  : 'Submit the Quick Apply form above in under a minute with your contact details and CV.'}
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-[#F8FAFC] border border-slate-200/80 hover:border-coral/40 transition-all space-y-3 relative group">
+              <div className="w-10 h-10 rounded-xl bg-coral-soft text-coral font-extrabold flex items-center justify-center text-sm border border-coral/20">
+                2
+              </div>
+              <h3 className="text-base font-bold text-navy">
+                {isAr ? '٢. الفحص والمطابقة التلقائية' : '2. Screening & Matching'}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
+                {isAr
+                  ? 'يقوم فريق ومحرك Hash Hunt بفحص التخصص والخبرة ومطابقتها مع الشواغر الوظيفية الحية لدى الشركات الشريكة.'
+                  : 'Hash Hunt matches your experience and domain against active vacancies with contracted employers.'}
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-[#F8FAFC] border border-slate-200/80 hover:border-coral/40 transition-all space-y-3 relative group">
+              <div className="w-10 h-10 rounded-xl bg-coral-soft text-coral font-extrabold flex items-center justify-center text-sm border border-coral/20">
+                3
+              </div>
+              <h3 className="text-base font-bold text-navy">
+                {isAr ? '٣. الترشيح وتحديد المقابلة' : '3. Referral & Interview'}
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed">
+                {isAr
+                  ? 'يتم إرسال ملفك مباشرة لمدير التوظيف (Recruiter / Hiring Manager) للتواصل معك مباشرة دون وسيط.'
+                  : 'Your CV is directly handed to the hiring team to contact you directly for interviews.'}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. AVAILABLE JOBS SECTION */}
+      <section id="jobs" className="py-12 sm:py-16 md:py-20 scroll-mt-20">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+          
+          {/* Header & Category Filters */}
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="space-y-1.5">
+              <span className="text-xs font-bold uppercase tracking-wider text-coral">
+                {isAr ? 'فرص حصرية للشركاء' : 'Partner Opportunities'}
+              </span>
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-navy">
+                {isAr ? 'الوظائف المتاحة حالياً لدى الشركات الشريكة' : 'Available Partner Job Openings'}
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-500 font-normal">
+                {isAr
+                  ? 'اضغط على "قدّم الآن" لأي وظيفة ليتم تحديدها تلقائياً في نموذج التقديم السريع بالأعلى.'
+                  : 'Click "Apply Now" on any job to automatically select it in the Quick Apply form above.'}
+              </p>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+              {[
+                { id: 'All', ar: 'الكل', en: 'All' },
+                { id: 'Development', ar: 'تطوير وبرمجة', en: 'Dev' },
+                { id: 'Design', ar: 'تصميم UI/UX', en: 'Design' },
+                { id: 'Support', ar: 'خدمة عملاء', en: 'Support' },
+                { id: 'Marketing', ar: 'تسويق رقمي', en: 'Marketing' },
+                { id: 'Sales', ar: 'مبيعات', en: 'Sales' }
+              ].map((tab) => (
                 <button
-                  key={filter}
-                  onClick={() => setActiveFilter(filter)}
-                  className={`min-h-[40px] sm:min-h-[44px] px-4 sm:px-5 rounded-xl text-xs sm:text-sm font-bold transition-colors duration-200 active:scale-95 flex items-center justify-center cursor-pointer ${
-                    activeFilter === filter 
-                      ? 'bg-navy text-white shadow-2xs' 
-                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                  key={tab.id}
+                  onClick={() => setActiveFilter(tab.id)}
+                  className={`min-h-[38px] px-3.5 sm:px-4 rounded-xl text-xs font-bold transition-all duration-150 cursor-pointer ${
+                    activeFilter === tab.id
+                      ? 'bg-navy text-white shadow-xs'
+                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:text-navy'
                   }`}
                 >
-                  {isAr && filter === 'All' ? 'الكل' : 
-                   isAr && filter === 'Development' ? 'تطوير' :
-                   isAr && filter === 'Design' ? 'تصميم' :
-                   isAr && filter === 'Support' ? 'دعم' : filter}
+                  {isAr ? tab.ar : tab.en}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Job Cards Grid */}
-          <div className="grid grid-cols-1 gap-3.5 sm:gap-4 md:grid-cols-2 md:gap-6">
+          {/* Job Listings Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             <AnimatePresence mode="popLayout">
-              {filteredJobs.map(job => (
+              {filteredJobs.map((job) => (
                 <motion.div
                   key={job.id}
                   layout
@@ -514,54 +1098,67 @@ export const HashHuntPage: React.FC = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
                   transition={{ duration: 0.2 }}
-                  className={`bg-white rounded-2xl p-4.5 sm:p-6 md:p-8 border ${
-                    job.isFeatured ? 'border-coral/30 shadow-md' : 'border-slate-200 shadow-2xs'
-                  } relative overflow-hidden flex flex-col`}
+                  className={`bg-white rounded-2xl p-5 sm:p-6 border ${
+                    job.isFeatured
+                      ? 'border-coral/40 shadow-sm'
+                      : 'border-slate-200 shadow-2xs'
+                  } flex flex-col justify-between hover:shadow-md hover:border-coral/50 transition-all relative overflow-hidden group`}
                 >
                   {job.isFeatured && (
-                    <div className="absolute top-0 inset-x-0 h-1 bg-coral"></div>
+                    <div className="absolute top-0 inset-x-0 h-1 bg-coral" />
                   )}
-                  
-                  <div className="mb-2.5 sm:mb-3">
-                    <h3 className="text-base sm:text-lg md:text-xl font-semibold text-navy leading-tight">{job.title}</h3>
-                    <p className="text-xs sm:text-sm font-medium text-coral mt-1">{isAr ? job.company : job.companyEn}</p>
-                  </div>
 
-                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-3 text-xs font-medium text-slate-600">
-                    <span className="flex items-center gap-1 bg-[#F8FAFC] px-2 py-1 rounded-md border border-slate-100"><MapPin className="w-3.5 h-3.5 shrink-0" /> {isAr ? job.location : job.locationEn}</span>
-                    <span className="flex items-center gap-1 bg-[#F8FAFC] px-2 py-1 rounded-md border border-slate-100">{job.workType}</span>
-                  </div>
-
-                  <p className="hidden md:block text-xs sm:text-sm text-slate-600 leading-relaxed mb-4 flex-1 font-normal">
-                    {isAr ? job.description : job.descriptionEn}
-                  </p>
-                  <p className="md:hidden text-xs sm:text-sm text-slate-600 leading-relaxed mb-3 line-clamp-2 font-normal">
-                    {isAr ? job.description : job.descriptionEn}
-                  </p>
-
-                  <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4">
-                    {(job.tags || []).slice(0, 2).map(tag => (
-                      <span key={tag} className="text-[11px] font-mono font-medium bg-slate-100 text-slate-600 px-2.5 py-0.5 sm:py-1 rounded-md">
-                        {tag}
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 className="text-base sm:text-lg font-bold text-navy leading-snug group-hover:text-coral transition-colors">
+                          {job.title}
+                        </h3>
+                        <p className="text-xs font-medium text-slate-500 mt-0.5">
+                          {isAr ? job.company : job.companyEn}
+                        </p>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-slate-100 text-slate-700 shrink-0">
+                        {job.workType}
                       </span>
-                    ))}
-                    {(job.tags?.length || 0) > 2 && (
-                      <span className="text-[11px] font-mono font-medium bg-slate-50 text-slate-400 px-2 py-0.5 sm:py-1 rounded-md">
-                        +{(job.tags?.length || 0) - 2}
+                    </div>
+
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <span className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+                        <MapPin className="w-3.5 h-3.5 text-coral shrink-0" />
+                        <span>{isAr ? job.location : job.locationEn}</span>
                       </span>
-                    )}
+                      <span className="bg-slate-50 px-2 py-1 rounded-md border border-slate-100 text-[11px] font-medium">
+                        {job.experienceLevel}
+                      </span>
+                    </div>
+
+                    <p className="text-xs sm:text-[13px] text-slate-600 font-normal leading-relaxed line-clamp-3">
+                      {isAr ? job.description : job.descriptionEn}
+                    </p>
+
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {job.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 text-[10px] font-mono font-medium"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
 
-                  <button
-                    onClick={() => handleApplyClick(job.title)}
-                    className={`min-h-[44px] sm:min-h-[48px] w-full rounded-xl px-4 sm:px-5 text-sm sm:text-base font-semibold transition focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-2 mt-auto cursor-pointer ${
-                      job.isFeatured 
-                        ? 'bg-coral text-white hover:bg-coral-hover focus:ring-coral shadow-xs' 
-                        : 'bg-[#F8FAFC] text-navy border border-[#E5E7EB] hover:bg-slate-50 focus:ring-slate-200 shadow-2xs'
-                    }`}
-                  >
-                    {isAr ? "قدّم الآن" : "Apply Now"}
-                  </button>
+                  <div className="pt-5 mt-4 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => handleApplyClick(job.title)}
+                      className="w-full min-h-[42px] rounded-xl bg-coral-soft hover:bg-coral text-coral hover:text-white border border-coral/20 text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer active:scale-98"
+                    >
+                      <span>{isAr ? 'قدّم على هذه الوظيفة' : 'Apply for this role'}</span>
+                      {isAr ? <ArrowLeft className="w-3.5 h-3.5" /> : <ArrowRight className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
                 </motion.div>
               ))}
             </AnimatePresence>
@@ -569,305 +1166,150 @@ export const HashHuntPage: React.FC = () => {
         </div>
       </section>
 
-      {/* 6. Application Section */}
-      <section id="apply-now" ref={applySectionRef} className="py-10 sm:py-14 md:py-20 bg-white border-t border-slate-200 relative scroll-mt-16 md:scroll-mt-[72px]">
-        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 relative z-10">
-          
-          <div className="mb-5 sm:mb-8 md:mb-10 text-center" ref={formTopRef}>
-            <div className="inline-flex items-center justify-center px-3 py-1 mb-2 sm:mb-3 bg-coral-soft text-coral text-xs font-medium rounded-full uppercase tracking-wider">
-              {isAr ? "التقديم السريع" : "Quick Apply"}
-            </div>
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-navy">{isAr ? "قدّم الآن" : "Apply Now"}</h2>
-            
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-6 mt-3 sm:mt-4 text-xs sm:text-sm font-semibold text-slate-600">
-              <span className="flex items-center justify-center gap-1"><CheckCircle2 className="w-4 h-4 text-coral shrink-0" /> {isAr ? "بدون حساب" : "No Account"}</span>
-              <span className="flex items-center justify-center gap-1"><CheckCircle2 className="w-4 h-4 text-coral shrink-0" /> {isAr ? "نموذج واحد" : "One Form"}</span>
-              <span className="flex items-center justify-center gap-1"><CheckCircle2 className="w-4 h-4 text-coral shrink-0" /> {isAr ? "أقل من دقيقة" : "Under a minute"}</span>
-            </div>
+      {/* 5. PARTNER SECTORS */}
+      <section className="py-12 sm:py-16 bg-white border-t border-slate-200">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 space-y-8">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-coral">
+              {isAr ? 'قطاعات التوظيف الشريكة' : 'Partner Industries'}
+            </span>
+            <h2 className="text-xl sm:text-2xl font-bold text-navy">
+              {isAr ? 'شركاء في مختلف قطاعات السوق المصري والعربي' : 'Recruiting Partners Across Diverse Industries'}
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-500 font-normal">
+              {isAr
+                ? 'نتعاون مع كيانات ومؤسسات تبحث باستمرار عن كفاءات مؤهلة بسير ذاتية مطابقة'
+                : 'Connecting qualified ATS profiles with leading companies across multiple sectors'}
+            </p>
           </div>
 
-          <div className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 shadow-xs p-4 sm:p-6 md:p-10 relative pb-24 md:pb-10">
-            
-            <div aria-live="polite">
-              {prefilledBanner && (
-                <div className="mb-5 sm:mb-6 p-3.5 sm:p-4 bg-emerald-50/80 border border-emerald-200 rounded-xl sm:rounded-2xl">
-                  <p className="text-xs font-bold text-emerald-950 mb-1.5 flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                    <span>{isAr ? 'سنبحث عن وظائف بناءً على:' : 'Searching for jobs based on:'}</span>
-                  </p>
-                  <div className="text-xs text-emerald-900 space-y-1 bg-white/70 p-2.5 sm:p-3 rounded-lg sm:rounded-xl border border-emerald-100">
-                    {prefilledBanner.jobTitle && (
-                      <p><strong>{isAr ? 'المسمى: ' : 'Title: '}</strong>{prefilledBanner.jobTitle}</p>
-                    )}
-                    {prefilledBanner.location && (
-                      <p><strong>{isAr ? 'الموقع: ' : 'Location: '}</strong>{prefilledBanner.location}</p>
-                    )}
-                    {prefilledBanner.skills && (
-                      <p><strong>{isAr ? 'المهارات: ' : 'Skills: '}</strong>{prefilledBanner.skills}</p>
-                    )}
-                  </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5 sm:gap-4">
+            {[
+              {
+                icon: Landmark,
+                nameAr: 'البنوك والمصارف',
+                nameEn: 'Banking & Finance',
+                descAr: 'محاسبة، ائتمان، تيلر',
+                descEn: 'Accounting & CX'
+              },
+              {
+                icon: Laptop,
+                nameAr: 'التكنولوجيا والبرمجيات',
+                nameEn: 'Tech & SaaS',
+                descAr: 'تطوير، تصميم، جودة',
+                descEn: 'Fullstack & UI/UX'
+              },
+              {
+                icon: TrendingUp,
+                nameAr: 'التجارة وسلاسل الإمداد',
+                nameEn: 'Retail & FMCG',
+                descAr: 'مبيعات، لوجستيات',
+                descEn: 'Sales & Logistics'
+              },
+              {
+                icon: Building2,
+                nameAr: 'التطوير العقاري',
+                nameEn: 'Real Estate',
+                descAr: 'تسويق، مبيعات عقارية',
+                descEn: 'Property & Sales'
+              },
+              {
+                icon: Headphones,
+                nameAr: 'خدمة العملاء (BPO)',
+                nameEn: 'Customer Support',
+                descAr: 'دعم فني، خدمة عملاء',
+                descEn: 'Arabic/English CX'
+              }
+            ].map((sector, idx) => (
+              <div
+                key={idx}
+                className="p-4 rounded-2xl bg-[#F8FAFC] border border-slate-200/90 text-center flex flex-col items-center justify-center gap-2 hover:border-coral/40 transition-colors"
+              >
+                <div className="w-10 h-10 rounded-xl bg-white shadow-2xs border border-slate-200 flex items-center justify-center text-coral">
+                  <sector.icon className="w-5 h-5" />
                 </div>
-              )}
-
-              {successMsg && (
-                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-5 sm:mb-8 p-3.5 sm:p-5 bg-emerald-50 border border-emerald-200 rounded-xl sm:rounded-2xl flex items-start gap-2.5 sm:gap-3">
-                  <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-[#10B981] shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="text-sm sm:text-base font-bold text-emerald-900 mb-0.5">{isAr ? "تم الإرسال بنجاح" : "Successfully Submitted"}</h4>
-                    <p className="text-xs sm:text-sm text-emerald-800 leading-relaxed">{successMsg}</p>
-                  </div>
-                </motion.div>
-              )}
-
-              {errorMsg && (
-                <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-5 sm:mb-8 p-3.5 sm:p-5 bg-red-50 border border-red-200 rounded-xl sm:rounded-2xl flex items-start gap-2.5 sm:gap-3">
-                  <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 shrink-0 mt-0.5" />
-                  <div>
-                    <h4 className="text-sm sm:text-base font-bold text-red-900 mb-0.5">{isAr ? "تعذر الإرسال" : "Submission Failed"}</h4>
-                    <p className="text-xs sm:text-sm text-red-800 leading-relaxed">{errorMsg}</p>
-                  </div>
-                </motion.div>
-              )}
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-              <div className="grid grid-cols-1 gap-3.5 sm:gap-4 md:grid-cols-2">
-                <div className="space-y-1.5 sm:space-y-2">
-                  <label htmlFor="fullName" className="block text-xs sm:text-sm font-bold text-navy">{isAr ? "الاسم بالكامل" : "Full Name"} <span className="text-coral">*</span></label>
-                  <input
-                    type="text"
-                    id="fullName"
-                    autoComplete="name"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                    placeholder={isAr ? "أحمد محمد" : "John Doe"}
-                    className={`min-h-[48px] sm:min-h-[52px] w-full rounded-xl border border-[#E5E7EB] bg-white px-3.5 sm:px-4 text-xs sm:text-sm md:text-base text-[#111827] outline-none transition placeholder:text-[#6B7280] focus:border-coral focus:ring-4 focus:ring-coral/10 ${isAr ? 'text-right' : 'text-left'}`}
-                  />
-                </div>
-                <div className="space-y-1.5 sm:space-y-2">
-                  <label htmlFor="phoneNumber" className="block text-xs sm:text-sm font-bold text-navy">{isAr ? "رقم الهاتف" : "Phone Number"} <span className="text-coral">*</span></label>
-                  <input
-                    type="tel"
-                    id="phoneNumber"
-                    inputMode="tel"
-                    autoComplete="tel"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    required
-                    dir="ltr"
-                    placeholder="+20 100 000 0000"
-                    className="min-h-[48px] sm:min-h-[52px] w-full rounded-xl border border-[#E5E7EB] bg-white px-3.5 sm:px-4 text-xs sm:text-sm md:text-base text-[#111827] outline-none transition placeholder:text-[#6B7280] focus:border-coral focus:ring-4 focus:ring-coral/10 text-left font-inter"
-                  />
-                </div>
+                <h4 className="text-xs sm:text-sm font-bold text-navy">
+                  {isAr ? sector.nameAr : sector.nameEn}
+                </h4>
+                <p className="text-[11px] text-slate-500">
+                  {isAr ? sector.descAr : sector.descEn}
+                </p>
               </div>
-
-              <div className="space-y-1.5 sm:space-y-2">
-                <label htmlFor="email" className="block text-xs sm:text-sm font-bold text-navy">{isAr ? "البريد الإلكتروني" : "Email Address"} <span className="text-coral">*</span></label>
-                <input
-                  type="email"
-                  id="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  dir="ltr"
-                  placeholder="email@example.com"
-                  className="min-h-[48px] sm:min-h-[52px] w-full rounded-xl border border-[#E5E7EB] bg-white px-3.5 sm:px-4 text-xs sm:text-sm md:text-base text-[#111827] outline-none transition placeholder:text-[#6B7280] focus:border-coral focus:ring-4 focus:ring-coral/10 text-left font-inter"
-                />
-              </div>
-
-              <div className="grid grid-cols-1 gap-3.5 sm:gap-4 md:grid-cols-2">
-                <div className="space-y-1.5 sm:space-y-2">
-                  <label htmlFor="jobTitle" className="block text-xs sm:text-sm font-bold text-navy">{isAr ? "الوظيفة المطلوبة" : "Desired Job Title"} <span className="text-coral">*</span></label>
-                  <input
-                    type="text"
-                    id="jobTitle"
-                    ref={jobTitleInputRef}
-                    value={jobTitle}
-                    onChange={(e) => setJobTitle(e.target.value)}
-                    required
-                    placeholder="Frontend Developer"
-                    className={`min-h-[48px] sm:min-h-[52px] w-full rounded-xl border border-[#E5E7EB] bg-white px-3.5 sm:px-4 text-xs sm:text-sm md:text-base text-[#111827] outline-none transition placeholder:text-[#6B7280] focus:border-coral focus:ring-4 focus:ring-coral/10 ${isAr ? 'text-right' : 'text-left'}`}
-                  />
-                </div>
-                <div className="space-y-1.5 sm:space-y-2">
-                  <label htmlFor="location" className="block text-xs sm:text-sm font-bold text-navy">{isAr ? "مكان الإقامة" : "Location"} <span className="text-coral">*</span></label>
-                  <input
-                    type="text"
-                    id="location"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    required
-                    placeholder={isAr ? "القاهرة، مصر" : "Cairo, Egypt"}
-                    className={`min-h-[48px] sm:min-h-[52px] w-full rounded-xl border border-[#E5E7EB] bg-white px-3.5 sm:px-4 text-xs sm:text-sm md:text-base text-[#111827] outline-none transition placeholder:text-[#6B7280] focus:border-coral focus:ring-4 focus:ring-coral/10 ${isAr ? 'text-right' : 'text-left'}`}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 gap-3.5 sm:gap-4 md:grid-cols-2">
-                <div className="space-y-1.5 sm:space-y-2">
-                  <label htmlFor="openTo" className="block text-xs sm:text-sm font-bold text-navy">{isAr ? "نوع العمل المقبول" : "Accepted Work Type"} <span className="text-coral">*</span></label>
-                  <select
-                    id="openTo"
-                    value={openTo}
-                    onChange={(e) => setOpenTo(e.target.value)}
-                    required
-                    className={`min-h-[48px] sm:min-h-[52px] w-full rounded-xl border border-[#E5E7EB] bg-white px-3.5 sm:px-4 text-xs sm:text-sm md:text-base text-[#111827] outline-none transition placeholder:text-[#6B7280] focus:border-coral focus:ring-4 focus:ring-coral/10 appearance-none font-inter ${isAr ? 'text-right' : 'text-left'}`}
-                  >
-                    <option value="Any">{isAr ? "أي نوع" : "Any"}</option>
-                    <option value="Remote">{isAr ? "عمل عن بُعد (Remote)" : "Remote"}</option>
-                    <option value="On-site">{isAr ? "من مقر الشركة (On-site)" : "On-site"}</option>
-                    <option value="Hybrid">{isAr ? "مختلط (Hybrid)" : "Hybrid"}</option>
-                  </select>
-                </div>
-
-                <div className="space-y-1.5 sm:space-y-2">
-                  <label htmlFor="experience" className="block text-xs sm:text-sm font-bold text-navy">{isAr ? "سنوات الخبرة" : "Years of Experience"}</label>
-                  <input
-                    type="text"
-                    id="experience"
-                    value={experience}
-                    onChange={(e) => setExperience(e.target.value)}
-                    placeholder={isAr ? "مثال: 3 سنوات" : "e.g., 3 years"}
-                    className={`min-h-[48px] sm:min-h-[52px] w-full rounded-xl border border-[#E5E7EB] bg-white px-3.5 sm:px-4 text-xs sm:text-sm md:text-base text-[#111827] outline-none transition placeholder:text-[#6B7280] focus:border-coral focus:ring-4 focus:ring-coral/10 ${isAr ? 'text-right' : 'text-left'}`}
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-1.5 sm:space-y-2 pt-1 sm:pt-2">
-                <label className="block text-xs sm:text-sm font-bold text-navy">{isAr ? "السيرة الذاتية" : "Resume"} <span className="text-coral">*</span></label>
-                
-                <div 
-                  onDragOver={(e) => e.preventDefault()}
-                  onDrop={handleDrop}
-                  className={`relative border-2 border-dashed rounded-xl sm:rounded-2xl h-[160px] sm:h-[180px] md:h-[190px] flex items-center justify-center p-3 sm:p-4 text-center transition-all duration-200 ${
-                    resumeFile 
-                      ? 'border-coral bg-coral-soft/50' 
-                      : 'border-slate-300 bg-[#F8FAFC] hover:bg-slate-50 hover:border-slate-400'
-                  }`}
-                >
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    className="hidden"
-                    id="resume-upload"
-                  />
-                  
-                  {resumeFile ? (
-                    <div className="flex flex-col items-center gap-2.5 sm:gap-3 w-full">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-coral-soft flex items-center justify-center text-coral shrink-0">
-                        <FileText className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
-                      </div>
-                      <div className="w-full px-3 sm:px-4">
-                        <p className="text-xs sm:text-sm font-bold text-navy truncate" dir="ltr">{resumeFile.name}</p>
-                        <p className="text-[11px] text-slate-500 mt-0.5">{(resumeFile.size / 1024 / 1024).toFixed(2)} MB</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setResumeFile(null);
-                          if (fileInputRef.current) fileInputRef.current.value = '';
-                        }}
-                        className="mt-0.5 text-xs font-bold text-red-600 hover:text-red-700 active:bg-red-100 flex items-center gap-1.5 bg-red-50 px-3 py-1.5 min-h-[36px] rounded-lg relative z-10 transition-colors cursor-pointer"
-                      >
-                        <X className="w-4 h-4 shrink-0" />
-                        <span>{isAr ? "إزالة الملف" : "Remove file"}</span>
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center w-full h-full gap-2 sm:gap-2.5">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white shadow-2xs border border-slate-200 flex items-center justify-center text-slate-500 shrink-0">
-                        <UploadCloud className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
-                      </div>
-                      <div>
-                        <p className="text-xs sm:text-sm md:text-base font-bold text-navy">{isAr ? "ارفع سيرتك الذاتية" : "Upload your resume"}</p>
-                        <p className="text-[11px] text-slate-500 mt-0.5 hidden sm:block">{isAr ? "اسحب وأفلت الملف هنا أو اضغط للاختيار" : "Drag and drop here or click to browse"}</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="min-h-[38px] px-4 bg-white border border-slate-200 hover:bg-slate-50 text-navy text-xs sm:text-sm font-bold rounded-lg shadow-2xs transition-colors mt-0.5 cursor-pointer"
-                      >
-                        {isAr ? "اختيار ملف" : "Choose file"}
-                      </button>
-                      <p className="text-[10px] sm:text-[11px] font-medium text-slate-400">
-                        {isAr ? "PDF أو DOC أو DOCX — حتى 5MB" : "PDF, DOC, DOCX — up to 5MB"}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Desktop Submit Button (hidden on mobile when not sticky) */}
-              <div className="hidden md:block pt-2">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="min-h-[48px] w-full rounded-xl bg-coral px-5 text-base font-bold text-white transition hover:bg-coral-hover focus:outline-none focus:ring-2 focus:ring-coral focus:ring-offset-2 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer shadow-md"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      <span>{isAr ? "جاري الإرسال..." : "Submitting..."}</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>{isAr ? "إرسال الطلب الآن" : "Submit Application Now"}</span>
-                      {isAr ? <ArrowLeft className="w-4 h-4 shrink-0" /> : <Send className="w-4 h-4 shrink-0" />}
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Mobile Sticky Submit CTA */}
-      <AnimatePresence>
-        {isApplyVisible && (
-          <motion.div
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: 100, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)] p-4 pb-6"
-          >
+      {/* 6. FAQ SECTION */}
+      <section className="py-12 sm:py-16 bg-[#F8FAFC] border-t border-slate-200">
+        <div className="mx-auto w-full max-w-3xl px-4 sm:px-6 lg:px-8 space-y-6">
+          <div className="text-center space-y-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-coral">
+              {isAr ? 'إجابات مباشرة' : 'Got Questions?'}
+            </span>
+            <h2 className="text-xl sm:text-2xl font-bold text-navy">
+              {isAr ? 'الأسئلة الشائعة حول التقديم السريع' : 'Frequently Asked Questions'}
+            </h2>
+          </div>
+
+          <div className="space-y-3">
+            {faqs.map((faq, idx) => {
+              const isOpen = expandedFaq === idx;
+              return (
+                <div
+                  key={idx}
+                  className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-2xs transition-all"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setExpandedFaq(isOpen ? null : idx)}
+                    className="w-full p-4 sm:p-5 text-start flex items-center justify-between gap-3 font-bold text-xs sm:text-sm text-navy hover:text-coral transition-colors cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2">
+                      <HelpCircle className="w-4 h-4 text-coral shrink-0" />
+                      <span>{isAr ? faq.qAr : faq.qEn}</span>
+                    </span>
+                    <ChevronDown
+                      className={`w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 ${
+                        isOpen ? 'rotate-180 text-coral' : ''
+                      }`}
+                    />
+                  </button>
+                  {isOpen && (
+                    <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-0 text-xs sm:text-sm text-slate-600 font-normal leading-relaxed border-t border-slate-100">
+                      {isAr ? faq.aAr : faq.aEn}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* 7. BOTTOM BANNER TO SCROLL UP TO APPLY */}
+      <section className="py-10 bg-white border-t border-slate-200 text-center">
+        <div className="max-w-2xl mx-auto px-4 space-y-3">
+          <h3 className="text-lg sm:text-xl font-bold text-navy">
+            {isAr ? 'جاهز للانطلاق في خطوتك المهنية التالية؟' : 'Ready for your next career breakthrough?'}
+          </h3>
+          <p className="text-xs sm:text-sm text-slate-500 font-normal">
+            {isAr
+              ? 'قدّم الآن عبر النموذج السريع بأول الصفحة لتبدأ المطابقة والتواصل فوراً.'
+              : 'Submit via the Quick Apply form at the top of the page to get matched directly.'}
+          </p>
+          <div className="pt-2">
             <button
-              onClick={(e) => {
-                // Find form and submit it
-                const form = document.querySelector('form');
-                if (form) {
-                  if (typeof form.requestSubmit === 'function') {
-                    form.requestSubmit();
-                  } else {
-                    form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-                  }
-                }
-              }}
-              disabled={isSubmitting}
-              className="min-h-[48px] w-full rounded-xl bg-coral px-5 text-base font-bold text-white transition hover:bg-coral-hover focus:outline-none focus:ring-2 focus:ring-coral focus:ring-offset-2 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              type="button"
+              onClick={() => scrollToSection('apply-now')}
+              className="px-6 py-2.5 rounded-xl bg-coral text-white text-xs sm:text-sm font-bold hover:bg-coral-hover transition-colors shadow-sm inline-flex items-center gap-2 cursor-pointer"
             >
-              {isSubmitting ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  {isAr ? "جاري إرسال طلبك..." : "Submitting..."}
-                </>
-              ) : (
-                <>
-                  {isAr ? "إرسال الطلب" : "Submit Application"}
-                  {isAr ? <ArrowLeft className="w-4 h-4" /> : <Send className="w-4 h-4" />}
-                </>
-              )}
+              <Zap className="w-4 h-4 fill-current" />
+              <span>{isAr ? 'العودة لنموذج التقديم السريع بالأعلى' : 'Go to Quick Apply Form'}</span>
             </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      </section>
     </main>
   );
 };

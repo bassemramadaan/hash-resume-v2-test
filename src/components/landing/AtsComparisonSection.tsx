@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import { XCircle, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
+import React from 'react';
+import { XCircle, CheckCircle2 } from 'lucide-react';
 
 interface AtsComparisonSectionProps {
   isAr: boolean;
 }
 
 export const AtsComparisonSection: React.FC<AtsComparisonSectionProps> = ({ isAr }) => {
-  const [showDetailedDetails, setShowDetailedDetails] = useState(false);
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 py-6">

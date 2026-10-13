@@ -338,7 +338,7 @@ export const AtsCheckerPage: React.FC = () => {
                         )}
                         <span className="text-slate-100">{issue.title}</span>
                       </div>
-                      <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed pl-6 rtl:pl-0 rtl:pr-6 font-normal">
+                      <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed ps-6 font-normal">
                         {issue.description}
                       </p>
                     </div>

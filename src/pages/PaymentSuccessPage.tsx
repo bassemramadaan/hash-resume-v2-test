@@ -15,6 +15,21 @@ export const PaymentSuccessPage: React.FC = () => {
   const pkg = searchParams.get('pkg') || 'single';
   const credits = pkg === 'triple' ? 3 : 1;
 
+  React.useEffect(() => {
+    // Guard against awarding credits multiple times for the same transaction
+    const processedKey = `hash_resume_credited_tx_${tx}`;
+    if (typeof window !== 'undefined') {
+      const alreadyCredited = sessionStorage.getItem(processedKey) || localStorage.getItem(processedKey);
+      if (!alreadyCredited) {
+        addDownloads(credits);
+        sessionStorage.setItem(processedKey, 'true');
+        localStorage.setItem(processedKey, 'true');
+        sessionStorage.setItem('verified_reference', tx);
+        localStorage.setItem('verified_reference', tx);
+      }
+    }
+  }, [tx, credits, addDownloads]);
+
   return (
     <main className="max-w-xl mx-auto px-4 py-16 text-center space-y-6">
       <div className="flex justify-center mb-2">

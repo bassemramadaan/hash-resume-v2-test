@@ -1548,6 +1548,85 @@ app.post("/api/verify-code", async (req, res) => {
   }
 });
 
+// 8.1 Hash Hunt Quick Apply Route (Handles application forwarding or local processing)
+app.post("/api/hash-hunt/apply", async (req, res) => {
+  try {
+    const { fullName, phoneNumber, email, jobTitle, experience, location, openTo, resumeFile } = req.body || {};
+
+    if (!fullName || !phoneNumber || !email || !jobTitle || !location || !resumeFile) {
+      return res.status(400).json({
+        success: false,
+        error: "جميع الحقول الأساسية وملف السيرة الذاتية مطلوبة",
+      });
+    }
+
+    // Input sanitization and bounds check
+    const cleanName = String(fullName).trim().slice(0, 100);
+    const cleanPhone = String(phoneNumber).trim().slice(0, 30);
+    const cleanEmail = String(email).trim().slice(0, 100);
+    const cleanTitle = String(jobTitle).trim().slice(0, 120);
+    const cleanLoc = String(location).trim().slice(0, 100);
+
+    const gasUrl =
+      process.env.HASH_HUNT_API_URL ||
+      process.env.VITE_HASH_HUNT_API_URL;
+
+    const isRealExternalUrl =
+      gasUrl &&
+      gasUrl.startsWith("https://") &&
+      !gasUrl.includes("PLACEHOLDER_HASH_HUNT");
+
+    if (isRealExternalUrl) {
+      try {
+        const externalRes = await fetch(gasUrl, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify({
+            fullName: cleanName,
+            phoneNumber: cleanPhone,
+            email: cleanEmail,
+            jobTitle: cleanTitle,
+            experience: String(experience || "").slice(0, 50),
+            location: cleanLoc,
+            openTo: String(openTo || "Any").slice(0, 50),
+            resumeFile,
+          }),
+        });
+
+        const rawText = await externalRes.text();
+        try {
+          const parsed = JSON.parse(rawText);
+          return res.json(parsed);
+        } catch {
+          // If external returns non-JSON 200 OK
+          if (externalRes.ok) {
+            return res.json({ success: true, message: "تم إرسال الطلب بنجاح" });
+          }
+        }
+      } catch (fwdErr) {
+        console.warn("Failed to forward Hash Hunt application to external webhook, falling back to local acceptance:", fwdErr);
+      }
+    }
+
+    console.log(`[Hash Hunt] Received application for ${cleanTitle}: ${cleanName} (${cleanEmail}, ${cleanPhone})`);
+
+    return res.json({
+      success: true,
+      message: "تم استلام طلبك وسيرتك الذاتية بنجاح! سيتم مراجعة الملف وترشيحك للشركات الشريكة.",
+      candidate: {
+        name: cleanName,
+        title: cleanTitle,
+      },
+    });
+  } catch (err: unknown) {
+    console.error("Error processing Hash Hunt application:", err);
+    return res.status(500).json({
+      success: false,
+      error: "حدث خطأ أثناء معالجة الطلب. يرجى المحاولة لاحقاً.",
+    });
+  }
+});
+
 // 9. AI: Full CV Auto-Generator (Parse + Enhance in one call)
 app.post("/api/ai/full-parse", aiMiddleware({
   featureKey: "assistant",

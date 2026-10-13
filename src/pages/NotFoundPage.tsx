@@ -43,7 +43,7 @@ export const NotFoundPage: React.FC = () => {
           className="btn-folded-corner w-full sm:w-auto px-6 py-3 bg-[#FF4D2D] hover:bg-[#E5431F] text-white font-semibold text-xs rounded-full shadow-xs transition flex items-center justify-center gap-2 cursor-pointer"
         >
           <FileText className="w-4 h-4" />
-          <span>{isAr ? 'منشئ السيرة (9 خطوات)' : 'Resume Builder'}</span>
+          <span>{isAr ? 'منشئ السيرة الذاتية' : 'Resume Builder'}</span>
           <ArrowIcon className="w-4 h-4" />
         </Link>
       </div>

@@ -177,15 +177,15 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                   <span>{isAr ? 'اللغة' : 'Language'}</span>
                 </div>
                 <span className="text-xs font-semibold text-slate-600">
-                  {isAr ? 'العربية | English' : 'English | العربية'}
+                  {isAr ? 'العربية • English • Français' : 'English • Français • العربية'}
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-1.5 p-1 bg-white rounded-xl border border-slate-200/90 shadow-2xs">
+              <div className="grid grid-cols-3 gap-1 p-1 bg-white rounded-xl border border-slate-200/90 shadow-2xs">
                 <button
                   type="button"
                   onClick={() => handleSelectLanguage('ar')}
-                  className={`py-1.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                  className={`py-1.5 px-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer ${
                     settings.language === 'ar'
                       ? 'bg-[#001639] text-white shadow-xs'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -197,7 +197,7 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                 <button
                   type="button"
                   onClick={() => handleSelectLanguage('en')}
-                  className={`py-1.5 px-3 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                  className={`py-1.5 px-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer ${
                     settings.language === 'en'
                       ? 'bg-[#001639] text-white shadow-xs'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -205,6 +205,18 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                 >
                   <span>🇬🇧</span>
                   <span>English</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSelectLanguage('fr')}
+                  className={`py-1.5 px-1.5 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1 cursor-pointer ${
+                    settings.language === 'fr'
+                      ? 'bg-[#001639] text-white shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                  }`}
+                >
+                  <span>🇫🇷</span>
+                  <span>Français</span>
                 </button>
               </div>
             </div>

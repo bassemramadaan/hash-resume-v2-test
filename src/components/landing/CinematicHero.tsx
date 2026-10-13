@@ -223,11 +223,11 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
               boxShadow: '0 24px 55px -12px rgba(0,0,0,0.08)',
               transition: { duration: 0.35, ease: 'easeOut' },
             }}
-            className="group relative bg-white rounded-2xl border border-slate-200/70 p-6 sm:p-10 text-start cursor-pointer select-none will-change-transform transform-gpu origin-center"
+            className="group relative bg-white rounded-2xl border border-slate-200/70 p-4 sm:p-8 md:p-10 text-start cursor-pointer select-none will-change-transform transform-gpu origin-center"
             title={isAr ? 'انقر للبدء في إنشاء سيرتك الذاتية' : 'Click to start creating your resume'}
           >
             {/* نقطة خضراء صغيرة هادئة في الزاوية: معتمد لأنظمة ATS مع نبض بطيء ناعم */}
-            <div className="absolute top-4 sm:top-6 end-4 sm:end-6 flex items-center gap-1.5 text-[11px] font-normal text-slate-500 bg-slate-50/90 backdrop-blur-xs px-2.5 py-1 rounded-full border border-slate-200/60">
+            <div className="absolute top-3 sm:top-6 end-3 sm:end-6 flex items-center gap-1.5 text-[10px] sm:text-[11px] font-normal text-slate-500 bg-slate-50/90 backdrop-blur-xs px-2.5 py-1 rounded-full border border-slate-200/60">
               <motion.span
                 animate={{
                   opacity: [0.55, 1, 0.55],
@@ -245,9 +245,9 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
 
             {/* Resume Content Body */}
             {activeLangPreview === 'ar' ? (
-              <div className="space-y-5 text-slate-800" dir="rtl">
+              <div className="space-y-4 sm:space-y-5 text-slate-800" dir="rtl">
                 {/* Header Section */}
-                <div className="border-b border-slate-200 pb-4 pe-24">
+                <div className="border-b border-slate-200 pb-3 sm:pb-4 pe-16 sm:pe-28">
                   <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 tracking-tight">
                     باسم رمضان
                   </h2>
@@ -310,9 +310,9 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
                 </div>
               </div>
             ) : (
-              <div className="space-y-5 text-slate-800" dir="ltr">
+              <div className="space-y-4 sm:space-y-5 text-slate-800" dir="ltr">
                 {/* English Header */}
-                <div className="border-b border-slate-200 pb-4 pe-24">
+                <div className="border-b border-slate-200 pb-3 sm:pb-4 pe-16 sm:pe-28">
                   <h2 className="text-xl sm:text-2xl font-semibold text-slate-900 tracking-tight">
                     BASSEM RAMADAN
                   </h2>
