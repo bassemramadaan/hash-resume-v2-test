@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 import dotenv from "dotenv";
 import { GoogleGenAI } from "@google/genai";
+import { createClient } from '@supabase/supabase-js';
 import {
   getAiConfig,
   checkRateLimit,
@@ -21,6 +22,26 @@ import {
 } from "./server/aiSecurity.ts";
 
 dotenv.config();
+
+// ⚠️ Service Role Key — للسيرفر فقط، مش للفرونت
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+const isSupabaseConfigured = Boolean(supabaseUrl && supabaseServiceKey);
+
+if (!isSupabaseConfigured) {
+  console.warn('⚠️ Warning: Supabase server-side env vars (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY) are missing.');
+}
+
+const supabaseAdmin = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co',
+  supabaseServiceKey || 'placeholder-service-key',
+  {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  }
+);
 
 const app = express();
 const PORT = 3000;
@@ -1749,6 +1770,111 @@ ${wrapUntrustedPromptInput(cleanText)}`;
     return res.status(errorInfo.status).json({ error: errorInfo.error, errorEn: errorInfo.errorEn });
   } finally {
     await releaseConcurrencyLock(clientIp);
+  }
+});
+
+// ============================================
+// CV Management Endpoints (public via link)
+// ============================================
+
+/**
+ * GET /api/cv/:id
+ * يجيب سيرة واحدة بالـ id
+ * ⚠️ الحماية: الـ id UUID عشوائي — محدش يقدر يخمنه
+ */
+app.get("/api/cv/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      return res.status(400).json({ success: false, message: "Invalid ID format" });
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('cvs')
+      .select('id, created_at, full_name, job_title, years_experience, field, country, city, allow_sharing, status')
+      .eq('id', id)
+      .eq('status', 'active')
+      .single();
+
+    if (error || !data) {
+      return res.status(404).json({ success: false, message: "Resume not found" });
+    }
+
+    return res.json({ success: true, data });
+  } catch (err) {
+    console.error('[API] /api/cv/:id error:', err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+/**
+ * PATCH /api/cv/:id/sharing
+ * يحدّث allow_sharing لسيرة
+ * body: { allowSharing: boolean }
+ */
+app.patch("/api/cv/:id/sharing", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { allowSharing } = req.body || {};
+
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      return res.status(400).json({ success: false, message: "Invalid ID format" });
+    }
+
+    if (typeof allowSharing !== 'boolean') {
+      return res.status(400).json({ success: false, message: "allowSharing boolean required" });
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('cvs')
+      .update({ allow_sharing: allowSharing })
+      .eq('id', id)
+      .select('id, allow_sharing')
+      .single();
+
+    if (error || !data) {
+      return res.status(404).json({ success: false, message: "Resume not found or update failed" });
+    }
+
+    return res.json({ success: true, data });
+  } catch (err) {
+    console.error('[API] PATCH /api/cv/:id/sharing error:', err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+/**
+ * DELETE /api/cv/:id
+ * يحذف السيرة (soft delete -> status = 'deleted')
+ */
+app.delete("/api/cv/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Validate UUID format
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      return res.status(400).json({ success: false, message: "Invalid ID format" });
+    }
+
+    const { error } = await supabaseAdmin
+      .from('cvs')
+      .update({ status: 'deleted' })
+      .eq('id', id);
+
+    if (error) {
+      return res.status(404).json({ success: false, message: "Resume not found or delete failed" });
+    }
+
+    return res.json({ success: true, message: "Resume deleted successfully" });
+  } catch (err) {
+    console.error('[API] DELETE /api/cv/:id error:', err);
+    return res.status(500).json({ success: false, message: "Server error" });
   }
 });
 
