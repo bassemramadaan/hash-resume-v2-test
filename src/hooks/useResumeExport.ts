@@ -1,6 +1,7 @@
 import { useExportGate } from '../store/useExportGate';
 import { useResumeStore } from '../store/useResumeStore';
 import { isResumeBlank } from '../utils/resumeFingerprint';
+import { saveResumeToSupabase } from '../lib/saveResume';
 
 export const useResumeExport = () => {
   const { requestExport } = useExportGate();
@@ -26,6 +27,17 @@ export const useResumeExport = () => {
     }
 
     const performPdfExport = async () => {
+      // ✅ احفظ السيرة في Supabase الأول (لو فشلت مش هنوقف التحميل)
+      try {
+        const saved = await saveResumeToSupabase(resumeData);
+        if (saved) {
+          console.log('[Export] Resume saved to Supabase:', saved.id);
+        }
+      } catch (err) {
+        // لو Supabase فشلت، منعطلش الـ PDF
+        console.error('[Export] Failed to save to Supabase (continuing):', err);
+      }
+
       // Logic to actually generate PDF
       let filename = customFilename;
       if (!filename) {
