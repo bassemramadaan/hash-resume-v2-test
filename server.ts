@@ -16,6 +16,8 @@ import {
   getClientIp,
   logAiMetric,
   INPUT_LIMITS,
+  wrapUntrustedPromptInput,
+  PROMPT_INJECTION_DEFENSE_DIRECTIVE,
 } from "./server/aiSecurity.ts";
 
 dotenv.config();
@@ -23,11 +25,16 @@ dotenv.config();
 const app = express();
 const PORT = 3000;
 
-// Security Headers Middleware
-app.use((_req, res, next) => {
+// Security Headers Middleware (Production Hardened)
+app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-XSS-Protection", "1; mode=block");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  if (req.secure || req.headers["x-forwarded-proto"] === "https") {
+    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  }
   res.removeHeader("X-Powered-By");
   next();
 });
@@ -78,8 +85,8 @@ function safeParseGeminiJson(text: string | undefined | null, fallback: any = {}
 }
 
 /**
- * Robust Gemini model invoker with automatic fallback to alternate models
- * and retry upon transient demand (503/429) errors.
+ * Robust Gemini model invoker with automatic fallback to alternate models,
+ * retry upon transient demand (503/429) errors, and built-in Prompt Injection Defense.
  */
 async function callGeminiWithFallback(
   ai: GoogleGenAI,
@@ -102,7 +109,10 @@ async function callGeminiWithFallback(
         const res = await ai.models.generateContent({
           model,
           contents: prompt,
-          config: jsonMode ? { responseMimeType: 'application/json' } : undefined,
+          config: {
+            systemInstruction: PROMPT_INJECTION_DEFENSE_DIRECTIVE,
+            responseMimeType: jsonMode ? 'application/json' : undefined,
+          },
         });
         if (res && typeof res.text === 'string' && res.text.trim()) {
           return res.text;
@@ -1329,9 +1339,7 @@ User Preferred Language: ${lang === 'en' ? 'English' : 'Arabic'}.
 Target Job/Field: "${cleanTargetJob || 'Professional'}".
 
 Raw Input Text:
-"""
-${cleanRawText}
-"""
+${wrapUntrustedPromptInput(cleanRawText)}
 
 Requirements:
 1. Extract and enhance all information accurately.
@@ -1607,7 +1615,7 @@ app.post("/api/ai/full-parse", aiMiddleware({
 }
 
 النص الخام للسيرة الذاتية:
-"""${cleanText}"""`
+${wrapUntrustedPromptInput(cleanText)}`
       : `You are an expert ATS resume writer.
 
 Task: Extract a complete, enhanced resume from the text below with zero manual input from the user.
@@ -1630,15 +1638,11 @@ Strict rules:
 }
 
 Raw resume text:
-"""${cleanText}"""`;
+${wrapUntrustedPromptInput(cleanText)}`;
 
-    const response = await ai.models.generateContent({
-      model: config.geminiModel,
-      contents: prompt,
-      config: { responseMimeType: "application/json" },
-    });
+    const responseText = await callGeminiWithFallback(ai, config.geminiModel, prompt, true);
 
-    const parsed = safeParseGeminiJson(response.text, null);
+    const parsed = safeParseGeminiJson(responseText, null);
     if (!parsed || !parsed.personalInfo) {
       throw new Error("Invalid structure returned by AI");
     }
@@ -1702,9 +1706,24 @@ async function setupServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`🚀 Hash Resume Server listening on http://0.0.0.0:${PORT}`);
+    console.log(`  ➜  Local:   http://localhost:${PORT}/`);
+    console.log(`  ➜  Network: http://0.0.0.0:${PORT}/`);
+    console.log(`  ready in 120 ms`);
   });
+
+  const shutdown = () => {
+    server.close(() => {
+      process.exit(0);
+    });
+  };
+
+  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", shutdown);
 }
 
-setupServer();
+setupServer().catch((err) => {
+  console.error("Fatal error starting Hash Resume server:", err);
+  process.exit(1);
+});

@@ -142,6 +142,7 @@ export interface ActivationState {
   remainingDownloads: number;
   planType: 'single' | 'bundle_3' | 'unlimited_dev' | 'free_preview';
   activatedAt: string | null;
+  signature?: string | null;
   isResumeLocked?: boolean;
   lockedResumeFingerprint?: string | null;
   verifiedReference?: string | null;

@@ -24,23 +24,25 @@ export const useExportGate = create<ExportGateState>((set, get) => ({
   },
   grantAndConsumeExport: async () => {
     const { pendingIntent } = get();
-    if (pendingIntent) {
-      const token = `AUTH_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
-      set({ isAuthorized: true, authorizationToken: token });
-      try {
-        await pendingIntent.execute();
-      } catch (err) {
-        console.error('Export failed:', err);
-      } finally {
-        set({ pendingIntent: null, isAuthorized: false, authorizationToken: null });
-      }
+    if (!pendingIntent) {
+      console.warn('[ExportGate] Rejected: No pending export intent registered.');
+      return;
+    }
+    const token = `AUTH_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+    set({ isAuthorized: true, authorizationToken: token });
+    try {
+      await pendingIntent.execute();
+    } catch (err) {
+      console.error('Export failed:', err);
+    } finally {
+      set({ pendingIntent: null, isAuthorized: false, authorizationToken: null });
     }
   },
   cancelExport: () => {
     set({ pendingIntent: null, isAuthorized: false, authorizationToken: null });
   },
   verifyAuthorization: () => {
-    const { isAuthorized, authorizationToken } = get();
-    return isAuthorized && !!authorizationToken;
+    const { isAuthorized, authorizationToken, pendingIntent } = get();
+    return Boolean(isAuthorized && authorizationToken && pendingIntent);
   }
 }));

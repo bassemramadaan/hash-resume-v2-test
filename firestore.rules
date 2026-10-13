@@ -16,37 +16,133 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
+    // Hardened admin check: must be authenticated with verified email
     function isAdmin() {
-      return isSignedIn() && (
-        request.auth.token.email.lower() == 'bassemramadaan@gmail.com'
-      );
+      return isSignedIn() &&
+        request.auth.token.email_verified == true &&
+        request.auth.token.email.lower() == 'bassemramadaan@gmail.com';
     }
 
     function isValidId(id) {
-      return id is string && id.size() > 0 && id.size() <= 128;
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Validation Blueprint for UserProfile
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['userId', 'email', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['userId', 'email', 'displayName', 'photoURL', 'createdAt', 'updatedAt'])
+        && data.userId is string && isValidId(data.userId)
+        && data.email is string && data.email.size() <= 254 && data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+        && (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 120))
+        && (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 1000))
+        && data.createdAt is string && data.createdAt.size() <= 64
+        && data.updatedAt is string && data.updatedAt.size() <= 64;
+    }
+
+    // Validation Blueprint for UserResume
+    function isValidUserResume(data) {
+      return data.keys().hasAll(['id', 'userId', 'title', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['id', 'userId', 'title', 'templateId', 'language', 'resumeData', 'createdAt', 'updatedAt'])
+        && data.id is string && isValidId(data.id)
+        && data.userId is string && isValidId(data.userId)
+        && data.title is string && data.title.size() <= 150
+        && (!('templateId' in data) || (data.templateId is string && data.templateId.size() <= 64))
+        && (!('language' in data) || (data.language is string && data.language.size() <= 10))
+        && (!('resumeData' in data) || data.resumeData is map)
+        && data.createdAt is string && data.createdAt.size() <= 64
+        && data.updatedAt is string && data.updatedAt.size() <= 64;
+    }
+
+    // Validation Blueprint for HuntCandidateSubmission
+    function isValidHuntSubmission(data) {
+      return data.keys().hasAll(['fullName', 'phoneNumber', 'email', 'jobTitle', 'timestamp'])
+        && data.fullName is string && data.fullName.size() > 0 && data.fullName.size() <= 120
+        && data.phoneNumber is string && data.phoneNumber.size() > 0 && data.phoneNumber.size() <= 50
+        && data.email is string && data.email.size() <= 254 && data.email.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+        && data.jobTitle is string && data.jobTitle.size() > 0 && data.jobTitle.size() <= 150
+        && data.timestamp is string && data.timestamp.size() <= 64
+        && (!('userId' in data) || (data.userId is string && isValidId(data.userId)))
+        && (!('yearsOfExperience' in data) || (data.yearsOfExperience is string && data.yearsOfExperience.size() <= 80))
+        && (!('currentLocation' in data) || (data.currentLocation is string && data.currentLocation.size() <= 150))
+        && (!('openTo' in data) || (data.openTo is string && data.openTo.size() <= 150))
+        && (!('cvFileName' in data) || (data.cvFileName is string && data.cvFileName.size() <= 255))
+        && (!('cvFileSize' in data) || (data.cvFileSize is string && data.cvFileSize.size() <= 50))
+        && (!('cvDriveLink' in data) || (data.cvDriveLink is string && data.cvDriveLink.size() <= 1000))
+        && (!('appliedJobId' in data) || (data.appliedJobId is string && data.appliedJobId.size() <= 128))
+        && (!('appliedJobTitle' in data) || (data.appliedJobTitle is string && data.appliedJobTitle.size() <= 150))
+        && (!('status' in data) || (data.status is string && data.status in ['pending', 'reviewed', 'shortlisted', 'contacted', 'rejected']));
     }
 
     // Users Collection
     match /users/{userId} {
-      allow get: if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId) || isAdmin();
+      allow get: if isValidId(userId) && (isOwner(userId) || isAdmin());
+
+      allow create: if isValidId(userId)
+        && (isOwner(userId) || isAdmin())
+        && isValidUserProfile(incoming())
+        && incoming().userId == userId;
+
+      allow update: if isValidId(userId)
+        && (isOwner(userId) || isAdmin())
+        && isValidUserProfile(incoming())
+        && incoming().userId == existing().userId
+        && incoming().createdAt == existing().createdAt;
+
+      allow delete: if isValidId(userId) && (isOwner(userId) || isAdmin());
 
       // Resumes Subcollection
       match /resumes/{resumeId} {
-        allow read, write: if isOwner(userId) || isAdmin();
+        allow get: if isValidId(userId) && isValidId(resumeId) && (isOwner(userId) || isAdmin());
+        allow list: if isValidId(userId) && (isOwner(userId) || isAdmin());
+
+        allow create: if isValidId(userId) && isValidId(resumeId)
+          && (isOwner(userId) || isAdmin())
+          && isValidUserResume(incoming())
+          && incoming().userId == userId
+          && incoming().id == resumeId;
+
+        allow update: if isValidId(userId) && isValidId(resumeId)
+          && (isOwner(userId) || isAdmin())
+          && isValidUserResume(incoming())
+          && incoming().userId == existing().userId
+          && incoming().id == existing().id
+          && incoming().createdAt == existing().createdAt;
+
+        allow delete: if isValidId(userId) && isValidId(resumeId) && (isOwner(userId) || isAdmin());
       }
     }
 
     // Hunt Submissions Collection
     match /hunt_submissions/{submissionId} {
       allow create: if isValidId(submissionId)
-        && request.resource.data.keys().hasAll(['fullName', 'email'])
-        && request.resource.data.fullName is string && request.resource.data.fullName.size() <= 150
-        && request.resource.data.email is string && request.resource.data.email.size() <= 150;
-      allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
-      allow list: if isSignedIn() && (request.auth.uid == resource.data.userId || isAdmin());
-      allow update, delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+        && isValidHuntSubmission(incoming())
+        && (!('userId' in incoming()) || (isSignedIn() && incoming().userId == request.auth.uid));
+
+      allow get: if isValidId(submissionId)
+        && isSignedIn()
+        && (isAdmin() || ('userId' in resource.data && resource.data.userId == request.auth.uid));
+
+      allow list: if isSignedIn()
+        && (isAdmin() || ('userId' in resource.data && resource.data.userId == request.auth.uid));
+
+      allow update: if isValidId(submissionId)
+        && isSignedIn()
+        && (isAdmin() || ('userId' in resource.data && resource.data.userId == request.auth.uid))
+        && isValidHuntSubmission(incoming())
+        && incoming().timestamp == existing().timestamp
+        && (!('userId' in existing()) || incoming().userId == existing().userId);
+
+      allow delete: if isValidId(submissionId)
+        && isSignedIn()
+        && (isAdmin() || ('userId' in resource.data && resource.data.userId == request.auth.uid));
     }
   }
 }
-

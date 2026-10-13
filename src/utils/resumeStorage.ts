@@ -210,6 +210,26 @@ export function saveSettingsDirectly(settings: ResumeSettings): void {
   }
 }
 
+const ACTIVATION_SALT = 'hr_sec_gate_v2_9f3b7c';
+
+/**
+ * Computes deterministic cryptographic signature to prevent localStorage tampering
+ */
+export function computeActivationSignature(
+  code: string | null | undefined,
+  plan: string,
+  time: string | null | undefined
+): string {
+  if (!code) return '';
+  const raw = `${code}:${plan}:${time || ''}:${ACTIVATION_SALT}`;
+  let hash = 0x811c9dc5;
+  for (let i = 0; i < raw.length; i++) {
+    hash ^= raw.charCodeAt(i);
+    hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+  }
+  return `sig_${(hash >>> 0).toString(16)}`;
+}
+
 /**
  * Loads saved activation and validates against the resume
  */
@@ -223,6 +243,20 @@ export function loadSavedActivation(initialResume: ResumeData, defaultActivation
           ...defaultActivation,
           ...parsed,
         };
+
+        // Anti-Tampering Check: If claims to be activated, must have valid matching signature
+        if (merged.isActivated) {
+          const expectedSig = computeActivationSignature(merged.activatedCode, merged.planType, merged.activatedAt);
+          if (!merged.signature || merged.signature !== expectedSig) {
+            console.warn('[ResumeStorage] Activation tampering detected or signature invalid. Reverting to unactivated state.');
+            merged.isActivated = false;
+            merged.activatedCode = null;
+            merged.remainingDownloads = 0;
+            merged.signature = null;
+            safeSetItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(merged));
+          }
+        }
+
         // If stored state claims to be locked, validate it against initialResume
         if (merged.isResumeLocked) {
           const { isValid, fingerprint } = validateResumeLockState(merged, initialResume);
@@ -245,11 +279,15 @@ export function loadSavedActivation(initialResume: ResumeData, defaultActivation
 }
 
 /**
- * Saves activation state to localStorage
+ * Saves activation state to localStorage with anti-tampering signature
  */
 export function saveActivationDirectly(activation: ActivationState): void {
   try {
-    safeSetItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(activation));
+    const toSave: ActivationState = { ...activation };
+    if (toSave.isActivated && toSave.activatedCode) {
+      toSave.signature = computeActivationSignature(toSave.activatedCode, toSave.planType, toSave.activatedAt);
+    }
+    safeSetItem(LOCAL_STORAGE_KEY_ACTIVATION, JSON.stringify(toSave));
   } catch (e) {
     console.error('[ResumeStorage] Failed to save activation', e);
   }

@@ -93,9 +93,11 @@ function handleRequest(e) {
     var ref = params.reference || postData.reference || '';
     return jsonResponse(verify(code, ref));
   } else if (action === 'approve_edit' || action === 'approveEdit') {
+    var adminKey = postData.adminKey || params.adminKey || postData.key || params.key;
     return jsonResponse(approveEdit(
       postData.reference || params.reference,
-      postData.approved !== undefined ? postData.approved : params.approved
+      postData.approved !== undefined ? postData.approved : params.approved,
+      adminKey
     ));
   }
 
@@ -538,9 +540,26 @@ function verify(code, reference) {
 }
 
 /**
- * 4. approveEdit: Toggles Edit Approval in Manual sheet.
+ * Sanitizes input to prevent Formula Injection (=, +, -, @) in Google Sheets
  */
-function approveEdit(reference, approved) {
+function sanitizeSheetCell(val) {
+  if (val === null || val === undefined) return '';
+  var str = String(val).trim();
+  if (/^[=+\-@]/.test(str)) {
+    return "'" + str;
+  }
+  return str;
+}
+
+/**
+ * 4. approveEdit: Toggles Edit Approval in Manual sheet (Protected with Admin Key).
+ */
+function approveEdit(reference, approved, adminKey) {
+  var expectedKey = PropertiesService.getScriptProperties().getProperty('ADMIN_KEY') || 'hash_admin_2025';
+  if (!adminKey || String(adminKey).trim() !== String(expectedKey).trim()) {
+    return { success: false, error: 'Unauthorized: Valid adminKey is required to approve edits' };
+  }
+
   if (!reference) {
     return { success: false, error: 'Reference is required' };
   }
