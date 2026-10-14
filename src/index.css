@@ -112,6 +112,13 @@
   --font-arabic: var(--font-ui-ar);
   --font-display-en: var(--font-display-en);
   --font-display-ar: var(--font-display-ar);
+  --font-tajawal: 'Tajawal', sans-serif;
+  --font-cairo: 'Cairo', sans-serif;
+  --font-alexandria: 'Alexandria', sans-serif;
+  --font-ibm-sans: 'IBM Plex Sans Arabic', 'IBM Plex Sans', -apple-system, sans-serif;
+  --font-ibm-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-ruqaa: 'Aref Ruqaa Ink', 'Aref Ruqaa', cursive, serif;
+  --font-signature: 'Caveat', 'Pinyon Script', 'Great Vibes', 'Allura', cursive, system-ui;
 
   --color-coral: #FF4D2D;
   --color-coral-hover: #E5431F;
@@ -128,6 +135,13 @@
   --color-primary-active: var(--brand-navy-dark);
   --color-primary-soft: var(--brand-navy-soft);
   --color-primary-border: #C8D5E8;
+
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
 }
 
 /* ==========================================================================
@@ -601,6 +615,75 @@ bdi,
 @keyframes hash-hero-reveal {
   from { opacity: 0; transform: translateY(14px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   Smooth Entry Animation Primitives & Micro-Interactions
+   ========================================================================== */
+.animate-in {
+  animation-duration: var(--motion-base, 220ms);
+  animation-timing-function: var(--ease-hash, cubic-bezier(0.16, 1, 0.3, 1));
+  animation-fill-mode: both;
+}
+
+.fade-in { animation-name: hash-fade-in; }
+.fade-in-50 { animation-name: hash-fade-in-50; }
+.zoom-in { animation-name: hash-zoom-in; }
+.zoom-in-95 { animation-name: hash-zoom-in-95; }
+.slide-in-from-top-1 { animation-name: hash-slide-top-1; }
+.slide-in-from-top-2 { animation-name: hash-slide-top-2; }
+.slide-in-from-bottom-2 { animation-name: hash-slide-bottom-2; }
+
+.duration-100 { animation-duration: 100ms !important; transition-duration: 100ms !important; }
+.duration-150 { animation-duration: 150ms !important; transition-duration: 150ms !important; }
+.duration-200 { animation-duration: 200ms !important; transition-duration: 200ms !important; }
+.duration-300 { animation-duration: 300ms !important; transition-duration: 300ms !important; }
+.duration-500 { animation-duration: 500ms !important; transition-duration: 500ms !important; }
+
+@keyframes hash-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes hash-fade-in-50 {
+  from { opacity: 0.5; }
+  to { opacity: 1; }
+}
+
+@keyframes hash-zoom-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes hash-zoom-in-95 {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes hash-slide-top-1 {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hash-slide-top-2 {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes hash-slide-bottom-2 {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ==========================================================================

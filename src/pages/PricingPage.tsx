@@ -252,7 +252,14 @@ export const PricingPage: React.FC = () => {
               {/* Action Button */}
               <button
                 type="button"
-                onClick={() => setIsActivationModalOpen(true)}
+                onClick={() => {
+                  try {
+                    sessionStorage.setItem('hash_selected_plan', 'single');
+                  } catch {
+                    // ignore
+                  }
+                  setIsActivationModalOpen(true);
+                }}
                 className="w-full py-3.5 px-5 bg-[#001639] hover:bg-[#002866] text-white font-semibold text-xs sm:text-sm rounded-2xl transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-[0.99] min-h-[48px]"
               >
                 <span>{isAr ? 'تفعيل الباقة الفردية (50 ج.م)' : 'Get Single Key — 50 EGP'}</span>
@@ -364,7 +371,14 @@ export const PricingPage: React.FC = () => {
               {/* Action Button */}
               <button
                 type="button"
-                onClick={() => setIsActivationModalOpen(true)}
+                onClick={() => {
+                  try {
+                    sessionStorage.setItem('hash_selected_plan', 'bundle_3');
+                  } catch {
+                    // ignore
+                  }
+                  setIsActivationModalOpen(true);
+                }}
                 className="w-full py-3.5 px-5 bg-[#FF4D2D] hover:bg-[#e03e1e] text-white font-semibold text-xs sm:text-sm rounded-2xl transition-all duration-150 flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-[0.99] min-h-[48px]"
               >
                 <span>{isAr ? 'تفعيل باقة الـ 3 نسخ (120 ج.م)' : 'Get 3-Pack Key — 120 EGP'}</span>

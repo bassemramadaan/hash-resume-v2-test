@@ -252,7 +252,28 @@ export const ActivationModal: React.FC = () => {
 
   const [paymentStep, setPaymentStep] = useState<PaymentStep>('payment_details');
   const [transferMethod, setTransferMethod] = useState<TransferMethod>('instapay');
-  const [selectedPlan, setSelectedPlan] = useState<'single' | 'bundle_3'>('single');
+  const [selectedPlan, setSelectedPlan] = useState<'single' | 'bundle_3'>(() => {
+    try {
+      const saved = sessionStorage.getItem('hash_selected_plan') || sessionStorage.getItem('selected_payment_plan');
+      if (saved === 'bundle_3' || saved === 'single') return saved;
+    } catch {
+      // Storage restricted
+    }
+    return 'single';
+  });
+
+  useEffect(() => {
+    if (isActivationModalOpen) {
+      try {
+        const saved = sessionStorage.getItem('hash_selected_plan') || sessionStorage.getItem('selected_payment_plan');
+        if (saved === 'bundle_3' || saved === 'single') {
+          setSelectedPlan(saved);
+        }
+      } catch {
+        // Storage restricted
+      }
+    }
+  }, [isActivationModalOpen]);
 
   const [senderInfo, setSenderInfo] = useState('');
   const [emailInput, setEmailInput] = useState('');
@@ -268,6 +289,10 @@ export const ActivationModal: React.FC = () => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [countdown, setCountdown] = useState<number>(3);
+
+  // Compact UI toggles
+  const [showQrCode, setShowQrCode] = useState(false);
+  const [showSmsHelper, setShowSmsHelper] = useState(false);
 
   // Smart SMS Parser state
   const [smsInput, setSmsInput] = useState('');
@@ -629,19 +654,19 @@ export const ActivationModal: React.FC = () => {
         role="dialog"
         aria-modal="true"
         dir={isAr ? 'rtl' : 'ltr'}
-        className="w-full max-w-lg bg-white border border-slate-100 rounded-3xl shadow-2xl overflow-hidden text-slate-800 my-auto max-h-[92vh] flex flex-col payment-modal"
+        className="w-full max-w-[460px] bg-white border border-slate-100 rounded-3xl shadow-2xl overflow-hidden text-slate-800 my-auto max-h-[92vh] flex flex-col payment-modal"
       >
         {/* Top Accent Gradient Bar */}
         <div className="h-1.5 w-full bg-gradient-to-r from-[#001639] via-[#FF4D2D] to-[#001639] shrink-0" />
 
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 bg-white/95 backdrop-blur-xs sticky top-0 z-10 shrink-0">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between px-4 sm:px-5 py-3 border-b border-slate-100 bg-white/95 backdrop-blur-xs sticky top-0 z-10 shrink-0">
+          <div className="flex items-center gap-2.5">
             {paymentStep !== 'payment_details' && paymentStep !== 'activating' && paymentStep !== 'approved' && (
               <button
                 type="button"
                 onClick={() => setPaymentStep('payment_details')}
-                className="w-8 h-8 flex items-center justify-center text-slate-500 hover:text-[#001639] hover:bg-slate-100 rounded-full transition cursor-pointer"
+                className="w-7 h-7 flex items-center justify-center text-slate-500 hover:text-[#001639] hover:bg-slate-100 rounded-full transition cursor-pointer"
                 aria-label={isAr ? 'الرجوع لاختيار الباقة' : 'Back to plans'}
               >
                 {isAr ? <ArrowRight className="w-4 h-4" /> : <ArrowLeft className="w-4 h-4" />}
@@ -649,12 +674,12 @@ export const ActivationModal: React.FC = () => {
             )}
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="font-tajawal font-semibold text-base sm:text-lg text-[#001639]">
+                <h3 className="font-tajawal font-bold text-sm sm:text-base text-[#001639]">
                   {paymentStep === 'error' ? labels.errorTitle : labels.modalTitle}
                 </h3>
-                <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                   <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                  <span>{isAr ? 'تفعيل فوري' : 'Instant'}</span>
+                  <span>{isAr ? 'دفع لمرة واحدة' : 'One-time'}</span>
                 </span>
               </div>
             </div>
@@ -663,308 +688,174 @@ export const ActivationModal: React.FC = () => {
             type="button"
             onClick={() => setIsActivationModalOpen(false)}
             disabled={paymentStep === 'activating'}
-            className="w-8 h-8 flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-full transition cursor-pointer disabled:opacity-50"
+            className="w-7 h-7 flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-full transition cursor-pointer disabled:opacity-50"
             aria-label={isAr ? 'إغلاق النافذة' : 'Close modal'}
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="p-5 sm:p-6 overflow-y-auto space-y-5 custom-scrollbar flex-1">
+        <div className="p-4 sm:p-5 overflow-y-auto space-y-3.5 custom-scrollbar flex-1">
           {paymentStep === 'payment_details' && (
-            <div className="space-y-5">
-              <div className="space-y-3">
+            <div className="space-y-3.5">
+              {/* Step 1: Sleek 50 + 120 Plan Cards Redesign */}
+              <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="block font-tajawal font-bold text-xs sm:text-sm text-slate-800">{labels.step1Title}</label>
-                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                    {labels.oneTimeNotice}
+                  <label className="block font-tajawal font-bold text-xs text-slate-800">
+                    {isAr ? '1. اختر باقة التحميل:' : '1. Select Plan:'}
+                  </label>
+                  <span className="text-[10px] font-semibold text-slate-500">
+                    {isAr ? 'بدون اشتراك شهري' : 'No subscriptions'}
                   </span>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  {/* Single Download Plan (50 EGP) */}
+
+                <div className="grid grid-cols-2 gap-2.5">
+                  {/* Single Plan (50 EGP) */}
                   <div
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setSelectedPlan('single')}
-                    className={`p-4 rounded-2xl border-2 cursor-pointer flex flex-col justify-between payment-plan-card transition-all ${
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSelectedPlan('single'); }}
+                    className={`relative p-3 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between text-start select-none ${
                       selectedPlan === 'single'
-                        ? 'border-[#001639] bg-slate-50/70 shadow-sm ring-2 ring-[#001639]/10'
+                        ? 'border-[#001639] bg-slate-50 shadow-xs ring-2 ring-[#001639]/10'
                         : 'border-slate-200 hover:border-slate-300 bg-white'
                     }`}
                   >
-                    <div>
-                      <div className="flex justify-between items-start mb-1">
-                        <div>
-                          <h4 className="font-tajawal font-semibold text-sm text-[#001639]">
-                            {labels.singleTitle}
-                          </h4>
-                          <p className="text-[11px] text-slate-500">{labels.singleSub}</p>
-                        </div>
-                        <span className="font-semibold text-[#001639] text-base shrink-0 payment-amount">{labels.singlePrice}</span>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[10px] font-bold text-slate-600 bg-slate-200/70 px-1.5 py-0.5 rounded">
+                        {isAr ? 'سيرة واحدة' : '1 Resume'}
+                      </span>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition ${
+                        selectedPlan === 'single' ? 'border-[#001639] bg-[#001639]' : 'border-slate-300'
+                      }`}>
+                        {selectedPlan === 'single' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                       </div>
-
-                      <ul className="space-y-1.5 my-3 pt-2.5 border-t border-slate-100 text-xs text-slate-600">
-                        {labels.singleBullets.map((bullet: string, i: number) => (
-                          <li key={i} className="flex items-start gap-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                            <span className="leading-tight">{bullet}</span>
-                          </li>
-                        ))}
-                      </ul>
                     </div>
 
-                    <div className="pt-2">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedPlan('single');
-                        }}
-                        className={`w-full min-h-[38px] py-2 px-3 rounded-xl font-semibold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer ${
-                          selectedPlan === 'single'
-                            ? 'bg-[#001639] text-white shadow-xs'
-                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                        }`}
-                      >
-                        {selectedPlan === 'single' && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
-                        <span>
-                          {selectedPlan === 'single'
-                            ? (isAr ? 'الباقة المحددة (50 ج.م)' : 'Selected (50 EGP)')
-                            : (isAr ? labels.buySingleBtnAr : labels.buySingleBtn)}
-                        </span>
-                      </button>
+                    <div>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xl sm:text-2xl font-black text-[#001639]">50</span>
+                        <span className="text-xs font-bold text-slate-600">{isAr ? 'ج.م' : 'EGP'}</span>
+                      </div>
+                      <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5 leading-tight">
+                        {isAr ? 'تحميل PDF عالي الدقة + ربط التوظيف' : 'High-res ATS PDF + Referral'}
+                      </p>
                     </div>
                   </div>
 
-                  {/* 3-Download Pack Plan (120 EGP) */}
+                  {/* 3-Download Pack (120 EGP) */}
                   <div
+                    role="button"
+                    tabIndex={0}
                     onClick={() => setSelectedPlan('bundle_3')}
-                    className={`p-4 rounded-2xl border-2 cursor-pointer relative flex flex-col justify-between payment-plan-card transition-all ${
+                    onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setSelectedPlan('bundle_3'); }}
+                    className={`relative p-3 rounded-2xl border-2 cursor-pointer transition-all flex flex-col justify-between text-start select-none ${
                       selectedPlan === 'bundle_3'
-                        ? 'border-[#FF4D2D] bg-gradient-to-b from-orange-50/50 via-white to-white shadow-md shadow-orange-500/10 ring-2 ring-[#FF4D2D]/15'
-                        : 'border-slate-200 hover:border-[#FF4D2D]/60 bg-white'
+                        ? 'border-[#FF4D2D] bg-orange-50/50 shadow-xs ring-2 ring-[#FF4D2D]/15'
+                        : 'border-slate-200 hover:border-orange-200 bg-white'
                     }`}
                   >
-                    <span className="absolute -top-2.5 right-4 rtl:right-auto rtl:left-4 px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-gradient-to-r from-[#FF4D2D] to-[#FF6B4A] text-white shadow-xs">
-                      {labels.bundleBadge}
+                    <span className="absolute -top-2.5 start-2.5 px-2 py-0.2 rounded-full text-[9px] font-bold bg-[#FF4D2D] text-white shadow-xs">
+                      {isAr ? 'وفّر 30 ج.م' : 'Save 30 EGP'}
                     </span>
 
-                    <div>
-                      <div className="flex justify-between items-start mb-1 pt-1">
-                        <div>
-                          <h4 className="font-tajawal font-semibold text-sm text-[#001639]">
-                            {labels.bundleTitle}
-                          </h4>
-                          <p className="text-[11px] text-slate-500">{labels.bundleSub}</p>
-                        </div>
-                        <div className="text-end">
-                          <span className="text-[10px] text-slate-400 line-through block">150 ج.م</span>
-                          <span className="font-semibold text-[#FF4D2D] text-base shrink-0 payment-amount">{labels.bundlePrice}</span>
-                        </div>
+                    <div className="flex items-center justify-between mb-1.5 pt-0.5">
+                      <span className="text-[10px] font-bold text-[#FF4D2D] bg-orange-100/80 px-1.5 py-0.5 rounded">
+                        {isAr ? '3 سير ذاتية' : '3 Resumes'}
+                      </span>
+                      <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition ${
+                        selectedPlan === 'bundle_3' ? 'border-[#FF4D2D] bg-[#FF4D2D]' : 'border-slate-300'
+                      }`}>
+                        {selectedPlan === 'bundle_3' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                       </div>
-
-                      <ul className="space-y-1.5 my-3 pt-2.5 border-t border-slate-100 text-xs text-slate-600">
-                        {labels.bundleBullets.map((bullet: string, i: number) => (
-                          <li key={i} className="flex items-start gap-1.5">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-[#FF4D2D] shrink-0 mt-0.5" />
-                            <span className="leading-tight">{bullet}</span>
-                          </li>
-                        ))}
-                      </ul>
                     </div>
 
-                    <div className="pt-2">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedPlan('bundle_3');
-                        }}
-                        className={`w-full min-h-[38px] py-2 px-3 rounded-xl font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer ${
-                          selectedPlan === 'bundle_3'
-                            ? 'bg-[#FF4D2D] text-white shadow-xs'
-                            : 'bg-orange-50 text-[#FF4D2D] hover:bg-orange-100'
-                        }`}
-                      >
-                        {selectedPlan === 'bundle_3' && <CheckCircle2 className="w-3.5 h-3.5 text-white" />}
-                        <span>
-                          {selectedPlan === 'bundle_3'
-                            ? (isAr ? 'الباقة المحددة (120 ج.م)' : 'Selected Pack (120 EGP)')
-                            : (isAr ? labels.buyBundleBtnAr : labels.buyBundleBtn)}
-                        </span>
-                      </button>
+                    <div>
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-xl sm:text-2xl font-black text-[#FF4D2D]">120</span>
+                        <span className="text-xs font-bold text-[#FF4D2D]">{isAr ? 'ج.م' : 'EGP'}</span>
+                        <span className="text-[10px] text-slate-400 line-through">150</span>
+                      </div>
+                      <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium mt-0.5 leading-tight">
+                        {isAr ? '3 نسخ (40 ج.م للنسخة)' : '3 resumes (40 EGP each)'}
+                      </p>
                     </div>
-                  </div>
-                </div>
-
-                {/* Pricing Transparency FAQ Accordion */}
-                <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/70 space-y-2">
-                  <h5 className="font-tajawal font-bold text-xs text-[#001639] flex items-center gap-1.5">
-                    <HelpCircle className="w-3.5 h-3.5 text-[#FF4D2D]" />
-                    <span>{isAr ? 'تفاصيل التفعيل وما تشمله الباقة:' : 'Pricing & Plan Details FAQ:'}</span>
-                  </h5>
-                  <div className="space-y-1.5 text-xs text-slate-600 leading-relaxed">
-                    <details className="group cursor-pointer">
-                      <summary className="font-semibold text-slate-700 hover:text-[#001639] transition flex items-center justify-between gap-2 py-0.5 select-none">
-                        <span>{isAr ? 'ماذا تشمل باقة الـ 50 ج.م الفردية؟' : 'What does the 50 EGP Single plan include?'}</span>
-                        <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-open:rotate-180 transition-transform shrink-0" />
-                      </summary>
-                      <p className="pt-1 text-slate-500 ps-2.5 border-s-2 border-slate-200">
-                        {isAr
-                          ? 'رسوم الـ 50 ج.م تشمل تصميم وتنزيل سيرة ذاتية بصيغة PDF متوافقة 100% مع أنظمة ATS + الرفع والربط التلقائي على منصة Hash Hunt للتوظيف لتوصيل سيرتك الذاتية مباشرةً للشركات والمؤسسات المتعاقدة معنا.'
-                          : 'The 50 EGP fee covers 1 high-res ATS vector PDF export + automated upload & referral on Hash Hunt connecting your CV with our contracted corporate partners.'}
-                      </p>
-                    </details>
-
-                    <details className="group cursor-pointer">
-                      <summary className="font-semibold text-slate-700 hover:text-[#001639] transition flex items-center justify-between gap-2 py-0.5 select-none">
-                        <span>{isAr ? 'هل الدفع لمرة واحدة أم اشتراك شهري؟' : 'Is this a one-time fee or monthly subscription?'}</span>
-                        <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-open:rotate-180 transition-transform shrink-0" />
-                      </summary>
-                      <p className="pt-1 text-slate-500 ps-2.5 border-s-2 border-slate-200">
-                        {isAr
-                          ? 'دفع لمرة واحدة فقط لا غير. لا توجد أي اشتراكات متجددة أو رسوم مخفية إطلاقاً.'
-                          : '100% one-time payment. Zero recurring subscriptions or hidden charges.'}
-                      </p>
-                    </details>
-
-                    <details className="group cursor-pointer">
-                      <summary className="font-semibold text-slate-700 hover:text-[#001639] transition flex items-center justify-between gap-2 py-0.5 select-none">
-                        <span>{isAr ? 'ماذا لو أردت التعديل مجدداً بعد التحميل؟' : 'What if I want to make changes after downloading?'}</span>
-                        <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-open:rotate-180 transition-transform shrink-0" />
-                      </summary>
-                      <p className="pt-1 text-slate-500 ps-2.5 border-s-2 border-slate-200">
-                        {isAr
-                          ? 'تُقفل السيرة لحماية النسخة المعتمدة وإذا أردت إجراء تعديلات جديدة يمكنك فتح الملف بشراء رصيد تفعيل إضافي أو اختيار باقة الـ 3 تحميلات الموفرة (120 ج.م).'
-                          : 'Your resume is locked post-download to protect your final copy. To make new edits, you can unlock using an extra download credit or choose the 3-download bundle.'}
-                      </p>
-                    </details>
                   </div>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <label className="block font-tajawal font-bold text-xs sm:text-sm text-slate-800">{labels.step2Title}</label>
-                <div role="tablist" className="grid grid-cols-3 gap-1 p-1 bg-slate-100 rounded-2xl text-xs font-bold">
-                  <button onClick={() => setTransferMethod('instapay')} className={`py-2.5 px-2 rounded-xl min-h-[40px] flex items-center justify-center cursor-pointer transition font-bold ${transferMethod === 'instapay' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabInstapay}</button>
-                  <button onClick={() => setTransferMethod('vodafone')} className={`py-2.5 px-2 rounded-xl min-h-[40px] flex items-center justify-center cursor-pointer transition font-bold ${transferMethod === 'vodafone' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabVodafone}</button>
-                  <button onClick={() => setTransferMethod('code')} className={`py-2.5 px-2 rounded-xl min-h-[40px] flex items-center justify-center cursor-pointer transition font-bold ${transferMethod === 'code' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-600 hover:text-slate-900'}`}>{labels.tabCode}</button>
+              {/* Step 2: Payment Method Tabs */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="block font-tajawal font-bold text-xs text-slate-800">
+                    {isAr ? '2. وسيلة الدفع:' : '2. Payment Method:'}
+                  </label>
+                  <span className="text-[11px] font-bold text-[#FF4D2D]">
+                    {selectedPlan === 'bundle_3' ? '120 ج.م' : '50 ج.م'}
+                  </span>
+                </div>
+
+                <div role="tablist" className="grid grid-cols-3 gap-1 p-1 bg-slate-100 rounded-xl text-xs font-bold">
+                  <button
+                    type="button"
+                    onClick={() => setTransferMethod('instapay')}
+                    className={`py-2 px-1 rounded-lg min-h-[36px] flex items-center justify-center gap-1.5 cursor-pointer transition font-bold text-[11px] sm:text-xs ${
+                      transferMethod === 'instapay' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    <Smartphone className="w-3.5 h-3.5 shrink-0" />
+                    <span>{labels.tabInstapay}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTransferMethod('vodafone')}
+                    className={`py-2 px-1 rounded-lg min-h-[36px] flex items-center justify-center gap-1.5 cursor-pointer transition font-bold text-[11px] sm:text-xs ${
+                      transferMethod === 'vodafone' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    <PhoneCall className="w-3.5 h-3.5 shrink-0" />
+                    <span>{isAr ? 'فودافون كاش' : 'Vodafone'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTransferMethod('code')}
+                    className={`py-2 px-1 rounded-lg min-h-[36px] flex items-center justify-center gap-1.5 cursor-pointer transition font-bold text-[11px] sm:text-xs ${
+                      transferMethod === 'code' ? 'bg-white text-[#001639] shadow-xs' : 'text-slate-500 hover:text-slate-800'
+                    }`}
+                  >
+                    <KeyRound className="w-3.5 h-3.5 shrink-0" />
+                    <span>{labels.tabCode}</span>
+                  </button>
                 </div>
 
                 {transferMethod === 'code' ? (
-                  <div className="space-y-4 pt-3 border-t border-slate-100">
-                    <p className="text-xs sm:text-sm font-semibold text-slate-800">{labels.enterCodeDesc}</p>
+                  <div className="space-y-3 pt-2">
+                    <p className="text-xs font-medium text-slate-600">{labels.enterCodeDesc}</p>
                     <input
                       type="text"
                       value={inputCode}
                       onChange={(e) => setInputCode(e.target.value)}
                       placeholder={labels.codePlaceholder}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-mono uppercase text-sm font-bold text-slate-800 focus:bg-white focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 outline-none min-h-[44px] payment-ltr-field transition"
+                      className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono uppercase text-xs sm:text-sm font-bold text-slate-800 focus:bg-white focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 outline-none min-h-[40px] payment-ltr-field transition"
                     />
                     <button
                       onClick={handleVerifyExistingCode}
-                      className="w-full py-3 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs sm:text-sm rounded-xl min-h-[44px] transition flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-[0.99]"
+                      className="w-full py-2.5 bg-[#001639] hover:bg-[#00245E] text-white font-bold text-xs sm:text-sm rounded-xl min-h-[40px] transition flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-[0.99]"
                     >
                       <Zap className="w-4 h-4 text-[#FF4D2D]" />
                       <span>{labels.verifyBtn}</span>
                     </button>
                   </div>
                 ) : (
-                  <form onSubmit={handleSubmitPayment} className="space-y-4 pt-3 border-t border-slate-100">
-                    {/* How It Works Mini Banner */}
-                    <div className="p-3 bg-slate-50 border border-slate-200/70 rounded-xl space-y-1.5">
-                      <span className="font-tajawal font-bold text-xs text-[#001639] flex items-center gap-1.5">
-                        <Zap className="w-3.5 h-3.5 text-[#FF4D2D]" />
-                        {labels.howItWorks}
-                      </span>
-                      <div className="grid grid-cols-1 gap-1 text-[11px] text-slate-600">
-                        <p className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                          <span>{labels.step1Guide}</span>
-                        </p>
-                        <p className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                          <span>{labels.step2Guide}</span>
-                        </p>
-                        <p className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                          <span>{labels.step3Guide}</span>
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Transfer Details Card for InstaPay */}
+                  <form onSubmit={handleSubmitPayment} className="space-y-3 pt-1">
+                    {/* Compact Transfer Box: InstaPay */}
                     {transferMethod === 'instapay' && (
-                      <div className="p-4 bg-gradient-to-br from-[#001639]/5 via-[#001639]/10 to-transparent border border-[#001639]/15 rounded-2xl space-y-3.5">
-                        <div className="flex items-center justify-between">
-                          <span className="font-tajawal font-bold text-xs text-[#001639] flex items-center gap-1.5">
-                            <Smartphone className="w-4 h-4 text-[#FF4D2D]" />
-                            {labels.instapayHeading}
-                          </span>
-                          <span className="font-bold text-xs text-[#FF4D2D] payment-amount">
-                            {selectedPlan === 'bundle_3' ? '120 ج.م' : '50 ج.م'}
-                          </span>
-                        </div>
-
-                        {/* Interactive QR Code & Scan instructions */}
-                        <div className="p-3 bg-white border border-slate-200 rounded-xl shadow-2xs flex flex-col sm:flex-row items-center gap-3.5">
-                          <div className="p-2 bg-slate-50 border border-slate-200/80 rounded-xl shadow-2xs shrink-0 flex flex-col items-center">
-                            <QRCodeSVG
-                              value={INSTAPAY_LINK}
-                              size={105}
-                              level="M"
-                              includeMargin={false}
-                            />
-                            <span className="text-[10px] font-bold text-slate-500 mt-1 flex items-center gap-1">
-                              <QrCode className="w-3 h-3 text-[#FF4D2D]" />
-                              <span>{isAr ? 'امسح للدفع' : 'Scan to pay'}</span>
-                            </span>
-                          </div>
-
-                          <div className="space-y-2 text-start flex-1 min-w-0 w-full">
-                            <p className="text-xs text-slate-600 leading-relaxed font-medium">
-                              {isAr
-                                ? 'امسح رمز الـ QR بكاميرا هاتفك أو اضغط لفتح تطبيق إنستاباي مباشرة وإتمام التحويل في ثوانٍ:'
-                                : 'Scan QR code with your mobile camera or tap below to open InstaPay app directly:'}
-                            </p>
-
-                            <div className="flex flex-wrap gap-1.5 pt-0.5">
-                              {/* Open App button */}
-                              <a
-                                href={INSTAPAY_LINK}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="py-1.5 px-3 bg-[#001639] hover:bg-[#00245E] text-white text-[11px] font-bold rounded-lg flex items-center gap-1.5 shadow-xs transition active:scale-95"
-                              >
-                                <ExternalLink className="w-3.5 h-3.5 text-[#FF4D2D]" />
-                                <span>{labels.instapayOpenApp}</span>
-                              </a>
-
-                              {/* Copy Link */}
-                              <button
-                                type="button"
-                                onClick={() => handleCopy(INSTAPAY_LINK, 'link')}
-                                className="py-1.5 px-2.5 bg-slate-100 hover:bg-slate-200 text-[#001639] text-[11px] font-bold rounded-lg flex items-center gap-1 transition cursor-pointer"
-                              >
-                                {copiedKey === 'link' ? (
-                                  <>
-                                    <Check className="w-3 h-3 text-emerald-600" />
-                                    <span className="text-emerald-700">{labels.copiedBtn}</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Copy className="w-3 h-3 text-slate-600" />
-                                    <span>{isAr ? 'نسخ الرابط' : 'Copy link'}</span>
-                                  </>
-                                )}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Copy Address Row */}
-                        <div className="flex items-center justify-between gap-2 p-2.5 bg-white border border-slate-200 rounded-xl shadow-2xs">
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            <span className="text-[11px] text-slate-500 font-bold shrink-0">
-                              {isAr ? 'عنوان IPA:' : 'IPA:'}
+                      <div className="p-3 bg-slate-50/90 border border-slate-200 rounded-2xl space-y-2">
+                        <div className="flex items-center justify-between gap-2 p-2 bg-white border border-slate-200 rounded-xl">
+                          <div className="min-w-0">
+                            <span className="block text-[9px] text-slate-400 font-bold uppercase">
+                              {isAr ? 'عنوان InstaPay (IPA)' : 'InstaPay IPA'}
                             </span>
                             <span className="font-mono font-bold text-xs text-[#001639] truncate select-all payment-ltr-field">
                               {INSTAPAY_ADDRESS}
@@ -973,58 +864,81 @@ export const ActivationModal: React.FC = () => {
                           <button
                             type="button"
                             onClick={() => handleCopy(INSTAPAY_ADDRESS, 'ipa')}
-                            className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-[#001639] text-xs font-bold rounded-lg flex items-center gap-1 shrink-0 transition cursor-pointer"
+                            className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-[#001639] text-[11px] font-bold rounded-lg flex items-center gap-1 shrink-0 transition cursor-pointer"
                           >
                             {copiedKey === 'ipa' ? (
                               <>
-                                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                                <Check className="w-3 h-3 text-emerald-600" />
                                 <span className="text-emerald-700">{labels.copiedBtn}</span>
                               </>
                             ) : (
                               <>
-                                <Copy className="w-3.5 h-3.5 text-slate-600" />
+                                <Copy className="w-3 h-3 text-slate-600" />
                                 <span>{labels.copyBtn}</span>
                               </>
                             )}
                           </button>
                         </div>
+
+                        {/* Action row: Open App + Optional QR */}
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={INSTAPAY_LINK}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 py-1.5 px-3 bg-[#001639] hover:bg-[#00245E] text-white text-[11px] font-bold rounded-lg flex items-center justify-center gap-1.5 shadow-xs transition active:scale-95"
+                          >
+                            <ExternalLink className="w-3 h-3 text-[#FF4D2D]" />
+                            <span>{labels.instapayOpenApp}</span>
+                          </a>
+
+                          <button
+                            type="button"
+                            onClick={() => setShowQrCode(!showQrCode)}
+                            className="py-1.5 px-2.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-[11px] font-bold rounded-lg flex items-center gap-1 transition cursor-pointer"
+                          >
+                            <QrCode className="w-3 h-3 text-[#FF4D2D]" />
+                            <span>{showQrCode ? (isAr ? 'إخفاء QR' : 'Hide QR') : (isAr ? 'رمز QR' : 'QR')}</span>
+                          </button>
+                        </div>
+
+                        {/* Optional Collapsible QR Preview */}
+                        {showQrCode && (
+                          <div className="p-2.5 bg-white border border-slate-200 rounded-xl flex flex-col items-center justify-center gap-1 animate-in fade-in">
+                            <QRCodeSVG value={INSTAPAY_LINK} size={100} level="M" includeMargin={false} />
+                            <span className="text-[10px] text-slate-500 font-medium">
+                              {isAr ? 'امسح بكاميرا الهاتف للتحويل' : 'Scan to open InstaPay'}
+                            </span>
+                          </div>
+                        )}
                       </div>
                     )}
 
-                    {/* Transfer Details Card for Vodafone Cash */}
+                    {/* Compact Transfer Box: Vodafone Cash */}
                     {transferMethod === 'vodafone' && (
-                      <div className="p-4 bg-rose-50/70 border border-rose-200 rounded-2xl space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="font-tajawal font-bold text-xs text-rose-950 flex items-center gap-1.5">
-                            <PhoneCall className="w-4 h-4 text-[#FF4D2D]" />
-                            {labels.vodafoneHeading}
-                          </span>
-                          <span className="font-bold text-xs text-[#FF4D2D] payment-amount">
-                            {selectedPlan === 'bundle_3' ? '120 ج.م' : '50 ج.م'}
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-600 leading-relaxed">
-                          {labels.vodafoneInstruction}
-                        </p>
-                        
-                        {/* Copy Vodafone Number Row */}
-                        <div className="flex items-center justify-between gap-2 p-2.5 bg-white border border-rose-200 rounded-xl shadow-2xs">
-                          <span className="font-mono font-bold text-sm text-[#001639] select-all payment-tabular payment-ltr-field">
-                            {VODAFONE_CASH_NUMBER}
-                          </span>
+                      <div className="p-3 bg-rose-50/70 border border-rose-200 rounded-2xl space-y-2">
+                        <div className="flex items-center justify-between gap-2 p-2 bg-white border border-rose-200 rounded-xl">
+                          <div className="min-w-0">
+                            <span className="block text-[9px] text-slate-400 font-bold">
+                              {isAr ? 'رقم محفظة فودافون كاش' : 'Vodafone Cash Number'}
+                            </span>
+                            <span className="font-mono font-bold text-xs sm:text-sm text-[#001639] select-all payment-tabular payment-ltr-field">
+                              {VODAFONE_CASH_NUMBER}
+                            </span>
+                          </div>
                           <button
                             type="button"
                             onClick={() => handleCopy(VODAFONE_CASH_NUMBER, 'voda')}
-                            className="px-3 py-1 bg-rose-100 hover:bg-rose-200 text-rose-900 text-xs font-semibold rounded-lg flex items-center gap-1 shrink-0 transition cursor-pointer"
+                            className="px-2.5 py-1 bg-rose-100 hover:bg-rose-200 text-rose-900 text-[11px] font-bold rounded-lg flex items-center gap-1 shrink-0 transition cursor-pointer"
                           >
                             {copiedKey === 'voda' ? (
                               <>
-                                <Check className="w-3.5 h-3.5 text-emerald-600" />
+                                <Check className="w-3 h-3 text-emerald-600" />
                                 <span className="text-emerald-700">{labels.copiedBtn}</span>
                               </>
                             ) : (
                               <>
-                                <Copy className="w-3.5 h-3.5 text-rose-700" />
+                                <Copy className="w-3 h-3 text-rose-700" />
                                 <span>{labels.copyBtn}</span>
                               </>
                             )}
@@ -1033,112 +947,136 @@ export const ActivationModal: React.FC = () => {
                       </div>
                     )}
 
-                    {/* Smart SMS / Notification Parser (خاصية اللصق الذكي لرسائل التحويل) */}
-                    <div className="p-3.5 bg-gradient-to-br from-amber-50/70 via-orange-50/40 to-white border border-orange-200 rounded-2xl space-y-2.5 shadow-2xs">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="font-tajawal font-semibold text-xs text-[#001639] flex items-center gap-1.5">
-                          <Wand2 className="w-3.5 h-3.5 text-[#FF4D2D]" />
-                          <span>
-                            {isAr
-                              ? 'خاصية اللصق الذكي لرسائل التحويل (Smart SMS Parser)'
-                              : 'Smart SMS & Transfer Parser'}
-                          </span>
+                    {/* Smart SMS Parser Pill / Helper */}
+                    <div className="pt-0.5">
+                      <button
+                        type="button"
+                        onClick={() => setShowSmsHelper(!showSmsHelper)}
+                        className="text-[11px] font-semibold text-slate-500 hover:text-[#FF4D2D] flex items-center gap-1.5 transition cursor-pointer select-none"
+                      >
+                        <Wand2 className="w-3.5 h-3.5 text-[#FF4D2D]" />
+                        <span>
+                          {isAr
+                            ? (showSmsHelper ? 'إخفاء لصق رسالة التحويل' : 'لديك رسالة تحويل؟ اضغط للصقها واستخراج المرجع تلقائياً')
+                            : (showSmsHelper ? 'Hide SMS Parser' : 'Have a transfer SMS? Click to auto-fill')}
                         </span>
+                        <ChevronDown className={`w-3 h-3 transition-transform ${showSmsHelper ? 'rotate-180' : ''}`} />
+                      </button>
 
-                        <button
-                          type="button"
-                          onClick={handlePasteFromClipboard}
-                          className="px-2.5 py-1 bg-white hover:bg-orange-50 text-[#FF4D2D] border border-orange-300 rounded-lg text-[11px] font-bold flex items-center gap-1 transition shadow-2xs cursor-pointer active:scale-95"
-                        >
-                          <ClipboardPaste className="w-3.5 h-3.5" />
-                          <span>{isAr ? 'لصق من الحافظة' : 'Paste clipboard'}</span>
-                        </button>
-                      </div>
+                      {showSmsHelper && (
+                        <div className="mt-2 p-2.5 bg-gradient-to-br from-amber-50/70 to-orange-50/40 border border-orange-200 rounded-xl space-y-2 animate-in fade-in">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-semibold text-slate-600">
+                              {isAr ? 'الصق نص رسالة البنك أو إشعار InstaPay:' : 'Paste transfer SMS / notification text:'}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={handlePasteFromClipboard}
+                              className="px-2 py-0.5 bg-white hover:bg-orange-50 text-[#FF4D2D] border border-orange-300 rounded text-[10px] font-bold flex items-center gap-1 cursor-pointer transition shadow-2xs"
+                            >
+                              <ClipboardPaste className="w-3 h-3" />
+                              <span>{isAr ? 'لصق' : 'Paste'}</span>
+                            </button>
+                          </div>
 
-                      <p className="text-[11px] text-slate-600 leading-relaxed">
-                        {isAr
-                          ? 'الصق نص رسالة البنك أو إشعار InstaPay هنا لاستخراج رقم المرجع والمبلغ وتعبئة النموذج فوراً:'
-                          : 'Paste your bank or InstaPay SMS text here to auto-extract transaction reference:'}
-                      </p>
+                          <textarea
+                            rows={2}
+                            value={smsInput}
+                            onChange={(e) => handleParseSmsText(e.target.value)}
+                            placeholder={
+                              isAr
+                                ? 'مثال: تم تحويل مبلغ 50.00 جم بنجاح إلى bassem... مرجع: 2026...'
+                                : 'e.g. Successful transfer of EGP 50.00 to bassem... Ref: 2026...'
+                            }
+                            className="w-full px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-800 placeholder:text-slate-400 focus:border-[#FF4D2D] focus:ring-1 focus:ring-[#FF4D2D]/20 outline-none transition"
+                          />
 
-                      <textarea
-                        rows={2}
-                        value={smsInput}
-                        onChange={(e) => handleParseSmsText(e.target.value)}
-                        placeholder={
-                          isAr
-                            ? 'مثال: تم تحويل مبلغ 50.00 جم بنجاح إلى bassemramadaaaaan@instapay مرجع: 2026092801948271...'
-                            : 'e.g. Successful transfer of EGP 50.00 to bassemramadaaaaan Ref: 2026092801948271...'
-                        }
-                        className="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:border-[#FF4D2D] focus:ring-2 focus:ring-[#FF4D2D]/10 outline-none transition custom-scrollbar"
-                      />
-
-                      {smsParseSuccess && (
-                        <div className="p-2 bg-emerald-50 border border-emerald-300 rounded-xl flex items-center gap-2 text-[11px] text-emerald-800 font-bold animate-in fade-in-50">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                          <span>{smsParseSuccess}</span>
+                          {smsParseSuccess && (
+                            <div className="p-1.5 bg-emerald-50 border border-emerald-300 rounded-lg flex items-center gap-1.5 text-[11px] text-emerald-800 font-bold">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                              <span>{smsParseSuccess}</span>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="block font-bold text-xs text-slate-700">{labels.senderLabel}</label>
-                      <input
-                        required
-                        type="text"
-                        value={senderInfo}
-                        onChange={(e) => setSenderInfo(e.target.value)}
-                        placeholder={labels.senderPlaceholder}
-                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 outline-none min-h-[40px] transition"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block font-bold text-xs text-slate-700">{labels.emailLabel}</label>
-                      <input
-                        required
-                        type="email"
-                        value={emailInput}
-                        onChange={(e) => setEmailInput(e.target.value)}
-                        placeholder={labels.emailPlaceholder}
-                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 outline-none min-h-[40px] transition payment-ltr-field"
-                      />
-                    </div>
-                    <div className="space-y-1">
-                      <label className="block font-bold text-xs text-slate-700">{labels.refLabel}</label>
-                      <input
-                        required
-                        type="text"
-                        value={referenceInput}
-                        onChange={(e) => setReferenceInput(e.target.value)}
-                        placeholder={labels.refPlaceholder}
-                        className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#001639] focus:ring-2 focus:ring-[#001639]/10 outline-none min-h-[40px] transition payment-tabular payment-ltr-field font-mono"
-                      />
+                    {/* Step 3: Compact Form Fields */}
+                    <div className="space-y-2 pt-1 border-t border-slate-100">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div className="space-y-1">
+                          <label className="block font-bold text-[11px] text-slate-700">{labels.senderLabel}</label>
+                          <input
+                            required
+                            type="text"
+                            value={senderInfo}
+                            onChange={(e) => setSenderInfo(e.target.value)}
+                            placeholder={labels.senderPlaceholder}
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#001639] focus:ring-1 focus:ring-[#001639]/20 outline-none min-h-[38px] transition"
+                          />
+                        </div>
+                        <div className="space-y-1">
+                          <label className="block font-bold text-[11px] text-slate-700">{labels.emailLabel}</label>
+                          <input
+                            required
+                            type="email"
+                            value={emailInput}
+                            onChange={(e) => setEmailInput(e.target.value)}
+                            placeholder={labels.emailPlaceholder}
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#001639] focus:ring-1 focus:ring-[#001639]/20 outline-none min-h-[38px] transition payment-ltr-field"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="block font-bold text-[11px] text-slate-700">{labels.refLabel}</label>
+                        <input
+                          required
+                          type="text"
+                          value={referenceInput}
+                          onChange={(e) => setReferenceInput(e.target.value)}
+                          placeholder={labels.refPlaceholder}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#001639] focus:ring-1 focus:ring-[#001639]/20 outline-none min-h-[38px] transition payment-tabular payment-ltr-field font-mono"
+                        />
+                      </div>
                     </div>
 
-                    <div className="pt-1">
+                    {/* Submit CTA */}
+                    <div className="pt-1.5 space-y-2">
                       <button
                         disabled={isSubmitting}
                         type="submit"
-                        className="w-full py-3.5 bg-gradient-to-r from-[#FF4D2D] to-[#FF6B4A] hover:from-[#E5431F] hover:to-[#FF4D2D] text-white font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 min-h-[46px] shadow-lg shadow-orange-500/20 active:scale-[0.98] transition disabled:opacity-70 cursor-pointer"
+                        className="w-full py-3 bg-gradient-to-r from-[#FF4D2D] to-[#FF6B4A] hover:from-[#E5431F] hover:to-[#FF4D2D] text-white font-bold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 min-h-[42px] shadow-md shadow-orange-500/20 active:scale-[0.98] transition disabled:opacity-70 cursor-pointer"
                       >
-                        {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin text-white" /> : <Zap className="w-4 h-4 text-white" />}
+                        {isSubmitting ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-white" />
+                        ) : (
+                          <Zap className="w-4 h-4 text-white" />
+                        )}
                         <span>
                           {isSubmitting
                             ? labels.submittingBtn
-                            : selectedPlan === 'bundle_3'
-                            ? (isAr ? labels.buyBundleBtnAr : labels.buyBundleBtn)
-                            : (isAr ? labels.buySingleBtnAr : labels.buySingleBtn)}
+                            : isAr
+                            ? `تأكيد التحويل والتحميل فوراً • ${selectedPlan === 'bundle_3' ? '120 ج.م' : '50 ج.م'}`
+                            : `Confirm & Download Now • ${selectedPlan === 'bundle_3' ? '120 EGP' : '50 EGP'}`}
                         </span>
                       </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setPaymentStep('check_status')}
+                        className="w-full py-1 text-slate-500 hover:text-[#001639] text-xs font-semibold transition flex items-center justify-center gap-1 cursor-pointer"
+                      >
+                        <span>{labels.alreadyHaveRef}</span>
+                      </button>
                     </div>
-                    
-                    <button
-                      type="button"
-                      onClick={() => setPaymentStep('check_status')}
-                      className="w-full py-2 min-h-[36px] text-slate-500 hover:text-[#001639] text-xs font-semibold transition flex items-center justify-center gap-1 cursor-pointer"
-                    >
-                      <span>{labels.alreadyHaveRef}</span>
-                    </button>
+
+                    {/* Micro Trust Line */}
+                    <div className="pt-1 text-center border-t border-slate-100">
+                      <span className="text-[10px] text-slate-400 font-medium">
+                        {isAr ? '🔒 دفع آمن لمرة واحدة • بدون أي رسوم متكررة أو اشتراك' : '🔒 100% Secure one-time payment • No recurring fees'}
+                      </span>
+                    </div>
                   </form>
                 )}
               </div>

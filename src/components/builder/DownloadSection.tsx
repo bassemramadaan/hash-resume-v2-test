@@ -755,108 +755,81 @@ export const DownloadSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Pricing Plans Table / Cards */}
+        {/* Pricing Plans Table / Cards - Sleek Compact Redesign */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-          {/* Plan 1: Single Download */}
-          <div className="border border-line rounded-none p-4 bg-paper hover:bg-paper-2 flex flex-col justify-between transition">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
+          {/* Plan 1: Single Download (50 EGP) */}
+          <div
+            onClick={() => {
+              try { sessionStorage.setItem('selected_payment_plan', 'single'); } catch {}
+              useResumeStore.getState().setIsActivationModalOpen(true);
+            }}
+            className="group border border-line hover:border-ink/50 p-4 bg-paper hover:bg-white flex flex-col justify-between transition cursor-pointer relative select-none"
+          >
+            <div>
+              <div className="flex items-center justify-between mb-2">
                 <span className="text-xs font-tajawal font-bold text-ink">{isAr ? 'تحميل فردي' : 'Single Download'}</span>
-                <span className="font-ibm-mono text-[10px] font-bold text-ink bg-white px-2 py-0.5 border border-line rounded-none">
+                <span className="font-ibm-mono text-[10px] font-bold text-ink-soft bg-white px-2 py-0.5 border border-line">
                   {isAr ? 'سيرة واحدة' : '1 RESUME'}
                 </span>
               </div>
-              <div className="flex items-baseline gap-1">
-                <span className="font-ibm-mono text-2xl font-bold text-ink">50</span>
-                <span className="font-ibm-sans text-xs font-semibold text-ink-soft">{isAr ? 'ج.م' : 'EGP'}</span>
+              <div className="flex items-baseline gap-1 my-1">
+                <span className="font-ibm-mono text-3xl font-black text-ink">50</span>
+                <span className="font-ibm-sans text-xs font-bold text-ink-soft">{isAr ? 'ج.م' : 'EGP'}</span>
                 <span className="font-ibm-sans text-xs text-ink-soft font-medium ms-1">
                   ({isAr ? 'دفعة لمرة واحدة' : 'one-time'})
                 </span>
               </div>
-              <ul className="text-xs font-ibm-sans text-ink-soft space-y-1.5 pt-1">
-                <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                  <span>{isAr ? 'تحميل سيرة ذاتية واحدة عالية الجودة PDF' : '1 high-quality PDF download'}</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                  <span>{isAr ? 'بدون أي علامة مائية' : 'No watermark'}</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                  <span>{isAr ? 'تنسيق متوافق مع أنظمة ATS' : 'ATS-friendly layout'}</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                  <span className="font-semibold text-orange">{isAr ? 'الترشيح والربط التلقائي بشركات Hash Hunt الشريكة' : 'Automated referral to Hash Hunt partner companies'}</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                  <span>{isAr ? 'دفع لمرة واحدة' : 'One-time payment'}</span>
-                </li>
-              </ul>
+              <p className="text-xs font-ibm-sans text-ink-soft leading-relaxed mt-2">
+                {isAr
+                  ? 'تحميل سيرة ذاتية واحدة عالية الدقة PDF متوافقة 100% مع أنظمة ATS وبدون علامة مائية + ربط فوري بشركات Hash Hunt.'
+                  : '1 high-res ATS-friendly PDF download with zero watermark + instant referral to Hash Hunt partner companies.'}
+              </p>
             </div>
             <button
               type="button"
-              onClick={() => {
-                useResumeStore.getState().setIsActivationModalOpen(true);
-              }}
-              className="mt-4 w-full py-2 px-3 bg-white hover:bg-paper text-ink border border-line font-ibm-sans font-bold text-xs rounded-none transition flex items-center justify-center gap-1.5 cursor-pointer"
+              className="mt-4 w-full py-2.5 px-3 bg-white group-hover:bg-ink group-hover:text-white text-ink border border-line group-hover:border-ink font-ibm-sans font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
             >
-              <span>{isAr ? 'اشترِ الآن (50 ج.م)' : 'Buy Now (50 EGP)'}</span>
+              <span>{isAr ? 'اختيار باقة 50 ج.م' : 'Choose 50 EGP Plan'}</span>
             </button>
           </div>
 
-          {/* Plan 2: 3-Downloads Bundle */}
-          <div className="border border-orange rounded-none p-4 bg-paper hover:bg-paper-2 flex flex-col justify-between transition relative">
-            <span className="absolute -top-2.5 left-4 sm:left-auto sm:right-4 px-2 py-0.2 bg-orange text-white font-ibm-mono text-[9px] font-bold uppercase tracking-wider rounded-none">
-              {isAr ? 'الأكثر توفيراً (توفير 30 ج.م)' : 'SAVE 30 EGP'}
+          {/* Plan 2: 3-Downloads Bundle (120 EGP) */}
+          <div
+            onClick={() => {
+              try { sessionStorage.setItem('selected_payment_plan', 'bundle_3'); } catch {}
+              useResumeStore.getState().setIsActivationModalOpen(true);
+            }}
+            className="group border-2 border-orange p-4 bg-orange/5 hover:bg-orange/10 flex flex-col justify-between transition cursor-pointer relative select-none"
+          >
+            <span className="absolute -top-2.5 start-3 px-2 py-0.5 bg-orange text-white font-ibm-mono text-[9px] font-bold uppercase tracking-wider">
+              {isAr ? 'الأكثر توفيراً • وفّر 30 ج.م' : 'SAVE 30 EGP • BEST VALUE'}
             </span>
-            <div className="space-y-2 pt-1">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-tajawal font-bold text-ink">{isAr ? 'باقة 3 تحميلات' : '3-Downloads Pack'}</span>
-                <span className="font-ibm-mono text-[10px] font-bold text-orange bg-orange/10 px-2 py-0.5 border border-orange/30 rounded-none">
+            <div>
+              <div className="flex items-center justify-between mb-2 pt-0.5">
+                <span className="text-xs font-tajawal font-bold text-ink">{isAr ? 'باقة 3 تفعيلات' : '3-Downloads Pack'}</span>
+                <span className="font-ibm-mono text-[10px] font-bold text-orange bg-white px-2 py-0.5 border border-orange/40">
                   {isAr ? '3 سير ذاتية' : '3 RESUMES'}
                 </span>
               </div>
-              <div className="flex items-baseline gap-1">
-                <span className="font-ibm-mono text-2xl font-bold text-ink">120</span>
-                <span className="font-ibm-sans text-xs font-semibold text-ink-soft">{isAr ? 'ج.م' : 'EGP'}</span>
-                <span className="font-ibm-mono text-xs text-emerald-700 font-semibold ms-1">
-                  ({isAr ? '40 ج.م / سيرة' : '40 EGP / CV'})
+              <div className="flex items-baseline gap-1.5 my-1">
+                <span className="font-ibm-mono text-3xl font-black text-ink">120</span>
+                <span className="font-ibm-sans text-xs font-bold text-ink-soft">{isAr ? 'ج.م' : 'EGP'}</span>
+                <span className="font-ibm-mono text-xs text-slate-400 line-through">150</span>
+                <span className="font-ibm-mono text-[11px] text-emerald-700 font-semibold ms-auto">
+                  ({isAr ? '40 ج.م / سيرة' : '40 EGP each'})
                 </span>
               </div>
-              <ul className="text-xs font-ibm-sans text-ink-soft space-y-1.5 pt-1">
-                <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                  <span>{isAr ? '3 تحميلات لنماذج أو نسخ سير ذاتية مختلفة' : '3 downloads for different resume versions'}</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                  <span>{isAr ? 'استخدم الرصيد في أي وقت تحتاجه' : 'Use them whenever you need'}</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                  <span>{isAr ? 'بدون علامة مائية ومعتمدة لـ ATS' : 'No watermark & ATS-friendly'}</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                  <span className="font-semibold text-orange">{isAr ? 'ربط وفهرسة جميع النسخ على منصة Hash Hunt للشركات' : 'Full Hash Hunt referral for all 3 resume copies'}</span>
-                </li>
-                <li className="flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-700 shrink-0" />
-                  <span>{isAr ? 'دفع لمرة واحدة' : 'One-time payment'}</span>
-                </li>
-              </ul>
+              <p className="text-xs font-ibm-sans text-ink-soft leading-relaxed mt-2">
+                {isAr
+                  ? '3 رصيد تحميل مستقل لنماذج أو نسخ مختلفة + رفع وربط جميع النسخ على Hash Hunt لتسويقك للشركات المتعاقدة.'
+                  : '3 distinct download credits for 3 resumes + full career marketing and partner company indexing.'}
+              </p>
             </div>
             <button
               type="button"
-              onClick={() => {
-                useResumeStore.getState().setIsActivationModalOpen(true);
-              }}
-              className="mt-4 w-full py-2 px-3 bg-ink hover:bg-ink/90 text-white font-ibm-sans font-bold text-xs rounded-none border border-ink transition flex items-center justify-center gap-1.5 cursor-pointer"
+              className="mt-4 w-full py-2.5 px-3 bg-orange hover:bg-orange/90 text-white font-ibm-sans font-bold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
             >
-              <span>{isAr ? 'اشترِ الآن (120 ج.م)' : 'Buy Now (120 EGP)'}</span>
+              <span>{isAr ? 'اختيار باقة 120 ج.م' : 'Choose 120 EGP Plan'}</span>
             </button>
           </div>
         </div>
