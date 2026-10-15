@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import confetti from 'canvas-confetti';
 import { useResumeStore } from '../store/useResumeStore';
 import {
   MapPin,
@@ -194,6 +195,8 @@ export const HashHuntPage: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [submittedName, setSubmittedName] = useState('');
   const [highlightField, setHighlightField] = useState<string | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
@@ -391,6 +394,23 @@ export const HashHuntPage: React.FC = () => {
           : 'Your application has been received! Our hiring team will review your profile and reach out with matching opportunities.'
       );
 
+      // 🎉 Confetti celebration
+      try {
+        confetti({
+          particleCount: 150,
+          spread: 90,
+          origin: { y: 0.6 },
+          colors: ['#FF4D2D', '#001639', '#10B981', '#F59E0B'],
+          disableForReducedMotion: true,
+        });
+      } catch {
+        // Ignore if confetti unavailable
+      }
+
+      // احفظ اسم المستخدم للمودال وافتحه
+      setSubmittedName(fullName || '');
+      setShowSuccessModal(true);
+
       // Clear non-contact fields
       setJobTitle('');
       setExperience('');
@@ -435,10 +455,10 @@ export const HashHuntPage: React.FC = () => {
       aEn: 'Yes, submitting your application through this form is 100% free for candidates.'
     },
     {
-      qAr: 'ما هي قيمة الـ 50 ج.م في Hash Resume؟',
-      qEn: 'What is the 50 EGP fee in Hash Resume?',
-      aAr: 'الـ 50 ج.م مخصصة لبناء وتصدير سيرتك الذاتية الاحترافية بصيغة ATS متوافقة مع أنظمة الفحص، وتشمل توجيه ملفك لقاعدة الكفاءات المباشرة المرشحة لشبكة شركاء التوظيف.',
-      aEn: 'The 50 EGP covers generating your certified ATS-compliant PDF resume and prioritizing your CV into our talent pool forwarded to hiring partners.'
+      qAr: 'كيف تضمنون وصول سيرتي الذاتية لـ 100+ شركة شريكة مجاناً؟',
+      qEn: 'How do you ensure my CV reaches 100+ partner companies for free?',
+      aAr: 'من خلال شبكة شركاء Hash Hunt، يتم تصنيف سيرتك الذاتية ومطابقتها وتوجيهها مباشرة إلى مسؤولي التوظيف والموارد البشرية في أكثر من 100 شركة ومؤسسة شريكة مجاناً بالكامل وبدون أي وسيط.',
+      aEn: 'Through the Hash Hunt partner network, your CV is reviewed and forwarded directly to hiring managers across 100+ verified partner companies completely free.'
     },
     {
       qAr: 'متى يتم التواصل معي بعد إرسال الطلب؟',
@@ -517,7 +537,7 @@ export const HashHuntPage: React.FC = () => {
           <div className="flex justify-center lg:justify-start mb-4 sm:mb-6">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white text-coral text-xs font-bold shadow-2xs border border-coral/25 backdrop-blur-sm">
               <Sparkles className="w-3.5 h-3.5 text-coral shrink-0" />
-              <span>{isAr ? '⚡ التقديم السريع والربط الوظيفي المباشر' : '⚡ Quick Apply & Direct Job Bridge'}</span>
+              <span>{isAr ? '⚡ ارفع سيرتك مجاناً → نوصلها لـ 100+ شركة' : '⚡ Upload Free → Connect with 100+ Companies'}</span>
             </div>
           </div>
 
@@ -586,13 +606,13 @@ export const HashHuntPage: React.FC = () => {
                     ✓
                   </div>
                   <h3 className="font-bold text-xs sm:text-sm text-navy">
-                    {isAr ? 'جسر الربط مع مسؤولي التوظيف (Bridge)' : 'Direct Talent Bridge to Hiring Network'}
+                    {isAr ? 'ارفع سيرتك مجاناً → نوصلها لـ 100+ شركة' : 'Upload CV Free → Connect with 100+ Companies'}
                   </h3>
                 </div>
                 <p className="text-xs sm:text-[13px] text-slate-600 leading-relaxed font-normal">
                   {isAr
-                    ? 'عند استخدامك منصة Hash Resume وسداد رسوم السيرة الذاتية (50 ج.م)، لا تحصل فقط على ملف ATS احترافي معتمد، بل يتم رفع ملفك تلقائياً لشبكة الشركات الشريكة الباحثة عن تخصصك.'
-                    : 'Using Hash Resume not only creates an ATS-ready PDF—your profile is also indexed into our priority partner network for hiring managers seeking top candidates.'}
+                    ? 'نقوم بمطابقة ملفك وسيرتك الذاتية وتوصيلها مباشرةً لمسؤولي التوظيف في كبرى الشركات الشريكة المتعاقدة معنا دون أي مقابل مالي أو رسوم خفية.'
+                    : 'We match and route your CV directly to verified hiring managers across 100+ partner companies with zero fees or hidden charges.'}
                 </p>
                 <div className="pt-1 flex items-center gap-3 text-[11px] font-semibold text-slate-500">
                   <span className="inline-flex items-center gap-1 text-emerald-700">
@@ -1310,6 +1330,149 @@ export const HashHuntPage: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* 8. CELEBRATION SUCCESS MODAL */}
+      <AnimatePresence>
+        {showSuccessModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setShowSuccessModal(false)}
+              className="fixed inset-0 bg-navy/60 backdrop-blur-sm cursor-pointer"
+            />
+
+            {/* Modal Dialog */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 15 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+              className="relative w-full max-w-lg bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-100 z-10 text-center overflow-hidden"
+              dir={isAr ? 'rtl' : 'ltr'}
+            >
+              {/* Decorative Accent Glow */}
+              <div className="absolute -top-24 -end-24 w-48 h-48 bg-coral/10 rounded-full blur-2xl pointer-events-none" />
+              <div className="absolute -bottom-24 -start-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none" />
+
+              {/* Close Button */}
+              <button
+                type="button"
+                onClick={() => setShowSuccessModal(false)}
+                className="absolute top-4 end-4 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-navy transition flex items-center justify-center cursor-pointer"
+                aria-label={isAr ? 'إغلاق' : 'Close'}
+              >
+                <X className="w-4 h-4" />
+              </button>
+
+              {/* Success Icon */}
+              <div className="mx-auto w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-emerald-50 border border-emerald-200/80 flex items-center justify-center mb-3 text-emerald-600 shadow-xs">
+                <CheckCircle2 className="w-8 h-8 sm:w-9 sm:h-9 stroke-[2.2]" />
+              </div>
+
+              {/* Title & Personalized Greeting */}
+              <h2 className="text-xl sm:text-2xl font-extrabold text-navy tracking-tight mb-1.5">
+                {isAr
+                  ? `🎉 تم استلام سيرتك يا ${submittedName ? submittedName : 'بطل'}!`
+                  : `🎉 Application Received, ${submittedName ? submittedName : 'Friend'}!`}
+              </h2>
+
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal mb-5 max-w-md mx-auto">
+                {isAr
+                  ? 'تم استلام سيرتك الذاتية بنجاح ومطابقتها مع أكثر من 100+ شركة شريكة مجاناً بالكامل.'
+                  : 'Your CV has been received and is being matched with 100+ verified partner companies completely free.'}
+              </p>
+
+              {/* 3 Steps Pipeline (مراجعة، مطابقة، تواصل) */}
+              <div className="bg-slate-50/90 rounded-2xl p-3.5 sm:p-4 border border-slate-200/80 text-start space-y-2.5 mb-5">
+                <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                  {isAr ? 'الخطوات القادمة لملفك:' : 'What happens next:'}
+                </div>
+
+                <div className="flex items-start gap-2.5 text-xs text-slate-700">
+                  <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center text-[10px] font-extrabold shrink-0 mt-0.5">
+                    1
+                  </div>
+                  <div>
+                    <span className="font-bold text-navy">{isAr ? 'مراجعة وتدقيق: ' : 'Review & Audit: '}</span>
+                    <span className="text-slate-600">
+                      {isAr ? 'فحص السيرة والتحقق من وضوح المهارات والبيانات.' : 'Auditing resume readability and key strengths.'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5 text-xs text-slate-700">
+                  <div className="w-5 h-5 rounded-full bg-blue-100 text-blue-800 flex items-center justify-center text-[10px] font-extrabold shrink-0 mt-0.5">
+                    2
+                  </div>
+                  <div>
+                    <span className="font-bold text-navy">{isAr ? 'مطابقة ذكية: ' : 'Smart Matching: '}</span>
+                    <span className="text-slate-600">
+                      {isAr ? 'توجيه ملفك للشواغر المناسبة في 100+ شركة شريكة.' : 'Directly routing your profile to active vacancies.'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5 text-xs text-slate-700">
+                  <div className="w-5 h-5 rounded-full bg-purple-100 text-purple-800 flex items-center justify-center text-[10px] font-extrabold shrink-0 mt-0.5">
+                    3
+                  </div>
+                  <div>
+                    <span className="font-bold text-navy">{isAr ? 'تواصل مباشر: ' : 'Direct Contact: '}</span>
+                    <span className="text-slate-600">
+                      {isAr ? 'يتواصل معك مسؤولو التوظيف هاتفياً أو عبر الإيميل.' : 'Hiring teams reach out directly via call or email.'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Primary CTA: Make ATS Resume - 50 EGP */}
+              <div className="space-y-1.5 mb-3.5">
+                <Link
+                  to="/builder"
+                  onClick={() => setShowSuccessModal(false)}
+                  className="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm rounded-xl transition shadow-md hover:shadow-lg active:scale-[0.99] cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 shrink-0" />
+                  <span>{isAr ? '🎨 اعمل سيرة ATS احترافية - 50 ج.م' : '🎨 Build Certified ATS Resume - 50 EGP'}</span>
+                  <ArrowRight className="w-4 h-4 rtl:rotate-180 shrink-0" />
+                </Link>
+                <p className="text-[11px] text-slate-500 font-medium">
+                  {isAr
+                    ? '💡 السير الذاتية المتوافقة مع ATS بتاخد 3x فرص أكتر للقبول'
+                    : '💡 ATS-compliant resumes get 3x higher interview acceptance'}
+                </p>
+              </div>
+
+              {/* Secondary CTA: Browse Jobs */}
+              <div className="flex items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowSuccessModal(false);
+                    scrollToSection('jobs');
+                  }}
+                  className="flex-1 py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-navy font-bold text-xs sm:text-sm rounded-xl transition flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Briefcase className="w-4 h-4 text-coral shrink-0" />
+                  <span>{isAr ? 'تصفح وظايف تانية' : 'Browse More Jobs'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowSuccessModal(false)}
+                  className="py-2.5 px-4 bg-white border border-slate-200 hover:bg-slate-50 text-slate-500 hover:text-navy font-bold text-xs sm:text-sm rounded-xl transition cursor-pointer"
+                >
+                  <span>{isAr ? 'إغلاق' : 'Close'}</span>
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </main>
   );
 };
