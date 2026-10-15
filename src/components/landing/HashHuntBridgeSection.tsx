@@ -46,8 +46,8 @@ export const HashHuntBridgeSection: React.FC<HashHuntBridgeSectionProps> = ({ is
 
           <p className="text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed max-w-2xl mx-auto">
             {isAr
-              ? 'عندما تُنشئ سيرتك الذاتية المعتمدة عبر Hash Resume، تكون خطوتك الأولى للوصول المباشر لمسؤولي التوظيف في الشركات الشريكة، بعيداً عن زحمة التقديم التقليدي وسط آلاف المتقدمين.'
-              : 'When you create your ATS resume with Hash Resume, your profile is routed directly to hiring managers in our partner network, bypassing the traditional 3,000-applicant crowd.'}
+              ? 'صممت منظومتنا بمسارين واضحين: بناء وتصدير سيرة ATS معتمدة وجديدة عبر المنصة، أو رفع سيرتك السابقة مجاناً تماماً عبر Hash Hunt للتوصيل المباشر لـ 100+ شركة شريكة.'
+              : 'Our ecosystem offers two distinct paths: craft a certified ATS resume with Hash Resume, or submit your existing CV 100% free on Hash Hunt to reach 100+ partner companies.'}
           </p>
         </div>
 
@@ -86,12 +86,12 @@ export const HashHuntBridgeSection: React.FC<HashHuntBridgeSectionProps> = ({ is
               <Users className="w-5 h-5" />
             </div>
             <h3 className="font-semibold text-sm sm:text-base text-slate-900">
-              {isAr ? 'قيمة مضافة مع التفعيل (50 ج.م)' : 'Built-in Placement Value'}
+              {isAr ? 'تكامل ذكي بين المسارين' : 'Integrated Dual Pathways'}
             </h3>
             <p className="text-xs text-slate-500 leading-relaxed font-normal">
               {isAr
-                ? 'رسوم التفعيل البسيطة لا تقتصر على تحميل الـ PDF، بل تشمل إدراجك في رادار توظيف شبكتنا.'
-                : 'Your simple one-time activation covers both your ATS PDF export and inclusion in our hiring talent radar.'}
+                ? 'عند التفعيل (50 ج.م)، سيرتك بتتحط في رادار التوظيف + بتقدر ترفع سيرة قديمة مجاناً على Hash Hunt.'
+                : 'With activation (50 EGP), your CV is placed on the hiring radar + you can upload any existing resume for free on Hash Hunt.'}
             </p>
           </div>
         </div>
@@ -107,7 +107,7 @@ export const HashHuntBridgeSection: React.FC<HashHuntBridgeSectionProps> = ({ is
                 </h4>
               </div>
               <p className="text-[11px] text-slate-500 mt-0.5 font-normal">
-                {isAr ? 'وظائف نشطة لشركات شريكة جاهزة لاستقبال سيرتك الذاتية فورياً' : 'Active partner jobs waiting for your ATS resume'}
+                {isAr ? 'وظائف نشطة لشركات شريكة جاهزة لاستقبال سيرتك الذاتية مجاناً' : 'Active partner jobs waiting for your CV completely free'}
               </p>
             </div>
 
@@ -115,7 +115,7 @@ export const HashHuntBridgeSection: React.FC<HashHuntBridgeSectionProps> = ({ is
               to="/hash-hunt"
               className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#001639] hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-2xs transition active:scale-98 cursor-pointer shrink-0"
             >
-              <span>{isAr ? 'استكشف كافة الوظائف' : 'Explore All Openings'}</span>
+              <span>{isAr ? 'ارفع سيرتك مجاناً على Hash Hunt' : 'Upload Free on Hash Hunt'}</span>
               <ArrowIcon className="w-3.5 h-3.5" />
             </Link>
           </div>

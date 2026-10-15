@@ -58,6 +58,14 @@ export const FaqSection: React.FC<FaqSectionProps> = ({ isAr }) => {
         ? 'نعم تماماً! النظام مجهز بخطوط رسمية محاذية تلقائياً لاتجاه النص RTL / LTR مع ضبط المسافات وعلامات الترقيم الهندسية لكلتا اللغتين.'
         : 'Yes! The builder natively handles RTL for Arabic and LTR for English with formatted typography alignment.',
     },
+    {
+      q: isAr
+        ? 'ما الفرق بين بناء سيرة ذاتية (50 ج.م) والتقديم عبر Hash Hunt (مجاناً)؟'
+        : 'What is the difference between building a resume (50 EGP) and Hash Hunt (Free)?',
+      a: isAr
+        ? 'الفرق واضح وبسيط: إذا أردت بناء وتصميم سيرة ATS احترافية جديدة وتصديرها كـ PDF عالي الدقة، فرسوم التفعيل هي 50 ج.م لمرة واحدة (وتشمل ميزة إدراجك في رادار التوظيف). أما إذا كان لديك بالفعل سيرة ذاتية جاهزة وتريد توصيلها للشركات مباشرة، فمنظومة Hash Hunt تتيح لك رفع ملفك مجاناً 100% بدون أي رسوم لنوصله لأكثر من 100 شركة شريكة.'
+        : 'The distinction is clear: If you want to design and export a brand-new ATS-compliant PDF resume, activation is 50 EGP (including talent radar placement). If you already have a CV and want direct company referrals, Hash Hunt lets you upload it 100% free to reach 100+ partner companies.',
+    },
   ];
 
   const filteredFaqs = faqItems.filter((item) => {
