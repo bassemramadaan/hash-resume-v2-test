@@ -1,6 +1,6 @@
 {
-  "id": "/",
-  "name": "Hash Resume",
+  "id": "/?pwa=v2",
+  "name": "HashResume",
   "short_name": "HashResume",
   "description": "منصة بناء سير ذاتية احترافية وذكية متوافقة 100% مع أنظمة فرز السير الذاتية ATS باللغتين العربية والإنجليزية",
   "start_url": "/",

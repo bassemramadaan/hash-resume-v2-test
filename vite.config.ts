@@ -15,8 +15,8 @@ export default defineConfig(({ mode }) => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'favicon-32x32.png', 'apple-touch-icon.png', 'logo-icon.png'],
         manifest: {
-          id: '/',
-          name: 'Hash Resume',
+          id: '/?pwa=v2',
+          name: 'HashResume',
           short_name: 'HashResume',
           description: 'منصة بناء سير ذاتية احترافية وذكية متوافقة 100% مع أنظمة فرز السير الذاتية ATS باللغتين العربية والإنجليزية',
           theme_color: '#001639',
