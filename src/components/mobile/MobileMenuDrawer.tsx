@@ -21,6 +21,7 @@ import {
   Briefcase,
   RotateCcw,
 } from 'lucide-react';
+import { PWAInstallButton } from '../common/PWAInstallButton';
 
 interface MobileMenuDrawerProps {
   isOpen: boolean;
@@ -322,6 +323,11 @@ export const MobileMenuDrawer: React.FC<MobileMenuDrawerProps> = ({
                 );
               })}
             </nav>
+
+            {/* In-App PWA Install Card for Mobile */}
+            <div className="px-4 pt-2 pb-1 shrink-0">
+              <PWAInstallButton variant="drawer" />
+            </div>
 
             {/* Bottom Brand Footer & WhatsApp Support */}
             <div className="p-4 border-t border-slate-100 text-center space-y-3 shrink-0">

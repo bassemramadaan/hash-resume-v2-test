@@ -12,6 +12,7 @@ import {
   Check,
 } from 'lucide-react';
 import { MobileMenuDrawer } from '../mobile/MobileMenuDrawer';
+import { PWAInstallButton } from '../common/PWAInstallButton';
 
 const LANGUAGES: { code: Language; label: string; nativeName: string; flag: string }[] = [
   { code: 'ar', label: 'العربية', nativeName: 'العربية', flag: '🇪🇬' },
@@ -134,7 +135,10 @@ export const Navbar: React.FC = () => {
         </nav>
 
         {/* Right Side: Actions (Language Selector & Primary CTA & Mobile Toggle) */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 sm:gap-2.5">
+          {/* In-App PWA Install Button */}
+          <PWAInstallButton variant="navbar" />
+
           {/* Desktop Language Switch Dropdown */}
           <div className="relative hidden sm:block" ref={langDropdownRef}>
             <button

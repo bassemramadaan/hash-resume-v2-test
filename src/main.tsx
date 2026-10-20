@@ -6,47 +6,28 @@ import './index.css';
 import './i18n/i18n';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
 
-// 1. Safe Service Worker cleanup: unregister any stale SWs without blocking main thread
-if (typeof window !== 'undefined') {
-  setTimeout(() => {
-    try {
-      if (window.self === window.top && 'serviceWorker' in navigator) {
-        const sw = navigator.serviceWorker;
-        if (sw && typeof sw.getRegistrations === 'function') {
-          sw.getRegistrations()
-            .then((registrations) => {
-              if (Array.isArray(registrations)) {
-                registrations.forEach((registration) => {
-                  registration?.unregister?.().catch(() => {});
-                });
-              }
-            })
-            .catch(() => {});
-        }
-      }
-    } catch {
-      // Restricted in sandboxed iframe
-    }
+import { registerSW } from 'virtual:pwa-register';
 
-    try {
-      if (window.self === window.top && 'caches' in window) {
-        const c = window.caches;
-        if (c && typeof c.keys === 'function') {
-          c.keys()
-            .then((keys) => {
-              if (Array.isArray(keys)) {
-                keys.forEach((key) => {
-                  c.delete(key).catch(() => {});
-                });
-              }
-            })
-            .catch(() => {});
+// Register PWA service worker with auto-update
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+  try {
+    registerSW({
+      immediate: true,
+      onRegisteredSW(_swUrl, r) {
+        if (r) {
+          // Check for service worker updates periodically
+          setInterval(() => {
+            r.update().catch(() => {});
+          }, 60 * 60 * 1000);
         }
-      }
-    } catch {
-      // Restricted in sandboxed iframe
-    }
-  }, 1000);
+      },
+      onRegisterError(error) {
+        console.warn('[PWA] Service worker registration error:', error);
+      },
+    });
+  } catch (err) {
+    console.warn('[PWA] Registration failed:', err);
+  }
 }
 
 const rootElement = document.getElementById('root') || (() => {

@@ -1,0 +1,35 @@
+{
+  "id": "/",
+  "name": "Hash Resume | صانع السيرة الذاتية الذكي ATS",
+  "short_name": "Hash Resume",
+  "description": "منصة بناء سير ذاتية احترافية وذكية متوافقة 100% مع أنظمة فرز السير الذاتية ATS باللغتين العربية والإنجليزية",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#001639",
+  "background_color": "#001639",
+  "lang": "ar",
+  "dir": "rtl",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
