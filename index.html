@@ -3,6 +3,67 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // Gracefully handle HMR WebSocket in AI Studio cloud environment
+      (function() {
+        if (typeof window === 'undefined') return;
+
+        window.addEventListener('unhandledrejection', function(event) {
+          var msg = event && event.reason ? String(event.reason.message || event.reason) : '';
+          if (msg.includes('WebSocket closed without opened') || msg.includes('WebSocket')) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            return true;
+          }
+        }, true);
+
+        window.addEventListener('error', function(event) {
+          var msg = event ? String(event.message || (event.error && event.error.message) || '') : '';
+          if (msg.includes('WebSocket closed without opened') || msg.includes('WebSocket')) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            return true;
+          }
+        }, true);
+
+        var OrigWS = window.WebSocket;
+        if (OrigWS) {
+          window.WebSocket = function(url, protocols) {
+            var ws = protocols !== undefined ? new OrigWS(url, protocols) : new OrigWS(url);
+            var openCallbacks = [];
+            var origAddEventListener = ws.addEventListener.bind(ws);
+
+            ws.addEventListener = function(type, listener, options) {
+              if (type === 'open' && typeof listener === 'function') {
+                openCallbacks.push(listener);
+              }
+              if (type === 'close' && typeof listener === 'function') {
+                var wrappedClose = function(event) {
+                  if (openCallbacks.length > 0) {
+                    var cbs = openCallbacks.slice();
+                    openCallbacks = [];
+                    cbs.forEach(function(fn) {
+                      try { fn.call(ws, new Event('open')); } catch(e) {}
+                    });
+                  }
+                  try {
+                    return listener.apply(this, arguments);
+                  } catch (err) {}
+                };
+                return origAddEventListener(type, wrappedClose, options);
+              }
+              return origAddEventListener(type, listener, options);
+            };
+            return ws;
+          };
+          window.WebSocket.prototype = OrigWS.prototype;
+          window.WebSocket.CONNECTING = OrigWS.CONNECTING;
+          window.WebSocket.OPEN = OrigWS.OPEN;
+          window.WebSocket.CLOSING = OrigWS.CLOSING;
+          window.WebSocket.CLOSED = OrigWS.CLOSED;
+        }
+      })();
+    </script>
     <meta name="description" content="صانع سيرة ذاتية مجاني واحترافي متوافق 100% مع أنظمة ATS. أنشئ سيرتك الذاتية بالذكاء الاصطناعي مع تحميل فوري. Best ATS resume builder Arabic & CV builder Egypt." />
     <meta name="keywords" content="صانع سيرة ذاتية مجاني, ATS resume builder Arabic, CV builder Egypt, سيرة ذاتية ATS, إنشاء سيرة ذاتية بالعربي, نموذج سيرة ذاتية احترافي, AI resume builder Egypt, صانع CV مجاني مصر, فاحص توافق ATS" />
     <meta name="author" content="Hash Resume" />
@@ -31,7 +92,7 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Hash Resume" />
+    <meta name="apple-mobile-web-app-title" content="Hash CV" />
     <link rel="manifest" href="/manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
