@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
         manifest: {
           id: '/',
           name: 'Hash Resume',
-          short_name: 'Hash Resume',
+          short_name: 'HashResume',
           description: 'منصة بناء سير ذاتية احترافية وذكية متوافقة 100% مع أنظمة فرز السير الذاتية ATS باللغتين العربية والإنجليزية',
           theme_color: '#001639',
           background_color: '#001639',
