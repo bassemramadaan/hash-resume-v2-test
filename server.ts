@@ -1882,6 +1882,13 @@ app.delete("/api/cv/:id", async (req, res) => {
 // VITE MIDDLEWARE / STATIC SERVING
 // ==========================================
 async function setupServer() {
+  // Guarantee correct PWA manifest Content-Type for all mobile browsers (Chrome, Opera, Samsung Internet)
+  app.get(["/manifest.json", "/manifest.webmanifest"], (_req, res) => {
+    res.setHeader("Content-Type", "application/manifest+json; charset=utf-8");
+    const manifestPath = path.join(process.cwd(), "public", "manifest.json");
+    res.sendFile(manifestPath);
+  });
+
   if (process.env.NODE_ENV !== "production") {
     // Serve public directory statically so public assets (/logo-icon.png, etc.) are instantly served
     app.use(express.static(path.join(process.cwd(), "public")));

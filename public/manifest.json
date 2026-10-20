@@ -1,23 +1,47 @@
 {
   "id": "/",
-  "name": "Hash Resume | صانع السيرة الذاتية الذكي ATS",
-  "short_name": "Hash CV",
+  "name": "Hash Resume",
+  "short_name": "Hash Resume",
   "description": "منصة بناء سير ذاتية احترافية وذكية متوافقة 100% مع أنظمة فرز السير الذاتية ATS باللغتين العربية والإنجليزية",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait-primary",
   "theme_color": "#001639",
   "background_color": "#001639",
   "lang": "ar",
   "dir": "rtl",
+  "prefer_related_applications": false,
   "categories": ["business", "productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "إنشاء سيرة ذاتية",
+      "short_name": "إنشاء CV",
+      "description": "ابدأ كتابة سيرة ذاتية ATS احترافية",
+      "url": "/builder",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "وظائف Hash Hunt",
+      "short_name": "وظائف",
+      "description": "استكشف أحدث الوظائف والشواغر المتاحة",
+      "url": "/hash-hunt",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    }
+  ],
   "icons": [
     {
       "src": "/pwa-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/pwa-512x512.png",

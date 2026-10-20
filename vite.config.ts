@@ -16,8 +16,8 @@ export default defineConfig(({ mode }) => {
         includeAssets: ['favicon.ico', 'favicon-32x32.png', 'apple-touch-icon.png', 'logo-icon.png'],
         manifest: {
           id: '/',
-          name: 'Hash Resume | صانع السيرة الذاتية الذكي ATS',
-          short_name: 'Hash CV',
+          name: 'Hash Resume',
+          short_name: 'Hash Resume',
           description: 'منصة بناء سير ذاتية احترافية وذكية متوافقة 100% مع أنظمة فرز السير الذاتية ATS باللغتين العربية والإنجليزية',
           theme_color: '#001639',
           background_color: '#001639',
