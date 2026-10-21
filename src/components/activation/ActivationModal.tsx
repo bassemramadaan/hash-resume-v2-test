@@ -83,6 +83,8 @@ const PAYMENT_MODAL_I18N = {
     vodafoneNumberLabel: 'رقم المحفظة الإلكترونية:',
     senderLabel: 'اسم صاحب التحويل *',
     senderPlaceholder: 'الاسم كما يظهر في تطبيق التحويل',
+    phoneLabel: 'رقم الهاتف / الواتساب *',
+    phonePlaceholder: '01xxxxxxxxx',
     refLabel: 'رقم مرجع التحويل / رقم العملية *',
     refPlaceholder: 'مثال: 123456789 أو رقم عملية الإيداع',
     emailLabel: 'البريد الإلكتروني لاستلام النسخة *',
@@ -115,7 +117,7 @@ const PAYMENT_MODAL_I18N = {
     checkStatusDesc: 'أدخل رقم المرجع للتحقق من حالة السيرة الذاتية وتفعيلها فوراً.',
     verifyBtn: 'تفعيل الكود الفوري',
     codeRequired: 'يرجى إدخال كود التفعيل',
-    fieldsRequired: 'يرجى تعبئة جميع الحقول المطلوبة (الاسم، البريد، ورقم العملية)'
+    fieldsRequired: 'يرجى تعبئة جميع الحقول المطلوبة (الاسم، رقم الهاتف، البريد، ورقم العملية)'
   },
   en: {
     modalTitle: 'Instant Resume Activation & Download',
@@ -176,6 +178,8 @@ const PAYMENT_MODAL_I18N = {
     vodafoneNumberLabel: 'Mobile Wallet Number:',
     senderLabel: 'Sender Name *',
     senderPlaceholder: 'Name as shown in transfer app',
+    phoneLabel: 'Phone / WhatsApp Number *',
+    phonePlaceholder: 'e.g. 01012345678',
     refLabel: 'Reference / Transaction Number *',
     refPlaceholder: 'e.g. 123456789 or transaction ID',
     emailLabel: 'Email Address *',
@@ -208,7 +212,7 @@ const PAYMENT_MODAL_I18N = {
     checkStatusDesc: 'Enter your reference number to verify and download immediately.',
     verifyBtn: 'Activate Code Now',
     codeRequired: 'Please enter an activation code',
-    fieldsRequired: 'Please fill out all required fields (Name, Email, Reference)'
+    fieldsRequired: 'Please fill out all required fields (Name, Phone, Email, Reference)'
   }
 };
 
@@ -276,6 +280,7 @@ export const ActivationModal: React.FC = () => {
   }, [isActivationModalOpen]);
 
   const [senderInfo, setSenderInfo] = useState('');
+  const [phoneInput, setPhoneInput] = useState('');
   const [emailInput, setEmailInput] = useState('');
   const [referenceInput, setReferenceInput] = useState('');
   const [inputCode, setInputCode] = useState('');
@@ -320,6 +325,9 @@ export const ActivationModal: React.FC = () => {
       if (result.senderOrPayee && !senderInfo) {
         setSenderInfo(result.senderOrPayee);
       }
+      if (result.phoneNumber && !phoneInput) {
+        setPhoneInput(result.phoneNumber);
+      }
       setSmsParseSuccess(isAr ? result.summaryAr : result.summaryEn);
     } else {
       setSmsParseSuccess(null);
@@ -363,8 +371,13 @@ export const ActivationModal: React.FC = () => {
       try {
         const savedRef = localStorage.getItem('payment_reference');
         const savedEmail = localStorage.getItem('payment_email');
+        const savedPhone = localStorage.getItem('payment_phone');
         if (savedRef) setReferenceInput(savedRef);
         if (savedEmail) setEmailInput(savedEmail);
+        else if (resumeData?.personalInfo?.email) setEmailInput(resumeData.personalInfo.email);
+        if (savedPhone) setPhoneInput(savedPhone);
+        else if (resumeData?.personalInfo?.phone) setPhoneInput(resumeData.personalInfo.phone);
+        if (!senderInfo && resumeData?.personalInfo?.fullName) setSenderInfo(resumeData.personalInfo.fullName);
       } catch {
         // Storage restricted
       }
@@ -407,8 +420,19 @@ export const ActivationModal: React.FC = () => {
       return;
     }
 
-    if (!referenceInput || !senderInfo || !emailInput) {
+    if (!referenceInput || !senderInfo || !emailInput || !phoneInput) {
       setErrorMessage(labels.fieldsRequired);
+      setPaymentStep('error');
+      return;
+    }
+
+    const cleanPhone = phoneInput.trim();
+    if (cleanPhone.length < 8) {
+      setErrorMessage(
+        isAr
+          ? 'يرجى إدخال رقم هاتف صحيح للتواصل والمتابعة (8 أرقام على الأقل)'
+          : 'Please enter a valid phone number (at least 8 digits)'
+      );
       setPaymentStep('error');
       return;
     }
@@ -424,6 +448,7 @@ export const ActivationModal: React.FC = () => {
         reference: cleanRef,
         senderInfo: cleanSender,
         email: cleanEmail,
+        phone: cleanPhone,
         amount: amountValue,
       });
       
@@ -431,6 +456,7 @@ export const ActivationModal: React.FC = () => {
         try {
           localStorage.setItem('payment_reference', cleanRef);
           localStorage.setItem('payment_email', cleanEmail);
+          localStorage.setItem('payment_phone', cleanPhone);
         } catch {
           // Storage restricted
         }
@@ -1003,16 +1029,28 @@ export const ActivationModal: React.FC = () => {
 
                     {/* Step 3: Compact Form Fields */}
                     <div className="space-y-2 pt-1 border-t border-slate-100">
+                      <div className="space-y-1">
+                        <label className="block font-bold text-[11px] text-slate-700">{labels.senderLabel}</label>
+                        <input
+                          required
+                          type="text"
+                          value={senderInfo}
+                          onChange={(e) => setSenderInfo(e.target.value)}
+                          placeholder={labels.senderPlaceholder}
+                          className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#001639] focus:ring-1 focus:ring-[#001639]/20 outline-none min-h-[38px] transition"
+                        />
+                      </div>
+
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <div className="space-y-1">
-                          <label className="block font-bold text-[11px] text-slate-700">{labels.senderLabel}</label>
+                          <label className="block font-bold text-[11px] text-slate-700">{labels.phoneLabel}</label>
                           <input
                             required
-                            type="text"
-                            value={senderInfo}
-                            onChange={(e) => setSenderInfo(e.target.value)}
-                            placeholder={labels.senderPlaceholder}
-                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#001639] focus:ring-1 focus:ring-[#001639]/20 outline-none min-h-[38px] transition"
+                            type="tel"
+                            value={phoneInput}
+                            onChange={(e) => setPhoneInput(e.target.value)}
+                            placeholder={labels.phonePlaceholder}
+                            className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:border-[#001639] focus:ring-1 focus:ring-[#001639]/20 outline-none min-h-[38px] transition payment-tabular payment-ltr-field font-mono"
                           />
                         </div>
                         <div className="space-y-1">

@@ -88,17 +88,19 @@ export interface SubmitPaymentRequest {
   reference: string;
   senderInfo?: string;
   email: string;
+  phone?: string;
   amount: '50' | '120';
 }
 
 export async function submitPayment(req: SubmitPaymentRequest) {
   const cleanRef = normalizeReference(req.reference || '');
   const cleanEmail = (req.email || '').trim();
+  const cleanPhone = (req.phone || '').trim();
   const cleanSender = (req.senderInfo || '').trim() || 'InstaPay';
   const cleanAmount = req.amount === '120' ? '120' : '50';
 
   if (!cleanRef || !cleanEmail || !cleanAmount) {
-    throw new Error('جميع الحقول الإلزامية مطلوبة (المرجع، البريد الإلكتروني، والمبلغ).');
+    throw new Error('جميع الحقول الإلزامية مطلوبة (المرجع، البريد الإلكتروني، ورقم الهاتف والمبلغ).');
   }
 
   return await callPaymentApi(
@@ -110,6 +112,7 @@ export async function submitPayment(req: SubmitPaymentRequest) {
         reference: cleanRef,
         senderInfo: cleanSender,
         email: cleanEmail,
+        phone: cleanPhone,
         amount: cleanAmount,
       },
     }

@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
       VitePWA({
         registerType: 'autoUpdate',
-        includeAssets: ['favicon.ico', 'favicon-32x32.png', 'apple-touch-icon.png', 'logo-icon.png'],
+        includeAssets: ['favicon.ico', 'favicon-32x32.png', 'favicon-16x16.png', 'favicon.png', 'apple-touch-icon.png', 'logo-icon.png'],
         manifest: {
           id: '/?pwa=v2',
           name: 'HashResume',

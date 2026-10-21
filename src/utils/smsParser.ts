@@ -10,6 +10,7 @@ export interface ParsedTransferResult {
   amount?: '50' | '120' | string;
   provider?: 'instapay' | 'vodafone' | 'bank' | 'wallet';
   senderOrPayee?: string;
+  phoneNumber?: string;
   summaryAr: string;
   summaryEn: string;
 }
@@ -144,6 +145,13 @@ export function parseTransferMessage(rawText: string): ParsedTransferResult {
     }
   }
 
+  // 5. Extract Phone Number if present (e.g. from Vodafone Cash or Wallet notification)
+  let phoneNumber: string | undefined = undefined;
+  const phoneMatch = normalized.match(/\b(01[0125]\d{8})\b/);
+  if (phoneMatch && phoneMatch[1]) {
+    phoneNumber = phoneMatch[1];
+  }
+
   const isValid = Boolean(foundRef && foundRef.length >= 6);
 
   const summaryAr = isValid
@@ -160,6 +168,7 @@ export function parseTransferMessage(rawText: string): ParsedTransferResult {
     amount: parsedAmount,
     provider,
     senderOrPayee,
+    phoneNumber,
     summaryAr,
     summaryEn,
   };
