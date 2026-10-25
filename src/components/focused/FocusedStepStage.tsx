@@ -25,6 +25,8 @@ interface FocusedStepStageProps {
   isAr?: boolean;
 }
 
+const STEP_ORDER = ['personal', 'experience-and-education', 'skills', 'extras', 'finalize'];
+
 export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
   currentStepId,
   onNextMainStep,
@@ -38,33 +40,74 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
 }) => {
   const [additionalTab, setAdditionalTab] = React.useState<'certs' | 'projects'>('certs');
 
+  const prevStepIdRef = React.useRef(currentStepId);
+  const prevIndex = STEP_ORDER.indexOf(prevStepIdRef.current);
+  const currentIndex = STEP_ORDER.indexOf(currentStepId);
+  const direction = currentIndex >= prevIndex ? 1 : -1;
+
+  React.useEffect(() => {
+    prevStepIdRef.current = currentStepId;
+  }, [currentStepId]);
+
+  const stepSlideVariants = {
+    enter: (dir: number) => ({
+      opacity: 0,
+      x: dir > 0 ? (isAr ? -24 : 24) : (isAr ? 24 : -24),
+    }),
+    center: {
+      opacity: 1,
+      x: 0,
+      transition: {
+        duration: 0.26,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    },
+    exit: (dir: number) => ({
+      opacity: 0,
+      x: dir > 0 ? (isAr ? 20 : -20) : (isAr ? -20 : 20),
+      transition: {
+        duration: 0.16,
+        ease: 'easeIn',
+      },
+    }),
+  };
+
   return (
     <main className="flex-1 w-full max-w-2xl mx-auto px-3.5 sm:px-6 py-3.5 sm:py-8 pb-36 sm:pb-40 flex flex-col items-center justify-center">
       <div className="w-full transition-all">
-        <AnimatePresence mode="wait">
-          {/* STEP 1: Personal Information (One sub-question at a time) */}
-          {currentStepId === 'personal' && (
-            <PersonalSubStep
-              key="step-personal"
-              onNextMainStep={onNextMainStep}
-              onPrevMainStep={onPrevMainStep}
-              onSubStepChange={onSubStepProgress}
-              isAr={isAr}
-            />
-          )}
+        <AnimatePresence custom={direction} mode="wait">
+          <motion.div
+            key={currentStepId}
+            custom={direction}
+            variants={stepSlideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            className="w-full"
+          >
+            {/* STEP 1: Personal Information (One sub-question at a time) */}
+            {currentStepId === 'personal' && (
+              <PersonalSubStep
+                key="step-personal"
+                onNextMainStep={onNextMainStep}
+                onPrevMainStep={onPrevMainStep}
+                onSubStepChange={onSubStepProgress}
+                isAr={isAr}
+              />
+            )}
 
-          {/* STEP 2: Merged Experience and Education */}
-          {currentStepId === 'experience-and-education' && (
-            <ExperienceAndEducationStep
-              key="step-experience-and-education"
-              onNextMainStep={onNextMainStep}
-              onPrevMainStep={onPrevMainStep}
-              onSubStepChange={onSubStepProgress}
-              targetSubStage={targetSubStage}
-              onClearTargetSubStage={onClearTargetSubStage}
-              isAr={isAr}
-            />
-          )}
+            {/* STEP 2: Merged Experience and Education */}
+            {currentStepId === 'experience-and-education' && (
+              <ExperienceAndEducationStep
+                key="step-experience-and-education"
+                onNextMainStep={onNextMainStep}
+                onPrevMainStep={onPrevMainStep}
+                onSubStepChange={onSubStepProgress}
+                targetSubStage={targetSubStage}
+                onClearTargetSubStage={onClearTargetSubStage}
+                isAr={isAr}
+              />
+            )}
 
           {/* Legacy fallback for individual steps if needed */}
           {currentStepId === 'experiences' && (
@@ -245,10 +288,10 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
                     <button
                       type="button"
                       onClick={onOpenPreview}
-                      className="py-3 sm:py-3.5 px-3.5 sm:px-5 bg-white border-2 border-[#001639] hover:bg-[#001639]/5 text-[#001639] font-semibold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+                      className="py-2.5 sm:py-3.5 px-3 sm:px-5 bg-white border-2 border-[#001639] hover:bg-[#001639]/5 text-[#001639] font-semibold text-xs sm:text-sm rounded-xl sm:rounded-2xl shadow-2xs hover:shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
                     >
                       <Eye className="w-4 h-4 text-[#FF4D2D] shrink-0" />
-                      <span className="truncate">{isAr ? 'معاينة الـ CV والتحميل' : 'Preview & Download'}</span>
+                      <span className="truncate">{isAr ? 'معاينة الـ CV' : 'Preview CV'}</span>
                     </button>
                   )}
 
@@ -266,6 +309,7 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
               </div>
             </motion.div>
           )}
+          </motion.div>
         </AnimatePresence>
       </div>
     </main>

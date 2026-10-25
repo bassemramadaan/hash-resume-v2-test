@@ -4,6 +4,7 @@ import { getTranslation } from '../../i18n/translations';
 import { detectResumeRedFlags } from '../../utils/redFlagDetector';
 import { RedFlagItem } from '../../types/resume';
 import { AtsSectionBreakdown } from './AtsSectionBreakdown';
+import { AnimatedScoreCounter } from '../common/AnimatedScoreCounter';
 import { aiApi } from '../../lib/api';
 import {
   ShieldCheck,
@@ -300,7 +301,7 @@ ${atsResult.actionPoints?.map((a) => `• ${a}`).join('\n')}`;
       <div className="p-4 bg-white border-2 border-[#e8e5de] rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
         <div className="flex items-center gap-3">
           <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-bold text-sm ${scoreTheme?.badgeBg}`}>
-            {atsResult.score}%
+            <AnimatedScoreCounter targetScore={atsResult.score} />
           </div>
           <div>
             <div className="text-xs font-semibold text-[#001639]">{atsResult.verdict}</div>

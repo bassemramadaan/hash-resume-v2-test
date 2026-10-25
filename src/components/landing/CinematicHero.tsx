@@ -12,27 +12,60 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
 
   const ArrowIcon = isAr ? ArrowLeft : ArrowRight;
 
+  const heroVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.12,
+        delayChildren: 0.05,
+      },
+    },
+  };
+
+  const fadeUpVariant = {
+    hidden: { opacity: 0, y: 14 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.55,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    },
+  };
+
   return (
     <section className="relative min-h-[85vh] flex flex-col items-center justify-center pt-10 sm:pt-16 md:pt-20 pb-16 sm:pb-24 px-4 sm:px-6 overflow-hidden bg-[#FAF9F6]">
       {/* Subtle Peaceful Ambient Background */}
       <div className="absolute top-0 inset-x-0 h-40 bg-gradient-to-b from-white to-transparent pointer-events-none" />
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70vw] h-[70vw] max-w-[650px] max-h-[650px] bg-[#FF4D2D]/3 rounded-full blur-[160px] pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-5xl mx-auto text-center space-y-6 sm:space-y-8">
+      <motion.div
+        variants={heroVariants}
+        initial="hidden"
+        animate="visible"
+        className="relative z-10 w-full max-w-5xl mx-auto text-center space-y-6 sm:space-y-8"
+      >
         {/* 1. Calm Top Badge */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-slate-200/60 text-xs text-slate-500 shadow-2xs">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D2D]" />
-          <span className="font-normal">
-            {isAr
-              ? 'متوافق مع أنظمة ATS • بدون تسجيل'
-              : currentLang === 'fr'
-              ? 'Compatible ATS • Sans inscription requise'
-              : 'ATS-friendly • No sign-up required'}
-          </span>
-        </div>
+        <motion.div variants={fadeUpVariant} className="flex justify-center">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white border border-slate-200/60 text-xs text-slate-500 shadow-2xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF4D2D]" />
+            <span className="font-normal">
+              {isAr
+                ? 'متوافق مع أنظمة ATS • بدون تسجيل'
+                : currentLang === 'fr'
+                ? 'Compatible ATS • Sans inscription requise'
+                : 'ATS-friendly • No sign-up required'}
+            </span>
+          </div>
+        </motion.div>
 
         {/* 2. Hero Headline - Soft & Light (عنوان ناعم وخفيف) */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-medium text-[#001639] tracking-tight leading-[1.25]">
+        <motion.h1
+          variants={fadeUpVariant}
+          className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-medium text-[#001639] tracking-tight leading-[1.25]"
+        >
           {isAr ? (
             <>
               سيرتك الذاتية..<br />
@@ -49,10 +82,10 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
               <span className="text-[#FF4D2D] font-normal">Calm</span> & Zero Friction.
             </>
           )}
-        </h1>
+        </motion.h1>
 
         {/* 3. Hero Slogan & Founder's Signature (باسم رمضان) */}
-        <div className="max-w-3xl mx-auto px-2 space-y-3.5">
+        <motion.div variants={fadeUpVariant} className="max-w-3xl mx-auto px-2 space-y-3.5">
           <p className="text-xs sm:text-sm md:text-base text-slate-600 font-normal leading-relaxed text-center max-w-2xl mx-auto">
             {currentLang === 'ar'
               ? '«صُممت لتتخطى خوارزميات الفرز (ATS) بدقة متناهية، وتلفت أنظار مديري التوظيف من النظرة الأولى. خطوتك الموثوقة للمقابلة القادمة.»'
@@ -140,10 +173,10 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* 4. Action Buttons (زران هادئان: زر كورال هادئ ومريح ابدأ الآن بجانبه زر أبيض بإطار خفيف استكشف النماذج) */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1 max-w-sm sm:max-w-md mx-auto w-full">
+        <motion.div variants={fadeUpVariant} className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1 max-w-sm sm:max-w-md mx-auto w-full">
           <button
             type="button"
             onClick={() => navigate('/builder')}
@@ -161,7 +194,7 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
             <FileText className="w-3.5 h-3.5 text-slate-400 shrink-0" />
             <span>{isAr ? 'استكشف النماذج' : currentLang === 'fr' ? 'Explorer les modèles' : 'Explore Templates'}</span>
           </button>
-        </div>
+        </motion.div>
 
         {/* 5. The Zen Paper Studio (ورقة A4 بيضاء واحدة تستقر بنعومة على خلفية عاجية مريحة مع ظل طبيعي خافت جداً) */}
         <div className="pt-6 sm:pt-10 w-full max-w-3xl mx-auto">
@@ -389,7 +422,7 @@ export const CinematicHero: React.FC<{ isAr: boolean }> = ({ isAr }) => {
             </div>
           </motion.div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

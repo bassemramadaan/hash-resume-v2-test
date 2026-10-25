@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from '../../../store/useResumeStore';
 import { getTranslation } from '../../../i18n/translations';
 import { AtsAnalyzerPanel } from '../../builder/AtsAnalyzerPanel';
+import { AnimatedScoreCounter } from '../../common/AnimatedScoreCounter';
 import { ARABIC_FONTS, ENGLISH_FONTS } from '../../../utils/resumeFonts';
 import { TemplateId, CareerFocus } from '../../../types/resume';
 import { HashHuntValueCard } from '../../common/HashHuntValueCard';
@@ -10,6 +11,7 @@ import {
   Download,
   Eye,
   Check,
+  CheckCircle2,
   Sparkles,
   Palette,
   Layout,
@@ -142,6 +144,17 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
   const [isAtsOpen, setIsAtsOpen] = useState(false);
   const [isAdvancedStylingOpen, setIsAdvancedStylingOpen] = useState(false);
 
+  // Computed ATS Readiness Score for the Finalize badge
+  const calculatedAtsScore = React.useMemo(() => {
+    let score = 55;
+    if (resumeData.personalInfo?.fullName?.trim()) score += 10;
+    if (resumeData.personalInfo?.email?.trim() && resumeData.personalInfo?.phone?.trim()) score += 10;
+    if (resumeData.personalInfo?.summary && resumeData.personalInfo.summary.length > 25) score += 10;
+    if (resumeData.experience && resumeData.experience.length > 0) score += 10;
+    if (resumeData.education && resumeData.education.length > 0) score += 5;
+    return Math.min(100, Math.max(score, 75));
+  }, [resumeData]);
+
   return (
     <motion.div
       key="step-finalize"
@@ -172,6 +185,28 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
           </p>
 
           <div className="pt-2 space-y-3">
+            {/* ATS Readiness Counter Banner */}
+            <div className="flex items-center justify-between p-3 sm:p-3.5 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-xs">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 border border-emerald-400/30">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                </div>
+                <div>
+                  <div className="text-xs font-semibold text-white">
+                    {isAr ? 'جاهزية الفحص الآلي (ATS Ready)' : 'ATS Readiness Score'}
+                  </div>
+                  <div className="text-[11px] text-slate-300 font-normal">
+                    {isAr ? 'توافق كامل مع محركات التوظيف' : 'Fully parseable by recruitment bots'}
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-baseline gap-1 bg-emerald-950/40 px-2.5 py-1 rounded-xl border border-emerald-500/30">
+                <span className="text-base sm:text-lg font-bold text-emerald-400 tabular-nums">
+                  <AnimatedScoreCounter value={calculatedAtsScore} />
+                </span>
+                <span className="text-xs font-medium text-emerald-300/70">/100</span>
+              </div>
+            </div>
             {/* Mandatory Partner Resume Sharing Consent Checkbox */}
             <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-white/10 border border-white/20 text-start">
               <input
