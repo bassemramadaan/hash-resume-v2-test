@@ -11,6 +11,7 @@ import { CertificationsForm } from '../builder/CertificationsForm';
 import { ProjectsForm } from '../builder/ProjectsForm';
 import { CustomizeForm } from '../builder/CustomizeForm';
 import { AtsAnalyzerPanel } from '../builder/AtsAnalyzerPanel';
+import { useSwipeGesture } from '../../hooks/useSwipeGesture';
 import { ArrowLeft, ArrowRight, Award, FolderGit2, Eye, Download, Sparkles } from 'lucide-react';
 
 interface FocusedStepStageProps {
@@ -72,8 +73,16 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
     }),
   };
 
+  const swipeHandlers = useSwipeGesture({
+    onSwipeLeft: onNextMainStep,
+    onSwipeRight: onPrevMainStep,
+  });
+
   return (
-    <main className="flex-1 w-full max-w-2xl mx-auto px-3.5 sm:px-6 py-3.5 sm:py-8 pb-36 sm:pb-40 flex flex-col items-center justify-center">
+    <main
+      {...swipeHandlers}
+      className="flex-1 w-full max-w-2xl mx-auto px-3.5 sm:px-6 py-3.5 sm:py-8 pb-36 sm:pb-40 flex flex-col items-center justify-center touch-pan-y"
+    >
       <div className="w-full transition-all">
         <AnimatePresence custom={direction} mode="wait">
           <motion.div
@@ -311,6 +320,13 @@ export const FocusedStepStage: React.FC<FocusedStepStageProps> = ({
           )}
           </motion.div>
         </AnimatePresence>
+      </div>
+
+      {/* Subtle Mobile Swipe Hint */}
+      <div className="sm:hidden flex items-center justify-center gap-1.5 pt-4 pb-1 text-[11px] text-slate-400 select-none pointer-events-none">
+        <span className="opacity-60 text-xs">←</span>
+        <span>{isAr ? 'اسحب للتنقل بين الخطوات' : 'Swipe to navigate steps'}</span>
+        <span className="opacity-60 text-xs">→</span>
       </div>
     </main>
   );

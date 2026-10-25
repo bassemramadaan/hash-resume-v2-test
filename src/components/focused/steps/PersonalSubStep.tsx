@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useResumeStore } from '../../../store/useResumeStore';
 import { ArrowLeft, ArrowRight, Sparkles, Loader2, Check } from 'lucide-react';
 import { aiApi } from '../../../lib/api';
+import { useSwipeGesture } from '../../../hooks/useSwipeGesture';
 
 interface PersonalSubStepProps {
   onNextMainStep: () => void;
@@ -104,8 +105,13 @@ export const PersonalSubStep: React.FC<PersonalSubStepProps> = ({
     exit: { opacity: 0, y: -12, transition: { duration: 0.18 } },
   };
 
+  const swipeHandlers = useSwipeGesture({
+    onSwipeLeft: handleNext,
+    onSwipeRight: handlePrev,
+  });
+
   return (
-    <div className="w-full max-w-xl mx-auto" onKeyDown={handleKeyDown}>
+    <div className="w-full max-w-xl mx-auto touch-pan-y" onKeyDown={handleKeyDown} {...swipeHandlers}>
       <AnimatePresence mode="wait">
         {/* SUB-STAGE 0: Full Name & Job Title */}
         {subStage === 0 && (
