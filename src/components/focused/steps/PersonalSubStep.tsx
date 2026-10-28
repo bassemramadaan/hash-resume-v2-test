@@ -511,19 +511,31 @@ export const PersonalSubStep: React.FC<PersonalSubStepProps> = ({
               <label htmlFor="personal-summary" className="sr-only">
                 {isAr ? 'الملخص المهني' : 'Professional Summary'}
               </label>
-              <textarea
-                id="personal-summary"
-                autoFocus
-                rows={4}
-                placeholder={
-                  isAr
-                    ? 'مثال: مهندس برمجيات بخبرة 4+ سنوات في تطوير تطبيقات React و Node.js، قاد تحسين سرعة التحميل بنسبة 35% وخفض تكاليف الاستضافة في بيئات سحابية سريعة النمو.'
-                    : 'e.g., Software Engineer with 4+ years building responsive web apps with React and TypeScript, optimizing system performance by 35% in high-traffic production.'
-                }
-                value={info.summary || ''}
-                onChange={(e) => updateField('summary', e.target.value)}
-                className="w-full p-3.5 sm:p-4 text-base font-normal text-slate-800 bg-white border border-[#e8e5de] focus:border-[#FF4D2D] focus:ring-3 focus:ring-[#FF4D2D]/10 rounded-2xl outline-none transition-all placeholder:text-[#9099ac] resize-y"
-              />
+              {isGeneratingSummary ? (
+                <div className="w-full p-4 rounded-2xl border border-[#FF4D2D]/30 bg-orange-50/20 space-y-3 min-h-[120px] flex flex-col justify-center">
+                  <div className="h-3 w-4/5 rounded-full ai-skeleton-shimmer" />
+                  <div className="h-3 w-full rounded-full ai-skeleton-shimmer" />
+                  <div className="h-3 w-3/5 rounded-full ai-skeleton-shimmer" />
+                  <p className="text-[11px] text-[#FF4D2D] font-medium flex items-center gap-1.5 pt-1">
+                    <Sparkles className="w-3.5 h-3.5 animate-spin" />
+                    <span>{isAr ? 'جاري صياغة ملخص احترافي متوافق مع خوارزميات ATS...' : 'Drafting ATS-optimized professional summary...'}</span>
+                  </p>
+                </div>
+              ) : (
+                <textarea
+                  id="personal-summary"
+                  autoFocus
+                  rows={4}
+                  placeholder={
+                    isAr
+                      ? 'مثال: مهندس برمجيات بخبرة 4+ سنوات في تطوير تطبيقات React و Node.js، قاد تحسين سرعة التحميل بنسبة 35% وخفض تكاليف الاستضافة في بيئات سحابية سريعة النمو.'
+                      : 'e.g., Software Engineer with 4+ years building responsive web apps with React and TypeScript, optimizing system performance by 35% in high-traffic production.'
+                  }
+                  value={info.summary || ''}
+                  onChange={(e) => updateField('summary', e.target.value)}
+                  className="w-full p-3.5 sm:p-4 text-base font-normal text-slate-800 bg-white border border-[#e8e5de] focus:border-[#FF4D2D] focus:ring-3 focus:ring-[#FF4D2D]/10 rounded-2xl outline-none transition-all placeholder:text-[#9099ac] resize-y"
+                />
+              )}
 
               <div className="flex items-center justify-between text-xs text-slate-500 px-1 font-normal">
                 <span>

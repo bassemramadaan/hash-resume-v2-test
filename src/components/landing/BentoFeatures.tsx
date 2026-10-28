@@ -27,7 +27,7 @@ export const BentoFeatures: React.FC<{ isAr: boolean }> = ({ isAr }) => {
             <div className="absolute -right-20 -top-20 w-64 h-64 bg-coral-soft rounded-full blur-3xl opacity-50 group-hover:opacity-80 transition-opacity pointer-events-none"></div>
             <div className="relative z-10 space-y-3 sm:space-y-4">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-orange-50/90 shadow-2xs border border-orange-200/60 flex items-center justify-center text-[#FF4D2D] shrink-0">
-                <Target className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" strokeWidth={1.75} />
+                <Target className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 icon-duotone" strokeWidth={1.75} />
               </div>
               <h3 className="text-lg sm:text-2xl font-semibold text-slate-900">{isAr ? 'مُحسّن لأنظمة ATS' : 'ATS Optimized'}</h3>
               <p className="text-slate-600 font-normal text-xs sm:text-sm md:text-base max-w-sm leading-relaxed">
@@ -38,7 +38,7 @@ export const BentoFeatures: React.FC<{ isAr: boolean }> = ({ isAr }) => {
             </div>
             <div className="relative z-10 mt-5 sm:mt-6 inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-white rounded-xl border border-[#E2E8F0] shadow-2xs w-fit font-medium text-xs sm:text-sm text-slate-800">
               <span className="w-2 h-2 rounded-full bg-[#16A36A] animate-pulse shrink-0"></span>
-              <span>98% ATS Parse Rate</span>
+              <span className="tabular-nums">98% ATS Parse Rate</span>
             </div>
           </motion.div>
 
@@ -53,7 +53,7 @@ export const BentoFeatures: React.FC<{ isAr: boolean }> = ({ isAr }) => {
             <div className="absolute inset-0 bg-gradient-to-br from-[#FF4D2D]/10 to-transparent pointer-events-none"></div>
             <div className="relative z-10 space-y-3 sm:space-y-4">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/10 border border-white/15 flex items-center justify-center text-[#FF4D2D] shrink-0">
-                <Cpu className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" strokeWidth={1.75} />
+                <Cpu className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 icon-duotone" strokeWidth={1.75} />
               </div>
               <h3 className="text-lg sm:text-2xl font-semibold text-white">{isAr ? 'مساعد ذكي' : 'AI Assistant'}</h3>
               <p className="text-slate-300 font-normal text-xs sm:text-sm md:text-base leading-relaxed">
@@ -74,7 +74,7 @@ export const BentoFeatures: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           >
             <div className="space-y-3 sm:space-y-4">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-orange-50/90 shadow-2xs border border-orange-200/60 flex items-center justify-center text-[#FF4D2D] shrink-0">
-                <Globe className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" strokeWidth={1.75} />
+                <Globe className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 icon-duotone" strokeWidth={1.75} />
               </div>
               <h3 className="text-lg sm:text-xl font-semibold text-slate-900">{isAr ? 'عربي وإنجليزي' : 'Bilingual'}</h3>
               <p className="text-slate-600 font-normal text-xs sm:text-sm leading-relaxed">
@@ -95,7 +95,7 @@ export const BentoFeatures: React.FC<{ isAr: boolean }> = ({ isAr }) => {
           >
             <div className="space-y-3 sm:space-y-4 max-w-lg">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-orange-50/90 shadow-2xs border border-orange-200/60 flex items-center justify-center text-[#FF4D2D] shrink-0">
-                <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" strokeWidth={1.75} />
+                <ShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 shrink-0 icon-duotone" strokeWidth={1.75} />
               </div>
               <h3 className="text-lg sm:text-2xl font-semibold text-slate-900">{isAr ? 'خصوصية بياناتك 100%' : '100% Data Privacy'}</h3>
               <p className="text-slate-600 font-normal text-xs sm:text-sm md:text-base leading-relaxed">

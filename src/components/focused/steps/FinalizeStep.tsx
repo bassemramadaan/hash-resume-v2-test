@@ -4,6 +4,7 @@ import { useResumeStore } from '../../../store/useResumeStore';
 import { getTranslation } from '../../../i18n/translations';
 import { AtsAnalyzerPanel } from '../../builder/AtsAnalyzerPanel';
 import { AnimatedScoreCounter } from '../../common/AnimatedScoreCounter';
+import confetti from 'canvas-confetti';
 import { ARABIC_FONTS, ENGLISH_FONTS } from '../../../utils/resumeFonts';
 import { TemplateId, CareerFocus } from '../../../types/resume';
 import { HashHuntValueCard } from '../../common/HashHuntValueCard';
@@ -155,6 +156,22 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
     return Math.min(100, Math.max(score, 75));
   }, [resumeData]);
 
+  // Subtle celebratory confetti on reaching final resume step
+  React.useEffect(() => {
+    try {
+      confetti({
+        particleCount: 50,
+        spread: 60,
+        origin: { y: 0.4 },
+        colors: ['#FF4D2D', '#001639', '#16A36A', '#FFA48D'],
+        ticks: 120,
+        gravity: 1.2,
+        scalar: 0.85,
+        disableForReducedMotion: true,
+      });
+    } catch (_) {}
+  }, []);
+
   return (
     <motion.div
       key="step-finalize"
@@ -189,7 +206,7 @@ export const FinalizeStep: React.FC<FinalizeStepProps> = ({
             <div className="flex items-center justify-between p-3 sm:p-3.5 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-xs">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0 border border-emerald-400/30">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 icon-duotone-emerald" />
                 </div>
                 <div>
                   <div className="text-xs font-semibold text-white">

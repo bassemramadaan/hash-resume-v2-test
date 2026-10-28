@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'motion/react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { useExportGate } from '../../store/useExportGate';
 import {
@@ -675,11 +676,15 @@ export const ActivationModal: React.FC = () => {
         }
       }}
     >
-      <div
+      <motion.div
         ref={modalRef}
         role="dialog"
         aria-modal="true"
         dir={isAr ? 'rtl' : 'ltr'}
+        initial={{ opacity: 0, scale: 0.94, y: 14 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 8 }}
+        transition={{ type: 'spring', damping: 28, stiffness: 380 }}
         className="w-full max-w-[460px] bg-white border border-slate-100 rounded-3xl shadow-2xl overflow-hidden text-slate-800 my-auto max-h-[92vh] flex flex-col payment-modal"
       >
         {/* Top Accent Gradient Bar */}
@@ -894,7 +899,7 @@ export const ActivationModal: React.FC = () => {
                           >
                             {copiedKey === 'ipa' ? (
                               <>
-                                <Check className="w-3 h-3 text-emerald-600" />
+                                <Check className="w-3 h-3 text-emerald-600 animate-spring-pop" />
                                 <span className="text-emerald-700">{labels.copiedBtn}</span>
                               </>
                             ) : (
@@ -959,7 +964,7 @@ export const ActivationModal: React.FC = () => {
                           >
                             {copiedKey === 'voda' ? (
                               <>
-                                <Check className="w-3 h-3 text-emerald-600" />
+                                <Check className="w-3 h-3 text-emerald-600 animate-spring-pop" />
                                 <span className="text-emerald-700">{labels.copiedBtn}</span>
                               </>
                             ) : (
@@ -1374,7 +1379,7 @@ export const ActivationModal: React.FC = () => {
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

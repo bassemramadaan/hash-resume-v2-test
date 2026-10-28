@@ -41,10 +41,10 @@ export const DesktopPreviewModal: React.FC<DesktopPreviewModalProps> = ({
           onClick={onClose}
         >
           <motion.div
-            initial={{ opacity: 0, scale: 0.96, y: 10 }}
+            initial={{ opacity: 0, scale: 0.95, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 10 }}
-            transition={{ duration: 0.2 }}
+            transition={{ type: 'spring', damping: 28, stiffness: 380 }}
             onClick={(e) => e.stopPropagation()}
             className="relative w-full max-w-4xl h-[92vh] bg-slate-50 rounded-3xl border border-[#e8e5de] shadow-2xl flex flex-col overflow-hidden"
           >

@@ -44,7 +44,7 @@ export const MobilePreviewSheet: React.FC<MobilePreviewSheetProps> = ({
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ type: 'spring', damping: 30, stiffness: 350 }}
             className="mobile-preview-sheet is-open relative bg-white rounded-t-3xl max-h-[94vh] h-[92vh] flex flex-col overflow-hidden shadow-2xl z-10"
           >
             {/* Header */}
